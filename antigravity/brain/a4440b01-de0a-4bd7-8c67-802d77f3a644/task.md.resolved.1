@@ -1,0 +1,34 @@
+# D&D Trends Index Project Plan
+
+## Phase 1: Keyword Preparation & Expansion <!-- id: 1 -->
+- [ ] Analyze user-provided Google Trends CSVs (e.g., "witch class homebrew.csv") to derive empirical expansion rules <!-- id: 2 -->
+- [ ] Analyze current `concept_library` categories to determine expansion logic <!-- id: 3 -->
+- [ ] Design schema for `expanded_search_terms` table <!-- id: 3 -->
+- [ ] Implement query/script to generate expanded terms (e.g., "Bladesinger" -> "Bladesinger 5e", "Bladesinger subclass") <!-- id: 4 -->
+- [ ] Verify expanded terms list (approx. 40k terms) <!-- id: 5 -->
+
+## Phase 2: Google Trends Pipeline (`pytrends` + Proxies) <!-- id: 6 -->
+- [ ] Design architecture for batch processing (5 terms per request: 4 target + 1 control) <!-- id: 7 -->
+- [ ] Select and configure proxy solution <!-- id: 8 -->
+- [ ] Develop script to query Google Trends API with backoff/retry logic <!-- id: 9 -->
+- [ ] Implement "Backfill" logic (2014 - Present) <!-- id: 10 -->
+- [ ] Implement "Monthly incremental" logic <!-- id: 11 -->
+
+## Phase 3: Ancillary Data Sources <!-- id: 12 -->
+- [ ] **Reddit API**: Design ingestion for subreddit stats/sentiment <!-- id: 13 -->
+- [ ] **DMs Guild**: Implement scraper for top selling/popular items <!-- id: 14 -->
+- [ ] **DriveThruRPG**: Implement scraper for D&D related top charts <!-- id: 15 -->
+- [ ] **Fandom**: Use `fandom-py` to get page view metrics <!-- id: 16 -->
+
+## Phase 4: BigQuery Warehouse & Automation <!-- id: 17 -->
+- [ ] Centralize all data into appropriate BigQuery schema <!-- id: 18 -->
+- [ ] Set up Cloud Scheduler or similar for monthly automation <!-- id: 19 -->
+
+## Phase 5: Web Application (Frontend) <!-- id: 20 -->
+- [ ] Design UI for "Top XX" lists and interactive charts <!-- id: 21 -->
+- [ ] Implement search functionality <!-- id: 22 -->
+- [ ] Build interactive visualizations (trends over time) <!-- id: 23 -->
+
+## Phase 6: AI Analysis & Insights <!-- id: 24 -->
+- [ ] Develop prompts/scripts for Gemini to analyze aggregated data <!-- id: 25 -->
+- [ ] Automate generation of "Insight Articles" <!-- id: 26 -->

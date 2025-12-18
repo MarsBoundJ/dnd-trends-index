@@ -1,0 +1,444 @@
+=== The Griffon’s Saddlebag Book Two ===
+Part 1: Magic Items
+Arista, Wand of the Spire
+Hatred, the Wrathful Edge
+Morath, Scepter of the Soul Vortex
+Nimbus, First Staff of the Thunderbirds
+Silverwind, the Cleansing Breeze
+Part 2: Character Options
+Etherean
+Geleton
+Barbarian: Path of the Infernal
+Bard: College of Mercantile
+Cleric: Festus Domain
+Druid: Circle of Dragons
+Fighter: Steel Hawk
+Monk: Way of the Aether
+Paladin: Oath of the Spelldrinker
+Ranger: Rocborne
+Rogue: Grim Surgeon
+Sorcerer: Desert Soul
+Warlock: The Many
+Wizard: Wand Lore
+Part 3: Setting Options
+Antronec, the City of Artisans
+The Bloodmire
+Crest City
+Durheim Monastery
+Grymclover Forests
+Heavensteppe
+The H’rethi Desert
+The Infinite Animarum
+The Magmarath Caldera
+Mysteries of the Border Ethereal
+Orostead
+The Rocborne
+The Upheaval, a War Against Magic
+Part 4: Stat Block Appendices
+Ale Elemental
+Alceton
+Analeptic Lizard
+Antlions
+Giant Antlion Hatchling
+Juvenile Giant Antlion
+Adult Giant Antlion
+Aqualisk
+Archer Flower
+Bardic Merchant
+Bloodmire Treant
+Bramble Creeper
+Brimstone Drake
+Butcher Dray, Three-Headed Ettin
+Cartographer’s Agent
+Cerberus Pup
+Cloverback Toad
+Circle of Dragons Druid
+Crest City Druid (Wyrmling)
+Crest City Druid (Youth)
+Crimson Legion Imp
+Cyglops
+Death Coach
+Desert Cat
+Durheim Initiate
+Durheim Guide
+Durheim Leader
+Dyra
+Dyra Juggernaut
+Etherean Trickster
+Ether Fish
+Festus Battlechef
+Fleshcrafter
+Flintclaw
+Geleton Adventurer
+Ghost Dragon
+Giant Blood Eel
+Giant Horned Snake
+Giant Mosquito
+Giant Spider Rat
+Giant Spore Lizard
+Grihoo, the Superhydra
+Grymhare
+Grym-Mage Tyrannosaur
+Hammerhead Ether-Eel
+Haunted Reflection
+Hawkren Bloodstone
+H’rethi, Soul of the Desert
+Infinite Animarum Leader
+Iron Maw Barbarian
+Iron Maw Gladiator
+Justice
+Kiir
+Lady Feluciana, Legendary Medusa Sorceress
+Lava Wurm
+Elder Lava Wurm
+Lightning Panther
+Lothrem
+Mage-Arbiter
+Magebreaker
+Malfuriel the Betrayer
+Merchant Lord
+Mimic Keg
+Ochre Elson, Animarum Maestro
+Ogden Fellweaver
+Pegasus Knight
+Pegasus Knight, exalted
+Psybird
+Purple Jam
+Refuse Golem
+Rocborne Chief
+Rot Monster
+Sand Lizard
+Sand Spider
+Sanguinor
+Scarapit
+Seed Coins
+Seed Coin
+Seed Coin Pollinator
+Germination Stall
+Skywhale
+Slumber Phantom
+Spire Scholar
+Spire Student
+Steel Hawk Captain
+Steel Hawk Soldier
+Storm Spirit
+Swarm of Giant Mosquitoes
+Swarm of Rain Hornets
+Swarm of Scorned Familiars
+The Thousand Voices, Supreme Soul Vortex
+The Wild Hunt
+Thunderbird
+Tipsy
+Vaanor, Primeval Cerberus
+Vincent Von Dreck
+Wyvernfly
+
+=== Humblewood Tales ===
+The Wind-Touched
+The Wakewyrm’s Fury
+The Seahawk
+Hunt for the Loper
+Descent into the Dark
+Shoppes and Stores
+The Crimson Rose
+The Last Stand
+Zephyr & Co.
+Hannu’s Provisions
+Spleck Smandra’s Wagon of Worldly Wonders
+Druid: Circle of the Warden
+Warlock Patron: The Predator
+Wizard: Leyline Magic
+Appendix A: Bestiary
+Amphithere
+Infant Amphithere
+Cosmoth
+Cosmoth Caterpede
+Dusktail
+Emberbat
+Everbug
+Firelance
+Forest Prowler
+Juvenile Forest Prowler
+Gargath
+Glassbeetle
+Nightmare
+Jerbeen Horror
+Kren’s Fang
+Shadowbeast
+Vulpin Horror
+Rosselbuck
+Corrupted Rosselbuck
+Slicar
+Slime
+Animated Slime
+Cursed Slime
+Fungusfeaster
+Slime Familiar
+Slime King
+Slimesworn Cultist
+Sticky Slime
+Swarms
+Bluebee Swarms
+Dusktail Swarms
+Gimlet Swarms
+Wakewyrm
+Young Wakewyrm
+Appendix B: Non-Player Characters
+Aida Reedmane
+Alderheart’s Most Wanted
+Aster “the Thorn” Amaryllis
+Finneas “Bullybird” Klawk
+Cluvus “The Godfeather” Lightbreeze
+“Lucky” Sevran Dusktalon
+Jerrin “Snapshadow” Hollowhome
+Arlowene Lum
+Arrevis “The Seahawk” Fleet
+Bernice Blatherwick
+Bernice’s Recruits
+Bervis
+Connie
+Lenny
+Birdfolk Farmer
+Birdfolk Militia
+Birdfolk Thug
+Birdfolk Sailor
+Bita, the Council Speaker
+Burlywhirl, Sergeant at Arms
+Cadwyll Piper
+Cathus Gright
+Christophe Laszlo
+Corvum Assassin
+Corvum Songweaver
+Drella Swoop
+Elora Quickwit
+Frond Bellewether
+Gil Hopper
+Gurt Hallowfen
+Hamlin Hurlwind
+Hedge Witch
+Hedy Crest
+Horns
+Jerbeen Commoner
+Jerbeen Swashbuckler
+Jerbeen Thief
+Jonall Hannu
+Lendarick Rootborn
+Mapach Bandit
+Mapach Brute
+Mapach Thug
+Medi Tuck
+Moonflower Mosswell
+The Mossbows
+Merle and Morris Mossbow
+Stoa Mossbow
+Orn Proudbeak
+Petra Cloudburst
+Petra’s Crew
+Gerta Downyruff
+Hannity Lerune
+Lucas Azira
+Slip Tideswell
+Lorno and Lanelle Burrowbright
+Phorosfeather, Grand Inquisitor of Gesme
+Pleasantpaw
+Raptor Deckhand
+Raptor Freebooter
+Raptor Mercenary
+The Ragtaggers
+Snap
+Cackle
+Podge
+Sage, the Roostmother
+Skopps the Beast-Breaker
+Spleck Smandra
+Saltfeather
+Strig Berserker
+Strig Tracker
+Tempa Greenkeeper
+Velma Leicester
+Vulpin Berserker
+Vulpin Buccaneer
+Vulpin Captain
+Vulpin Cult Fanatic
+Vulpin Gloomweaver
+Vulpin Spy
+Zifa Freewind
+
+=== Dungeons of Drakkenheim: In Search of the Smuggler's Secrets ===
+In Search of the Smuggler's Secrets
+The Lamplighter
+
+=== Heliana’s Guide to Monster Hunting: Part 1 ===
+Polyhedrooze
+Dread and Breakfast
+Reign of Iron
+Shadow of the Broodmother
+Dream Weaver
+Bard: College of Fleshweaving
+Druid: Circle of the Hive
+Paladin: Oath of the Harvest
+Wizard: School of Biomancy
+Appendix C: Creatures
+Animated Magnetite
+Biomantic Polyhedroozes
+The Brood
+Dreamholders
+The Dreamers
+Faerie-o’-Fires
+Fiends and Friends
+Kobold Constructs
+Magnetite Dragons
+Mimics
+Swallybogs
+Tar Elementals
+Bestiary
+Aboleth Broodmother
+Lesser Aboleth Broodmother
+Aboling
+Tetrahedrooze
+Hexahedrooze
+Octahedrooze
+Decahedrooze
+Dodecahedrooze
+Icosahedrooze
+Broodling
+Broodmother Chrysalis
+Lesser Brood Chrysalis
+Greater Brood Chrysalis
+Chicken
+Dragonling
+Starved Dreamholder
+Dreamholder
+Glutted Dreamholder
+Faerie-o'-Fire
+Fathomcaller Warlock
+Flying Magnetite Weapon
+Gelatinooze
+Horror
+Kobold Mech
+Maestro
+Magnetite Armour
+Magnetite Wyrmling
+Young Magnetite Dragon
+Adult Magnetite Dragon
+Ancient Magnetite Dragon
+Minimic
+Mini Tar Elemental
+Mirrormic
+Mummified Immortal
+Peeper
+Phantasm
+Possessed Mining Suit
+Ranger
+Saddle Slime
+Sleepwalkers
+Sorcerer
+Swallybog
+Gillwrangler
+Sharpfin
+Swarm of Baby Mimics
+Swarm of Cutlery
+Swarm of Fiendcats
+Tar Elemental
+Tarchaeologist
+Tarannosaurus Rex
+Tavern Mimics
+Emaciated Tavern Mimic Brain
+Tavern Mimic Brain
+Nourished Tavern Mimic Brain
+Wyrmskull Ooze
+
+=== Obojima: Tales from the Tall Grass ===
+The Gift Of Shuritashi
+The Land Of Hot Water
+Mount Arbora
+The Gale Fields
+The Brackwater Wetlands
+The Coastal Highlands
+The Shallows
+Barbarian: Path of the Belly Brewer
+Bard: College of Masks
+Druid: Circle of the Petal
+Fighter: The Spirit-Fused
+Monk: Sheep Dragon Shepherd
+Paladin: Oath of the River
+Ranger: Corrupted Ranger
+Rogue: Waxwork Rogue
+Sorcerer: Oni Bloodline
+Warlock: The Lantern
+Wizard: Origami Mage
+Friends & Foes
+Animated Object Spirit
+Powerful Animated Object Spirit
+Aquatic Beast Spirit
+Powerful Aquatic Beast Spirit
+Beast Spirit
+Powerful Beast Spirit
+Flying Beast Spirit
+Powerful Flying Beast Spirit
+Elemental Spirit
+Powerful Elemental Spirit
+Spectral Spirit
+Powerful Spectral Spirit
+Flora Spirit
+Powerful Flora Spirit
+Acorn Crab
+Akaobata
+Bearracuda
+Cat Of Prodigious Size
+Clone Of Viota
+Corrupted Muk
+Crawler
+Cuddle Bug
+Deep Angler
+Demon
+Dragon
+Dragon Frog
+Elder Dragon Frog
+Dustbunny
+Field Giant
+Fish Folk
+Lionfish King
+Giant Jellyfish
+Giant Koi
+Goro Goro
+Hammer Gull
+Harpy
+Hill Dragon
+Howlers
+Howler Yipper
+Howler Snarlers
+Howler Stalkers
+The Hunter
+Kafuka
+Lion’s Blume
+Mosslings
+Pixies
+Postal Knight
+Rubble Golem
+Seaweed Elemental
+Sheep Dragon
+Skeletal Fish
+Sky King
+Jumaga The Sky Salamander
+Slagger
+Slimes
+Green Slime
+Yellow Slime
+Orange Slime
+Corrupted Slime
+Snowball Spirits
+Soda Slime
+Spirit
+Animalistic Spirits
+Pest Spirits
+Elder Spirits
+Stone Whale
+Stul
+Urugama
+Vespoma
+Vile Corruption
+Wandering Door
+Watchwood Tree
+Witch
+Yokario

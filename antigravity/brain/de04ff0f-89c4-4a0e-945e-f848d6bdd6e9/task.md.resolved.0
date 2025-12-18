@@ -1,0 +1,17 @@
+# D&D Keyword Extraction Task List
+
+- [ ] Research & Setup
+    - [ ] Identify list of sourcebooks starting from "Divine Contention" <!-- id: 0 -->
+    - [ ] Determine CSV format (columns: Keyword, Category, Source) <!-- id: 1 -->
+    - [ ] Verify data extraction method (D&D Beyond vs. Web Search) <!-- id: 2 -->
+- [ ] Keyword Extraction (Batch 1: Divine Contention & Follow-ups)
+    - [ ] Extract keywords for "Divine Contention" <!-- id: 3 -->
+    - [ ] Extract keywords for "Dragon of Icespire Peak" (if not done) <!-- id: 4 -->
+    - [ ] Extract keywords for "Storm Lord's Wrath" <!-- id: 5 -->
+    - [ ] Extract keywords for "Sleeping Dragon's Wake" <!-- id: 6 -->
+    - [ ] (Add more books as identified)
+- [ ] Data Compilation
+    - [ ] Consolidate keywords into `dnd_keywords.csv` <!-- id: 7 -->
+    - [ ] Verify against user's "concept_library" requirements <!-- id: 8 -->
+- [ ] Final Review
+    - [ ] Present CSV to user <!-- id: 9 -->

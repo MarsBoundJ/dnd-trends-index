@@ -1,0 +1,353 @@
+Contents
+Introduction
+What’s in this Book
+Epic Bosses
+The World of Drakkenheim
+Factions of Drakkenheim
+Chapter 1: Horrors of Drakkenheim
+Eldritch Contamination
+Roleplaying Traits
+Locations and Lairs
+Notable Locations
+Adventure Hooks
+Monsters
+Chapter 2: Delerium Dregs
+Multitudinous Mutations
+Roleplaying Traits
+Locations and Lairs
+Combat Tactics
+Adventure Hooks
+Monsters
+Chapter 3: Ratlings
+Mutated Vermin
+Roleplaying Traits
+Locations and Lairs
+Combat Tactics
+Adventure Hooks
+Monsters
+Chapter 4: Predators of the Ruins
+Garmyr
+Deep Dregs
+Guardian Constructs
+Hazewind Harpies
+Monsters
+Chapter 5: Apothecary Abominations
+Occult Creation
+Apothecaries and Delerium
+Roleplaying Traits
+Combat Tactics
+Adventure Hooks
+Locations and Lairs
+Monsters
+Apothecaries
+Apothecary Familiars
+Abominations
+Chapter 6: Court of the Night
+Vampiric Origins
+Vampiric Ideologies
+Vampire Strains
+Vampire Families
+Locations and Lairs
+Combat Tactics
+Roleplaying Traits
+Monsters
+Chapter 7: Trolls
+Origins in the Faerie Otherworlds
+Locations and Lairs
+Combat Tactics
+Roleplaying Traits
+Adventure Hooks
+Monsters
+Chapter 8: Dwellers of the Space Between Worlds
+Order Out of Chaos
+Roleplaying Traits
+Locations and Lairs
+Combat Tactics
+Adventure Hooks
+Monsters
+Appendix A: Ancient Entities
+Inscrutable Origins
+Using the Ancient Entities in Your Campaign
+Monsters
+Appendix B: Faction Agents
+Amethyst Academy
+Followers of the Falling Fire
+Queen’s Men
+Knights of the Silver Order
+Hooded Lanterns
+Appendix C: Contamination, Delerium, and New Conditions
+Contamination
+Delerium
+The Haze
+Conditions
+Appendix D: Crafting & Harvesting
+Crafting Overview
+Step 1: Learning Recipes
+Step 2: Harvesting Components
+Step 3: Find a Workshop
+Step 4: Craft the Item
+Appendix E: Magic Items
+New Magic Items
+SRD Recipes
+Monster Index
+Credits
+Bestiary
+A
+Academy Apprentice
+Academy Grandmaster
+Academy Mage
+Academy Outcast
+Agog
+The Algorithm
+Alienist
+Allopine
+Amalgamation
+Anomollusk
+Apex
+Arcane Wraith
+B
+Beetle Knight
+Belfray
+Big Linda
+Bigger Linda
+Blackjack Mel
+Bloated Hive
+Blood Leech
+Mind Leech
+Spell Leech
+Body Snatcher
+Bojack
+C
+Cacophonous Chimera
+Captain Ansom Lang
+Cerebrograft
+Chemist
+Chemystral
+Chitter
+Chorus
+Congregation
+Crater Wurm
+Crimson Countess
+Crimson Knight
+D
+Dark Confessor
+Dark Growth
+Dark Growth Shambler
+Deep Dreg Warrior
+Deep Knight
+Deep Siren
+Delerium Dragons
+Delerium Dragon Wyrmling
+Young Delerium Dragon
+Adult Delerium Dragon
+Ancient Delerium Dragon
+Delerium Dreg
+Bloated Dreg
+Chitinous Dreg
+Crystalline Dreg
+Displacer Dreg
+Eldritch Dreg
+Frenzied Dreg
+Gutwretch Dreg
+Lambent Dreg
+Lurking Dreg
+Spined Dreg
+Tentacled Dreg
+Digipede
+Disembodied Psyche
+Drakkenheim Sewer Gator
+Dr. Everett Freed, Reanimator
+Druid of the Sanguine Rites
+The Duchess
+E
+Effulgent Cnidarian
+Elemental, Contaminated
+Animated Delerium Sludge
+Entropic Flame
+Living Deep Haze
+Walking Delerium Geode
+Elemental Trolls
+Magma Troll
+Storm Troll
+Winter Troll
+Eldrick Runeweaver
+Eldritch Cataclysm
+Eldritch Crawler
+Eldritch Troll
+Eldritch Trickster
+Entropic Watcher
+Executioner
+Exorcist
+F
+Far Dwellers
+Far Dweller Abductor
+Far Dweller Corruptor
+Far Dweller Mastermind
+Flamekeeper
+Fractal Lepidoptera
+Fungal Trolling
+G
+Garmyr Berserker
+Garmyr Bloodhound
+Garmyr Thaumaturge
+Garmyr War Dog
+Garmyr Warrior
+Ghouls
+Ghoul Lord
+Ghoul Priest
+Ravenous Ghoul
+Giant Ratling
+Graffiti
+Grasping Shadow
+Gravekeeper
+Grim Custodian
+H
+Hazeblood Vampire
+Haze Hulk
+Cyclopean Hulk
+Grotesque Gargantuan
+Gutbuster Hulk
+Hunter Hulk
+Juggernaut Hulk
+Protean Abomination
+Haze Husk
+Haze Wight
+Hazewind Harpy Crone
+Hazewind Harpy Hunter
+Hazewind Harpy Valkyrie
+Hazewing Moths
+Hazewing Moth Caterpillar
+Hazewing Moth Chrysalis
+Hazewing Moth Adult
+Helpful Hand
+He Who Laughs Last
+High Flamekeeper Ophelia Reed
+Hooded Lantern Apothecary
+Hooded Lantern Scout
+Hooded Lantern Trapper
+Hooded Lantern Veteran
+Humongous Fungus Troll
+Hypnotic Eldritch Blossom
+I
+Injector
+Innocent Harvester
+Interloper
+K
+Kingkiller Hydra
+Knight-Captain Theodore Marshal
+Kronen
+L
+Last Memory
+Lenore von Kessel
+Haze Regent Lenore von Kessel
+Lieutenant Petra Lang
+Liminal Herald
+Living Biohazard
+Living City
+Loathsome Gag Fly
+Lob Frog
+Lord Commander Elias Drexel
+Lord of the Feast
+Lucretia Mathias
+Lurker on the Threshold
+M
+Master Mage
+Maw Vermin
+Minazorond
+Missionary
+Mutagenist
+N
+Nathaniel Flint
+Night Blade
+O
+Oak Troll
+Octarine Tree
+Oracle of the Rat God
+P
+Pale Man
+Pathogenist
+Phage
+Pilgrim
+Plague Carrier
+Psychophant
+Pyknic Maunder
+Q
+Queen of Thieves
+R
+Rat God
+Ratling Alchemist
+Ratling Burrow Warden
+Ratling Guttersnipe
+Ratling Pathogenist
+Ratling Warrior
+Rat King
+Rat Prince
+Rat Crown Prince
+Ravenous Flora
+Reality Cyst
+Reautomata
+Reautomata Wrecker
+Scrap Reautomata
+Ripper
+River, Amethyst Academy Liaison
+Royal Assassin
+S
+Sanctified Knight
+Sanctified Monk
+Sanctified Soul
+Sanguine Witch
+Sentient Planetoid
+Sewer Thing
+Shardmaul Manticore
+Skeletons
+Skeleton Archer
+Skeleton Mage
+Skeleton Soldier
+Skin Crawler
+Skinwing
+Skretch
+Silver Order Cavalier
+Silver Order Paladin
+Silver Order Recruit
+Silver Order Squire
+Soulbound Host
+Aberrant Host
+Faerie Host
+Fiendish Host
+Speaking Skull
+Star Warden
+Stitcher
+Striga
+Swarm of Contaminated Insects
+Swarm of Ratlings
+T
+Tanker
+Thing with the Writhing Tail
+Think Tank
+Tower Dragon
+Troll Hag
+Troll Hag Coven
+U
+Uncontained Growth
+Undulating Polyp
+V
+Vladimir von Drakken
+Crypt-Starved Vladimir von Drakken
+Reborn Vladimir von Drakken
+Ascendant Vladimir von Drakken
+Void Pirates
+Void Pirate Captain
+Void Pirate Herald
+Void Pirate Quartermaster
+Void Pirate Squib
+W
+Wall Gargoyle
+Warlock of the Rat God
+Warp Marauder
+Warp Witch
+Wretched Patient
+The Whispered Promise
+The World Ender
+Z
+Zealot
+Zealot of Morrigan

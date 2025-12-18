@@ -1,0 +1,23 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project Data Backups (Don't commit large CSVs)
+backups/
+*.csv
+*.json
+analysis_output.txt
+batch_results.txt
+monk_results.txt
+
+# Editor
+.vscode/
+.idea/

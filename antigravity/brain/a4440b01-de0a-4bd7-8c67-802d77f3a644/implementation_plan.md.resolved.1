@@ -1,0 +1,51 @@
+# Phase 1: Keyword Expansion Plan
+
+## Goal
+Transform the raw `concept_library` (13k+ keywords) into a robust `expanded_search_terms` table for Google Trends analysis. Each keyword will be expanded into 3-4 distinct search queries to capture user intent.
+
+## Proposed Changes
+
+### 1. New BigQuery Table: `expanded_search_terms`
+Schema:
+- `term_id` (STRING): Unique ID (UUID or hash)
+- `original_keyword` (STRING): Reference to `concept_library`
+- `category` (STRING): From `concept_library`
+- `search_term` (STRING): The actual string to query (e.g., "Bladesinger 5e")
+- `expansion_rule` (STRING): Label for the rule used (e.g., "suffix_5e", "suffix_subclass")
+- `created_at` (TIMESTAMP)
+
+### 2. Expansion Logic (Python Script)
+We will write a script `expand_keywords.py` that reads from `concept_library` and applies category-specific rules.
+
+**Data-Driven Rules (Derived from Google Trends Analysis):**
+
+1.  **Old Rules / Legacy (2014)**: Users universally use **"5e"**.
+    *   *Decision:* Append `5e` to capture the 2014-2023 era. Do NOT use "2014" (volume is <5% of "5e").
+2.  **New Rules (2024)**: Users have settled on **"2024"**.
+    *   *Decision:* Append `2024` to capture the new era. Do NOT use "5.5" or "One D&D" (volume is negligible).
+
+**Revised Rules Mapping:**
+| Category | Expansion Strategy | Examples (Target: "Bladesinger") |
+| :--- | :--- | :--- |
+| **Class** | `[term] 5e`, `[term] 2024`, `[term] build` | "Wizard 5e", "Wizard 2024", "Wizard build" |
+| **Subclass** | `[term] 5e`, `[term] 2024`, `[term] subclass` | "Bladesinger 5e", "Bladesinger 2024", "Bladesinger subclass" |
+| **Spell** | `[term] 5e`, `[term] 2024` | "Counterspell 5e", "Counterspell 2024" |
+| **Feat** | `[term] 5e`, `[term] 2024` | "Sentinel 5e", "Sentinel 2024" |
+| **Rule/Mechanic** | `[term] 5e`, `[term] 2024` | "Exhaustion 5e", "Exhaustion 2024" |
+| **Monster** | `[term] 5e`, `[term] stat block` | "Goblin 5e", "Goblin stat block" |
+| **Lore (NPC/God)** | `[term] 5e`, `[term] lore`, `who is [term]` | "Strahd 5e", "Strahd lore", "who is Strahd" |
+
+*Note: For the trend analysis, we will sum the volume of '5e' and '2024' terms to get total interest, or track them separately to show the "Edition War" trendline.*
+
+### 3. Execution Steps
+1.  Read `concept_library` into a DataFrame.
+2.  Apply transformation function mapping categories to lists of f-strings.
+3.  Upload results to `dnd_trends_categorized.expanded_search_terms`.
+
+## Verification Plan
+### Automated Verification
+- Check row count: Should be approx 3-4x the original size (~40k-50k rows).
+- Check distinct categories match original table.
+
+### Manual Verification
+- Manually inspect 5 random rows for each major Category (Subclass, Spell, Monster, NPC) to ensure 'natural language' quality of terms.

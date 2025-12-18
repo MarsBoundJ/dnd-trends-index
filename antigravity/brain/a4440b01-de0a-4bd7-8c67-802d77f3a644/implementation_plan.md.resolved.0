@@ -1,0 +1,44 @@
+# Phase 1: Keyword Expansion Plan
+
+## Goal
+Transform the raw `concept_library` (13k+ keywords) into a robust `expanded_search_terms` table for Google Trends analysis. Each keyword will be expanded into 3-4 distinct search queries to capture user intent.
+
+## Proposed Changes
+
+### 1. New BigQuery Table: `expanded_search_terms`
+Schema:
+- `term_id` (STRING): Unique ID (UUID or hash)
+- `original_keyword` (STRING): Reference to `concept_library`
+- `category` (STRING): From `concept_library`
+- `search_term` (STRING): The actual string to query (e.g., "Bladesinger 5e")
+- `expansion_rule` (STRING): Label for the rule used (e.g., "suffix_5e", "suffix_subclass")
+- `created_at` (TIMESTAMP)
+
+### 2. Expansion Logic (Python Script)
+We will write a script `expand_keywords.py` that reads from `concept_library` and applies category-specific rules.
+
+**Draft Rules Mapping:**
+| Category | Expansion Strategy | Examples (Target: "Bladesinger") |
+| :--- | :--- | :--- |
+| **Subclass** | `[term] 5e`, `[term] subclass`, `[term] build` | "Bladesinger 5e", "Bladesinger subclass", "Bladesinger build" |
+| **Class** | `[term] class`, `[term] 5e`, `[term] dnd` | "Wizard class", "Wizard 5e", "Wizard dnd" |
+| **Spell** | `[term] spell`, `[term] 5e` | "Fireball spell", "Fireball 5e" |
+| **Monster** | `[term] 5e`, `[term] stat block`, `[term] dnd` | "Goblin 5e", "Goblin stat block", "Goblin dnd" |
+| **NPC/God** | `[term] lore`, `[term] 5e`, `who is [term]` | "Strahd lore", "Strahd 5e", "who is Strahd" |
+| **Magic Item** | `[term] 5e`, `[term] stats` | "Vorpal Sword 5e", "Vorpal Sword stats" |
+| **Slang** | `dnd [term]`, `what is [term] dnd` | "dnd murderhobo", "what is murderhobo dnd" |
+
+*Note: The "5e" suffix is generally safe for almost all "Core Rules" terms.*
+
+### 3. Execution Steps
+1.  Read `concept_library` into a DataFrame.
+2.  Apply transformation function mapping categories to lists of f-strings.
+3.  Upload results to `dnd_trends_categorized.expanded_search_terms`.
+
+## Verification Plan
+### Automated Verification
+- Check row count: Should be approx 3-4x the original size (~40k-50k rows).
+- Check distinct categories match original table.
+
+### Manual Verification
+- Manually inspect 5 random rows for each major Category (Subclass, Spell, Monster, NPC) to ensure 'natural language' quality of terms.

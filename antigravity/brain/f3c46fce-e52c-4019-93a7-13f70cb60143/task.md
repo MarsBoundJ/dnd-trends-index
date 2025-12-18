@@ -1,0 +1,26 @@
+# D&D Partnered Content Keyword Extraction
+
+- [x] Analyze existing `dnd_keywords.csv` format <!-- id: 0 -->
+- [x] Process "Flee, Mortals!" (provided by user) <!-- id: 1 -->
+- [x] Research availability of content lists for other books <!-- id: 2 -->
+    - [x] Monsters of Drakkenheim <!-- id: 3 -->
+    - [x] Tome of Beasts 1 <!-- id: 4 -->
+# D&D Partnered Content Keyword Extraction
+
+- [x] Analyze existing `dnd_keywords.csv` format <!-- id: 0 -->
+- [x] Process "Flee, Mortals!" (provided by user) <!-- id: 1 -->
+- [x] Research availability of content lists for other books <!-- id: 2 -->
+    - [x] Monsters of Drakkenheim <!-- id: 3 -->
+    - [x] Tome of Beasts 1 <!-- id: 4 -->
+    - [x] Tal’Dorei Campaign Setting Reborn <!-- id: 5 -->
+    - [x] Explorer's Guide to Wildemount <!-- id: 6 -->
+- [x] Define workflow for remaining books (Search vs User Input) <!-- id: 7 -->
+- [x] Extract and Append Keywords for available books <!-- id: 8 -->
+- [x] Add "Ruleset" column to CSV (2014 vs 2024) <!-- id: 9 -->
+- [ ] Process remaining books in batches <!-- id: 10 -->
+    - [x] Batch 7 (User to provide TOCs) <!-- id: 17 -->
+    - [x] Batch 2 (User to provide TOCs) <!-- id: 12 -->
+    - [x] Batch 3 (User to provide TOCs) <!-- id: 13 -->
+    - [x] Batch 4 (User to provide TOCs) <!-- id: 14 -->
+    - [x] Batch 5 (User to provide TOCs) <!-- id: 15 -->
+    - [x] Batch 6 (User to provide TOCs) <!-- id: 16 -->

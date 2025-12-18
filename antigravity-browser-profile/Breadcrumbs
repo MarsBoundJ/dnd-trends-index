@@ -1,0 +1,32 @@
+11:47:53 Tab4 StartNav45 #renderer-script #auto_subframe
+11:47:53 Tab4 StartNav46 #renderer-script #auto_subframe
+11:47:53 Tab4 FinishNav45
+11:47:53 Tab4 PageLoad
+11:47:53 Tab4 FinishNav46
+11:47:53 Tab4 PageLoad
+11:47:53 Tab4 PageLoad
+11:47:54 Tab4 StartNav47 #renderer-script #auto_subframe
+11:47:54 Tab4 FinishNav47
+11:47:54 Tab4 PageLoad
+11:47:54 Tab4 StartNav48 #renderer-script #auto_subframe
+11:47:54 Tab4 FinishNav48
+11:47:54 Tab4 PageLoad
+11:47:57 Tab3 StartNav49 #renderer-script #link
+11:47:57 Tab3 FinishNav49
+11:48:01 Tab3 StartNav50 #renderer-script #link
+11:48:01 Tab3 FinishNav50
+11:48:01 Tab3 StartNav51 #renderer-script #auto_subframe
+11:48:01 Tab3 StartNav52 #renderer-script #auto_subframe
+11:48:01 Tab3 FinishNav51
+11:48:01 Tab3 PageLoad
+11:48:01 Tab3 FinishNav52
+11:48:01 Tab3 PageLoad
+11:48:01 Tab3 PageLoad
+11:48:01 Tab3 StartNav53 #renderer-script #auto_subframe
+11:48:01 Tab3 FinishNav53
+11:48:01 Tab3 PageLoad
+11:48:02 Tab3 StartNav54 #renderer-script #auto_subframe
+11:48:02 Tab3 FinishNav54
+11:48:02 Tab3 PageLoad
+11:48:02 Widget Closed: TabHoverCardBubbleView
+12:18:31 Widget Closed: StatusBubble

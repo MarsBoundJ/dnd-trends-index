@@ -1,0 +1,371 @@
+=== Grim Hollow: Lairs of Etharis ===
+Welcome to Lairs of Etharis
+Introduction
+Monster Hunting
+Capturing the Grim
+You are a Game Master
+Monsters, Magic, and More
+1: Bone House
+2: Faren’s Rest
+3: The Leatherhollow
+4: Apostate Temple
+5: Gloomrock Caverns
+6: Boulderwood Path
+7: Flamegrit Iron Mine
+8: Shadowsteel Citadel
+9: Storm Sanctuary
+10: Sardonyx Necropolis
+11: Foulest Truths
+12: The Tower of Flicker and Shadow
+13: Swamp of Fate
+14: Street Prophet
+15: The Thundering Hills
+16: Safe in the Stillborn
+17: Cave of Rising Sands
+18: Mayhem at the Crossroads
+19: Prison of Good Intent
+20: Top of the World
+Appendix A: Magic and Salvage
+Salvage and Crafting Rules
+New Feats
+Adroit Crafter
+Careful Crafter
+New Magic Items
+Arcane Oil
+Brazen Armor
+Coat of Lies
+Glass-Studded Armor
+Knifewing Cape
+Lindwyrm Venom
+Lycanthropy Antidote
+Lycan Weapon
+Ready Gunk
+Wand of Silence
+New Spells
+Arboreal Curse
+Consume Mind
+Heartseeker
+Hunter Sense
+Magic Mirror
+Suffocate
+Wrack
+Etharis Creatures
+Angel of Empyreus
+Blightscale Dragon
+Bloodbonded
+Bone Trader
+Candlelight Daemon
+Caprathorn
+Thornlamm
+Chapped Brutes
+Chapped Brute
+Awakened Chapped Brute
+Chapped Brute Abomination
+Corpse Walker
+Ancient Corpse Walker
+Corpsejaw
+Dawndrinker
+Disavowed
+Lesser Avarice Seraph
+Avarice Seraph
+Lesser Gluttony Seraph
+Gluttony Seraph
+Doomcaller
+Downcast
+Downcast Mercenary
+Downcast Apostate
+Eldritch Priests
+Eldritch Priest
+Eldritch Herald
+Elf Vampire
+Empyrean Brazen Bull
+Eye Crawler
+Eye Crow
+Faevlin
+Fiendish Contractors
+Infernal Tormentor
+Fzegs
+Fzeg
+Fzeglaich
+Gegazol
+Gnolls
+Beast Gnoll
+Gnoll Brute
+Venomous Gnoll
+Harvester of Lies
+Horror Flits
+Hourglass Widow
+Hraptnon
+Ithjar
+Knifewing
+Lenchtahg
+Lich Troll
+Zombie Troll
+Lindwyrm
+Lupilisk
+Lupilisk Whelp
+Lupilisk Elder
+Lycanthrope
+Werebear Ascetic
+Werewolf Ravager
+Malikirian Imp
+Mjorks
+Mjork
+Mjork Asher
+Mjork Burner
+Mjork Charger
+Mjork Sootling
+Mjork Sootling Swarm
+Mold Spider
+Morbus Kobolds
+Oblivion Stalkers
+Oblivion Brute
+Oblivion Juggernaut
+Oblivion Leaper
+Oblivion Whistler
+Oozing Vulture
+Ordeal Tree
+Panjaian
+Scream Thief
+Psychic Fragment
+Psychic Fragment Swarm
+Sea Drakes
+Shadowsteel Undead
+Shadowsteel Ghast
+Shadowsteel Ghoul
+Shatter Corpse
+Shieldhead
+Sitri Cat
+Skeleton Troopers
+Skeleton Rifler
+Skeleton Cannoneer
+Skeleton Commander
+Skinweaver
+Sky Drake
+Sloth Galloper
+Spythronar
+Spythronar Sac
+Spythronar Web
+Spythronar Swarm
+Torcheater
+Xakalonus
+
+=== Dungeons of Drakkenheim ===
+Chapter 1: Introduction to Drakkenheim
+Chapter 2: Running the Campaign
+Chapter 3: Factions
+The Amethyst Academy
+The Followers of the Falling Fire
+The Hooded Lanterns
+Knights of the Silver Order
+Queen’s Men
+Chapter 4: Emberwood Village
+Chapter 5: Exploring Drakkenheim
+Chapter 6: Outside the Walls
+Black Ivory Inn
+Buckledown Row
+Chapel of Saint Brenna
+Eckerman Mill
+Rat's Nest Tavern
+Reed Manor
+Shrine of Morrigan
+Smithy on the Scar
+Stick’s Ferry
+Chapter 7: Inside the Walls of Drakkenheim
+Cosmological Clocktower
+The Crater
+Kleinberg Estate
+Old Town Cistern
+Queen’s Park
+Royal Grotto
+Rose Theatre
+Saint Vitruvio’s Cathedral
+Slaughterstone Square
+Chapter 8: Faction Strongholds
+Camp Dawn
+Court of Thieves
+Drakkenheim Garrison
+Inscrutable Tower
+Saint Selina’s Monastery
+Chapter 9: Castle Drakken
+Chapter 10: The Fate of Drakkenheim
+Appendix A: Monsters
+Arcane Wraith
+Crater Wurm
+Garmyr
+Grotesque Gargant
+Haze Husk
+Haze Wight
+Tower Dragon
+Wall Gargoyle
+Warp Witch
+Delerium Dreg
+Haze Hulk
+Protean Abomination
+Ratlings
+Ratling
+Ratling Guttersnipe
+Warlock of the Rat God
+Contaminated Elementals
+Animated Delerium Sludge
+Living Deep Haze
+Entropic Flame
+Walking Delerium Geode
+Hypnotic Eldritch Blossom
+Amalgamation
+Crimson Countess
+Executioner
+Gravekeeper
+Lord of the Feast
+Pale Man
+Rat Prince
+Appendix B: Nonplayer Characters
+Lord Commander Elias Drexel
+Eldrick Runeweaver
+Knight-Captain Theodore Marshal
+Lucretia Mathias
+Queen of Thieves
+Cavalier
+Chaplain
+Hedge Mage
+Scoundrel
+Urban Ranger
+
+=== Humblewood Campaign Setting ===
+Chapter 1: Welcome to the Wood
+Races of the Wood
+The Birdfolk
+The Humblefolk
+New Class Options
+Bard
+Cleric
+Fighter
+Chapter 2: Religion in the Wood
+The Amaranthines
+Ardea
+Tyton
+Altus
+Clhuran
+Gesme
+Hanera
+Reya
+Cairith
+Gaspard
+Hath
+Henwin
+Kren
+Chapter 3: Traversing the Wood
+Alderheart
+Ashbarrow
+The Avium
+Brackenmill
+The Crest
+Marshview
+Meadowfen
+Mokk Fields
+Saltar’s Port
+Scorched Grove
+Talongrip Coast
+Winnowing Reach
+Chapter 4: Adventure in the Wood
+Part 1: The Adventure Begins
+Part 2: The Bandit Menace
+Part 3: An Urgent Summons
+Part 4: Mysteries of the Avium
+Part 5: Of Fate and Flame
+Appendix A: Bestiary
+Ashsnake
+Aspect of Fire
+Birdfolk Skeleton
+Cobblefright
+Emberbats
+Emberbat
+Swarm of Emberbats
+Forest Prowler
+Lesser Demon
+Mountain Lion
+Slime
+Caustic Slime
+Shifting Slime
+Sticky Slime
+Wakewyrm
+Appendix B: Nonplayer Characters
+Birdfolk Dockmaster
+Birdfolk Farmer
+Birdfolk Guard
+Birdfolk Militia
+Birdfolk Sailor
+Birdfolk Skirmisher
+Cervan Bandit General
+Cervan Priest
+Corvum Assassin
+Corvum Diviner
+Corvum Necromancer
+Gallus Druid
+Gallus Monk
+Gallus Necromancer
+Hedge Bard
+Hedge Witch
+Jerbeen Thief
+Jerbeen Swashbuckler
+Luma Cleric of Ardea
+Luma Wizard
+Mapach Bandit
+Mapach Brute
+Mapach Tinkerer
+Raptor Explorer
+Raptor Ranger
+Strig Knight
+Strig Tracker
+The Tenders
+Havel of the Autumn Moon
+Tevor of the Spring Path
+Vulpin Captain
+Vulpin Noble
+Vulpin Priest of Kren
+
+=== Where Evil Lives ===
+Jagged Edge Hideaway
+Queen Bargnot’s Hoard
+Hanging Tree
+The Dohma’s Hoard
+Shtriga Nonna’s Hut
+Shtriga Nonna’s Hoard
+Burnock Mill
+Baron Uthrak’s Hoard
+Camp Firefield
+Varrox’s Hoard
+Shifting Library
+Kiona’s Hoard
+Cloud Fang Keep
+Lady Emer’s Hoard
+Molten Enclave
+Zenith Aastrika’s Hoard
+Ruins of Wrathrock
+Ithu’rath’s Hoard
+The White Tower
+Xorannox’s Hoard
+Canyon of the Tower Crown
+Aurumvas’s Hoard
+Tomb of the Keeper
+Ashyra’s Hoard
+Terminal Excrescence
+Lord Syuul’s Hoard
+Eighth City Advocacy Services
+Lazivos’s Hoard
+Shadowkeep
+Count Rhodar’s Hoard
+Durixaviinox’s Rest
+Durixaviinox’s Hoard
+Coronal Hollow
+Qazyldrath’s Hoard
+Eyes of the Mountain
+Yserthrax’s Hoard
+Glass Cavern
+Xaantikorijek’s Hoard
+Mount Brazen
+Forzaantilirys’s Hoard
+Ash Queen’s Reliquary
+Atæshia’s Hoard
+Boughs of Eternity
+Vairae’s Hoard

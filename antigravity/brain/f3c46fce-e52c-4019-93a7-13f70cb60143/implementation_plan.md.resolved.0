@@ -1,0 +1,30 @@
+# Partnered Content Keyword Extraction Plan
+
+## Goal Description
+Extract keywords (Monsters, Subclasses, NPCs, Locations, etc.) from D&D Beyond Partnered Content books and append them to [dnd_keywords.csv](file:///c:/Users/Yorri/.gemini/antigravity/scratch/dnd_keywords.csv).
+
+## User Review Required
+- **Source of Data**: We need to determine if web searching is sufficient or if the user needs to provide TOCs for all books.
+- **Categorization**: Confirm how to categorize "Partnered Content" (e.g., Source column format).
+
+## Proposed Changes
+### Data Extraction
+- **Flee, Mortals!**: Parse the provided TOC.
+- **Other Books**: Attempt to find public indices or TOCs via web search.
+- **Fallback**: Ask user for TOCs of books not found.
+
+### CSV Updates
+- Append new rows to [c:\Users\Yorri\.gemini\antigravity\scratch\dnd_keywords.csv](file:///c:/Users/Yorri/.gemini/antigravity/scratch/dnd_keywords.csv).
+- Columns: `Keyword`, `Category`, `World`, `Source`.
+    - `Keyword`: Name of monster, subclass, etc.
+    - `Category`: "Monster", "Subclass", "Location", etc.
+    - `World`: Setting of the book (e.g., "Exandria" for Wildemount, "Drakkenheim" for Drakkenheim, "Generic" or "N/A" for general bestiaries).
+    - `Source`: Book Title.
+
+## Verification Plan
+### Automated Tests
+- None (Data entry task).
+
+### Manual Verification
+- Check [dnd_keywords.csv](file:///c:/Users/Yorri/.gemini/antigravity/scratch/dnd_keywords.csv) for correct formatting and new entries.
+- Verify a sample of extracted keywords against the source list.

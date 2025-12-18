@@ -1,0 +1,6 @@
+# Task: Address Disambiguation in UA Importer
+
+- [ ] Analyze `importer_ua_expanded.py` for disambiguation logic <!-- id: 0 -->
+- [ ] Inspect `Dnd_UA.csv` for potential naming collisions <!-- id: 1 -->
+- [ ] Propose disambiguation strategies <!-- id: 2 -->
+- [ ] Implement chosen strategy (if approved) <!-- id: 3 -->
