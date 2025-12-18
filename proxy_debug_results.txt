@@ -1,0 +1,11 @@
+=== Test 1: Rotating Endpoint (Original) ===
+Proxy: p.webshare.io:80
+FAILED: HTTPSConnectionPool(host='api.ipify.org', port=443): Max retries exceeded with url: /?format=json (Caused by ProxyError('Cannot connect to proxy.', OSError('Tunnel connection failed: 407 Proxy Authentication Required')))
+
+=== Test 2: Base Username (no suffix) ===
+Proxy: p.webshare.io:80
+FAILED: HTTPSConnectionPool(host='api.ipify.org', port=443): Max retries exceeded with url: /?format=json (Caused by ProxyError('Cannot connect to proxy.', OSError('Tunnel connection failed: 407 Proxy Authentication Required')))
+
+=== Test 3: Static Proxy -1 (Control) ===
+Proxy: p.webshare.io:80
+SUCCESS! IP: 154.192.74.134

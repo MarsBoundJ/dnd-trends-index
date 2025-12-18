@@ -1,0 +1,9 @@
+=== Proxy Rotation Test for Pytrends ===
+
+Batch 1: ['Wizard 5e', 'Wizard 2024']... using proxy: p.webshare.io:80
+  FAILED: HTTPSConnectionPool(host='www.google.com', port=443): Max retries exceeded with url: /sorry/index?co
+
+Batch 2: ['Rogue 5e', 'Rogue build']... using proxy: p.webshare.io:80
+  FAILED: HTTPSConnectionPool(host='trends.google.com', port=443): Max retries exceeded with url: /trends/api/
+
+=== Test Complete ===
