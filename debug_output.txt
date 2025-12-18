@@ -1,0 +1,6 @@
+Starting Trend Analysis Pilot...
+Loaded 1619 terms.
+Processing Batch 1: ['Accursed 5e', 'Accursed 2024', 'Accursed build', 'Alchemist 5e', 'Alchemist 2024']
+Failed batch 0: Retry.__init__() got an unexpected keyword argument 'method_whitelist'
+Smoke test limit reached (1 batch). Stopping.
+Pilot Run Complete.

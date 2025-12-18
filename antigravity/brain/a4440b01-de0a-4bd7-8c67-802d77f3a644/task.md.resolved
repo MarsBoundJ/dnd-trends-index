@@ -4,13 +4,13 @@
 - [ ] Analyze user-provided Google Trends CSVs (e.g., "witch class homebrew.csv") to derive empirical expansion rules <!-- id: 2 -->
 - [ ] Analyze current `concept_library` categories to determine expansion logic <!-- id: 3 -->
 - [ ] Design schema for `expanded_search_terms` table <!-- id: 4 -->
-- [ ] **PILOT:** Implement expansion script for **Classes & Subclasses ONLY** <!-- id: 5 -->
-- [ ] **PILOT:** Verify expanded terms list for Pilot batch <!-- id: 6 -->
+- [x] **PILOT:** Implement expansion script for **Classes & Subclasses ONLY** <!-- id: 5 -->
+- [x] **PILOT:** Verify expanded terms list for Pilot batch <!-- id: 6 -->
 
 ## Phase 2: Google Trends Pipeline (`pytrends` + Proxies) <!-- id: 7 -->
-- [ ] Design architecture for batch processing (5 terms per request: 4 target + 1 control) <!-- id: 8 -->
-- [ ] Select and configure proxy solution <!-- id: 9 -->
-- [ ] **PILOT:** Develop script to query Google Trends API (Classes/Subclasses only) <!-- id: 10 -->
+- [ ] [/] Design architecture for batch processing (5 terms per request: 4 target + 1 control) <!-- id: 8 -->
+- [x] Select and configure proxy solution (Webshare Configuration Provided) <!-- id: 9 -->
+- [x] **PILOT:** Develop script to query Google Trends API (Classes/Subclasses only) <!-- id: 10 -->
 - [ ] **PILOT:** Evaluate success rate / data quality of Pilot run <!-- id: 11 -->
 - [ ] **FULL ROLLOUT:** Expand remaining categories (Spells, Monsters, etc.) <!-- id: 12 -->
 - [ ] **FULL ROLLOUT:** Standardize and run full backfill <!-- id: 13 -->

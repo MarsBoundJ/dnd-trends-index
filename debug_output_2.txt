@@ -1,0 +1,8 @@
+C:\Users\Yorri\AppData\Local\Programs\Python\Python313\Lib\site-packages\pytrends\request.py:260: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  df = df.fillna(False)
+Starting Trend Analysis Pilot...
+Loaded 1619 terms.
+Processing Batch 1: ['Accursed 5e', 'Accursed 2024', 'Accursed build', 'Alchemist 5e', 'Alchemist 2024']
+Success. 265 rows inserted.
+Smoke test limit reached (1 batch). Stopping.
+Pilot Run Complete.
