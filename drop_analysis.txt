@@ -1,0 +1,24 @@
+Air 5e                                   | Too broad
+Air build                                | Too broad
+Alternate Cleric 2024                    | Nickname Algo incorrect in this case. Term should be "Alternate Divine Cleric" or "Alternate Divine Domain"
+Alternate Cleric 5e                      | 
+Alternate Cleric build                   | 
+Alternate Fighter 2024                   | 
+Alternate Fighter 5e                     | 
+Alternate Fighter build                  | 
+Alternate Monk 2024                      | 
+Alternate Monk 5e                        | 
+Alternate Monk build                     | 
+Alternate Ranger 2024                    | 
+Alternate Ranger 5e                      | 
+Alternate Ranger build                   | 
+Alternate Sorcerer 2024                  | 
+Alternate Sorcerer 5e                    | 
+Alternate Sorcerer build                 | 
+Apostle build                            | Too broad
+Arcanist build                           | Too broad. Also a video game class build.
+Assassin build                           | Too broad
+Athlete 5e                               | Athlete is also the name of a Class Feature
+Athlete build                            | Too broad
+Avatar build                             | Too broad
+Awakened build                           | Too broad

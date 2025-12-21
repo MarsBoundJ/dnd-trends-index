@@ -10,8 +10,14 @@
 ## Phase 2: Google Trends Pipeline (`pytrends` + Proxies) <!-- id: 7 -->
 - [ ] [/] Design architecture for batch processing (5 terms per request: 4 target + 1 control) <!-- id: 8 -->
 - [x] Select and configure proxy solution (Webshare Configuration Provided) <!-- id: 9 -->
+- [x] **PROXY FIX:** Whitelist IP in Webshare and switch to `p.webshare.io:9999` <!-- id: 27 -->
 - [x] **PILOT:** Develop script to query Google Trends API (Classes/Subclasses only) <!-- id: 10 -->
-- [ ] **PILOT:** Evaluate success rate / data quality of Pilot run <!-- id: 11 -->
+- [x] **PILOT:** Evaluate success rate / data quality of Pilot run (100% COMPLETE - 1207 UNIQUE TERMS) <!-- id: 11 -->
+- [ ] **AUDIT:** Manually review `pilot_audit.csv` for broad/bad terms and mark for exclusion <!-- id: 28 -->
+- [ ] **DISAMBIGUATE:** Build 'Master Collision Index' (Spells, Monsters, BG3, Diablo) <!-- id: 30 -->
+- [x] **QUALIFY:** Verify optimal string: `[term] 5e` vs `[term] Dnd` vs `[term] Dnd 5e` (Winner: **Dnd**) <!-- id: 32 -->
+- [ ] **QUALIFY:** Apply 'Volume-Weighted Risk' logic with verified qualifier <!-- id: 31 -->
+- [ ] **CLEAN:** Apply exclusions and re-refill `trend_data_pilot` <!-- id: 29 -->
 - [ ] **FULL ROLLOUT:** Expand remaining categories (Spells, Monsters, etc.) <!-- id: 12 -->
 - [ ] **FULL ROLLOUT:** Standardize and run full backfill <!-- id: 13 -->
 - [ ] Implement "Monthly incremental" logic <!-- id: 11 -->

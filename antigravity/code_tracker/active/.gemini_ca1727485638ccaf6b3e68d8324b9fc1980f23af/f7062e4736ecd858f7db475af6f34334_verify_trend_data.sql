@@ -1,2 +1,0 @@
-mSELECT search_term, interest, date FROM `dnd-trends-index.dnd_trends_categorized.trend_data_pilot` LIMIT 10
-m*cascade08"(ca1727485638ccaf6b3e68d8324b9fc1980f23af24file:///C:/Users/Yorri/.gemini/verify_trend_data.sql:file:///C:/Users/Yorri/.gemini

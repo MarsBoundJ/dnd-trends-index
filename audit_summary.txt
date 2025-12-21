@@ -1,0 +1,100 @@
+Row 2: Aberrant Mind 5e | Status: 53 | Reason: Keep
+Row 3: Aberrant Mind build | Status: 53 | Reason: Keep
+Row 4: Aberrant Sorcery 5e | Status: 53 | Reason: Keep
+Row 5: Aberrant Sorcery build | Status: 53 | Reason: Keep
+Row 6: Accursed 2024 | Status: 106 | Reason: Keep
+Row 7: Accursed 5e | Status: 106 | Reason: Keep
+Row 8: Accursed build | Status: 106 | Reason: Keep
+Row 9: Adept 5e | Status: 53 | Reason: Keep
+Row 10: Adept build | Status: 53 | Reason: Keep
+Row 11: Adventurers Bard | Status: 53 | Reason: Keep
+Row 12: Aether Monk | Status: 53 | Reason: Keep
+Row 13: Air 5e | Status: 53 | Reason: Drop
+Row 14: Air build | Status: 53 | Reason: Drop
+Row 15: Alchemist 2024 | Status: 106 | Reason: Keep
+Row 16: Alchemist 5e | Status: 106 | Reason: Keep
+Row 17: Alchemist build | Status: 53 | Reason: Keep
+Row 18: Alternate Cleric 2024 | Status: 53 | Reason: Drop
+Row 19: Alternate Cleric 5e | Status: 53 | Reason: Drop
+Row 20: Alternate Cleric build | Status: 53 | Reason: Drop
+Row 21: Alternate Fighter 2024 | Status: 53 | Reason: Drop
+Row 22: Alternate Fighter 5e | Status: 53 | Reason: Drop
+Row 23: Alternate Fighter build | Status: 53 | Reason: Drop
+Row 24: Alternate Monk 2024 | Status: 53 | Reason: Drop
+Row 25: Alternate Monk 5e | Status: 53 | Reason: Drop
+Row 26: Alternate Monk build | Status: 53 | Reason: Drop
+Row 27: Alternate Ranger 2024 | Status: 53 | Reason: Drop
+Row 28: Alternate Ranger 5e | Status: 53 | Reason: Drop
+Row 29: Alternate Ranger build | Status: 53 | Reason: Drop
+Row 30: Alternate Sorcerer 2024 | Status: 53 | Reason: Drop
+Row 31: Alternate Sorcerer 5e | Status: 53 | Reason: Drop
+Row 32: Alternate Sorcerer build | Status: 53 | Reason: Drop
+Row 33: Ancestral Sorcery 5e | Status: 53 | Reason: Keep
+Row 34: Ancestral Sorcery build | Status: 53 | Reason: Keep
+Row 35: Ancients Paladin | Status: 53 | Reason: Keep
+Row 36: Apocalypse Domain 5e | Status: 53 | Reason: Keep
+Row 37: Apocalypse Domain build | Status: 53 | Reason: Keep
+Row 38: Apostle 5e | Status: 53 | Reason: Keep
+Row 39: Apostle build | Status: 53 | Reason: Drop
+Row 40: Apothecary 5e | Status: 53 | Reason: Keep
+Row 41: Apothecary build | Status: 53 | Reason: Keep
+Row 42: Arachnoid Stalker 5e | Status: 53 | Reason: Keep
+Row 43: Arachnoid Stalker build | Status: 53 | Reason: Keep
+Row 44: Arcana Bard | Status: 53 | Reason: Keep
+Row 45: Arcana Domain 5e | Status: 53 | Reason: Keep
+Row 46: Arcana Domain build | Status: 53 | Reason: Keep
+Row 47: Arcane Archer 5e | Status: 53 | Reason: Keep
+Row 48: Arcane Archer Variant 5e | Status: 53 | Reason: Keep
+Row 49: Arcane Archer Variant build | Status: 53 | Reason: Keep
+Row 50: Arcane Archer build | Status: 53 | Reason: Keep
+Row 51: Arcane Trickster 5e | Status: 53 | Reason: Keep
+Row 52: Arcane Trickster build | Status: 53 | Reason: Keep
+Row 53: Arcanist 5e | Status: 53 | Reason: Keep
+Row 54: Arcanist build | Status: 53 | Reason: Drop
+Row 55: Archaeologist 5e | Status: 53 | Reason: Keep
+Row 56: Archaeologist build | Status: 53 | Reason: Keep
+Row 57: Archfey Patron 5e | Status: 53 | Reason: Keep
+Row 58: Archfey Patron build | Status: 53 | Reason: Keep
+Row 59: Architect of Ruin 5e | Status: 53 | Reason: Keep
+Row 60: Architect of Ruin build | Status: 53 | Reason: Keep
+Row 61: Archivist 5e | Status: 53 | Reason: Keep
+Row 62: Archivist build | Status: 53 | Reason: Keep
+Row 63: Armorer 5e | Status: 53 | Reason: Keep
+Row 64: Armorer build | Status: 53 | Reason: Keep
+Row 65: Artificer 2024 | Status: 53 | Reason: Keep
+Row 66: Artificer 5e | Status: 53 | Reason: Keep
+Row 67: Artificer build | Status: 53 | Reason: Keep
+Row 68: Artillerist 5e | Status: 53 | Reason: Keep
+Row 69: Artillerist build | Status: 53 | Reason: Keep
+Row 70: Ascendant Dragon Monk | Status: 53 | Reason: Keep
+Row 71: Ash Druid | Status: 53 | Reason: Keep
+Row 72: Assassin 5e | Status: 53 | Reason: Keep
+Row 73: Assassin build | Status: 53 | Reason: Drop
+Row 74: Astral Self Monk | Status: 53 | Reason: Keep
+Row 75: Athlete 5e | Status: 53 | Reason: Drop
+Row 76: Athlete build | Status: 53 | Reason: Drop
+Row 77: Avatar 5e | Status: 53 | Reason: Keep
+Row 78: Avatar build | Status: 53 | Reason: Drop
+Row 79: Awakened 5e | Status: 53 | Reason: Keep
+Row 80: Awakened build | Status: 53 | Reason: Drop
+Row 81: Balanced Mind Monk | Status: 53 | Reason: Keep
+Row 82: Banneret 5e | Status: 53 | Reason: Keep
+Row 83: Banneret build | Status: 53 | Reason: Keep
+Row 84: Barbarian 2024 | Status: 53 | Reason: Keep
+Row 85: Barbarian 5e | Status: 53 | Reason: Keep
+Row 86: Barbarian build | Status: 53 | Reason: Keep
+Row 87: Barbarian: Path of the Belly Brewer 5e | Status: 53 | Reason: Keep
+Row 88: Barbarian: Path of the Belly Brewer build | Status: 53 | Reason: Keep
+Row 89: Barbarian: Path of the Experiment 5e | Status: 53 | Reason: Keep
+Row 90: Barbarian: Path of the Experiment build | Status: 53 | Reason: Keep
+Row 91: Barbarian: Path of the Infernal 5e | Status: 53 | Reason: Keep
+Row 92: Barbarian: Path of the Infernal build | Status: 53 | Reason: Keep
+Row 93: Bard 2024 | Status: 53 | Reason: Keep
+Row 94: Bard 5e | Status: 53 | Reason: Keep
+Row 95: Bard build | Status: 53 | Reason: Keep
+Row 96: Bard: College of Fleshweaving 5e | Status: 53 | Reason: Keep
+Row 97: Bard: College of Fleshweaving build | Status: 53 | Reason: Keep
+Row 98: Bard: College of Masks 5e | Status: 53 | Reason: Keep
+Row 99: Bard: College of Masks build | Status: 53 | Reason: Keep
+Row 100: Bard: College of Mercantile 5e | Status: 53 | Reason: Keep
+Row 101: Bard: College of Mercantile build | Status: 53 | Reason: Keep

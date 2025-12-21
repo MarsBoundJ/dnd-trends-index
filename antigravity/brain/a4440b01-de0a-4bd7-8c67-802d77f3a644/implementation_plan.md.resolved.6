@@ -1,0 +1,27 @@
+# Phase 2.5: Data Disambiguation & Collision Filtering
+
+## Goal
+Improve data purity by excluding search terms that are semantically broad or collide with other categories (Spells, Monsters) or external intellectual properties (Baldur's Gate 3, Diablo, Skyrim).
+
+## User Review Required
+> [!IMPORTANT]
+> Some terms (e.g., "Warden", "Champion", "Raven Queen") are inherently ambiguous across multiple gaming franchises. We will prioritize **Data Quality** over **Exhaustiveness**, meaning we will drop terms that cannot be cleanly disambiguated.
+
+### 3. Volume-Weighted Risk Analysis
+We will apply different levels of scrutiny based on search volume:
+- **High-Volume Outliers**: Manual review of top terms by interest.
+- **Ambiguous Terms (< 500 Interest)**: If an MCI collision occurs, mandatory transformation to a qualified string (e.g., `[term] D&D 5e`).
+- **Low-Volume terms (< 200 Interest)**: Aggressive auto-pruning. If a low-volume term hits the MCI or is a generic single word, it is **dropped** by default to clear "low-level noise."
+
+### 4. Execution Steps
+1.  **Draft the MCI**: Export all non-Class/Subclass terms from BigQuery to a local JSON list.
+2.  **Cleanse Expanded Terms**: Write a script `cleanse_expanded_terms.py` to run the current `trend_data_pilot` against the MCI.
+3.  **Purge & Refill**: Delete the "dirty" records from `trend_data_pilot` and re-run with qualified strings.
+
+## Verification Plan
+### Automated Tests
+- Script to count collisions between Category A and Category B search strings.
+- Count of terms containing "build" vs "D&D 5e".
+
+### Manual Verification
+- Review the "Top 50" list to ensure no non-D&D terms (like "Warden" from another game) are spiking the charts.

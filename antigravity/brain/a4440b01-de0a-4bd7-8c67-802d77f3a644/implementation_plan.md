@@ -1,59 +1,38 @@
-# Phase 1: Keyword Expansion Plan
+# Phase 2.5: Data Disambiguation & Collision Filtering
 
 ## Goal
-Transform the raw `concept_library` (13k+ keywords) into a robust `expanded_search_terms` table for Google Trends analysis. Each keyword will be expanded into 3-4 distinct search queries to capture user intent.
+Improve data purity by excluding search terms that are semantically broad or collide with other categories (Spells, Monsters) or external intellectual properties (Baldur's Gate 3, Diablo, Skyrim).
 
-## Proposed Changes
+## User Review Required
+> [!IMPORTANT]
+> Some terms (e.g., "Warden", "Champion", "Raven Queen") are inherently ambiguous across multiple gaming franchises. We will prioritize **Data Quality** over **Exhaustiveness**, meaning we will drop terms that cannot be cleanly disambiguated.
 
-### 1. New BigQuery Table: `expanded_search_terms`
-Schema:
-- `term_id` (STRING): Unique ID (UUID or hash)
-- `original_keyword` (STRING): Reference to `concept_library`
-- `category` (STRING): From `concept_library`
-- `search_term` (STRING): The actual string to query (e.g., "Bladesinger 5e")
-- `expansion_rule` (STRING): Label for the rule used (e.g., "suffix_5e", "suffix_subclass")
-- `created_at` (TIMESTAMP)
+### 3. Volume-Weighted Risk Analysis
+We will apply different levels of scrutiny based on search volume:
+- **High-Volume Outliers**: Manual review of top terms by interest.
+- **Ambiguous Terms (< 500 Interest)**: If an MCI collision occurs, mandatory transformation to `[term] Dnd`.
+    *   *Verification*: `Champion Dnd` (2765) > `Champion 5e` (2316) > `Champion Dnd 5e` (460).
+    *   *Decision*: "Dnd" is the primary disambiguator.
+- **Low-Volume terms (< 200 Interest)**: Aggressive auto-pruning. If a low-volume term hits the MCI or is a generic single word, it is **dropped** by default to clear "low-level noise."
 
-### 2. Expansion Logic (Python Script)
-We will write a script `expand_keywords.py` that reads from `concept_library` and applies category-specific rules.
+### 4. Official vs. 3rd Party Separation
+We will implement a logical separation (metadata tag) instead of separating the files.
+- **Goal**: Allow "Official Only" reporting while maintaining a unified ecosystem view.
+- **Method**: Add `is_official` (BOOL) column to `expanded_search_terms`.
+- **Logic**: 
+    - `TRUE` if `source_book` is in the Official WotC List (PHB, XGtE, TCoE, FToD, etc.).
+    - `FALSE` if `source_book` is "Partnered Content" (MCDM, Grim Hollow, etc.).
 
-**Refined Data-Driven Rules:**
-
-1.  **Classes**:
-    *   **Core Terms**: `[Term] 5e`, `[Term] 2024`, `[Term] build`.
-    *   *Finding*: "Wikidot" is weak. "Build" is a strong #2 or #3 intent.
-2.  **Subclasses**:
-    *   **Core Terms**: `[Term] 5e`, `[Term] build`.
-    *   **"Nickname" Logic**: Users prefer short names for some classes.
-        *   "College of X" -> Generate "X Bard" (e.g., "Lore Bard" > "College of Lore").
-        *   "Circle of X" -> Generate "X Druid" (e.g., "Moon Druid" > "Circle of the Moon").
-        *   "Way of X" -> Generate "X Monk" (e.g., "Mercy Monk").
-        *   "Oath of X" -> Keep full "Oath of X" (it performs well) AND generate "X Paladin" as backup.
-3.  **Spells/Feats/Mechanics**:
-    *   **Core Terms**: `[Term] 5e`, `[Term] 2024`.
-    *   *Finding*: "Rules change" is niche; "2024" captures the new edition intent better.
-
-**Final Rules Mapping:**
-| Category | Expansion Strategy | Examples |
-| :--- | :--- | :--- |
-| **Class** | `[term] 5e`, `[term] 2024`, `[term] build` | "Wizard 5e", "Wizard 2024", "Wizard build" |
-| **Subclass** | `[term] 5e`, `[term] build`, *[Nickname Algo]* | "Lore Bard", "Shadow Monk" (Avoid "Warrior of..."), "Bladesinger 5e" |
-| **Character Builds** | `[term] 5e`, `[term] guide` | "Sorlock 5e", "Sorlock guide" (Avoid "Sorlock build build") |
-| **Spell** | `[term] 5e`, `[term] 2024` | "Counterspell 5e", "Counterspell 2024" |
-| **Feat** | `[term] 5e`, `[term] 2024` | "Sentinel 5e", "Sentinel 2024" |
-| **Monster** | `[term] 5e`, `[term] stat block` | "Goblin 5e", "Goblin stat block" |
-
-*Note: For the trend analysis, we will sum the volume of '5e' and '2024' terms to get total interest, or track them separately to show the "Edition War" trendline.*
-
-### 3. Execution Steps
-1.  Read `concept_library` into a DataFrame.
-2.  Apply transformation function mapping categories to lists of f-strings.
-3.  Upload results to `dnd_trends_categorized.expanded_search_terms`.
+### 5. Execution Steps
+1.  **Draft the MCI**: Export all non-Class/Subclass terms from BigQuery to a local JSON list.
+2.  **Tag Metadata**: Update `expand_keywords.py` to check `concept_library.source_book` and assign `is_official`.
+3.  **Cleanse Expanded Terms**: Write a script `cleanse_expanded_terms.py` to run the current `trend_data_pilot` against the MCI.
+4.  **Purge & Refill**: Delete the "dirty" records from `trend_data_pilot` and re-run with qualified strings.
 
 ## Verification Plan
-### Automated Verification
-- Check row count: Should be approx 3-4x the original size (~40k-50k rows).
-- Check distinct categories match original table.
+### Automated Tests
+- Script to count collisions between Category A and Category B search strings.
+- Count of terms containing "build" vs "D&D 5e".
 
 ### Manual Verification
-- Manually inspect 5 random rows for each major Category (Subclass, Spell, Monster, NPC) to ensure 'natural language' quality of terms.
+- Review the "Top 50" list to ensure no non-D&D terms (like "Warden" from another game) are spiking the charts.
