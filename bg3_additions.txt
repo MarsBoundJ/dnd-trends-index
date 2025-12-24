@@ -1,0 +1,60 @@
+game_keyword,parent_class,source
+Berserker,Barbarian,Baldur's Gate 3
+Wildheart,Barbarian,Baldur's Gate 3
+Wild Magic,Barbarian,Baldur's Gate 3
+Path of Giants,Barbarian,Baldur's Gate 3
+College of Lore,Bard,Baldur's Gate 3
+College of Valour,Bard,Baldur's Gate 3
+College of Swords,Bard,Baldur's Gate 3
+College of Glamour,Bard,Baldur's Gate 3
+Life Domain,Cleric,Baldur's Gate 3
+Light Domain,Cleric,Baldur's Gate 3
+Trickery Domain,Cleric,Baldur's Gate 3
+Knowledge Domain,Cleric,Baldur's Gate 3
+Nature Domain,Cleric,Baldur's Gate 3
+Tempest Domain,Cleric,Baldur's Gate 3
+War Domain,Cleric,Baldur's Gate 3
+Death Domain,Cleric,Baldur's Gate 3
+Circle of the Land,Druid,Baldur's Gate 3
+Circle of the Moon,Druid,Baldur's Gate 3
+Circle of Spores,Druid,Baldur's Gate 3
+Circle of the Stars,Druid,Baldur's Gate 3
+Battle Master,Fighter,Baldur's Gate 3
+Eldritch Knight,Fighter,Baldur's Gate 3
+Champion,Fighter,Baldur's Gate 3
+Arcane Archer,Fighter,Baldur's Gate 3
+Way of the Open Hand,Monk,Baldur's Gate 3
+Way of Shadow,Monk,Baldur's Gate 3
+Way of the Four Elements,Monk,Baldur's Gate 3
+Way of the Drunken Master,Monk,Baldur's Gate 3
+Oath of Devotion,Paladin,Baldur's Gate 3
+Oath of the Ancients,Paladin,Baldur's Gate 3
+Oath of Vengeance,Paladin,Baldur's Gate 3
+Oath of the Crown,Paladin,Baldur's Gate 3
+Oathbreaker,Paladin,Baldur's Gate 3
+Hunter,Ranger,Baldur's Gate 3
+Beast Master,Ranger,Baldur's Gate 3
+Gloom Stalker,Ranger,Baldur's Gate 3
+Swarmkeeper,Ranger,Baldur's Gate 3
+Thief,Rogue,Baldur's Gate 3
+Arcane Trickster,Rogue,Baldur's Gate 3
+Assassin,Rogue,Baldur's Gate 3
+Swashbuckler,Rogue,Baldur's Gate 3
+Draconic Bloodline,Sorcerer,Baldur's Gate 3
+Wild Magic,Sorcerer,Baldur's Gate 3
+Storm Sorcery,Sorcerer,Baldur's Gate 3
+Divine Soul,Sorcerer,Baldur's Gate 3
+Shadow Magic,Sorcerer,Baldur's Gate 3
+The Fiend,Warlock,Baldur's Gate 3
+The Great Old One,Warlock,Baldur's Gate 3
+The Archfey,Warlock,Baldur's Gate 3
+The Hexblade,Warlock,Baldur's Gate 3
+Abjuration School,Wizard,Baldur's Gate 3
+Conjuration School,Wizard,Baldur's Gate 3
+Divination School,Wizard,Baldur's Gate 3
+Enchantment School,Wizard,Baldur's Gate 3
+Evocation School,Wizard,Baldur's Gate 3
+Illusion School,Wizard,Baldur's Gate 3
+Necromancy School,Wizard,Baldur's Gate 3
+Transmutation School,Wizard,Baldur's Gate 3
+Bladesinging,Wizard,Baldur's Gate 3

@@ -1,0 +1,46 @@
+Dragonborn
+Dwarf
+Hill Dwarf
+Mountain Dwarf
+Duergar
+Elf
+High Elf
+Wood Elf
+Drow
+Eladrin
+Shadar-Kai
+Sea Elf
+Pallid Elf
+Gnome
+Forest Gnome
+Rock Gnome
+Deep Gnome
+Svirfneblin
+Goliath
+Half-Elf
+Half-Orc
+Halfling
+Lightfoot Halfling
+Stout Halfling
+Ghostwise Halfling
+Human
+Tiefling
+Aasimar
+Bugbear
+Goblin
+Hobgoblin
+Kobold
+Orc
+Lizardfolk
+Tabaxi
+Triton
+Yuan-Ti Pureblood
+Kenku
+Githyanki
+Githzerai
+Aarakocra
+Genasi
+Minotaur
+Satyr
+Shifter
+Tortle

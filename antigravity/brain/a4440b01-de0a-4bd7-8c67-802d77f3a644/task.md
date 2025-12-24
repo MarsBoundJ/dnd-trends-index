@@ -14,29 +14,37 @@
 - [x] **PILOT:** Develop script to query Google Trends API (Classes/Subclasses only) <!-- id: 10 -->
 - [x] **PILOT:** Evaluate success rate / data quality of Pilot run (100% COMPLETE - 1207 UNIQUE TERMS) <!-- id: 11 -->
 - [ ] **AUDIT:** Manually review `pilot_audit.csv` for broad/bad terms and mark for exclusion <!-- id: 28 -->
-- [ ] **DISAMBIGUATE:** Build 'Master Collision Index' (Spells, Monsters, BG3, Diablo) <!-- id: 30 -->
+- [x] **DISAMBIGUATE:** Build 'Master Collision Index' (Spells, Monsters, BG3, Diablo) <!-- id: 30 -->
 - [x] **QUALIFY:** Verify optimal string: `[term] 5e` vs `[term] Dnd` vs `[term] Dnd 5e` (Winner: **Dnd**) <!-- id: 32 -->
-- [ ] **QUALIFY:** Apply 'Volume-Weighted Risk' logic with verified qualifier <!-- id: 31 -->
-- [ ] **CLEAN:** Apply exclusions and re-refill `trend_data_pilot` <!-- id: 29 -->
-- [ ] **FULL ROLLOUT:** Expand remaining categories (Spells, Monsters, etc.) <!-- id: 12 -->
-- [ ] **FULL ROLLOUT:** Standardize and run full backfill <!-- id: 13 -->
-- [ ] Implement "Monthly incremental" logic <!-- id: 11 -->
+- [x] **QUALIFY:** Apply 'Volume-Weighted Risk' logic with verified qualifier (List Ready) <!-- id: 31 -->
+- [x] **CLEAN:** Apply exclusions (54 Purged) and re-refill `trend_data_pilot` (Pending) <!-- id: 29 -->
+- [x] **FULL ROLLOUT:** Expand remaining categories (Spells, Monsters, etc.) (16k+ Terms Added) <!-- id: 12 -->
+- [x] **FULL ROLLOUT:** Standardize and run full backfill (`is_official` Tagging Complete) <!-- id: 13 -->
+- [x] **BATCH 1:** Collection for 'Background' & 'Feat' (100% Complete) <!-- id: 33 -->
+- [x] **BATCH 2:** Collection for 'Race' (Refill Complete: 300+ terms) <!-- id: 34 -->
+- [x] **BATCH 3:** Collection for 'Monster', 'NPC', 'Villain' (>99% Complete) <!-- id: 35 -->
+- [x] **BATCH 4:** Collection for 'Spells', 'Items', & 'MagicItems' (>99% Complete) <!-- id: 36 -->
+- [x] **BATCH 5 (Community):** Influencers, Websites, Podcasts, Play Platforms (Complete: ~300 terms) <!-- id: 37 -->
+- [x] **BATCH 6 (Lore):** Deities, Factions, Planes, Settings (Complete: ~1k terms) <!-- id: 38 -->
+- [x] **BATCH 7 (Mechanics):** Invocations, Rules, PC Builds, Slang (Complete: ~400 terms) <!-- id: 39 -->
+- [x] **BATCH 8 (Meta):** AI, Art, Accessories, Editions, Comparative TTRPGs (Complete: ~600 terms) <!-- id: 40 -->
+- [x] **BATCH 9 (Events & Beta):** UA Content (~700), Conventions (Complete: ~280) <!-- id: 41 -->
 
-## Phase 3: Ancillary Data Sources <!-- id: 12 -->
+## Phase 4: External Data Sources (Reddit, Sales, Wikis) <!-- id: 12 -->
 - [ ] **Reddit API**: Design ingestion for subreddit stats/sentiment <!-- id: 13 -->
 - [ ] **DMs Guild**: Implement scraper for top selling/popular items <!-- id: 14 -->
 - [ ] **DriveThruRPG**: Implement scraper for D&D related top charts <!-- id: 15 -->
 - [ ] **Fandom**: Use `fandom-py` to get page view metrics <!-- id: 16 -->
 
-## Phase 4: BigQuery Warehouse & Automation <!-- id: 17 -->
+## Phase 5: BigQuery Warehouse & Automation <!-- id: 17 -->
 - [ ] Centralize all data into appropriate BigQuery schema <!-- id: 18 -->
 - [ ] Set up Cloud Scheduler or similar for monthly automation <!-- id: 19 -->
 
-## Phase 5: Web Application (Frontend) <!-- id: 20 -->
+## Phase 6: Web Application (Frontend) <!-- id: 20 -->
 - [ ] Design UI for "Top XX" lists and interactive charts <!-- id: 21 -->
 - [ ] Implement search functionality <!-- id: 22 -->
 - [ ] Build interactive visualizations (trends over time) <!-- id: 23 -->
 
-## Phase 6: AI Analysis & Insights <!-- id: 24 -->
+## Phase 7: AI Analysis & Insights <!-- id: 24 -->
 - [ ] Develop prompts/scripts for Gemini to analyze aggregated data <!-- id: 25 -->
 - [ ] Automate generation of "Insight Articles" <!-- id: 26 -->

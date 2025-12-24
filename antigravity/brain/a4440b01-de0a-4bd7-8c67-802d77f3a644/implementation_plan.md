@@ -29,6 +29,41 @@ We will implement a logical separation (metadata tag) instead of separating the 
 3.  **Cleanse Expanded Terms**: Write a script `cleanse_expanded_terms.py` to run the current `trend_data_pilot` against the MCI.
 4.  **Purge & Refill**: Delete the "dirty" records from `trend_data_pilot` and re-run with qualified strings.
 
+## Phase 3: Category-Sequenced Batch Collection
+
+### Strategy
+We execute the data collection in prioritized batches to monitor quality and handle collisions dynamically.
+
+### Batches
+1.  **Backgrounds & Feats** (Completed)
+    *   Validation: 100% success rate. 52-week data collected.
+2.  **Races** (Completed & Refined)
+    *   *Crucial Pivot*: Split "Monstrous Races" (Orc, Goblin) from Monsters.
+    *   **Race Data**: collected as `[Race] Race 5e` (e.g., `Orc Race 5e`) to isolate PC intent.
+3.  **Monsters, NPCs, Villains** (In Progress)
+    *   **Monster Data**: collected as `[Monster] 5e` or `[Monster] Dnd`.
+    *   *Safety*: "Stat block" terms were purged and replaced with "Dnd" to avoid BG3 wiki confusion.
+    *   *Execution*: Parallel launch of 3 collectors to handle ~7,000 terms.
+4.  **Spells, Items, MagicItems** (Completed)
+    *   **Scope**: ~5,300 terms.
+    *   **Magic Items**: Largest component (~3,740 terms).
+5.  **Community & Influencers** (Running)
+    *   **Scope**: YouTubers, Podcasts, Websites.
+    *   **Strategy**: Identity-based expansion (`[Name]`, `[Name] Dnd`).
+6.  **Lore** (Running)
+    *   **Scope**: Deities, Factions, Planes, Settings.
+7.  **Mechanics** (Running)
+    *   **Scope**: Invocations, Rules, Builds, Slang.
+8.  **Meta** (Running)
+    *   **Scope**: AI Art, Tools, Editions.
+9.  **Events & Beta** (Running)
+    *   **Scope**: UA Content (~700 terms) & Conventions (~280 terms).
+    *   **Strategy**: "Event-based" expansion.
+
+### 7. API Strategy Note
+*   **Technical Reality**: Google Trends `today 12-m` returns 52 weeks in a single API call.
+*   **Decision**: We keep the full 52-week resolution (standard year-over-year data) but stick strictly to the **Category Stops** to allow for "fail fast" pivots.
+
 ## Verification Plan
 ### Automated Tests
 - Script to count collisions between Category A and Category B search strings.
