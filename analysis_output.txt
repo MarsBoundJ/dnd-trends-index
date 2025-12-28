@@ -1,0 +1,41 @@
+Scanning c:\Users\Yorri\Downloads for expected files...
+Found 7 matching files.
+
+--- counterspell.csv ---
+  counterspell 5e: (United States): 3610
+  counterspell 2024: (United States): 298
+  counterspell rules change: (United States): 55
+
+--- cure wounds.csv ---
+  cure wounds 5e: (United States): 4148
+  cure wounds 2024: (United States): 164
+  cure wounds rules change: (United States): 24
+
+--- fighter 2014.csv ---
+  fighter 5e: (United States): 4021
+  fighter 2014: (United States): 213
+  fighter legacy: (United States): 137
+
+--- fighter 2024.csv ---
+  fighter 2024: (United States): 1243
+  fighter 5.5: (United States): 3
+  fighter one dnd: (United States): 2
+  fighter 5.5e: (United States): 0
+  fighter new dnd: (United States): 0
+
+--- guidance.csv ---
+  guidance 2024: (United States): 647
+  guidance 5e: (United States): 3
+  guidance rules change: (United States): 2
+
+--- wizard 2014.csv ---
+  wizard 5e: (United States): 4479
+  wizard legacy: (United States): 431
+  wizard 2014: (United States): 112
+
+--- wizard 2024.csv ---
+  wizard 2024: (United States): 1971
+  wizard one dnd: (United States): 23
+  wizard 5.5: (United States): 5
+  wizard 5.5e: (United States): 3
+  wizard 2024 phb: (United States): 0

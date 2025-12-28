@@ -1,0 +1,167 @@
+# Phase 2.5: Data Disambiguation & Collision Filtering
+
+## Goal
+Improve data purity by excluding search terms that are semantically broad or collide with other categories (Spells, Monsters) or external intellectual properties (Baldur's Gate 3, Diablo, Skyrim).
+
+## User Review Required
+> [!IMPORTANT]
+> Some terms (e.g., "Warden", "Champion", "Raven Queen") are inherently ambiguous across multiple gaming franchises. We will prioritize **Data Quality** over **Exhaustiveness**, meaning we will drop terms that cannot be cleanly disambiguated.
+
+### 3. Volume-Weighted Risk Analysis
+We will apply different levels of scrutiny based on search volume:
+- **High-Volume Outliers**: Manual review of top terms by interest.
+- **Ambiguous Terms (< 500 Interest)**: If an MCI collision occurs, mandatory transformation to `[term] Dnd`.
+    *   *Verification*: `Champion Dnd` (2765) > `Champion 5e` (2316) > `Champion Dnd 5e` (460).
+    *   *Decision*: "Dnd" is the primary disambiguator.
+- **Low-Volume terms (< 200 Interest)**: Aggressive auto-pruning. If a low-volume term hits the MCI or is a generic single word, it is **dropped** by default to clear "low-level noise."
+
+### 4. Official vs. 3rd Party Separation
+We will implement a logical separation (metadata tag) instead of separating the files.
+- **Goal**: Allow "Official Only" reporting while maintaining a unified ecosystem view.
+- **Method**: Add [is_official](file:///C:/Users/Yorri/.gemini/expand_full.py#41-45) (BOOL) column to `expanded_search_terms`.
+- **Logic**: 
+    - `TRUE` if `source_book` is in the Official WotC List (PHB, XGtE, TCoE, FToD, etc.).
+    - `FALSE` if `source_book` is "Partnered Content" (MCDM, Grim Hollow, etc.).
+
+### 5. Execution Steps
+1.  **Draft the MCI**: Export all non-Class/Subclass terms from BigQuery to a local JSON list.
+2.  **Tag Metadata**: Update `expand_keywords.py` to check `concept_library.source_book` and assign [is_official](file:///C:/Users/Yorri/.gemini/expand_full.py#41-45).
+3.  **Cleanse Expanded Terms**: Write a script `cleanse_expanded_terms.py` to run the current `trend_data_pilot` against the MCI.
+4.  **Purge & Refill**: Delete the "dirty" records from `trend_data_pilot` and re-run with qualified strings.
+
+## Phase 3: Category-Sequenced Batch Collection
+
+### Strategy
+We execute the data collection in prioritized batches to monitor quality and handle collisions dynamically.
+
+### Batches
+1.  **Backgrounds & Feats** (Completed)
+    *   Validation: 100% success rate. 52-week data collected.
+2.  **Races** (Completed & Refined)
+    *   *Crucial Pivot*: Split "Monstrous Races" (Orc, Goblin) from Monsters.
+    *   **Race Data**: collected as `[Race] Race 5e` (e.g., `Orc Race 5e`) to isolate PC intent.
+3.  **Monsters, NPCs, Villains** (In Progress)
+    *   **Monster Data**: collected as `[Monster] 5e` or `[Monster] Dnd`.
+    *   *Safety*: "Stat block" terms were purged and replaced with "Dnd" to avoid BG3 wiki confusion.
+    *   *Execution*: Parallel launch of 3 collectors to handle ~7,000 terms.
+4.  **Spells, Items, MagicItems** (Completed)
+    *   **Scope**: ~5,300 terms.
+    *   **Magic Items**: Largest component (~3,740 terms).
+5.  **Community & Influencers** (Running)
+    *   **Scope**: YouTubers, Podcasts, Websites.
+    *   **Strategy**: Identity-based expansion (`[Name]`, `[Name] Dnd`).
+6.  **Lore** (Running)
+    *   **Scope**: Deities, Factions, Planes, Settings.
+7.  **Mechanics** (Running)
+    *   **Scope**: Invocations, Rules, Builds, Slang.
+8.  **Meta** (Running)
+    *   **Scope**: AI Art, Tools, Editions.
+9.  **Events & Beta** (Running)
+    *   **Scope**: UA Content (~700 terms) & Conventions (~280 terms).
+    *   **Strategy**: "Event-based" expansion.
+
+### 7. API Strategy Note
+*   **Technical Reality**: Google Trends `today 12-m` returns 52 weeks in a single API call.
+*   **Decision**: We keep the full 52-week resolution (standard year-over-year data) but stick strictly to the **Category Stops** to allow for "fail fast" pivots.
+
+## Phase 4: External Data Sources
+
+### Reddit Sentiment Engine
+- **Objective**: Scrape 20+ D&D subreddits and analyze sentiment using Gemini 1.5 Flash.
+- **Components**:
+    - `subreddit_registry`: BQ table defining targets and weights.
+    - [matcher.py](file:///C:/Users/Yorri/.gemini/matcher.py): Aho-Corasick keyword trie.
+    - `mime_sentinel.py`: Vertex AI wrapper for viral events.
+    - [reddit_harvester.py](file:///C:/Users/Yorri/.gemini/reddit_harvester.py): Main PRAW scraper.
+
+## Phase 5: Sales Data Scrapers
+- **DMs Guild**: Scrape top-selling "Platinum" and "Adamantine" titles to correlate community sentiment with sales.
+- **DriveThruRPG**: Scrape general RPG charts to contextulize D&D's market share.
+
+## Phase 6: Kickstarter Crowdfunding Engine
+- **Objective**: Track high-earning D&D 5e/TTRPG campaigns as "Leading Indicators" of market trends.
+- **Source**: `kickstarter.com/discover/advanced.json` (Category 34: Tabletop Games).
+- **Architecture**:
+    - [kickstarter_discovery.py](file:///C:/Users/Yorri/.gemini/kickstarter_discovery.py): Iterates API pagination.
+    - `filter_dnd_projects()`: Distinguishes "5e" from generic Board Games/Other RPGs.
+    - `commercial_data.kickstarter_projects`: BigQuery storage without anti-bot friction.
+- **Signal**: Money pledged is the ultimate "vote" for a trend (e.g., "5e Setting Books" vs "3D Printable Minis").
+
+## Phase 7: RPGGeek Ownership Engine
+- **Objective**: Quantify "Staple Power" by tracking ownership counts (`numowned`) and GeekList inclusions via BGG XML API2.
+- **Signal**: Ownership indicates "Collector Interest" vs "Player Interest".
+- **Architecture**:
+    - [rpggeek_client.py](file:///C:/Users/Yorri/.gemini/rpggeek_client.py): XML API2 wrapper with rate limiting (5s sleep) and `Retry-After` handling.
+    - **Discovery**: Search API `type=rpgitem`.
+    - **Extraction**: Thing API `stats=1` for ownership/wishlist data.
+    - **Storage**: `commercial_data.rpggeek_items`.
+- **Key Metrics**: `num_owned` (Staple Power), `num_wishlist` (Hype).
+
+## Phase 8: BackerKit Crowdfunding Engine
+- **Objective**: Scrape BackerKit trending campaigns using `curl_cffi` to bypass modern anti-bot headers.
+- **Signal**: Capture the "Exodus" of major creators from Kickstarter.
+- **Architecture**:
+    - [backerkit_scraper.py](file:///C:/Users/Yorri/.gemini/backerkit_scraper.py): Uses `curl_cffi` (impersonating Chrome 120) and `BeautifulSoup`.
+    - **Discovery**: Scrape `backerkit.com/c/games/tabletop-games?sort=trending`.
+    - **Filtering**: Identify "5e", "Black Flag", "MCDM" keywords.
+    - **Storage**: `commercial_data.backerkit_projects`.
+- **Key Metrics**: `funding_usd` (Commercial Weight), `backers_count` (Audience Size).
+
+## Phase 9: ICv2 Sales Data Engine
+- **Objective**: Ingest quarterly "Top RPGs" charts from ICv2 using Gemini-parsed articles.
+- **Signal**: Broad Industry "health check" and D&D's relative dominance.
+- **Architecture**:
+    - [icv2_scanner.py](file:///C:/Users/Yorri/.gemini/icv2_scanner.py): Finds seasonal "Top 5 RPG" articles.
+    - [icv2_gemini_parser.py](file:///C:/Users/Yorri/.gemini/icv2_gemini_parser.py): Uses Gemini 1.5 Flash to extract JSON rankings from prose.
+    - `icv2_market_reports`: BigQuery table for historical dominance tracking.
+- **Weights**: #1 Rank = 1.5x Commercial Multiplier.
+
+## Phase 10: Amazon Best Sellers
+- **Objective**: Track the hourly/daily "Best Sellers in Fantasy Gaming" list.
+- **Signal**: Extremely high-velocity retail trends (often driven by TikTok/YouTube spikes).
+
+
+## Phase 11: Google Shopping Market Index
+
+### Objective
+To validate the commercial availability and price variance of trending D&D keywords. This acts as a "Reality Check"—distinguishing "Homebrew Trends" (no products) from "Retail Trends" (products available).
+
+### Architecture
+1.  **Source**: Google Custom Search JSON API (Programmable Search Engine).
+2.  **Constraint**: Free Tier limit of 100 queries/day.
+3.  **Targeting**: Scan only the "Daily Top 50 Trending Keywords" from Phase 2/4.
+4.  **Storage**: `commercial_data.google_shopping_snapshots`.
+
+### Implementation Steps
+
+#### 11.1 GCP & Search Engine Setup
+*   **User Action Required**:
+    *   Enable Custom Search API in GCP.
+    *   Create Programmable Search Engine (CSE) at `programmablesearchengine.google.com`.
+    *   Refine CSE to look for Schema.org/Product types (optional but recommended).
+    *   Provide `GOOGLE_CSE_API_KEY` and `GOOGLE_CSE_CX`.
+
+#### 11.2 Targeted Fetcher ([shopping_sampler.py](file:///C:/Users/Yorri/.gemini/shopping_sampler.py))
+*   **Input**: Query BigQuery for top keywords by `trend_velocity` (24h).
+*   **Query**: `q={keyword} + "dnd" + "price"`.
+*   **Safety**: Hard cap at 95 queries/day to stay within free tier.
+
+#### 11.3 Parser Logic
+*   **Extraction**: Look for `pagemap` -> `offer` (price, currency) and [product](file:///C:/Users/Yorri/.gemini/dtrpg_scraper.py#44-66).
+*   **Validation**: Exclude results without pricing data (Wikis, Reddit).
+
+#### 11.4 BigQuery Schema (`google_shopping_snapshots`)
+| Field | Type | Description |
+|---|---|---|
+| `snapshot_date` | DATE | Date of query |
+| [keyword](file:///C:/Users/Yorri/.gemini/kickstarter_commercial_weighting.py#18-33) | STRING | The trending term |
+| `product_title` | STRING | Title from search result |
+| `retailer` | STRING | Store name (`og:site_name` or display link) |
+| `price` | FLOAT | Extracted price |
+| `currency` | STRING | Price currency |
+| `link` | STRING | Product URL |
+
+#### 11.5 Availability Signal
+*   **Logic**:
+    *   `>5 Retailers` = Mass Market Available.
+    *   `0 Retailers` + High Trend = Gap in Market / Homebrew.

@@ -1,0 +1,11 @@
+Fetching monitored videos from BQ...
+Found 63 videos to update.
+Fetching latest stats from YouTube...
+Prepared updates for 63 videos.
+Sample Update: {'video_id': 'ohxUh7n7kJw', 'view_count': 332655, 'velocity_24h': 332655}
+Updating 63 records...
+BigQuery Update Failed: 400 GET https://bigquery.googleapis.com/bigquery/v2/projects/dnd-trends-index/queries/abf6c49f-038f-4480-a240-eb118113b14e?maxResults=0&location=US&prettyPrint=false: UPDATE or DELETE statement over table dnd-trends-index.social_data.youtube_videos would affect rows in the streaming buffer, which is not supported
+
+Location: US
+Job ID: abf6c49f-038f-4480-a240-eb118113b14e
+

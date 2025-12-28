@@ -1,0 +1,8 @@
+Schema for dnd-trends-index.dnd_trends_categorized.trend_data_pilot:
+- term_id (STRING)
+- search_term (STRING)
+- date (DATE)
+- interest (INTEGER)
+- is_partial (BOOLEAN)
+- fetched_at (TIMESTAMP)
+- batch_id (STRING)

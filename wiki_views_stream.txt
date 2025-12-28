@@ -1,0 +1,37 @@
+Found 5475 tracked articles.
+Processing 0/5475: Dungeons_&_Dragons
+Pushing batch of 60...
+Traceback (most recent call last):
+  File "C:\Users\Yorri\.gemini\wikipedia_scraper.py", line 122, in <module>
+    run_scraper()
+    ~~~~~~~~~~~^^
+  File "C:\Users\Yorri\.gemini\wikipedia_scraper.py", line 89, in run_scraper
+    client.insert_rows_json(VIEWS_TABLE, all_rows)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Yorri\AppData\Local\Programs\Python\Python313\Lib\site-packages\google\cloud\bigquery\client.py", line 3993, in insert_rows_json
+    response = self._call_api(
+        retry,
+    ...<5 lines>...
+        timeout=timeout,
+    )
+  File "C:\Users\Yorri\AppData\Local\Programs\Python\Python313\Lib\site-packages\google\cloud\bigquery\client.py", line 861, in _call_api
+    return call()
+  File "C:\Users\Yorri\AppData\Local\Programs\Python\Python313\Lib\site-packages\google\api_core\retry\retry_unary.py", line 294, in retry_wrapped_func
+    return retry_target(
+        target,
+    ...<3 lines>...
+        on_error=on_error,
+    )
+  File "C:\Users\Yorri\AppData\Local\Programs\Python\Python313\Lib\site-packages\google\api_core\retry\retry_unary.py", line 156, in retry_target
+    next_sleep = _retry_error_helper(
+        exc,
+    ...<6 lines>...
+        timeout,
+    )
+  File "C:\Users\Yorri\AppData\Local\Programs\Python\Python313\Lib\site-packages\google\api_core\retry\retry_base.py", line 214, in _retry_error_helper
+    raise final_exc from source_exc
+  File "C:\Users\Yorri\AppData\Local\Programs\Python\Python313\Lib\site-packages\google\api_core\retry\retry_unary.py", line 147, in retry_target
+    result = target()
+  File "C:\Users\Yorri\AppData\Local\Programs\Python\Python313\Lib\site-packages\google\cloud\_http\__init__.py", line 494, in api_request
+    raise exceptions.from_http_response(response)
+google.api_core.exceptions.NotFound: 404 POST https://bigquery.googleapis.com/bigquery/v2/projects/dnd-trends-index/datasets/social_data/tables/wikipedia_daily_views/insertAll?prettyPrint=false: Not found: Table dnd-trends-index:social_data.wikipedia_daily_views

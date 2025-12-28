@@ -1,23 +1,9 @@
 
-# Python
 __pycache__/
-*.py[cod]
-*$py.class
-venv/
-.env
-
-# OS
+*.pyc
+# *.txt  <-- Commented out to allow requirements.txt and logs if needed, or better:
+!requirements.txt
+*.log
 .DS_Store
-Thumbs.db
-
-# Project Data Backups (Don't commit large CSVs)
-backups/
-*.csv
-*.json
-analysis_output.txt
-batch_results.txt
-monk_results.txt
-
-# Editor
-.vscode/
-.idea/
+.env
+antigravity-browser-profile/

@@ -1,0 +1,188 @@
+Scanning c:\Users\Yorri\Downloads for batch test files...
+
+=== BATCH TEST RESULTS ===
+
+File: artificer batch test.csv
+  WINNER: 'artificer 5e' (4113 hits)
+          'artificer dnd' (3473 hits)
+          'artificer 2024' (701 hits)
+          'artificer build' (467 hits)
+          'artificer wikidot' (56 hits)
+
+File: battle master fighter test batch.csv
+  WINNER: 'battle master 5e' (2360 hits)
+          'battle master fighter' (1838 hits)
+          'battle master dnd' (1032 hits)
+          'battle master build' (351 hits)
+
+File: bladesinger subclass test batch.csv
+  WINNER: 'bladesinger' (1222 hits)
+          'bladesinger 5e' (247 hits)
+          'bladesinger build' (235 hits)
+          'bladesinger dnd' (163 hits)
+          'bladesinger guide' (1 hits)
+
+File: circle of the moon druid test batch.csv
+  WINNER: 'circle of the moon' (4099 hits)
+          'moon druid' (3275 hits)
+          'moon druid 5e' (937 hits)
+          'circle of the moon druid' (776 hits)
+          'moon druid dnd' (678 hits)
+
+File: college of lore bard test batch.csv
+  WINNER: 'lore bard' (3690 hits)
+          'college of lore' (2331 hits)
+          'college of lore bard' (754 hits)
+          'college lore 5e' (16 hits)
+          'college of lore dnd' (10 hits)
+
+File: college of swords bard test batch.csv
+  WINNER: 'swords bard' (3141 hits)
+          'college of swords' (1588 hits)
+          'college of swords bard' (792 hits)
+          'college of swords dnd' (29 hits)
+          'college of swords 5e' (24 hits)
+
+File: college of whispers bard test batch.csv
+  WINNER: 'whispers  bard' (927 hits)
+          'college of whispers' (714 hits)
+          'bard college of whispers' (244 hits)
+          'College of whispers Bard' (244 hits)
+          'whispers college 5e' (37 hits)
+
+File: divine soul sorcerer test batch.csv
+  WINNER: 'divine soul sorcerer' (2424 hits)
+          'divine soul 5e' (1057 hits)
+          'divine soul dnd' (252 hits)
+          'divine soul build' (14 hits)
+
+File: fighter 2014.csv
+  WINNER: 'fighter 5e' (4021 hits)
+          'fighter 2014' (213 hits)
+          'fighter legacy' (137 hits)
+
+File: fighter 2024.csv
+  WINNER: 'fighter 2024' (1243 hits)
+          'fighter 5.5' (3 hits)
+          'fighter one dnd' (2 hits)
+
+File: fighter batch test.csv
+  WINNER: 'fighter 5e' (2060 hits)
+          'fighter dnd' (1888 hits)
+          'fighter 2024' (1257 hits)
+          'fighter build' (1188 hits)
+          'fighter wikidot' (39 hits)
+
+File: gloom stalker ranger test batch.csv
+  WINNER: 'gloom stalker' (4014 hits)
+          'gloom stalker ranger' (1065 hits)
+          'gloom stalker 5e' (311 hits)
+          'gloom stalker dnd' (93 hits)
+          'gloom stalker build' (75 hits)
+
+File: hexblade warlock test batch.csv
+  WINNER: 'hexblade' (1123 hits)
+          'hexblade warlock' (461 hits)
+          'hexblade build' (254 hits)
+          'hexblade 5e' (185 hits)
+          'hexblade dnd' (141 hits)
+
+File: oath of conquest paladin test batch.csv
+  WINNER: 'oath of conquest' (1648 hits)
+          'paladin conquest' (1578 hits)
+          'conquest paladin' (1578 hits)
+          'paladin oath of conquest' (195 hits)
+          'oath of conquest paladin' (195 hits)
+
+File: oath of devotion paladin test batch.csv
+  WINNER: 'oath of devotion' (3535 hits)
+          'paladin devotion' (1828 hits)
+          'devotion paladin' (1825 hits)
+          'oath of devotion paladin' (835 hits)
+          'paladin oath of devotion' (833 hits)
+
+File: oath of the ancients paladin test batch.csv
+  WINNER: 'paladin ancients' (2891 hits)
+          'ancients paladin' (2891 hits)
+          'oath of the ancients' (2582 hits)
+          'paladin oath of the ancients' (328 hits)
+          'oath of the ancients paladin' (328 hits)
+
+File: oath of vengeance paladin test batch.csv
+  WINNER: 'oath of vengeance' (2970 hits)
+          'paladin vengeance' (2528 hits)
+          'vengeance paladin' (2528 hits)
+          'paladin oath of vengeance' (1181 hits)
+          'oath of vengeance paladin' (1181 hits)
+
+File: oath of watchers paladin test batch.csv
+  WINNER: 'paladin watchers' (261 hits)
+          'watchers paladin' (261 hits)
+          'paladin oath of watchers' (236 hits)
+          'oath of watchers paladin' (236 hits)
+          'oath of watchers' (184 hits)
+
+File: paladin batch test.csv
+  WINNER: 'paladin 5e' (992 hits)
+          'paladin dnd' (861 hits)
+          'paladin build' (793 hits)
+          'paladin 2024' (210 hits)
+          'paladin wikidot' (28 hits)
+
+File: rogue batch test (2).csv
+  WINNER: 'rogue 2024' (2920 hits)
+          'rogue build' (2189 hits)
+          'rogue 5e' (1799 hits)
+          'rogue dnd' (1747 hits)
+          'rogue wikidot' (38 hits)
+
+File: sorcerer batch test.csv
+  WINNER: 'sorcerer 5e' (3763 hits)
+          'sorcerer build' (3493 hits)
+          'sorcerer dnd' (3002 hits)
+          'sorcerer 2024' (775 hits)
+          'sorcerer wikidot' (64 hits)
+
+File: warlock 2014.csv
+  WINNER: 'warlock 5e' (4435 hits)
+          'warlock 2014' (41 hits)
+          'warlock legacy' (8 hits)
+
+File: warlock 2024.csv
+  WINNER: 'warlock 2024' (3479 hits)
+          'warlock one dnd' (251 hits)
+          'warlock 5.5' (21 hits)
+          'warlock new dnd' (18 hits)
+          'warlock 5.5e' (7 hits)
+
+File: warlock batch test.csv
+  WINNER: 'warlock 5e' (3861 hits)
+          'warlock dnd' (3299 hits)
+          'warlock build' (2939 hits)
+          'warlock 2024' (1066 hits)
+          'warlock wikidot' (106 hits)
+
+File: way of mercy monk test batch.csv
+  WINNER: 'mercy monk dnd' (329 hits)
+          'monk mercy dnd' (318 hits)
+          'warrior of mercy' (128 hits)
+          'monk warrior of mercy' (13 hits)
+          'warrior of mercy monk' (13 hits)
+
+File: wizard 2014.csv
+  WINNER: 'wizard 5e' (4479 hits)
+          'wizard legacy' (431 hits)
+          'wizard 2014' (112 hits)
+
+File: wizard 2024.csv
+  WINNER: 'wizard 2024' (1971 hits)
+          'wizard one dnd' (23 hits)
+          'wizard 5.5' (5 hits)
+          'wizard 5.5e' (3 hits)
+
+File: wizard test batch.csv
+  WINNER: 'wizard 5e' (4479 hits)
+          'wizard dnd' (4010 hits)
+          'wizard build' (1815 hits)
+          'wizard 2024' (1681 hits)
+          'wizard wikidot' (127 hits)

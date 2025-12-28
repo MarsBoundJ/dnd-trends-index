@@ -1,0 +1,3 @@
+Scraping Page 1...
+No items found on page. Ending scrape.
+Scraped 0 items.

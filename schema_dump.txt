@@ -1,0 +1,1 @@
+[{"name":"concept_name","type":"STRING","mode":"NULLABLE"},{"name":"category","type":"STRING","mode":"NULLABLE"},{"name":"source_book","type":"STRING","mode":"NULLABLE"},{"name":"ruleset","type":"STRING","mode":"NULLABLE"},{"name":"tags","type":"STRING","mode":"REPEATED"},{"name":"last_processed_at","type":"TIMESTAMP","mode":"NULLABLE"}]

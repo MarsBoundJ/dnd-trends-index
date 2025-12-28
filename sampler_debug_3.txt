@@ -1,0 +1,19 @@
+Found 5 trending keywords from BQ.
+Searching: Vecna Eve of Ruin dnd 5e product...
+DEBUG PAGEMAP keys for 'Vecna: Eve of Ruin is my last straw : r/DnD': ['metatags']
+  -> Found 0 products for 'Vecna Eve of Ruin'
+Searching: Shifting Library Dnd dnd 5e product...
+DEBUG PAGEMAP keys for 'Is WotC moving completely away from physical books? : r/DnD': ['metatags']
+  -> Found 0 products for 'Shifting Library Dnd'
+Searching: Molten Enclave Dnd dnd 5e product...
+DEBUG PAGEMAP keys for 'MCDM Productions': ['cse_thumbnail', 'metatags', 'cse_image']
+  -> Found 0 products for 'Molten Enclave Dnd'
+Searching: Burnock Mill Dnd dnd 5e product...
+DEBUG PAGEMAP keys for 'Where Evil Lives - Burnock Mill (5th-Level) | Roll20 Marketplace ...': ['cse_thumbnail', 'metatags', 'cse_image']
+  -> Found 0 products for 'Burnock Mill Dnd'
+Searching: Coronal Hollow Dnd dnd 5e product...
+DEBUG PAGEMAP keys for 'In spite of my love for DnD. I will never purchase another WOTC ...': ['metatags']
+  -> Found 0 products for 'Coronal Hollow Dnd'
+Searching: Terminal Excrescence Dnd dnd 5e product...
+DEBUG PAGEMAP keys for 'Where Evil Lives: The MCDM Book of Boss Battles': ['cse_thumbnail', 'metatags', 'cse_image']
+  -> Found 0 products for 'Terminal Excrescence Dnd'

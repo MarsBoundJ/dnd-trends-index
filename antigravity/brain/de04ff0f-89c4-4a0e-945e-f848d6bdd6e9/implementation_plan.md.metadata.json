@@ -1,0 +1,6 @@
+{
+  "artifactType": "ARTIFACT_TYPE_IMPLEMENTATION_PLAN",
+  "summary": "Updated CSV format to include 'World' column and noted deduplication logic.",
+  "updatedAt": "2025-11-27T12:23:37.175209700Z",
+  "version": "1"
+}

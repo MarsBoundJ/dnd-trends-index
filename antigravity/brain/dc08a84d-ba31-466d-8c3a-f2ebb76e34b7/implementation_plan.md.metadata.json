@@ -1,0 +1,5 @@
+{
+  "artifactType": "ARTIFACT_TYPE_IMPLEMENTATION_PLAN",
+  "summary": "Plan to address disambiguation issues in the UA importer. Proposes normalizing class names (e.g., 'Ranger') and appending the release year (e.g., 'Ranger (UA 2015)') to ensure unique, analyzable keywords.",
+  "updatedAt": "2025-12-12T12:33:35.672076600Z"
+}

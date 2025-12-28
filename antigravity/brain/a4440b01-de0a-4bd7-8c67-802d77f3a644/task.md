@@ -31,20 +31,118 @@
 - [x] **BATCH 9 (Events & Beta):** UA Content (~700), Conventions (Complete: ~280) <!-- id: 41 -->
 
 ## Phase 4: External Data Sources (Reddit, Sales, Wikis) <!-- id: 12 -->
-- [ ] **Reddit API**: Design ingestion for subreddit stats/sentiment <!-- id: 13 -->
-- [ ] **DMs Guild**: Implement scraper for top selling/popular items <!-- id: 14 -->
-- [ ] **DriveThruRPG**: Implement scraper for D&D related top charts <!-- id: 15 -->
-- [ ] **Fandom**: Use `fandom-py` to get page view metrics <!-- id: 16 -->
+- [x] **Task 4.1:** Create & Populate `subreddit_registry` (BQ) <!-- id: 13 -->
+- [x] **Task 4.2:** Build `matcher.py` (Aho-Corasick Keyword Trie) <!-- id: 42 -->
+- [x] **Task 4.3:** Develop `reddit_harvester.py` (PRAW Scraper) <!-- id: 43 -->
+- [x] **Task 4.4:** Implement "Meme Sentinel" (Gemini Sentiment) <!-- id: 44 -->
+- [x] **Task 4.5:** Finalize BigQuery Schema (`daily_metrics`, `viral_events`) <!-- id: 45 -->
+- [x] **Task 4.6:** Deploy Harvester to Cloud Run (Serverless Batch) <!-- id: 54 -->
 
-## Phase 5: BigQuery Warehouse & Automation <!-- id: 17 -->
-- [ ] Centralize all data into appropriate BigQuery schema <!-- id: 18 -->
-- [ ] Set up Cloud Scheduler or similar for monthly automation <!-- id: 19 -->
+## Phase 5: Sales Data Scrapers (DMs Guild & DriveThruRPG) <!-- id: 50 -->
+- [x] **Task 5.1:** Define Medal Weights & Ruleset Maps <!-- id: 55 -->
+- [ ] **Task 5.2:** Build `dtrpg_scraper.py` (Playwright Engine) (BLOCKED: Cloudflare) <!-- id: 56 -->
+- [ ] **Task 5.3:** Implement Ruleset Classification (Legacy vs 2024) (BLOCKED) <!-- id: 57 -->
+- [ ] **Task 5.4:** Implement Category Logic (Breadcrumbs) (BLOCKED) <!-- id: 58 -->
+- [x] **Task 5.5:** Create BigQuery Tables (`dtrpg_velocity`, `dtrpg_inventory`) <!-- id: 59 -->
 
-## Phase 6: Web Application (Frontend) <!-- id: 20 -->
-- [ ] Design UI for "Top XX" lists and interactive charts <!-- id: 21 -->
-- [ ] Implement search functionality <!-- id: 22 -->
-- [ ] Build interactive visualizations (trends over time) <!-- id: 23 -->
+## Phase 6: Kickstarter Crowdfunding Engine (The Pivot) <!-- id: 51 -->
+- [x] **Task 6.1:** Setup BigQuery Table `kickstarter_projects` <!-- id: 60 -->
+- [x] **Task 6.2:** Build `kickstarter_discovery.py` (JSON API Fetcher) <!-- id: 61 -->
+- [x] **Task 6.3:** Implement `filter_dnd_projects` Logic <!-- id: 62 -->
+- [x] **Task 6.4:** Implement Project Categorization <!-- id: 63 -->
+- [x] **Task 6.5:** Execute Data Ingestion (Tabletop Games Category) <!-- id: 64 -->
+- [x] **Task 6.6:** "The Join": Implement Keyword Commercial Weighting <!-- id: 65 -->
 
-## Phase 7: AI Analysis & Insights <!-- id: 24 -->
+## Phase 7: RPGGeek Ownership Engine <!-- id: 70 -->
+- [ ] **Task 7.1:** Scrape RPGGeek "GeekList" data <!-- id: 71 -->
+  - [!] **BLOCKED**: Waiting for BGG API Key.
+
+## Phase 8: BackerKit Support <!-- id: 80 -->
+- [x] **Task 8.1:** Implement BackerKit Scraper <!-- id: 81 -->
+  - [x] Create BigQuery schema `backerkit_projects`
+  - [x] Scrape "Tabletop Games" trending page
+  - [x] Implement 5e filtering logic
+- [x] **Task 8.2:** Hype Analysis <!-- id: 82 -->
+  - [x] Create `backerkit_hype_analysis` table
+  - [x] Join with `concept_library` for Hype Multiplier
+
+## Phase 9: ICv2 Sales Data Engine <!-- id: 90 -->
+- [x] **Task 9.1:** Article Discovery (`icv2_scanner.py`) <!-- id: 91 -->
+- [x] **Task 9.2:** Content Extraction & Rate Limiting <!-- id: 92 -->
+- [ ] **Task 9.3:** AI-Semantic Parser (`icv2_gemini_parser.py`) <!-- id: 93 -->
+  - [!] **BLOCKED**: Vertex AI returned 404 for all models/regions.
+- [x] **Task 9.4:** BigQuery Integration (`icv2_market_reports`) <!-- id: 94 -->
+- [ ] **Task 9.5:** Signal Weighting (Pending Data) <!-- id: 95 -->
+
+## Phase 10: Amazon Best Sellers <!-- id: 100 -->
+- [ ] **Task 10.1:** Track Amazon "Best Sellers in RPGs" <!-- id: 101 -->
+  - [!] **PAUSED**: Pinned by user request.
+
+## Phase 11: Google Shopping Market Index <!-- id: 110 -->
+- [x] **Task 11.1:** Google Shopping Sampler (`shopping_sampler.py`) <!-- id: 111 -->
+  - [x] Query Custom Search JSON API for pricing/availability
+  - [x] Implemented Fallback Logic for Roll20/Indie stores
+- [x] **Task 11.2:** BigQuery Schema (`google_shopping_snapshots`) <!-- id: 113 -->
+
+## Phase 12: YouTube Influencer Intelligence <!-- id: 120 -->
+- [ ] **Task 12.1:** Channel Registry Setup (`youtube_channel_registry`) <!-- id: 121 -->
+  - [x] Create BigQuery Table
+  - [x] Seed Tiers 1-6 (Master Channel List) (59 Channels Indexed)
+- [x] **Task 12.2:** Upload Listener Engine (`youtube_listener.py`) <!-- id: 122 -->
+  - [x] Implement efficient Playlist ID fetching (UC -> UU)
+- [x] **Task 12.3:** Velocity Tracker (`youtube_stats_updater.py`) <!-- id: 123 -->
+- [x] **Task 12.4:** Keyword Mapping (Aho-Corasick) <!-- id: 124 -->
+- [x] **Task 12.5:** Comment Sentiment Engine (NLTK/VADER) <!-- id: 125 -->
+- [x] **Task 12.6:** BigQuery Schema (`youtube_videos`) <!-- id: 126 -->
+
+## Phase 13: Roll20 VTT Market Engine <!-- id: 130 -->
+- [x] **Task 13.1:** Roll20 Marketplace Scraper (`roll20_scraper.py`) <!-- id: 131 -->
+  - [x] Scrape Top 100 by Popularity
+  - [x] Extract Title, Publisher, Price, Link
+- [x] **Task 13.2:** BigQuery Schema (`roll20_rankings`) <!-- id: 133 -->
+
+## Phase 14: Wikipedia Cultural Intelligence <!-- id: 140 -->
+- [x] **Task 14.1:** Wiki Discovery Engine (`wiki_crawler.py`) <!-- id: 141 -->
+  - [x] build `recursive_crawler` (Depth 2)
+  - [x] Create `wikipedia_article_registry` table
+  - [x] Execute Crawl (Target: 800-1500 articles)
+- [x] **Task 14.2:** Daily Views Scraper (`wikipedia_scraper.py`) <!-- id: 142 -->
+- [x] **Task 14.3:** BigQuery Schema (`wikipedia_daily_views`) <!-- id: 143 -->
+
+## Phase 15: Fandom Wiki Intelligence Engine <!-- id: 53 -->
+- [x] **Task 15.1:** Wiki Registry Setup (Target List) <!-- id: 144 -->
+- [x] **Task 15.2:** Fandom Scraper (`fandom_scraper.py`) <!-- id: 145 -->
+  - [x] Implement `fetch_fandom_trending` (API: /Articles/Top)
+  - [x] Implement `clean_fandom_data` (Filter namespaces)
+- [x] **Task 15.3:** BigQuery Schema (`fandom_trending`) <!-- id: 146 -->
+- [x] **Task 15.4:** Velocity Analysis (Derived View) <!-- id: 147 -->
+
+## Phase 16: Data Warehouse Orchestration & Trend Score <!-- id: 17 -->
+- [/] **Task 16.1:** Scheduling Architecture (Cloud Workflows) <!-- id: 148 -->
+  - [x] Define "Fast Lane" Workflow (Daily)
+  - [x] Define "Slow Lane" Workflow (Weekly)
+  - [x] Create Deployment Scripts
+- [x] **Task 16.2:** Data Normalization (Silver Layer) <!-- id: 149 -->
+  - [x] Implement `silver_normalization` SQL logic (Percentile Ranking)
+- [x] **Task 16.3:** Trend Score Algorithm (Gold Layer) <!-- id: 150 -->
+  - [x] Create `gold_trend_scores` table/view
+  - [x] Implement Hype/Play/Buy weighting
+- [x] **Task 16.4:** Time Decay & Anomaly Detection <!-- id: 151 -->
+
+## Phase 17: Web Application (Frontend) <!-- id: 20 -->
+- [x] **Task 17.1:** The "Bouncer" API (Cloud Function) <!-- id: 152 -->
+  - [x] Create `main.py` (BigQuery Connector)
+  - [x] Deploy `get_trend_data` function (URL: `https://get-trend-data-appfh5mgjgiq-uc.a.run.app`)
+- [x] **Task 17.2:** Frontend Stack (Vanilla JS + CDN) <!-- id: 153 -->
+  - [x] Create `index.html` (Single File Dashboard)
+  - [x] Import Chart.js (CDN)
+  - [x] Implement `style.css` (Glassmorphism)
+- [x] **Task 17.3:** UI Components (HTML/JS) <!-- id: 154 -->
+  - [x] Build "Stat Block" Card Generator
+  - [x] Build "Initiative Ticker"
+- [x] **Task 17.4:** Deployment <!-- id: 155 -->
+  - [x] Testing local file access
+
+## Phase 18: AI Analysis & Insights <!-- id: 24 -->
 - [ ] Develop prompts/scripts for Gemini to analyze aggregated data <!-- id: 25 -->
 - [ ] Automate generation of "Insight Articles" <!-- id: 26 -->

@@ -1,0 +1,6 @@
+Initializing YouTube API with key ending in ...yQJ8
+Resolving 61 channels...
+  -> Not found: @TuloktheBarbrarian
+  -> Not found: @MinMaxMunchkin
+Inserting 59 rows to BigQuery...
+BQ Insert Failed: 404 POST https://bigquery.googleapis.com/bigquery/v2/projects/dnd-trends-index/datasets/social_data/tables/youtube_channel_registry/insertAll?prettyPrint=false: Not found: Dataset dnd-trends-index:social_data

@@ -1,0 +1,6 @@
+Initializing YouTube API with key ending in ...yQJ8
+Resolving 61 channels...
+  -> Not found: @TuloktheBarbrarian
+  -> Not found: @MinMaxMunchkin
+Inserting 59 rows to BigQuery...
+Seeding Complete.

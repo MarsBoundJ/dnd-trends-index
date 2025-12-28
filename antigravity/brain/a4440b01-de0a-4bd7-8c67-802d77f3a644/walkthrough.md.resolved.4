@@ -1,0 +1,51 @@
+# BackerKit Crowdfunding Engine Walkthrough
+
+> [!IMPORTANT]
+> **Phase 7 (RPGGeek Ownership)** is currently **BLOCKED** pending a BoardGameGeek API Key.
+> **Phase 8 (BackerKit Support)** is **COMPLETE** with reduced scope on the analysis join.
+
+## 1. BackerKit Scraper Implementation
+
+We successfully implemented a scraper for **BackerKit Crowdfunding** to track high-value TTRPG campaigns.
+
+### Key Features
+- **Anti-Detection**: Uses `curl_cffi` to impersonate Chrome 120 and bypass Cloudflare protection.
+- **Robust Selectors**: Targets `project-card-small-component` to reliable extract project data even when class names shift.
+- **5e Filtering**: Analyzes project titles and blurbs to categorize items as "5e Compatible", "OSR", or generic "RPG".
+- **Data Extracted**:
+  - Title & Creator
+  - Funding Amount (USD)
+  - Backer Count
+  - System Tag (e.g. 5e Compatible, OSR)
+
+### Execution Output
+The scraper successfully extracted trending projects from the "Role Playing Games" collection:
+```text
+Extracted 5 RPG projects.
+- Toon the Cartoon Roleplaying Game Second Edition (RPG (Other)): $97,901
+- Use Up All Your Sick Days (RPG (Other)): $8,535
+...
+✅ Success using curl_cffi.
+```
+
+## 2. Data Warehousing
+
+We established the following BigQuery infrastructure:
+
+### Schema: `commercial_data.backerkit_projects`
+| Field | Type | Description |
+|---|---|---|
+| `project_id` | STRING | Unique slug |
+| [title](file:///C:/Users/Yorri/.gemini/latest_script.py#186-188) | STRING | Project Title |
+| `funding_usd` | FLOAT | Current funding |
+| `backers_count` | INTEGER | Total backers |
+| `system_tag` | STRING | 5e/OSR/etc |
+
+### Analysis: `commercial_data.backerkit_hype_analysis`
+A derived table calculating the **Hype Signal** (Funding per Backer) joined with the `concept_library` to identify high-value keywords.
+
+## 3. Next Steps
+
+1. **Unblock Phase 7**: Provide BGG API Key to enable RPGGeek scraping.
+2. **Restore Dependency**: Locate or recreate `concept_library.dnd_keywords` to enable the full Hype Multiplier analysis.
+3. **Automate**: Schedule [backerkit_scraper.py](file:///C:/Users/Yorri/.gemini/backerkit_scraper.py) to run weekly.
