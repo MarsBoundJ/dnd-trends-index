@@ -143,6 +143,32 @@
 - [x] **Task 17.4:** Deployment <!-- id: 155 -->
   - [x] Testing local file access
 
-## Phase 18: AI Analysis & Insights <!-- id: 24 -->
-- [ ] Develop prompts/scripts for Gemini to analyze aggregated data <!-- id: 25 -->
-- [ ] Automate generation of "Insight Articles" <!-- id: 26 -->
+## Phase 18: AI Insight & Editorial Engine (Cloud Migration) <!-- id: 24 -->
+- [x] **Chunk 1: The "Heavy Lifting" (BigQuery Views)** <!-- id: 181 -->
+  - [x] `view_trend_spikes`: >50% growth in 7d.
+  - [x] `view_sentiment_divergence`: High Sales / Low Sentiment.
+  - [x] `view_platform_gaps`: High Wiki / Low Roll20.
+- [x] **Chunk 1: The "Heavy Lifting" (BigQuery Views)** <!-- id: 181 -->
+  - [x] `view_trend_spikes`: >50% growth in 7d.
+  - [x] `view_sentiment_divergence`: High Sales / Low Sentiment.
+  - [x] `view_platform_gaps`: High Wiki / Low Roll20.
+- [x] **Chunk 2: The "Writer" (Cloud Function)** <!-- id: 182 -->
+  - [x] Create `cloud_functions/daily_journalist/main.py`.
+  - [x] Query Views -> Gemini 1.5 Pro -> Write Article.
+  - [x] Save output to `gold_data.daily_articles`.
+  - [ ] **FIX**: Update Model to `gemini-1.5-pro-002` (Fix 404).
+- [x] **Chunk 3: The Deployment** <!-- id: 184 -->
+  - [x] Deploy `dnd-daily-journalist` (Gen 2 Cloud Function).
+  - [ ] Verify HTTP Trigger (Smoke Test Success).
+- [x] **Chunk 4: Automation (Scheduler)** <!-- id: 185 -->
+  - [x] Create Cloud Scheduler Job (Daily 4:30 AM).
+  - [x] **UPGRADE**: Multi-Persona Newsroom (3 articles per day).
+
+- [ ] **Phase 19: Full Data Stream Integration (Frontend)** <!-- id: 190 -->
+  - [/] Audit existing data sources and frontend capability.
+  - [ ] Create `silver_data.norm_youtube` normalization view.
+  - [ ] Upgrade `gold_data.trend_scores` to include YouTube and raw source metrics.
+  - [ ] Update "Bouncer" API to serve granular source data and latest news.
+  - [ ] Build "Daily Newsroom" UI section in dashboard.
+  - [ ] Add "Source Breakdown" icons/stats to trend cards.
+  - [ ] Final Verification: Verified synchronized multi-source dashboard.

@@ -376,4 +376,32 @@ To build a "Premium", high-aesthetic dashboard that visualizes the Trend Scores 
     -   `app.js`: Logic.
 3.  **Task 17.3**: Verify local execution.
 
+## Phase 18: AI Insight & Editorial Engine (Cloud Rescue Plan)
+
+### Objective
+To transform raw trend data into "Human-Sounding" narrative articles using Gemini 1.5 Pro, executing strictly on Google Cloud to avoid local resource constraints.
+
+### Architecture
+-   **The Views (BigQuery)**: Pre-calculated narrative signals (`trend_spikes`, `platform_gaps`).
+-   **The Journalist (Cloud Function)**: `dnd-daily-journalist`.
+    1.  Queries the specific "Narrative View" (Top 5 rows).
+    2.  Prompts Gemini 1.5 Pro with defined Personas.
+    3.  Stores result in `gold_data.daily_articles`.
+
+### Implementation Steps
+
+#### 18.1 BigQuery Views (Chunk 1)
+-   **`view_trend_spikes`**: `trend_score` grew >50% in 7 days.
+-   **`view_platform_gaps`**: `hype_score` (Wiki) >> `play_score` (Roll20).
+-   **`view_sentiment_divergence`**: Negative Sentiment vs High Score.
+
+#### 18.2 Daily Journalist Function (Chunk 2)
+-   **Path**: `cloud_functions/daily_journalist/`
+-   **Logic**: Stateless execution. Fetches pre-computed rows, generates text, commits to DB.
+-   **Model**: Gemini 1.5 Pro.
+
+#### 18.3 Deployment (Chunk 3)
+-   **Method**: `gcloud functions deploy`.
+-   **Trigger**: HTTP (eventually Cloud Scheduler).
+
 

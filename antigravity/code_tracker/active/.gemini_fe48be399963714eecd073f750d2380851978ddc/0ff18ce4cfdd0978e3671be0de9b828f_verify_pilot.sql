@@ -1,2 +1,0 @@
-{SELECT category, count(*) as count FROM `dnd-trends-index.dnd_trends_categorized.expanded_search_terms` GROUP BY category
-{*cascade08"(fe48be399963714eecd073f750d2380851978ddc2/file:///C:/Users/Yorri/.gemini/verify_pilot.sql:file:///C:/Users/Yorri/.gemini

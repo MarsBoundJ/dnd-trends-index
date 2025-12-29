@@ -1,0 +1,239 @@
+Keyword,Category,World,Source,Ruleset
+Deadeye,Subclass,Generic,The Gunslinger Class,2024
+High Roller,Subclass,Generic,The Gunslinger Class,2024
+Secret Agent,Subclass,Generic,The Gunslinger Class,2024
+Spellslinger,Subclass,Generic,The Gunslinger Class,2024
+Trick Shot,Subclass,Generic,The Gunslinger Class,2024
+White Hat,Subclass,Generic,The Gunslinger Class,2024
+Ardengloom,Location,Druskenvald,The Crooked Moon,2024
+Astramar,Location,Druskenvald,The Crooked Moon,2024
+Bubonia,Location,Druskenvald,The Crooked Moon,2024
+Chernabos,Location,Druskenvald,The Crooked Moon,2024
+Edwardia,Location,Druskenvald,The Crooked Moon,2024
+Enoch,Location,Druskenvald,The Crooked Moon,2024
+Kalero,Location,Druskenvald,The Crooked Moon,2024
+Nerukhet,Location,Druskenvald,The Crooked Moon,2024
+Olmarsh,Location,Druskenvald,The Crooked Moon,2024
+Pholsense,Location,Druskenvald,The Crooked Moon,2024
+Picco,Location,Druskenvald,The Crooked Moon,2024
+Syndramas,Location,Druskenvald,The Crooked Moon,2024
+Zulrogg,Location,Druskenvald,The Crooked Moon,2024
+Ashborn,Race,Druskenvald,The Crooked Moon,2024
+Azureborn,Race,Druskenvald,The Crooked Moon,2024
+Bogborn,Race,Druskenvald,The Crooked Moon,2024
+Curseborn,Race,Druskenvald,The Crooked Moon,2024
+Deepborn,Race,Druskenvald,The Crooked Moon,2024
+Gnarlborn,Race,Druskenvald,The Crooked Moon,2024
+Graveborn,Race,Druskenvald,The Crooked Moon,2024
+Harvestborn,Race,Druskenvald,The Crooked Moon,2024
+Plagueborn,Race,Druskenvald,The Crooked Moon,2024
+Relicborn,Race,Druskenvald,The Crooked Moon,2024
+Silkborn,Race,Druskenvald,The Crooked Moon,2024
+Stoneborn,Race,Druskenvald,The Crooked Moon,2024
+Threadborn,Race,Druskenvald,The Crooked Moon,2024
+Barbarian: Path of the Experiment,Subclass,Druskenvald,The Crooked Moon,2024
+Bard: College of Whistles,Subclass,Druskenvald,The Crooked Moon,2024
+Cleric: Harvest Domain,Subclass,Druskenvald,The Crooked Moon,2024
+Druid: Circle of the Old Ways,Subclass,Druskenvald,The Crooked Moon,2024
+Druid: Circle of Wicker,Subclass,Druskenvald,The Crooked Moon,2024
+Fighter: Barrow Guard,Subclass,Druskenvald,The Crooked Moon,2024
+Monk: Warrior of the Pestilent Haze,Subclass,Druskenvald,The Crooked Moon,2024
+Paladin: Oath of Castigation,Subclass,Druskenvald,The Crooked Moon,2024
+Ranger: Grim Harbinger,Subclass,Druskenvald,The Crooked Moon,2024
+Rogue: Sinner,Subclass,Druskenvald,The Crooked Moon,2024
+Sorcerer: Crimson Sorcery,Subclass,Druskenvald,The Crooked Moon,2024
+Warlock: Great Fool Patron,Subclass,Druskenvald,The Crooked Moon,2024
+Warlock: Horned King Patron,Subclass,Druskenvald,The Crooked Moon,2024
+Wizard: Occultist,Subclass,Druskenvald,The Crooked Moon,2024
+Wizard: Philosopher,Subclass,Druskenvald,The Crooked Moon,2024
+Corn Dolly,Monster,Druskenvald,The Crooked Moon,2024
+Crooked Hare,Monster,Druskenvald,The Crooked Moon,2024
+Devil’s Glove,Monster,Druskenvald,The Crooked Moon,2024
+Dingpot,Monster,Druskenvald,The Crooked Moon,2024
+Ghost Crawler,Monster,Druskenvald,The Crooked Moon,2024
+Goatstealer,Monster,Druskenvald,The Crooked Moon,2024
+Hemonculus,Monster,Druskenvald,The Crooked Moon,2024
+Magpie of Omens,Monster,Druskenvald,The Crooked Moon,2024
+Moonshine,Monster,Druskenvald,The Crooked Moon,2024
+Nameless Thing,Monster,Druskenvald,The Crooked Moon,2024
+Ravencraft,Monster,Druskenvald,The Crooked Moon,2024
+Salmon of Knowledge,Monster,Druskenvald,The Crooked Moon,2024
+Witchwoven,Monster,Druskenvald,The Crooked Moon,2024
+Lurker in the Dark,Monster,Druskenvald,The Crooked Moon,2024
+Wickermoor Hollow,Location,Druskenvald,The Crooked Moon,2024
+The Ghostlight Express,Location,Druskenvald,The Crooked Moon,2024
+Wickermoor Village,Location,Druskenvald,The Crooked Moon,2024
+The Crooked House,Location,Druskenvald,The Crooked Moon,2024
+Fields of the Crow,Location,Druskenvald,The Crooked Moon,2024
+The Crimson Monastery,Location,Druskenvald,The Crooked Moon,2024
+The Drowned Crossroads,Location,Druskenvald,The Crooked Moon,2024
+Skitterdeep Mine,Location,Druskenvald,The Crooked Moon,2024
+Memory’s Rest,Location,Druskenvald,The Crooked Moon,2024
+Hartsblight Forest,Location,Druskenvald,The Crooked Moon,2024
+Maidenmist Cemetery,Location,Druskenvald,The Crooked Moon,2024
+The Roving Rookery,Location,Druskenvald,The Crooked Moon,2024
+Fool’s Day,Location,Druskenvald,The Crooked Moon,2024
+The Crooked Nightmare,Location,Druskenvald,The Crooked Moon,2024
+Wicker’s Vigil,Location,Druskenvald,The Crooked Moon,2024
+The Crooked Tree,Location,Druskenvald,The Crooked Moon,2024
+Alpengrendel,Monster,Druskenvald,The Crooked Moon,2024
+Bat Hound,Monster,Druskenvald,The Crooked Moon,2024
+Bayou Beast,Monster,Druskenvald,The Crooked Moon,2024
+Boneflayer,Monster,Druskenvald,The Crooked Moon,2024
+Boogleswarm,Monster,Druskenvald,The Crooked Moon,2024
+Centipede Hag,Monster,Druskenvald,The Crooked Moon,2024
+Corvodaemon,Monster,Druskenvald,The Crooked Moon,2024
+Crimson Clergy,Monster,Druskenvald,The Crooked Moon,2024
+Crooked Effigy,Monster,Druskenvald,The Crooked Moon,2024
+Crooked Man,Monster,Druskenvald,The Crooked Moon,2024
+Crowstorm,Monster,Druskenvald,The Crooked Moon,2024
+Deepdreck,Monster,Druskenvald,The Crooked Moon,2024
+Drakkenhob,Monster,Druskenvald,The Crooked Moon,2024
+Dream Eater,Monster,Druskenvald,The Crooked Moon,2024
+Ferryman,Monster,Druskenvald,The Crooked Moon,2024
+Festerhulk,Monster,Druskenvald,The Crooked Moon,2024
+Fleshdobbin,Monster,Druskenvald,The Crooked Moon,2024
+Gloomwood,Monster,Druskenvald,The Crooked Moon,2024
+Gobblegeist,Monster,Druskenvald,The Crooked Moon,2024
+Herald of Fools,Monster,Druskenvald,The Crooked Moon,2024
+Hospital Horror,Monster,Druskenvald,The Crooked Moon,2024
+House of Horror,Monster,Druskenvald,The Crooked Moon,2024
+Hypnovulfen,Monster,Druskenvald,The Crooked Moon,2024
+Invader Out of Space,Monster,Druskenvald,The Crooked Moon,2024
+Kackle,Monster,Druskenvald,The Crooked Moon,2024
+Keeper of the Blight,Monster,Druskenvald,The Crooked Moon,2024
+Ketgrinn,Monster,Druskenvald,The Crooked Moon,2024
+Lake Dredger,Monster,Druskenvald,The Crooked Moon,2024
+Lurker in the Dark,Monster,Druskenvald,The Crooked Moon,2024
+Maidenwood,Monster,Druskenvald,The Crooked Moon,2024
+Mutant Nurse,Monster,Druskenvald,The Crooked Moon,2024
+Necrolisk,Monster,Druskenvald,The Crooked Moon,2024
+Night Creature,Monster,Druskenvald,The Crooked Moon,2024
+Old Ways Chosen,Monster,Druskenvald,The Crooked Moon,2024
+Phantom Hearse,Monster,Druskenvald,The Crooked Moon,2024
+Pigeon Hag,Monster,Druskenvald,The Crooked Moon,2024
+Pumpkin Head,Monster,Druskenvald,The Crooked Moon,2024
+Reveler of Song,Monster,Druskenvald,The Crooked Moon,2024
+Reveler of Stories,Monster,Druskenvald,The Crooked Moon,2024
+Rotweaver,Monster,Druskenvald,The Crooked Moon,2024
+Serum Brute,Monster,Druskenvald,The Crooked Moon,2024
+Shrouded,Monster,Druskenvald,The Crooked Moon,2024
+Skitterswarm,Monster,Druskenvald,The Crooked Moon,2024
+Soulfire Stoker,Monster,Druskenvald,The Crooked Moon,2024
+Squabswarm,Monster,Druskenvald,The Crooked Moon,2024
+Vermin Familiar,Monster,Druskenvald,The Crooked Moon,2024
+Vermin Infestation,Monster,Druskenvald,The Crooked Moon,2024
+Wayward Haint,Monster,Druskenvald,The Crooked Moon,2024
+Weasel Hag,Monster,Druskenvald,The Crooked Moon,2024
+Wellwyrm,Monster,Druskenvald,The Crooked Moon,2024
+Wildpyre,Monster,Druskenvald,The Crooked Moon,2024
+Woodwarped,Monster,Druskenvald,The Crooked Moon,2024
+Wormhost Surgeon,Monster,Druskenvald,The Crooked Moon,2024
+Legendary Monsters,Monster,Druskenvald,The Crooked Moon,2024
+The Barrow King,Monster,Druskenvald,The Crooked Moon,2024
+The Beast of Blight,Monster,Druskenvald,The Crooked Moon,2024
+The Brimstone Behemoth,Monster,Druskenvald,The Crooked Moon,2024
+The Chained Reaper,Monster,Druskenvald,The Crooked Moon,2024
+The Crimson Abbot,Monster,Druskenvald,The Crooked Moon,2024
+The Dusk Mother,Monster,Druskenvald,The Crooked Moon,2024
+The Galloping Headsman,Monster,Druskenvald,The Crooked Moon,2024
+The Ghostlight Locomotive,Monster,Druskenvald,The Crooked Moon,2024
+The Grinning Sinner,Subclass,Druskenvald,The Crooked Moon,2024
+The Grinning Sinner,Monster,Druskenvald,The Crooked Moon,2024
+The Harvest Terror,Monster,Druskenvald,The Crooked Moon,2024
+The Horned King,Monster,Druskenvald,The Crooked Moon,2024
+The Jinxed Leviathan,Monster,Druskenvald,The Crooked Moon,2024
+The Lord of Fools,Monster,Druskenvald,The Crooked Moon,2024
+The Tall Man,Monster,Druskenvald,The Crooked Moon,2024
+The Vermintoll Abomination,Monster,Druskenvald,The Crooked Moon,2024
+The Weeping Widow,Monster,Druskenvald,The Crooked Moon,2024
+The White Worm,Monster,Druskenvald,The Crooked Moon,2024
+The Wicker Man,Monster,Druskenvald,The Crooked Moon,2024
+The Wild Titan,Monster,Druskenvald,The Crooked Moon,2024
+Apocalypse Domain,Subclass,Generic,Cthulhu by Torchlight,2024
+Warrior of Cosmic Balance,Subclass,Generic,Cthulhu by Torchlight,2024
+Oath of the Guardian,Subclass,Generic,Cthulhu by Torchlight,2024
+Trail Warden,Subclass,Generic,Cthulhu by Torchlight,2024
+Shadow Stalker,Subclass,Generic,Cthulhu by Torchlight,2024
+Exalted Assembly of the Feline Court,Subclass,Generic,Cthulhu by Torchlight,2024
+Bibliomancy,Subclass,Generic,Cthulhu by Torchlight,2024
+Spell Scorned Barbarian,Subclass,Generic,Cthulhu by Torchlight,2024
+Hungering Dark Sorcerer,Subclass,Generic,Cthulhu by Torchlight,2024
+Breath of the Deep,Spell,Generic,Cthulhu by Torchlight,2024
+Body Warping of Gorgoroth,Spell,Generic,Cthulhu by Torchlight,2024
+Cthulhu,Monster,Generic,Cthulhu by Torchlight,2024
+Mythos Tomes,Item,Generic,Cthulhu by Torchlight,2024
+Otari,Location,Golarion,Abomination Vaults,2024
+Gauntlight,Location,Golarion,Abomination Vaults,2024
+Drover’s Band,Item,Golarion,Abomination Vaults,2024
+Edge of Dissolution,Item,Golarion,Abomination Vaults,2024
+Folding Drums,Item,Golarion,Abomination Vaults,2024
+Ichthyosis Mutagen,Item,Golarion,Abomination Vaults,2024
+Lantern of Empty Light,Item,Golarion,Abomination Vaults,2024
+The Whispering Reeds,Item,Golarion,Abomination Vaults,2024
+Cooperative Blade,Item,Golarion,Abomination Vaults,2024
+Hunter’s Brooch,Item,Golarion,Abomination Vaults,2024
+Shadowed Thieves’ Tools,Item,Golarion,Abomination Vaults,2024
+Thresholds of Truth,Item,Golarion,Abomination Vaults,2024
+Crimson Fulcrum Lens,Item,Golarion,Abomination Vaults,2024
+Ebon Fulcrum Lens,Item,Golarion,Abomination Vaults,2024
+Emerald Fulcrum Lens,Item,Golarion,Abomination Vaults,2024
+Fulcrum Lattice,Item,Golarion,Abomination Vaults,2024
+Ochre Fulcrum Lens,Item,Golarion,Abomination Vaults,2024
+Awaken Portal,Spell,Golarion,Abomination Vaults,2024
+Daydreamer’s Curse,Spell,Golarion,Abomination Vaults,2024
+Ectoplasmic Expulsion,Spell,Golarion,Abomination Vaults,2024
+Outcast’s Curse,Spell,Golarion,Abomination Vaults,2024
+Sage’s Curse,Spell,Golarion,Abomination Vaults,2024
+Worm’s Repast,Spell,Golarion,Abomination Vaults,2024
+Accuser Devil,Monster,Golarion,Abomination Vaults,2024
+Augrael,NPC,Golarion,Abomination Vaults,2024
+Barcumbuk,NPC,Golarion,Abomination Vaults,2024
+Belcorra Haruvex,NPC,Golarion,Abomination Vaults,2024
+Bloodsiphon,Monster,Golarion,Abomination Vaults,2024
+Bright Walker,Monster,Golarion,Abomination Vaults,2024
+Calignis,Monster,Golarion,Abomination Vaults,2024
+Caligni Arcanist,Monster,Golarion,Abomination Vaults,2024
+Caligni Creeper,Monster,Golarion,Abomination Vaults,2024
+Caligni Custodian,Monster,Golarion,Abomination Vaults,2024
+Caligni Defender,Monster,Golarion,Abomination Vaults,2024
+Caligni Priest,Monster,Golarion,Abomination Vaults,2024
+Carman Rajani,NPC,Golarion,Abomination Vaults,2024
+Cauthooj,Monster,Golarion,Abomination Vaults,2024
+Chafkhem,NPC,Golarion,Abomination Vaults,2024
+Chandriu Invisar,NPC,Golarion,Abomination Vaults,2024
+Children of Belcorra,Monster,Golarion,Abomination Vaults,2024
+Child of Belcorra,Monster,Golarion,Abomination Vaults,2024
+Elder Child of Belcorra,Monster,Golarion,Abomination Vaults,2024
+Empty Death Bodak,Monster,Golarion,Abomination Vaults,2024
+Crawling Hand,Monster,Golarion,Abomination Vaults,2024
+Daemons,Monster,Golarion,Abomination Vaults,2024
+Ceustodaemon,Monster,Golarion,Abomination Vaults,2024
+Derghodaemon,Monster,Golarion,Abomination Vaults,2024
+Deadly Puffballs,Monster,Golarion,Abomination Vaults,2024
+Dragon’s Blood Puffball,Monster,Golarion,Abomination Vaults,2024
+Reaper Skull Puffball,Monster,Golarion,Abomination Vaults,2024
+Dhuthorexes,Monster,Golarion,Abomination Vaults,2024
+Deepwater Dhuthorex,Monster,Golarion,Abomination Vaults,2024
+Dread Dhuthorex,Monster,Golarion,Abomination Vaults,2024
+"Elf, Drow",Monster,Golarion,Abomination Vaults,2024
+Drow Cavern Seer,Monster,Golarion,Abomination Vaults,2024
+Drow Hunter,Monster,Golarion,Abomination Vaults,2024
+Drow Shootist,Monster,Golarion,Abomination Vaults,2024
+Drow Warden,Monster,Golarion,Abomination Vaults,2024
+Fleshwarps,Monster,Golarion,Abomination Vaults,2024
+Dreshkan,Monster,Golarion,Abomination Vaults,2024
+Grothlut,Monster,Golarion,Abomination Vaults,2024
+Mulventok,Monster,Golarion,Abomination Vaults,2024
+Froghemoth,Monster,Golarion,Abomination Vaults,2024
+Ghostglass Golem,Monster,Golarion,Abomination Vaults,2024
+Ghouls,Monster,Golarion,Abomination Vaults,2024
+Canker Cultist,Monster,Golarion,Abomination Vaults,2024
+Canker Demagogue,Monster,Golarion,Abomination Vaults,2024
+Cult Tattooist,Monster,Golarion,Abomination Vaults,2024
+Giant Fly,Monster,Golarion,Abomination Vaults,2024
+Giant Maggot,Monster,Golarion,Abomination Vaults,2024
+Gibtases,Monster,Golarion,Abomination Vaults,2024
+Gibtas Bounder,Monster,Golarion,Abomination Vaults,2024
+Swarm of Gibtas Spawn,Monster,Golarion,Abomination Vaults,2024
+Gibtanius,Monster,Golarion,Abomination Vaults,2024

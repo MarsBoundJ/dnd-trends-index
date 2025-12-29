@@ -1,32 +1,66 @@
-11:47:53 Tab4 StartNav45 #renderer-script #auto_subframe
-11:47:53 Tab4 StartNav46 #renderer-script #auto_subframe
-11:47:53 Tab4 FinishNav45
-11:47:53 Tab4 PageLoad
-11:47:53 Tab4 FinishNav46
-11:47:53 Tab4 PageLoad
-11:47:53 Tab4 PageLoad
-11:47:54 Tab4 StartNav47 #renderer-script #auto_subframe
-11:47:54 Tab4 FinishNav47
-11:47:54 Tab4 PageLoad
-11:47:54 Tab4 StartNav48 #renderer-script #auto_subframe
-11:47:54 Tab4 FinishNav48
-11:47:54 Tab4 PageLoad
-11:47:57 Tab3 StartNav49 #renderer-script #link
-11:47:57 Tab3 FinishNav49
-11:48:01 Tab3 StartNav50 #renderer-script #link
-11:48:01 Tab3 FinishNav50
-11:48:01 Tab3 StartNav51 #renderer-script #auto_subframe
-11:48:01 Tab3 StartNav52 #renderer-script #auto_subframe
-11:48:01 Tab3 FinishNav51
-11:48:01 Tab3 PageLoad
-11:48:01 Tab3 FinishNav52
-11:48:01 Tab3 PageLoad
-11:48:01 Tab3 PageLoad
-11:48:01 Tab3 StartNav53 #renderer-script #auto_subframe
-11:48:01 Tab3 FinishNav53
-11:48:01 Tab3 PageLoad
-11:48:02 Tab3 StartNav54 #renderer-script #auto_subframe
-11:48:02 Tab3 FinishNav54
-11:48:02 Tab3 PageLoad
-11:48:02 Widget Closed: TabHoverCardBubbleView
-12:18:31 Widget Closed: StatusBubble
+2:14:12 TextSelectionChanged
+2:14:12 TextSelectionChanged
+2:14:12 TextSelectionChanged
+2:14:12 TextSelectionChanged
+2:14:12 TextSelectionChanged
+2:14:12 TextSelectionChanged
+2:14:12 TextSelectionChanged
+2:14:12 TextSelectionChanged
+2:14:12 TextSelectionChanged
+2:14:13 TextSelectionChanged
+2:14:13 TextSelectionChanged
+2:14:13 TextSelectionChanged
+2:14:13 TextSelectionChanged
+2:14:22 Widget Closed: StatusBubble
+2:41:53 TextSelectionChanged
+2:41:53 TextSelectionChanged
+2:41:53 TextSelectionChanged
+2:41:54 TextSelectionChanged
+2:41:54 TextSelectionChanged
+2:41:54 TextSelectionChanged
+2:41:54 TextSelectionChanged
+2:41:54 TextSelectionChanged
+2:41:54 TextSelectionChanged
+2:41:54 TextSelectionChanged
+2:41:54 TextSelectionChanged
+2:41:54 TextSelectionChanged
+2:41:54 TextSelectionChanged
+2:41:54 TextSelectionChanged
+2:41:54 TextSelectionChanged
+2:41:54 TextSelectionChanged
+2:41:57 TextSelectionChanged
+2:42:04 Widget Closed: StatusBubble
+4:16:33 Widget Closed: StatusBubble
+4:41:25 Memory Pressure: Moderate
+4:41:40 Memory Pressure: Moderate
+4:41:50 Browser1 Replaced Tab2 with Tab11 at 1
+4:41:50 Memory Pressure: Critical
+4:41:55 Memory Pressure: Moderate
+4:42:05 Memory Pressure: Moderate
+4:42:15 Memory Pressure: Moderate
+4:42:25 Memory Pressure: Moderate
+4:42:35 Memory Pressure: Moderate
+4:42:45 Memory Pressure: Moderate
+4:42:55 Memory Pressure: Moderate
+4:43:05 Memory Pressure: Moderate
+4:43:15 Memory Pressure: Moderate
+4:43:25 Memory Pressure: Moderate
+4:43:35 Memory Pressure: Moderate
+4:43:45 Memory Pressure: Moderate
+4:43:55 Memory Pressure: Moderate
+4:44:05 Memory Pressure: Moderate
+4:44:15 Browser1 Replaced Tab3 with Tab12 at 2
+4:44:16 Memory Pressure: Critical
+4:44:20 Memory Pressure: Moderate
+4:44:30 Memory Pressure: Moderate
+4:44:40 Browser1 Replaced Tab4 with Tab13 at 3
+4:44:41 Memory Pressure: Critical
+4:44:45 Browser1 Replaced Tab5 with Tab14 at 4
+4:44:45 Memory Pressure: Critical
+4:44:50 Browser1 Replaced Tab6 with Tab15 at 5
+4:44:50 Memory Pressure: Critical
+4:44:55 Browser1 Replaced Tab7 with Tab16 at 6
+4:44:55 Memory Pressure: Critical
+4:45:00 Browser1 Replaced Tab8 with Tab17 at 7
+4:45:02 Memory Pressure: Critical
+4:45:05 Browser1 Replaced Tab9 with Tab18 at 8

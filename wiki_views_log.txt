@@ -1,2 +1,33 @@
 Found 3292 tracked articles.
 Processing 0/3292: Dungeons_&_Dragons
+Processing 50/3292: Al-Qadim
+Processing 100/3292: Divine_Mind_(Dungeons_&_Dragons)
+Processing 150/3292: Wizard_(Dungeons_&_Dragons)
+Processing 200/3292: Tucker's_kobolds
+Error fetching Michele_Carter: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+Processing 250/3292: Phil_Gallagher_(game_designer)
+Processing 300/3292: Steve_Miller_(game_designer)
+Processing 350/3292: Doug_Stewart_(game_designer)
+Processing 400/3292: Elf_(Dungeons_&_Dragons)
+Processing 450/3292: Uncaged_(anthology)
+Processing 500/3292: Creative_Campaigning
+Processing 550/3292: Forged_of_Darkness
+Processing 600/3292: Masters_of_the_Wild
+Processing 650/3292: Roots_of_Evil_(Ravenloft)
+Processing 700/3292: TSR_Jam_1999
+Processing 750/3292: Complete_Mage
+Processing 800/3292: First_Quest
+Error fetching Heroes_of_Shadow: HTTPSConnectionPool(host='wikimedia.org', port=443): Max retries exceeded with url: /api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/Heroes_of_Shadow/daily/20251128/20251228 (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1032)')))
+Processing 850/3292: Priest's_Spell_Compendium
+Processing 900/3292: Bastion_of_Broken_Souls
+Processing 950/3292: The_Isle_of_Dread
+Processing 1000/3292: The_Glacial_Rift_of_the_Frost_Giant_Jarl
+Processing 1050/3292: Dungeons_&_Dragons:_Chronicles_of_Mystara
+Processing 1100/3292: Mordenkainen
+Processing 1150/3292: Flamestrike
+Processing 1200/3292: Archdevil_(Dungeons_and_Dragons)
+Processing 1250/3292: Belial_(D&D)
+Processing 1300/3292: Eshebala
+Processing 1350/3292: Lilith_(Dungeons_and_Dragons)
+Processing 1400/3292: Nergal_(Dungeons_&_Dragons)
+Processing 1450/3292: Titania_(Dungeons_and_Dragons)

@@ -1,0 +1,5 @@
+^
+functions-framework>=3.8.0
+google-cloud-bigquery>=3.25.0
+google-cloud-aiplatform>=1.60.0
+ *cascade08*cascade08 *cascade08*cascade083 *cascade0834*cascade0847 *cascade0879*cascade089T *cascade08TU*cascade08UX *cascade08XZ*cascade08Z^ *cascade08"(0f1ceee2742f32be6a66898aa01f4fd3b072102f27file:///C:/Users/Yorri/.gemini/insight_requirements.txt:file:///C:/Users/Yorri/.gemini

@@ -119,7 +119,7 @@ By analyzing the `marketplace-search.js` source code, we discovered a hidden **P
 
 Switching to this API allowed us to bypass complex parsing and retrieve clean JSON data directly.
 
-![Roll20 Search Results](/C:/Users/Yorri/.gemini/antigravity/brain/a4440b01-de0a-4bd7-8c67-802d77f3a644/marketplace_search_results_1766935204741.png)
+![Roll20 Search Results](C:/Users/Yorri/.gemini/antigravity/brain/a4440b01-de0a-4bd7-8c67-802d77f3a644/marketplace_search_results_1766935204741.png)
 
 ### Execution Output
 ```text
@@ -197,6 +197,29 @@ We adopted a **Serverless + Vanilla JS Architecture** to visualize the Trend Sco
 - **Tech**: HTML5 + Vanilla JS + Chart.js (CDN).
 - **Styling**: Custom "Arcane Analytics" Theme (Glassmorphism, Dark Mode).
 - **Components**:
-    - **Initiative Ticker**: Live scrolling feed of top trends.
     - **Stat Block Cards**: Visualizing trends as RPG monsters (STR=Play, CHA=Hype).
+
+## 11. The AI Journalist (Phase 18)
+
+To avoid local resource constraints, we migrated the "Editorial Engine" to a **Serverless Architecture**.
+
+### 11.1 The "Journalist" Cloud Function
+- **Component**: `dnd-daily-journalist` (Gen 2 Cloud Function).
+- **Endpoint**: `https://dnd-daily-journalist-kfh5mgjgiq-uc.a.run.app`
+- **Logic**:
+    1.  Queries 3 pre-calculated **BigQuery Views** (`view_trend_spikes`, `view_platform_gaps`, `view_sentiment_divergence`).
+    2.  Prompts **Gemini 1.5 Pro** with a persona (e.g., "The Tavern Keeper").
+    3.  Saves the generated article to `gold_data.daily_articles`.
+
+### 11.2 Narrative Signals
+We isolated three specific story types:
+1.  **Meteoric Riser**: >50% growth in 7 days.
+2.  **Ghost Hype**: High Wikia Visits but Low Roll20 Usage.
+3.  **Silent Killer**: High Roll20 Usage but Low Social Buzz.
+
+### 11.3 Automation
+- **Scheduler**: `trigger-daily-journalist` (Daily @ 4:30 AM CST).
+- **Status**: ✅ **ACTIVE & SUCCESSFUL**.
+- **The Newsroom**: Now generates **3 articles per day** (Tavern Keeper, Sage, Goblin).
+- **Architecture**: Uses DML SQL inserts for synchronized multi-persona publication.
 - **Slow Lane Workflow**: Triggers Weekly Commercial Scrapers (Kickstarter, Roll20).
