@@ -1,9 +1,24 @@
 
 __pycache__/
 *.pyc
-# *.txt  <-- Commented out to allow requirements.txt and logs if needed, or better:
 !requirements.txt
 *.log
 .DS_Store
 .env
+key.json
 antigravity-browser-profile/
+antigravity/
+*.jpg
+*.png
+*.json
+!categories_full.json
+!schema.json
+!dnd_scraper_config.json
+!latest_news.json
+!master_collision_index.json
+!sage_sample.json
+!tavern_sample.json
+!treantmonk_videos.json
+node_modules/
+venv/
+.venv/

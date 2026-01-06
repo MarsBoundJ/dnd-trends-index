@@ -17,9 +17,10 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
+COPY utils/wiki_gap_filler.py ./utils/
 COPY reddit_harvester.py .
 COPY matcher.py .
 COPY meme_sentinel.py .
 
 # Command to run (invoked by Cloud Run Job)
-CMD ["python", "reddit_harvester.py"]
+CMD ["python", "utils/wiki_gap_filler.py"]

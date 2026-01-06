@@ -1,66 +1,89 @@
-2:14:12 TextSelectionChanged
-2:14:12 TextSelectionChanged
-2:14:12 TextSelectionChanged
-2:14:12 TextSelectionChanged
-2:14:12 TextSelectionChanged
-2:14:12 TextSelectionChanged
-2:14:12 TextSelectionChanged
-2:14:12 TextSelectionChanged
-2:14:12 TextSelectionChanged
-2:14:13 TextSelectionChanged
-2:14:13 TextSelectionChanged
-2:14:13 TextSelectionChanged
-2:14:13 TextSelectionChanged
-2:14:22 Widget Closed: StatusBubble
-2:41:53 TextSelectionChanged
-2:41:53 TextSelectionChanged
-2:41:53 TextSelectionChanged
-2:41:54 TextSelectionChanged
-2:41:54 TextSelectionChanged
-2:41:54 TextSelectionChanged
-2:41:54 TextSelectionChanged
-2:41:54 TextSelectionChanged
-2:41:54 TextSelectionChanged
-2:41:54 TextSelectionChanged
-2:41:54 TextSelectionChanged
-2:41:54 TextSelectionChanged
-2:41:54 TextSelectionChanged
-2:41:54 TextSelectionChanged
-2:41:54 TextSelectionChanged
-2:41:54 TextSelectionChanged
-2:41:57 TextSelectionChanged
-2:42:04 Widget Closed: StatusBubble
-4:16:33 Widget Closed: StatusBubble
-4:41:25 Memory Pressure: Moderate
-4:41:40 Memory Pressure: Moderate
-4:41:50 Browser1 Replaced Tab2 with Tab11 at 1
-4:41:50 Memory Pressure: Critical
-4:41:55 Memory Pressure: Moderate
-4:42:05 Memory Pressure: Moderate
-4:42:15 Memory Pressure: Moderate
-4:42:25 Memory Pressure: Moderate
-4:42:35 Memory Pressure: Moderate
-4:42:45 Memory Pressure: Moderate
-4:42:55 Memory Pressure: Moderate
-4:43:05 Memory Pressure: Moderate
-4:43:15 Memory Pressure: Moderate
-4:43:25 Memory Pressure: Moderate
-4:43:35 Memory Pressure: Moderate
-4:43:45 Memory Pressure: Moderate
-4:43:55 Memory Pressure: Moderate
-4:44:05 Memory Pressure: Moderate
-4:44:15 Browser1 Replaced Tab3 with Tab12 at 2
-4:44:16 Memory Pressure: Critical
-4:44:20 Memory Pressure: Moderate
-4:44:30 Memory Pressure: Moderate
-4:44:40 Browser1 Replaced Tab4 with Tab13 at 3
-4:44:41 Memory Pressure: Critical
-4:44:45 Browser1 Replaced Tab5 with Tab14 at 4
-4:44:45 Memory Pressure: Critical
-4:44:50 Browser1 Replaced Tab6 with Tab15 at 5
-4:44:50 Memory Pressure: Critical
-4:44:55 Browser1 Replaced Tab7 with Tab16 at 6
-4:44:55 Memory Pressure: Critical
-4:45:00 Browser1 Replaced Tab8 with Tab17 at 7
-4:45:02 Memory Pressure: Critical
-4:45:05 Browser1 Replaced Tab9 with Tab18 at 8
+60:51:26 Memory Pressure: Moderate
+60:52:11 Memory Pressure: Moderate
+60:53:51 Memory Pressure: Moderate
+60:54:01 Memory Pressure: Moderate
+60:54:11 Memory Pressure: Moderate
+60:54:21 Memory Pressure: Moderate
+61:07:37 Memory Pressure: Moderate
+61:07:47 Memory Pressure: Moderate
+61:08:07 Memory Pressure: Moderate
+61:08:42 Memory Pressure: Moderate
+61:08:52 Memory Pressure: Moderate
+61:09:02 Memory Pressure: Moderate
+61:09:12 Memory Pressure: Moderate
+61:09:22 Memory Pressure: Moderate
+61:23:17 Memory Pressure: Moderate
+61:23:42 Memory Pressure: Moderate
+61:23:52 Memory Pressure: Moderate
+61:24:07 Memory Pressure: Moderate
+61:24:17 Memory Pressure: Moderate
+61:24:27 Memory Pressure: Moderate
+61:31:37 Memory Pressure: Moderate
+61:31:47 Memory Pressure: Moderate
+61:31:57 Memory Pressure: Moderate
+0:00:00 Startup
+0:00:00 UserEducation.Session.ActivePeriodStart
+0:00:00 Tab1 StartNav1 #auto_toplevel
+0:00:00 Browser1 Insert active Tab1 at 0
+0:00:00 TouchMode.EnteredNonTouchMode
+0:00:00 Tab1 FinishNav1
+0:00:00 Tab1 PageLoad
+0:00:05 Widget Closed: BubbleDialogModelHostContentsView
+0:00:07 Tab2 StartNav3 #auto_toplevel
+0:00:07 Browser1 Insert active Tab2 at 1
+0:00:07 Tab2 FinishNav3
+0:00:07 Tab2 PageLoad
+0:00:07 Tab2 StartNav4 #typed
+0:00:07 Tab2 FinishNav4
+0:00:07 Tab2 PageLoad
+0:01:19 TextSelectionChanged
+0:01:20 TextSelectionChanged
+0:02:23 Widget Closed: TooltipAura
+0:02:34 TextSelectionChanged
+0:04:20 TextSelectionChanged
+0:04:22 TextSelectionChanged
+0:10:50 Tab3 StartNav5 #auto_toplevel
+0:10:50 Browser1 Insert active Tab3 at 2
+0:10:50 Tab3 FinishNav5
+0:10:50 Tab3 PageLoad
+0:10:50 Tab3 StartNav6 #typed
+0:10:50 Tab3 FinishNav6
+0:10:50 Tab3 PageLoad
+0:11:07 TextSelectionChanged
+0:11:59 Widget Closed: TooltipAura
+0:12:03 Widget Closed: TooltipAura
+0:12:07 Widget Closed: TooltipAura
+0:12:16 TextSelectionChanged
+0:12:34 TextSelectionChanged
+0:12:38 TextSelectionChanged
+0:12:41 TextSelectionChanged
+0:15:19 Tab4 StartNav7 #auto_toplevel
+0:15:19 Browser1 Insert active Tab4 at 3
+0:15:19 Tab4 FinishNav7
+0:15:19 Tab4 PageLoad
+0:15:19 Tab4 StartNav8 #typed
+0:15:19 Tab4 FinishNav8
+0:15:19 Tab4 PageLoad
+0:15:24 TextSelectionChanged
+0:15:55 Tab5 StartNav9 #auto_toplevel
+0:15:55 Browser1 Insert active Tab5 at 4
+0:15:55 Tab5 FinishNav9
+0:15:55 Tab5 PageLoad
+0:15:55 Tab5 StartNav10 #typed
+0:15:55 Tab5 FinishNav10
+0:15:55 Tab5 PageLoad
+0:16:20 TextSelectionChanged
+0:17:32 Widget Closed: TooltipAura
+0:17:34 TextSelectionChanged
+0:17:39 TextSelectionChanged
+0:17:41 TextSelectionChanged
+0:17:43 TextSelectionChanged
+0:17:45 TextSelectionChanged
+0:17:46 TextSelectionChanged
+0:17:48 TextSelectionChanged
+0:17:52 TextSelectionChanged
+0:17:58 TextSelectionChanged
+23:50:26 Memory Pressure: Moderate
+23:50:36 Memory Pressure: Moderate
+23:50:46 Memory Pressure: Moderate
+46:52:06 Widget Closed: TabHoverCardBubbleView

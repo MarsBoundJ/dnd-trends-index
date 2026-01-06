@@ -1,13 +1,16 @@
 
-const API_URL = "https://get-trend-data-appfh5mgjgiq-uc.a.run.app";
+const API_URL = "https://bouncer-api-kfh5mgjgiq-uc.a.run.app";
+
+let activeCategory = null;
+let globalTrendData = [];
 
 // Mock data fallback in case API fails (for demo purposes)
 const MOCK_DATA = [
-    { name: "Vecna", score: 95, hype_score: 98, play_score: 92, rarity: "Legendary" },
-    { name: "Deck of Many Things", score: 88, hype_score: 90, play_score: 85, rarity: "Very Rare" },
-    { name: "Strahd von Zarovich", score: 82, hype_score: 85, play_score: 80, rarity: "Very Rare" },
-    { name: "Mimic", score: 75, hype_score: 70, play_score: 80, rarity: "Rare" },
-    { name: "Owlbear", score: 65, hype_score: 60, play_score: 70, rarity: "Rare" },
+    { name: "Vecna", category: "Villain", score: 95, norm_wiki: 0.98, norm_fandom: 0.92, norm_youtube: 0.85, rarity: "Legendary" },
+    { name: "Deck of Many Things", category: "Magic Item", score: 88, norm_wiki: 0.90, norm_fandom: 0.85, norm_youtube: 0.70, rarity: "Very Rare" },
+    { name: "Strahd von Zarovich", category: "Villain", score: 82, norm_wiki: 0.85, norm_fandom: 0.80, norm_youtube: 0.60, rarity: "Very Rare" },
+    { name: "Mimic", category: "Monster", score: 75, norm_wiki: 0.70, norm_fandom: 0.80, norm_youtube: 0.50, rarity: "Rare" },
+    { name: "Owlbear", category: "Monster", score: 65, norm_wiki: 0.60, norm_fandom: 0.70, norm_youtube: 0.40, rarity: "Rare" },
 ];
 
 async function fetchData() {
@@ -15,7 +18,7 @@ async function fetchData() {
     const ticker = document.getElementById('ticker-content');
 
     try {
-        const response = await fetch(API_URL);
+        const response = await fetch(`${API_URL}/trends`);
         let data;
 
         if (!response.ok) {
@@ -25,15 +28,51 @@ async function fetchData() {
             data = await response.json();
         }
 
+        globalTrendData = data;
         renderTicker(data, ticker);
-        renderCards(data, container);
+        renderCards(data);
         renderChart(data);
+        fetchCategories();
 
     } catch (error) {
         console.error("Critical Failure:", error);
-        // Ensure UI isn't empty on error
-        renderCards(MOCK_DATA, container);
+        globalTrendData = MOCK_DATA;
+        renderCards(MOCK_DATA);
     }
+}
+
+async function fetchCategories() {
+    try {
+        const res = await fetch(`${API_URL}/categories`);
+        const data = await res.json();
+        const grid = document.getElementById('mana-grid');
+
+        grid.innerHTML = data.map(cat => `
+            <div class="mana-tile" onclick="toggleFilter('${cat.category}')" id="tile-${cat.category.replace(/\s+/g, '-')}">
+                <div class="tile-name">${cat.category}</div>
+                <div class="tile-score">${Math.round(cat.avg_category_score)}</div>
+            </div>
+        `).join('');
+    } catch (e) {
+        console.warn("Category fetch failed:", e);
+    }
+}
+
+function toggleFilter(category) {
+    if (activeCategory === category) {
+        activeCategory = null;
+    } else {
+        activeCategory = category;
+    }
+
+    document.querySelectorAll('.mana-tile').forEach(el => el.classList.remove('active'));
+    if (activeCategory) {
+        const targetId = `tile-${category.replace(/\s+/g, '-')}`;
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) targetEl.classList.add('active');
+    }
+
+    renderCards(globalTrendData);
 }
 
 function renderTicker(data, element) {
@@ -42,43 +81,74 @@ function renderTicker(data, element) {
     element.textContent = top5 + "   " + top5; // Duplicate for smooth scroll
 }
 
-function renderCards(data, container) {
+function renderCards(data) {
+    const container = document.getElementById('card-grid');
     container.innerHTML = '';
 
-    // Take Top 12
-    data.slice(0, 12).forEach(item => {
+    const filteredData = activeCategory
+        ? data.filter(item => item.category === activeCategory)
+        : data;
+
+    filteredData.slice(0, 12).forEach(item => {
         const card = document.createElement('div');
         card.className = 'arcane-card';
 
-        // Normalize rarity class
         const rarityClass = `rarity-${item.rarity.toLowerCase().replace(' ', '-')}`;
+
+        const wikiPct = Math.round((item.norm_wiki || 0) * 100);
+        const fanPct = Math.round((item.norm_fandom || 0) * 100);
+        const ytbPct = Math.round((item.norm_youtube || 0) * 100);
 
         card.innerHTML = `
             <div class="card-header">
-                <span class="card-title">${item.name}</span>
+                <div class="card-content">
+                    <span class="card-title">${item.name}</span>
+                    <span class="category-badge" data-cat="${item.category}">${item.category}</span>
+                </div>
                 <span class="card-rarity ${rarityClass}">${item.rarity}</span>
             </div>
             <div class="stat-block">
-                <div class="stat-box">
-                    <span class="stat-label">STR (Play)</span>
-                    <span class="stat-value">${Math.round(item.play_score || item.score * 0.8)}</span>
+                <div class="stat-row" title="Wikipedia Interest">
+                    <span class="label">WIKI</span>
+                    <div class="progress-track">
+                        <div class="stat-bar wiki" style="width: ${wikiPct}%"></div>
+                    </div>
+                    <span class="value">${wikiPct}</span>
                 </div>
-                <div class="stat-box">
-                    <span class="stat-label">CHA (Hype)</span>
-                    <span class="stat-value">${Math.round(item.hype_score || item.score * 0.9)}</span>
+                <div class="stat-row" title="Fandom Activity">
+                    <span class="label">FAN</span>
+                    <div class="progress-track">
+                        <div class="stat-bar fandom" style="width: ${fanPct}%"></div>
+                    </div>
+                    <span class="value">${fanPct}</span>
                 </div>
-                <div class="stat-box">
-                    <span class="stat-label">CON (Score)</span>
-                    <span class="stat-value" style="color:white">${Math.round(item.score)}</span>
+                <div class="stat-row" title="YouTube Velocity">
+                    <span class="label">YTB</span>
+                    <div class="progress-track">
+                        <div class="stat-bar youtube" style="width: ${ytbPct}%"></div>
+                    </div>
+                    <span class="value">${ytbPct}</span>
                 </div>
+            </div>
+            <div class="trend-score-pill">
+                 <span class="stat-label">Total Power:</span>
+                 <span class="stat-value">${Math.round(item.score)}</span>
             </div>
         `;
         container.appendChild(card);
     });
+
+    if (filteredData.length === 0) {
+        container.innerHTML = '<div class="loading">No artifacts found in this sector...</div>';
+    }
 }
 
 function renderChart(data) {
     const ctx = document.getElementById('trendChart').getContext('2d');
+
+    const existingChart = Chart.getChart(ctx);
+    if (existingChart) existingChart.destroy();
+
     const top10 = data.slice(0, 10);
 
     new Chart(ctx, {

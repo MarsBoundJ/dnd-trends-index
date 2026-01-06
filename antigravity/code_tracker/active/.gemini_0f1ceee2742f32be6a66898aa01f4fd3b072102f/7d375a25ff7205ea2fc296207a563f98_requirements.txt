@@ -1,5 +1,0 @@
-agoogle-cloud-bigquery>=3.0.0
-google-cloud-aiplatform>=1.0.0
-praw>=7.7.0
-pyahocorasick>=2.0.0
-a"(0f1ceee2742f32be6a66898aa01f4fd3b072102f2/file:///C:/Users/Yorri/.gemini/requirements.txt:file:///C:/Users/Yorri/.gemini

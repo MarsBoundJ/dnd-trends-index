@@ -8,7 +8,7 @@ LOCATION = "us-central1"
 def parse_icv2_ranking(article_text):
     vertexai.init(project=PROJECT_ID, location=LOCATION)
     
-    models_to_try = ["gemini-1.5-flash-001", "gemini-1.5-flash", "gemini-1.0-pro", "gemini-pro"]
+    models_to_try = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-1.0-pro"]
     
     prompt = f"""
     Act as a TTRPG Industry Analyst. Extract the quarterly rankings from this ICv2 report.

@@ -60,8 +60,34 @@ def setup_silver():
     FROM `{PROJECT_ID}.commercial_data.roll20_rankings`
     """
 
+    # 5. Normalize YouTube Velocity (Higher Velocity = Better)
+    # Since YouTube has tags (matched_keywords), we UNNEST them to map scores back to keywords
+    sql_youtube = f"""
+    CREATE OR REPLACE VIEW `{PROJECT_ID}.{DATASET_ID}.norm_youtube` AS
+    WITH daily_raw AS (
+        SELECT 
+            DATE(published_at) as date,
+            kw as keyword,
+            MAX(velocity_24h) as max_velocity
+        FROM `{PROJECT_ID}.social_data.youtube_videos`,
+        UNNEST(matched_keywords) as kw
+        GROUP BY 1, 2
+    )
+    SELECT 
+        date,
+        keyword,
+        PERCENT_RANK() OVER(PARTITION BY date ORDER BY max_velocity ASC) as score_youtube
+    FROM daily_raw
+    """
+
     # Execute
-    for name, sql in [("Wiki", sql_wiki), ("Fandom", sql_fandom), ("Roll20", sql_roll20)]:
+    views_to_create = [
+        ("Wiki", sql_wiki), 
+        ("Fandom", sql_fandom), 
+        ("Roll20", sql_roll20), 
+        ("YouTube", sql_youtube)
+    ]
+    for name, sql in views_to_create:
         print(f"Creating View: {name}...")
         try:
             client.query(sql).result()

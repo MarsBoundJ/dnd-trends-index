@@ -33,6 +33,16 @@
 ## Phase 4: External Data Sources (Reddit, Sales, Wikis) <!-- id: 12 -->
 - [x] **Task 4.1:** Create & Populate `subreddit_registry` (BQ) <!-- id: 13 -->
 - [x] **Task 4.2:** Build `matcher.py` (Aho-Corasick Keyword Trie) <!-- id: 42 -->
+- [x] **Troubleshoot Reddit**: Refactored `reddit_harvester.py` for aggregated schema, verified credentials, and redeployed Cloud Run Job.
+- [x] **Fix AI Connection**: Standardized model names to `gemini-1.5-flash` in `us-central1`.
+- [x] **Phase 19 Integration**: Updated Silver/Gold layers with YouTube and Reddit metrics.
+- [x] **Dashboard Verification**: Confirmed source-level visibility in the frontend.
+- [x] **Documentation**: Created Software Requirements Specification (SRS) for `dnd-trends-tracker`.
+- [x] **Tech Design**: Created Technical Design Document (TDD) for `dnd-trends-tracker`.
+- [x] **Schema Docs**: Created Database Schema documentation for `arcane-analytics`.
+- [x] **AI Spec**: Created AI-friendly Technical Specification for AI Studio.
+- [x] **Frontend Spec**: Created Frontend Design Specification for AI Studio.
+- [x] **Fandom Spec**: Created Fandom Monitoring Specification for AI Studio.
 - [x] **Task 4.3:** Develop `reddit_harvester.py` (PRAW Scraper) <!-- id: 43 -->
 - [x] **Task 4.4:** Implement "Meme Sentinel" (Gemini Sentiment) <!-- id: 44 -->
 - [x] **Task 4.5:** Finalize BigQuery Schema (`daily_metrics`, `viral_events`) <!-- id: 45 -->
@@ -110,12 +120,15 @@
 - [x] **Task 14.3:** BigQuery Schema (`wikipedia_daily_views`) <!-- id: 143 -->
 
 ## Phase 15: Fandom Wiki Intelligence Engine <!-- id: 53 -->
-- [x] **Task 15.1:** Wiki Registry Setup (Target List) <!-- id: 144 -->
+- [x] **Task 15.1:** Wiki Registry Setup (Target List: 11 Wikis) <!-- id: 144 -->
 - [x] **Task 15.2:** Fandom Scraper (`fandom_scraper.py`) <!-- id: 145 -->
   - [x] Implement `fetch_fandom_trending` (API: /Articles/Top)
   - [x] Implement `clean_fandom_data` (Filter namespaces)
 - [x] **Task 15.3:** BigQuery Schema (`fandom_trending`) <!-- id: 146 -->
-- [x] **Task 15.4:** Velocity Analysis (Derived View) <!-- id: 147 -->
+- [x] **Task 15.4:** Velocity & Normalization (Silver View) <!-- id: 147 -->
+- [x] **Task 15.5:** Deploy as Cloud Function (Gen 2) <!-- id: 501 -->
+- [x] **Task 15.6:** Retrofit Categorization (Silver/Gold Layers) <!-- id: 502 -->
+- [x] **Task 15.7:** Reload Concept Library from `dnd_keywords.csv` (Safe Merge) <!-- id: 503 -->
 
 ## Phase 16: Data Warehouse Orchestration & Trend Score <!-- id: 17 -->
 - [/] **Task 16.1:** Scheduling Architecture (Cloud Workflows) <!-- id: 148 -->
@@ -164,11 +177,18 @@
   - [x] Create Cloud Scheduler Job (Daily 4:30 AM).
   - [x] **UPGRADE**: Multi-Persona Newsroom (3 articles per day).
 
-- [ ] **Phase 19: Full Data Stream Integration (Frontend)** <!-- id: 190 -->
-  - [/] Audit existing data sources and frontend capability.
-  - [ ] Create `silver_data.norm_youtube` normalization view.
-  - [ ] Upgrade `gold_data.trend_scores` to include YouTube and raw source metrics.
-  - [ ] Update "Bouncer" API to serve granular source data and latest news.
+- [x] **Phase 19: Full Data Stream Integration (Frontend)** <!-- id: 190 -->
+  - [x] Audit existing data sources and frontend capability.
+  - [x] Create `silver_data.norm_youtube` normalization view.
+  - [x] Upgrade `gold_data.trend_scores` to include YouTube and raw source metrics.
+  - [x] Update "Bouncer" API to serve granular source data and latest news.
+  - [x] Activate Frontend Metrics (Badges & Fandom Bar).
+  - [x] Implement The Mana Grid (Category Heatmap & Filtering).
+  - [x] Wikipedia Discovery Protocol (Gap Filling).
+    - [x] Create `utils/wiki_gap_filler.py` discovery script.
+    - [x] Run discovery for top 500 missing Monster/Spell/MagicItem concepts.
+    - [x] Update `social_data.wikipedia_article_registry` with new valid pages.
+    - [/] Re-run `wikipedia_scraper.py` for newly discovered pages.
   - [ ] Build "Daily Newsroom" UI section in dashboard.
   - [ ] Add "Source Breakdown" icons/stats to trend cards.
   - [ ] Final Verification: Verified synchronized multi-source dashboard.

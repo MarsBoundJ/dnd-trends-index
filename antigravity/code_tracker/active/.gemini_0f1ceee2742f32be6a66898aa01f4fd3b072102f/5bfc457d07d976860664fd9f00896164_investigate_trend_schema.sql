@@ -1,2 +1,0 @@
-RSELECT * FROM `dnd-trends-index.dnd_trends_categorized.trend_data_pilot` LIMIT 1
-R"(0f1ceee2742f32be6a66898aa01f4fd3b072102f2;file:///C:/Users/Yorri/.gemini/investigate_trend_schema.sql:file:///C:/Users/Yorri/.gemini

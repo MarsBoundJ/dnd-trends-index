@@ -1,0 +1,5 @@
+NAME                  STATE   TRIGGER       REGION       ENVIRONMENT
+bouncer-api           ACTIVE  HTTP Trigger  us-central1  2nd gen
+dnd-daily-journalist  ACTIVE  HTTP Trigger  us-central1  2nd gen
+dnd-scraper           ACTIVE  HTTP Trigger  us-central1  2nd gen
+get_trend_data        ACTIVE  HTTP Trigger  us-central1  2nd gen

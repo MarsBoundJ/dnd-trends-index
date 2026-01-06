@@ -50,7 +50,7 @@ class RedditHarvester:
         return any(anchor in text_lower for anchor in ANCHOR_WORDS)
 
     def process_subreddits(self):
-        results = []
+        aggregated_metrics = {}
         viral_events = []
         
         for sub_name, valid_config in self.registry.items():
@@ -69,21 +69,25 @@ class RedditHarvester:
                         if not self.has_anchor(full_text):
                             continue # Skip non-D&D context in specific subs
                     
-                    # specific dndmemes logic
-                    multiplier = valid_config['weight']
-                    
                     # 1. Match Keywords
                     matches = self.matcher.find_matches(full_text)
                     
                     for match in matches:
-                        results.append({
-                            "extraction_date": datetime.date.today().isoformat(),
-                            "subreddit": sub_name,
-                            "keyword": match['term'],
-                            "category": match['category'],
-                            "post_id": post.id,
-                            "score": post.score * multiplier # Adjusted impact
-                        })
+                        # Aggregate by Date, Sub, Keyword, Category
+                        # Note: We use the daily date as key
+                        key = (datetime.date.today().isoformat(), sub_name, match['term'], match['category'])
+                        if key not in aggregated_metrics:
+                            aggregated_metrics[key] = {
+                                "extraction_date": key[0],
+                                "subreddit": key[1],
+                                "keyword": key[2],
+                                "category": key[3],
+                                "mention_count": 0,
+                                "weighted_score": 0.0
+                            }
+                        aggregated_metrics[key]["mention_count"] += 1
+                        # Weighted score = post upvotes * tier weight
+                        aggregated_metrics[key]["weighted_score"] += post.score * valid_config['weight']
                         
                     # 2. Viral Sentinel Check
                     insight = self.sentinel.analyze_post(sub_name, full_text, post.score)
@@ -102,7 +106,7 @@ class RedditHarvester:
             except Exception as e:
                 print(f"Error scanning r/{sub_name}: {e}")
                 
-        return results, viral_events
+        return list(aggregated_metrics.values()), viral_events
 
     def save_to_bq(self, metrics, viral_events):
         print(f"\n--- HARVEST COMPLETE ---")

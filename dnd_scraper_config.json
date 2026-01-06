@@ -1,0 +1,51 @@
+{
+  "buildConfig": {
+    "automaticUpdatePolicy": {},
+    "build": "projects/187467566422/locations/us-central1/builds/bda79235-934a-4299-90d7-ca27ead34334",
+    "dockerRegistry": "ARTIFACT_REGISTRY",
+    "dockerRepository": "projects/dnd-trends-index/locations/us-central1/repositories/gcf-artifacts",
+    "entryPoint": "scrape_related_queries",
+    "runtime": "python312",
+    "serviceAccount": "projects/dnd-trends-index/serviceAccounts/187467566422-compute@developer.gserviceaccount.com",
+    "source": {
+      "storageSource": {
+        "bucket": "gcf-v2-sources-187467566422-us-central1",
+        "generation": "1762255722836997",
+        "object": "dnd-scraper/function-source.zip"
+      }
+    },
+    "sourceProvenance": {
+      "resolvedStorageSource": {
+        "bucket": "gcf-v2-sources-187467566422-us-central1",
+        "generation": "1762255722836997",
+        "object": "dnd-scraper/function-source.zip"
+      }
+    }
+  },
+  "createTime": "2025-11-02T13:12:43.514728957Z",
+  "environment": "GEN_2",
+  "labels": {
+    "deployment-tool": "cli-gcloud"
+  },
+  "name": "projects/dnd-trends-index/locations/us-central1/functions/dnd-scraper",
+  "satisfiesPzi": true,
+  "serviceConfig": {
+    "allTrafficOnLatestRevision": true,
+    "availableCpu": "0.5833",
+    "availableMemory": "1G",
+    "environmentVariables": {
+      "LOG_EXECUTION_ID": "true"
+    },
+    "ingressSettings": "ALLOW_ALL",
+    "maxInstanceCount": 100,
+    "maxInstanceRequestConcurrency": 1,
+    "revision": "dnd-scraper-00015-nur",
+    "service": "projects/dnd-trends-index/locations/us-central1/services/dnd-scraper",
+    "serviceAccountEmail": "187467566422-compute@developer.gserviceaccount.com",
+    "timeoutSeconds": 540,
+    "uri": "https://dnd-scraper-kfh5mgjgiq-uc.a.run.app"
+  },
+  "state": "ACTIVE",
+  "updateTime": "2025-11-04T11:29:46.570196791Z",
+  "url": "https://us-central1-dnd-trends-index.cloudfunctions.net/dnd-scraper"
+}

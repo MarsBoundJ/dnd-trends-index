@@ -1,0 +1,1086 @@
+[
+  {
+    "category": "Monster",
+    "count": 3085
+  },
+  {
+    "category": "MagicItem",
+    "count": 1868
+  },
+  {
+    "category": "Location",
+    "count": 1176
+  },
+  {
+    "category": "Spell",
+    "count": 947
+  },
+  {
+    "category": "Subclass",
+    "count": 619
+  },
+  {
+    "category": "NPC",
+    "count": 569
+  },
+  {
+    "category": "Art",
+    "count": 500
+  },
+  {
+    "category": "UA Content",
+    "count": 500
+  },
+  {
+    "category": "Youtube",
+    "count": 348
+  },
+  {
+    "category": "Influencer",
+    "count": 320
+  },
+  {
+    "category": "Villain",
+    "count": 312
+  },
+  {
+    "category": "Feat",
+    "count": 270
+  },
+  {
+    "category": "Slang",
+    "count": 242
+  },
+  {
+    "category": "Item",
+    "count": 224
+  },
+  {
+    "category": "Faction",
+    "count": 219
+  },
+  {
+    "category": "equipment",
+    "count": 218
+  },
+  {
+    "category": "Deity",
+    "count": 194
+  },
+  {
+    "category": "Search Trend",
+    "count": 164
+  },
+  {
+    "category": "Combat Mechanics",
+    "count": 148
+  },
+  {
+    "category": "Build",
+    "count": 144
+  },
+  {
+    "category": "Convention",
+    "count": 144
+  },
+  {
+    "category": "AI Tool",
+    "count": 136
+  },
+  {
+    "category": "combat",
+    "count": 126
+  },
+  {
+    "category": "core_mechanics",
+    "count": 125
+  },
+  {
+    "category": "Third Party",
+    "count": 117
+  },
+  {
+    "category": "Race",
+    "count": 114
+  },
+  {
+    "category": "Procedural Generator",
+    "count": 104
+  },
+  {
+    "category": "Background",
+    "count": 102
+  },
+  {
+    "category": "Invocation",
+    "count": 101
+  },
+  {
+    "category": "Unearthed Arcana",
+    "count": 99
+  },
+  {
+    "category": "General Game Terms",
+    "count": 88
+  },
+  {
+    "category": "Class",
+    "count": 87
+  },
+  {
+    "category": "Combat",
+    "count": 79
+  },
+  {
+    "category": "Accessory",
+    "count": 79
+  },
+  {
+    "category": "Species",
+    "count": 77
+  },
+  {
+    "category": "Roleplay & Narrative",
+    "count": 76
+  },
+  {
+    "category": "Tool",
+    "count": 74
+  },
+  {
+    "category": "Adventuring Gear",
+    "count": 71
+  },
+  {
+    "category": "Character Building",
+    "count": 68
+  },
+  {
+    "category": "Character Archetypes",
+    "count": 64
+  },
+  {
+    "category": "Magic Terms",
+    "count": 64
+  },
+  {
+    "category": "Community Lingo",
+    "count": 64
+  },
+  {
+    "category": "Signature Spells",
+    "count": 60
+  },
+  {
+    "category": "spellcasting",
+    "count": 57
+  },
+  {
+    "category": "Editions & Rulesets",
+    "count": 52
+  },
+  {
+    "category": "Combat Tactics",
+    "count": 52
+  },
+  {
+    "category": "Actual Play",
+    "count": 52
+  },
+  {
+    "category": "AI Art",
+    "count": 52
+  },
+  {
+    "category": "character_creation",
+    "count": 50
+  },
+  {
+    "category": "Mechanic",
+    "count": 48
+  },
+  {
+    "category": "Artist",
+    "count": 45
+  },
+  {
+    "category": "Art Subject",
+    "count": 45
+  },
+  {
+    "category": "Ability Scores",
+    "count": 44
+  },
+  {
+    "category": "Use Case",
+    "count": 40
+  },
+  {
+    "category": "AI Image Generator",
+    "count": 40
+  },
+  {
+    "category": "Kickstarter",
+    "count": 39
+  },
+  {
+    "category": "Martial Melee",
+    "count": 37
+  },
+  {
+    "category": "Build Name",
+    "count": 36
+  },
+  {
+    "category": "Dice & Randomization",
+    "count": 36
+  },
+  {
+    "category": "Usable Item",
+    "count": 36
+  },
+  {
+    "category": "Map Generator",
+    "count": 36
+  },
+  {
+    "category": "Condition",
+    "count": 34
+  },
+  {
+    "category": "Rulebooks",
+    "count": 32
+  },
+  {
+    "category": "Legal Reference",
+    "count": 32
+  },
+  {
+    "category": "Feat Abbreviations",
+    "count": 32
+  },
+  {
+    "category": "Storage & Organization",
+    "count": 32
+  },
+  {
+    "category": "Community Learning",
+    "count": 32
+  },
+  {
+    "category": "Vehicle",
+    "count": 31
+  },
+  {
+    "category": "Equipment",
+    "count": 29
+  },
+  {
+    "category": "DM Terms",
+    "count": 28
+  },
+  {
+    "category": "Poison",
+    "count": 28
+  },
+  {
+    "category": "Core Mechanic",
+    "count": 28
+  },
+  {
+    "category": "Container",
+    "count": 28
+  },
+  {
+    "category": "Movement",
+    "count": 26
+  },
+  {
+    "category": "Map Type",
+    "count": 25
+  },
+  {
+    "category": "Armor",
+    "count": 25
+  },
+  {
+    "category": "Tokens & Condition Markers",
+    "count": 24
+  },
+  {
+    "category": "Cartographer",
+    "count": 24
+  },
+  {
+    "category": "Community Resource",
+    "count": 24
+  },
+  {
+    "category": "Bastion",
+    "count": 23
+  },
+  {
+    "category": "Character",
+    "count": 22
+  },
+  {
+    "category": "Simple Melee",
+    "count": 21
+  },
+  {
+    "category": "DM Guide",
+    "count": 21
+  },
+  {
+    "category": "Prompt Template",
+    "count": 20
+  },
+  {
+    "category": "Trade Good",
+    "count": 20
+  },
+  {
+    "category": "Wearables & Apparel",
+    "count": 20
+  },
+  {
+    "category": "Art Style Concept",
+    "count": 20
+  },
+  {
+    "category": "Platforms & Publishers",
+    "count": 20
+  },
+  {
+    "category": "Character Role",
+    "count": 20
+  },
+  {
+    "category": "DIY & Craft Supplies",
+    "count": 20
+  },
+  {
+    "category": "Specialized Generator",
+    "count": 20
+  },
+  {
+    "category": "Character Creation",
+    "count": 19
+  },
+  {
+    "category": "Skill",
+    "count": 19
+  },
+  {
+    "category": "UA Class",
+    "count": 18
+  },
+  {
+    "category": "Art Style",
+    "count": 18
+  },
+  {
+    "category": "Spellcasting",
+    "count": 17
+  },
+  {
+    "category": "DM Screens & Organization",
+    "count": 16
+  },
+  {
+    "category": "Specialty & Luxury Items",
+    "count": 16
+  },
+  {
+    "category": "Character & Player Aids",
+    "count": 16
+  },
+  {
+    "category": "Magic Item",
+    "count": 16
+  },
+  {
+    "category": "Oracle System",
+    "count": 16
+  },
+  {
+    "category": "Hazard",
+    "count": 16
+  },
+  {
+    "category": "AI DM Platform",
+    "count": 16
+  },
+  {
+    "category": "Immersion & Atmosphere",
+    "count": 16
+  },
+  {
+    "category": "Martial Ranged",
+    "count": 16
+  },
+  {
+    "category": "Cards & Reference Materials",
+    "count": 16
+  },
+  {
+    "category": "Adventure",
+    "count": 15
+  },
+  {
+    "category": "Clothes",
+    "count": 15
+  },
+  {
+    "category": "Equipment Pack",
+    "count": 14
+  },
+  {
+    "category": "Environment",
+    "count": 14
+  },
+  {
+    "category": "TTRPG System",
+    "count": 14
+  },
+  {
+    "category": "UA Subclass",
+    "count": 13
+  },
+  {
+    "category": "Damage Type",
+    "count": 13
+  },
+  {
+    "category": "World Builder",
+    "count": 12
+  },
+  {
+    "category": "Class Abbreviations",
+    "count": 12
+  },
+  {
+    "category": "Currency",
+    "count": 12
+  },
+  {
+    "category": "Settings & Worlds",
+    "count": 12
+  },
+  {
+    "category": "Creature Generator",
+    "count": 12
+  },
+  {
+    "category": "Digital Integration",
+    "count": 12
+  },
+  {
+    "category": "Organization Tool",
+    "count": 12
+  },
+  {
+    "category": "Resource Hub",
+    "count": 12
+  },
+  {
+    "category": "Journals & Note-Taking",
+    "count": 12
+  },
+  {
+    "category": "Prompt Database",
+    "count": 12
+  },
+  {
+    "category": "Terrain & Environmental",
+    "count": 12
+  },
+  {
+    "category": "Gemstone (10 gp)",
+    "count": 12
+  },
+  {
+    "category": "Gemstone (50 gp)",
+    "count": 12
+  },
+  {
+    "category": "Miniatures & Figures",
+    "count": 12
+  },
+  {
+    "category": "Chatbot",
+    "count": 12
+  },
+  {
+    "category": "Game Design",
+    "count": 12
+  },
+  {
+    "category": "Battle Maps & Tactical Surfaces",
+    "count": 12
+  },
+  {
+    "category": "NPC Generator",
+    "count": 12
+  },
+  {
+    "category": "Story Generator",
+    "count": 12
+  },
+  {
+    "category": "Accessibility",
+    "count": 12
+  },
+  {
+    "category": "Novelty & Collectible Items",
+    "count": 12
+  },
+  {
+    "category": "Area of Effect",
+    "count": 11
+  },
+  {
+    "category": "Feature",
+    "count": 11
+  },
+  {
+    "category": "Software",
+    "count": 11
+  },
+  {
+    "category": "Arcane Focus",
+    "count": 10
+  },
+  {
+    "category": "Competitor",
+    "count": 10
+  },
+  {
+    "category": "Coin",
+    "count": 10
+  },
+  {
+    "category": "Art Type",
+    "count": 10
+  },
+  {
+    "category": "Map Style",
+    "count": 10
+  },
+  {
+    "category": "Gemstone (100 gp)",
+    "count": 10
+  },
+  {
+    "category": "Action",
+    "count": 9
+  },
+  {
+    "category": "Mount",
+    "count": 9
+  },
+  {
+    "category": "Siege Equipment",
+    "count": 9
+  },
+  {
+    "category": "Play Platform",
+    "count": 9
+  },
+  {
+    "category": "Company Position",
+    "count": 9
+  },
+  {
+    "category": "Faction Generator",
+    "count": 8
+  },
+  {
+    "category": "Ammunition",
+    "count": 8
+  },
+  {
+    "category": "History",
+    "count": 8
+  },
+  {
+    "category": "General",
+    "count": 8
+  },
+  {
+    "category": "Story Seed Generator",
+    "count": 8
+  },
+  {
+    "category": "Shop Generator",
+    "count": 8
+  },
+  {
+    "category": "Rules-Compliant Generator",
+    "count": 8
+  },
+  {
+    "category": "Voice Generator",
+    "count": 8
+  },
+  {
+    "category": "Location Generator",
+    "count": 8
+  },
+  {
+    "category": "Gemstone (1000 gp)",
+    "count": 8
+  },
+  {
+    "category": "Monster Generator",
+    "count": 8
+  },
+  {
+    "category": "Table Builder",
+    "count": 8
+  },
+  {
+    "category": "Spell School",
+    "count": 8
+  },
+  {
+    "category": "Setting Generator",
+    "count": 8
+  },
+  {
+    "category": "Encounter Generator",
+    "count": 8
+  },
+  {
+    "category": "Edition",
+    "count": 8
+  },
+  {
+    "category": "Weapon Mastery",
+    "count": 8
+  },
+  {
+    "category": "NPC/Dialogue Generator",
+    "count": 8
+  },
+  {
+    "category": "Character Attribute",
+    "count": 8
+  },
+  {
+    "category": "Treasure Generator",
+    "count": 8
+  },
+  {
+    "category": "Token Generator",
+    "count": 8
+  },
+  {
+    "category": "Druidic Focus",
+    "count": 8
+  },
+  {
+    "category": "Simple Ranged",
+    "count": 7
+  },
+  {
+    "category": "Exploration",
+    "count": 7
+  },
+  {
+    "category": "Orders",
+    "count": 7
+  },
+  {
+    "category": "Magic",
+    "count": 7
+  },
+  {
+    "category": "Community Source",
+    "count": 7
+  },
+  {
+    "category": "Religion",
+    "count": 7
+  },
+  {
+    "category": "Lineage",
+    "count": 7
+  },
+  {
+    "category": "Facilities",
+    "count": 6
+  },
+  {
+    "category": "Downtime",
+    "count": 6
+  },
+  {
+    "category": "Size",
+    "count": 6
+  },
+  {
+    "category": "Gemstone (500 gp)",
+    "count": 6
+  },
+  {
+    "category": "Holy Symbol",
+    "count": 6
+  },
+  {
+    "category": "Vision",
+    "count": 5
+  },
+  {
+    "category": "Game Entity",
+    "count": 5
+  },
+  {
+    "category": "Sense",
+    "count": 5
+  },
+  {
+    "category": "Concept",
+    "count": 5
+  },
+  {
+    "category": "Magic Items",
+    "count": 4
+  },
+  {
+    "category": "Proficiency",
+    "count": 4
+  },
+  {
+    "category": "3D Character Builder",
+    "count": 4
+  },
+  {
+    "category": "Asset Pack",
+    "count": 4
+  },
+  {
+    "category": "Character Portrait Generator",
+    "count": 4
+  },
+  {
+    "category": "Avatar Maker",
+    "count": 4
+  },
+  {
+    "category": "Character Progression",
+    "count": 4
+  },
+  {
+    "category": "Voice Integration",
+    "count": 4
+  },
+  {
+    "category": "Dungeon Generator",
+    "count": 4
+  },
+  {
+    "category": "Rest",
+    "count": 4
+  },
+  {
+    "category": "VTT Platform",
+    "count": 4
+  },
+  {
+    "category": "Character Creator",
+    "count": 4
+  },
+  {
+    "category": "Gemstone (5000 gp)",
+    "count": 4
+  },
+  {
+    "category": "API/Tool",
+    "count": 4
+  },
+  {
+    "category": "Defense",
+    "count": 4
+  },
+  {
+    "category": "Party Generator",
+    "count": 4
+  },
+  {
+    "category": "NPC Class",
+    "count": 4
+  },
+  {
+    "category": "AI DM Bot",
+    "count": 4
+  },
+  {
+    "category": "Supernatural Gift",
+    "count": 4
+  },
+  {
+    "category": "AI DM Builder",
+    "count": 4
+  },
+  {
+    "category": "Chatbot Preset",
+    "count": 4
+  },
+  {
+    "category": "Status",
+    "count": 4
+  },
+  {
+    "category": "AI Portrait Generator",
+    "count": 4
+  },
+  {
+    "category": "Spells",
+    "count": 3
+  },
+  {
+    "category": "Special Facility",
+    "count": 3
+  },
+  {
+    "category": "Monsters",
+    "count": 3
+  },
+  {
+    "category": "Artifact",
+    "count": 3
+  },
+  {
+    "category": "Event",
+    "count": 3
+  },
+  {
+    "category": "Cover",
+    "count": 3
+  },
+  {
+    "category": "Foundry Module",
+    "count": 3
+  },
+  {
+    "category": "Attitude",
+    "count": 3
+  },
+  {
+    "category": "Saddle",
+    "count": 3
+  },
+  {
+    "category": "Weapon",
+    "count": 2
+  },
+  {
+    "category": "Play Structure",
+    "count": 2
+  },
+  {
+    "category": "Creature Type",
+    "count": 2
+  },
+  {
+    "category": "Social",
+    "count": 2
+  },
+  {
+    "category": "Social Relationship",
+    "count": 2
+  },
+  {
+    "category": "Explosive",
+    "count": 2
+  },
+  {
+    "category": "Magical Effect",
+    "count": 2
+  },
+  {
+    "category": "Monk",
+    "count": 2
+  },
+  {
+    "category": "Character Trait",
+    "count": 2
+  },
+  {
+    "category": "Quest",
+    "count": 2
+  },
+  {
+    "category": "Organization",
+    "count": 2
+  },
+  {
+    "category": "Service",
+    "count": 1
+  },
+  {
+    "category": "UA Spell",
+    "count": 1
+  },
+  {
+    "category": "Spells & Effects",
+    "count": 1
+  },
+  {
+    "category": " light",
+    "count": 1
+  },
+  {
+    "category": " keg",
+    "count": 1
+  },
+  {
+    "category": "Object",
+    "count": 1
+  },
+  {
+    "category": "Tack and Harness",
+    "count": 1
+  },
+  {
+    "category": " iron",
+    "count": 1
+  },
+  {
+    "category": "000)",
+    "count": 1
+  },
+  {
+    "category": " hunting",
+    "count": 1
+  },
+  {
+    "category": " fragmentation",
+    "count": 1
+  },
+  {
+    "category": " Two-person",
+    "count": 1
+  },
+  {
+    "category": "Time",
+    "count": 1
+  },
+  {
+    "category": "Classification",
+    "count": 1
+  },
+  {
+    "category": " Renaissance (10)",
+    "count": 1
+  },
+  {
+    "category": " Iron (10)",
+    "count": 1
+  },
+  {
+    "category": " Hemp (50 ft)",
+    "count": 1
+  },
+  {
+    "category": " Firearm (10)",
+    "count": 1
+  },
+  {
+    "category": " Draft",
+    "count": 1
+  },
+  {
+    "category": "Sourcebook",
+    "count": 1
+  },
+  {
+    "category": "Math",
+    "count": 1
+  },
+  {
+    "category": " Crossbow Bolt",
+    "count": 1
+  },
+  {
+    "category": "Character Resource",
+    "count": 1
+  },
+  {
+    "category": "Communication",
+    "count": 1
+  },
+  {
+    "category": "Timing",
+    "count": 1
+  },
+  {
+    "category": "Lore",
+    "count": 1
+  },
+  {
+    "category": "Language",
+    "count": 1
+  },
+  {
+    "category": "Campaign Structure",
+    "count": 1
+  },
+  {
+    "category": "Advancement",
+    "count": 1
+  },
+  {
+    "category": "Gameplay",
+    "count": 1
+  },
+  {
+    "category": "Game Mechanic",
+    "count": 1
+  },
+  {
+    "category": "Game Materials",
+    "count": 1
+  },
+  {
+    "category": "VideoGame",
+    "count": 1
+  },
+  {
+    "category": "Audio Creator",
+    "count": 1
+  },
+  {
+    "category": "Resource",
+    "count": 1
+  },
+  {
+    "category": "Artist (Tokens)",
+    "count": 1
+  },
+  {
+    "category": "Encumbrance",
+    "count": 1
+  },
+  {
+    "category": "Encounter",
+    "count": 1
+  },
+  {
+    "category": "UA Feat",
+    "count": 1
+  },
+  {
+    "category": "RuleTerm",
+    "count": 1
+  },
+  {
+    "category": "Creature",
+    "count": 1
+  },
+  {
+    "category": "Physical",
+    "count": 1
+  }
+]

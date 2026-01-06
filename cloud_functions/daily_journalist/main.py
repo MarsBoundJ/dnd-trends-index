@@ -8,7 +8,7 @@ import datetime
 
 # Configuration
 PROJECT_ID = "dnd-trends-index"
-LOCATION = "global"
+LOCATION = "us-central1"
 DATASET_ID = "gold_data"
 TABLE_ID = "daily_articles"
 
@@ -42,6 +42,8 @@ def generate_article(request):
         # 1. Fetch Narrative Context (Once for all personas)
         spikes = list(bq_client.query(f"SELECT * FROM `{PROJECT_ID}.{DATASET_ID}.view_trend_spikes` LIMIT 5").to_dataframe().to_dict(orient='records'))
         gaps = list(bq_client.query(f"SELECT * FROM `{PROJECT_ID}.{DATASET_ID}.view_platform_gaps` LIMIT 5").to_dataframe().to_dict(orient='records'))
+        
+        # Fixing YouTube query to match schema (velocity_24h)
         sentiment = list(bq_client.query(f"SELECT * FROM `{PROJECT_ID}.social_data.youtube_videos` WHERE velocity_24h > 1000 LIMIT 5").to_dataframe().to_dict(orient='records'))
         
         context = {
@@ -51,7 +53,8 @@ def generate_article(request):
         }
         
         results = []
-        model = GenerativeModel("gemini-3-pro-preview")
+        # Update model to current stable version
+        model = GenerativeModel("gemini-1.5-flash")
         
         # Ensure BQ Table exists
         table_ref = f"{PROJECT_ID}.{DATASET_ID}.{TABLE_ID}"

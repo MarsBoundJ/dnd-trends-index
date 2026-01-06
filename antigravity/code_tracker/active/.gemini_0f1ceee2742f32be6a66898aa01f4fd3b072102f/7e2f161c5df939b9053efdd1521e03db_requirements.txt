@@ -1,7 +1,0 @@
-~
-functions-framework>=3.0.0
-google-cloud-bigquery>=3.0.0
-google-cloud-aiplatform>=1.60.0
-pandas>=2.0.0
-db-dtypes>=1.0.0
-W *cascade08WY*cascade08Y~ *cascade08"(0f1ceee2742f32be6a66898aa01f4fd3b072102f2Pfile:///C:/Users/Yorri/.gemini/cloud_functions/daily_journalist/requirements.txt:file:///C:/Users/Yorri/.gemini
