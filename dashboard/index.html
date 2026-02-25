@@ -1,57 +1,48 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arcane Analytics | D&D Trends</title>
-    
+    <title>Arcane Analytics</title>
+    <link rel="stylesheet" href="css/style.css">
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Styles -->
-    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>
+
 <body>
+    <nav class="arcane-hud">
+        <div class="logo">ARCANE <span class="highlight">ANALYTICS</span></div>
+        <div class="nav-links">
+            <a href="#" class="nav-tab active" data-tab="search" onclick="switchTab('search')">[SEARCH]</a>
+            <a href="#" class="nav-tab" data-tab="social" onclick="switchTab('social')">[SOCIAL]</a>
+            <a href="#" class="nav-tab" data-tab="sales" onclick="switchTab('sales')">[SALES]</a>
+        </div>
+    </nav>
 
-    <div class="dashboard-container">
-        
-        <!-- Header -->
-        <header>
-            <h1>ARCANE ANALYTICS</h1>
-            
-            <div class="initiative-ticker">
-                <div class="ticker-content" id="ticker-content">
-                    Initialize Scrying Orb... Gathering Mana...
-                </div>
-            </div>
-        </header>
-
-        <!-- Visualization Area -->
-        <section class="chart-container">
-            <canvas id="trendChart" height="100"></canvas>
-        </section>
-
-        <!-- The Mana Grid (Sector Analysis) -->
-        <section class="mana-section">
-            <h2 class="section-title">Sector Intelligence</h2>
-            <div id="mana-grid" class="mana-grid">
-                <!-- Tiles injected via JS -->
-            </div>
-        </section>
-
-        <!-- Stats Grid -->
-        <section class="stats-grid" id="card-grid">
-            <div class="loading">Summoning Data...</div>
-        </section>
-
+    <div class="control-bar">
+        <div class="source-selector" id="source-selector">
+            <span class="label">SOURCE:</span>
+            <button id="btn-google" class="source-btn active" onclick="switchSource('google')">> GOOGLE TRENDS</button>
+            <button id="btn-fandom" class="source-btn" onclick="switchSource('fandom')">FANDOM</button>
+            <button id="btn-wikipedia" class="source-btn" onclick="switchSource('wikipedia')">WIKIPEDIA</button>
+            <button id="btn-reddit" class="source-btn" onclick="switchSource('reddit')">REDDIT</button>
+            <button id="btn-youtube" class="source-btn" onclick="switchSource('youtube')">YOUTUBE</button>
+        </div>
     </div>
 
-    <script src="app.js"></script>
+    <main id="accordion-deck">
+        <!-- Ribbons injected here by JS -->
+        <div class="skeleton-ribbon"></div>
+        <div class="skeleton-ribbon"></div>
+        <div class="skeleton-ribbon"></div>
+    </main>
+
+    <script src="js/app.js"></script>
 </body>
+
 </html>

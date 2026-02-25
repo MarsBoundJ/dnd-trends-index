@@ -1,0 +1,20 @@
+- [x] Analyze `categories_full.csv` for taxonomy structure <!-- id: 0 -->
+- [x] Review BigQuery schema for time-series granularity <!-- id: 1 -->
+- [x] Develop `data_science_strategy.md` with proposed metrics <!-- id: 2 -->
+    - [x] Simple Rankings (Top N)
+    - [x] Normalized Category Comparison
+    - [x] Velocity & Momentum
+    - [x] Seasonality & Day-of-Week
+    - [x] Opportunity Matrix
+- [x] Phase 40: BGG Commercial Ingestion <!-- id: 161 -->
+    - [x] Task 1: Create BGG Mapping Table (bgg_id_map) <!-- id: 162 -->
+    - [x] Task 2: Seed the Mapping (Heavy Hitters) <!-- id: 163 -->
+    - [x] Task 3: Build BGG Harvester (bgg_harvester.py) <!-- id: 164 -->
+    - [x] Task 4: Normalization View (norm_buy) <!-- id: 165 -->
+    - [x] CHECKPOINT: Verify 'Monster Manual' buy score. <!-- id: 166 -->
+- [x] Phase 41: BGG UI Integration <!-- id: 167 -->
+    - [x] Task 1: Create BGG Gold View (view_bgg_leaderboards) <!-- id: 168 -->
+    - [x] Task 2: Update Bouncer API (source=bgg) <!-- id: 169 -->
+    - [x] Task 3: Enable Sales Tab & BGG Button (index.html) <!-- id: 170 -->
+    - [x] Task 4: Content Rendering Logic (app.js) <!-- id: 171 -->
+    - [x] CHECKPOINT: Verify BGG data on Dashboard. <!-- id: 172 -->
