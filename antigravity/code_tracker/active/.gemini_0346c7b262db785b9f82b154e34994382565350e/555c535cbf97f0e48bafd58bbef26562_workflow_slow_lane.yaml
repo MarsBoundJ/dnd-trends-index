@@ -1,0 +1,55 @@
+­
+main:
+  steps:
+    - init:
+        assign:
+          - project_id: ${sys.get_env("GOOGLE_CLOUD_PROJECT_ID")}
+          - location: "us-central1"
+
+    # Parallel Execution of Weekly Commercial Scrapers
+    - run_commercial_parallel:
+        parallel:
+          branches:
+            - kickstarter:
+                steps:
+                  - call_kickstarter:
+                      call: http.post
+                      args:
+                        url: "https://us-central1-${project_id}.cloudfunctions.net/kickstarter_discovery"
+                        auth:
+                          type: OIDC
+                      result: ks_result
+
+            - backerkit:
+                steps:
+                  - call_backerkit:
+                      call: http.post
+                      args:
+                        url: "https://us-central1-${project_id}.cloudfunctions.net/backerkit_scraper"
+                        auth:
+                          type: OIDC
+                      result: bk_result
+
+            - roll20:
+                steps:
+                  - call_roll20:
+                      call: http.post
+                      args:
+                        url: "https://us-central1-${project_id}.cloudfunctions.net/roll20_scraper"
+                        auth:
+                          type: OIDC
+                      result: roll20_result
+            
+            - rpggeek:
+                steps:
+                  - call_rpggeek:
+                      call: http.post
+                      args:
+                        url: "https://us-central1-${project_id}.cloudfunctions.net/rpggeek_client"
+                        auth:
+                          type: OIDC
+                      result: rpggeek_result
+
+    - return_results:
+        return: "Slow Lane Complete"
+­"(0346c7b262db785b9f82b154e34994382565350e26file:///C:/Users/Yorri/.gemini/workflow_slow_lane.yaml:file:///C:/Users/Yorri/.gemini

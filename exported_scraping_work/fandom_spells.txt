@@ -1,0 +1,163 @@
+Acid Splash
+Alter Self
+Antipathy/Sympathy
+Arcane Eye
+Arcane Lock
+Arcane Vigor
+Artificer Spells
+Augury
+Banishment
+Bard Spells
+Bestow Curse
+Bigby's Hand
+Blade Ward
+Blight
+Blindness/Deafness
+Blink
+Blur
+Category:1st-level
+Category:2nd-level
+Category:3rd-level
+Category:4th-level
+Category:5th-level
+Category:6th-level
+Category:7th-level
+Category:8th-level
+Category:9th-level
+Category:Abjuration
+Category:Acid Damage
+Category:Bludgeoning Damage
+Category:Cantrip
+Category:Cold Damage
+Category:Concentration
+Category:Conjuration
+Category:Divination
+Category:Enchantment
+Category:Evocation
+Category:Fire Damage
+Category:Force Damage
+Category:Healing
+Category:Higher Casting
+Category:Illusion
+Category:Leveled Cantrip
+Category:Lightning Damage
+Category:Necromancy
+Category:Necrotic Damage
+Category:Piercing Damage
+Category:Poison Damage
+Category:Psychic Damage
+Category:Radiant Damage
+Category:Ritual
+Category:Slashing Damage
+Category:Spell Lists
+Category:Spells
+Category:Thunder Damage
+Category:Transmutation
+Category:Variable Damage
+Category:Weapon Damage
+Chill Touch
+Chromatic Orb
+Circle of Death
+Cleric Spells
+Cloud of Daggers
+Color Spray
+Conjure Elemental
+Conjure Minor Elementals
+Contact Other Plane
+Continual Flame
+Counterspell
+Crown of Madness
+Dancing Lights
+Darkness
+Darkvision
+Demiplane
+Detect Thoughts
+Dominate Monster
+Dominate Person
+Dragon's Breath
+Druid Spells
+Elementalism
+Enhance Ability
+Enlarge/Reduce
+Evard's Black Tentacles
+Eyebite
+False Life
+Fire Bolt
+Flaming Sphere
+Friends
+Gaseous Form
+Gentle Repose
+Globe of Invulnerability
+Grease
+Guards and Wards
+Gust of Wind
+Hold Person
+Ice Storm
+Imprisonment
+Invisibility
+Jump
+Knock
+Levitate
+Light
+Locate Object
+Mage Hand
+Magic Mouth
+Magic Weapon
+Major Image
+Mass Suggestion
+Melf's Acid Arrow
+Mending
+Message
+Mind Sliver
+Mind Spike
+Mirror Image
+Misty Step
+Mordenkainen's Faithful Hound
+Mordenkainen's Sword
+Nystul's Magic Aura
+Otto's Irresistible Dance
+Paladin Spells
+Phantasmal Force
+Phantasmal Killer
+Polymorph
+Power Word: Kill
+Power Word: Stun
+Prismatic Spray
+Prismatic Wall
+Ranger Spells
+Ray of Enfeeblement
+Ray of Sickness
+Rope Trick
+Scorching Ray
+See Invisibility
+Shapechange
+Shatter
+Shocking Grasp
+Sleep
+Sleet Storm
+Slow
+Sorcerer Spells
+Special:Categories
+Spider Climb
+Stinking Cloud
+Stoneskin
+Suggestion
+Summon Aberration
+Summon Construct
+Summon Dragon
+Summon Fey
+Summon Undead
+Symbol
+Tasha's Bubbling Cauldron
+Tasha's Hideous Laughter
+Telekinesis
+Toll the Dead
+True Polymorph
+True Strike
+Wall of Ice
+Warlock Spells
+Web
+Weird
+Wish
+Witch Bolt
+Wizard Spells

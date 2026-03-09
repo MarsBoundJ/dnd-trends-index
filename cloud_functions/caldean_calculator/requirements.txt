@@ -1,0 +1,6 @@
+Flask==2.*
+requests==2.*
+python-dateutil==2.*
+google-cloud-scheduler==2.*
+protobuf
+gunicorn

@@ -1,0 +1,73 @@
+# Walkthrough: Fandom Scraper Phase 15 Upgrade
+
+I have successfully upgraded the Fandom Monitoring stream to Phase 15 specifications. This upgrade expands the monitoring scope to 13 wikis and implements a more robust data model.
+
+## 1. BigQuery Schema Update
+The table `dnd_trends_raw.fandom_daily_metrics` has been re-created with the following structure:
+- `extraction_date` (DATE): Partitioned for performance.
+- `wiki_slug` (STRING): Captures 13 target wikis.
+- `article_title` (STRING): Cleaned and filtered titles.
+- `rank_position` (INT64): 1-100.
+- `hype_score` (FLOAT64): Inverted rank (1.0 to 0.01).
+- `view_count` (INT64).
+- `url_path` (STRING).
+
+## 2. Multi-Wiki Harvester Implementation
+Modified [fandom_scraper.py](file:///C:/Users/Yorri/.gemini/fandom_scraper.py) with the new Phase 15 logic:
+- **13 Target Wikis**: Added `dungeonsdragons` (General Lore) and `mystara` (OSR/Retro).
+- **Hype Score Algorithm**: Implemented [calculate_hype](file:///C:/Users/Yorri/.gemini/main.py#35-38) to normalize cross-wiki interest.
+- **Strict Filtering**: Added namespace filters for "User:", "File:", etc., and excluded meta-pages like "Main Page".
+
+## 3. Dependency Management
+Updated [requirements.txt](file:///C:/Users/Yorri/.gemini/requirements.txt) to include `requests>=2.28.0`, ensuring the scraper has its core networking library for deployment.
+
+## 4. Deployment Complete (Gen 2)
+The scraper is now live as a GCF Gen 2 function.
+- **Function Name**: `fandom-scraper`
+- **Region**: `us-central1`
+- **Entry Point**: [fandom_scraper_http](file:///C:/Users/Yorri/.gemini/fandom_scraper.py#80-103)
+- **Trigger**: HTTP (Accessible by Workflows)
+
+## 5. Silver Layer Normalization
+Created the view `silver_data.norm_fandom` which performs the following:
+- **Aggregation**: Takes the `MAX` hype score across all 13 wikis for a keyword.
+- **Breadth Boost**: Applies a 5% boost for every additional wiki mentioning the keyword (capped at 1.0).
+- **Format**: Standardized `extraction_date`, `keyword`, and `score_fandom` (0.0 - 1.0).
+
+---
+
+## 6. Categorization Retrofit (Safe Merge)
+Successfully enriched the `concept_library` while preserving existing keywords:
+- **Surgical Merge**: Used [dnd_keywords.csv](file:///C:/Users/Yorri/.gemini/antigravity/scratch/dnd_keywords.csv) to update categories for 3,187 keywords via a deduplicated MERGE operation.
+- **Silver Retrofit**: Updated `silver_data.norm_fandom` to join keywords with categories from the library.
+- **Gold Retrofit**: Updated `gold_data.trend_scores` to expose the `category` column for frontend filtering.
+
+## 7. Analytics & API Upgrade (Phase 19)
+Exposed categorization intelligence to the frontend:
+- **Category Leaderboard**: Created `gold_data.category_leaders` to aggregate sector-level health (avg score per category).
+- **Bouncer API Upgrade**: Modified [bouncer/main.py](file:///C:/Users/Yorri/.gemini/bouncer/main.py) to include `category` and all `norm_*` score components in the JSON response.
+- **Redeployment**: Redeployed `bouncer-api` to GCP with the updated SQL logic.
+
+## 8. Frontend Activation (UI/UX)
+Activated the new metrics on the Arcane Analytics dashboard:
+- **Visual Identity**: Added "Arcane Pink" gradient bars for Fandom metrics and dynamic category badges.
+- **Data-Driven Templates**: Updated [app.js](file:///C:/Users/Yorri/.gemini/dashboard/app.js) to render raw source velocity (Wiki, Fan, Ytb) as high-visibility progress tracks.
+- **Thematic Styling**: Implemented category-specific badge colors (e.g., Red for Monsters, Blue for Spells).
+
+## 9. The Mana Grid (Category Heatmap & Filtering)
+Successfully deployed the "Mana Grid" to provide macro-trend analysis and interactive exploration:
+- **Heatmap Tiles**: Injected a responsive grid of "Mana Tiles" that display sectors (Monsters, Spells, etc.) and their average trend scores.
+- **Dynamic Filtering**: Implemented a global state-driven filter in [app.js](file:///C:/Users/Yorri/.gemini/dashboard/app.js). Clicking a tile highlights the sector and isolates the corresponding trend cards.
+- **Glassmorphic UI**: Styled the grid with a premium frosted glass effect and arcane purple activation glow.
+
+---
+
+## Final Verification Results
+- **Sector Intelligence**: Confirmed the grid renders with live data from the `/categories` API endpoint.
+- **Interactive Precision**: Verified that clicking a category (e.g., 'Unearthed Arcana') correctly filters the lower grid to show only relevant cards.
+
+````carousel
+![Mana Grid Initial State](C:/Users/Yorri/.gemini/antigravity/brain/a4440b01-de0a-4bd7-8c67-802d77f3a644/mana_grid_initial_view_1767530686159.png)
+<!-- slide -->
+![Mana Grid Filtered State](C:/Users/Yorri/.gemini/antigravity/brain/a4440b01-de0a-4bd7-8c67-802d77f3a644/mana_grid_filtered_view_1767530698839.png)
+````

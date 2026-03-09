@@ -1,0 +1,30 @@
+--- Wikipedia Registry Check ---
+/usr/local/lib/python3.11/site-packages/google/cloud/bigquery/table.py:1994: UserWarning: BigQuery Storage module not found, fetch data with the REST endpoint instead.
+  warnings.warn(
+Table dnd-trends-index.social_data.wikipedia_article_registry: 8171 rows
+Table dnd-trends-index.dnd_trends_categorized.wikipedia_article_registry: Not found or error: 404 Not found: Table dnd-trends-index:dnd_trends_categorized.wikipedia_article_registry was not found in location US; reason: notFound, message: Not found: Table dnd-trends-index:dnd_trends_categorized.wikipedia_article_registry was not found in location US
+
+Location: US
+Job ID: f98bcaf6-e227-491f-8e1f-edef9f7a1bdc
+
+
+--- Amazon ASIN Seeding ---
+Table dnd-trends-index.dnd_trends_categorized.amazon_asin_map exists.
+Player''s Handbook (0786969514) already exists.
+Monster Manual (0786965616) already exists.
+Dungeon Master''s Guide (0786965624) already exists.
+Inserting Tasha''s Cauldron of Everything (0786967023)...
+Error seeding 0786967023: 400 Syntax error: concatenated string literals must be separated by whitespace or comments at [1:107]; reason: invalidQuery, location: query, message: Syntax error: concatenated string literals must be separated by whitespace or comments at [1:107]
+
+Location: US
+Job ID: 149cb12e-f599-4e14-8f54-a4b05258a33e
+
+Inserting Xanathar''s Guide to Everything (0786966116)...
+Error seeding 0786966116: 400 Syntax error: concatenated string literals must be separated by whitespace or comments at [1:110]; reason: invalidQuery, location: query, message: Syntax error: concatenated string literals must be separated by whitespace or comments at [1:110]
+
+Location: US
+Job ID: e0d78881-1c9f-449d-b240-5bf43cb8e168
+
+
+--- Google Trends Scraper Logs (Last 20) ---
+Error fetching logs: 403 Permission denied for all log views

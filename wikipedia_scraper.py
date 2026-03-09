@@ -14,12 +14,21 @@ USER_AGENT = "DndTrendsIndexBot/1.0 (luckys-story-garden.com)"
 # endpoint: /metrics/pageviews/per-article/{project}/{access}/{agent}/{article}/{granularity}/{start}/{end}
 BASE_URL = "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user"
 
-def get_tracked_articles(client):
+import argparse
+
+def get_tracked_articles(client, limit=None, new_only=False):
+    today_str = datetime.date.today().isoformat()
     query = f"""
         SELECT article_title, parent_category 
         FROM `{PROJECT_ID}.{REGISTRY_TABLE}`
         WHERE is_tracked = TRUE
     """
+    if new_only:
+        query += f" AND discovery_date = '{today_str}'"
+        
+    if limit:
+        query += f" LIMIT {limit}"
+        
     return client.query(query).result()
 
 def fetch_daily_views(article_title, start_date, end_date):
@@ -49,12 +58,12 @@ def fetch_daily_views(article_title, start_date, end_date):
         print(f"Error fetching {article_title}: {e}")
         return []
 
-def run_scraper():
+def run_scraper(limit=None, new_only=False):
     client = bigquery.Client()
     
     # 1. Get List
-    articles = list(get_tracked_articles(client))
-    print(f"Found {len(articles)} tracked articles.")
+    articles = list(get_tracked_articles(client, limit=limit, new_only=new_only))
+    print(f"Found {len(articles)} tracked articles (Limit={limit}, NewOnly={new_only}).")
     
     # 2. Define Date Range (Last 30 days)
     today = datetime.date.today()
@@ -67,7 +76,7 @@ def run_scraper():
         title = row.article_title
         category = row.parent_category
         
-        if i % 50 == 0:
+        if i % 10 == 0:
             print(f"Processing {i}/{len(articles)}: {title}")
             
         views_data = fetch_daily_views(title, start_date, end_date)
@@ -119,4 +128,8 @@ def create_views_table(client):
         pass # Exists
 
 if __name__ == "__main__":
-    run_scraper()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument("--new-only", action="store_true")
+    args = parser.parse_args()
+    run_scraper(limit=args.limit, new_only=args.new_only)

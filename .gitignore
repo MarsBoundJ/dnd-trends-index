@@ -7,7 +7,7 @@ __pycache__/
 .env
 key.json
 antigravity-browser-profile/
-antigravity/
+!antigravity/
 *.jpg
 *.png
 *.json
@@ -19,6 +19,8 @@ antigravity/
 !sage_sample.json
 !tavern_sample.json
 !treantmonk_videos.json
+!.devcontainer/
 node_modules/
 venv/
 .venv/
+dnd-key.json

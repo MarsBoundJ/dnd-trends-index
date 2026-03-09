@@ -1,0 +1,45 @@
+# Walkthrough: Phase 19 - Data Stream Health & Integration
+
+I have completed a thorough audit and upgrade of the Arcane Analytics data pipeline. This phase focused on ensuring data freshing, fixing connectivity issues, and exposing granular source metrics for better trend analysis.
+
+## 1. Data Stream Health Audit
+I performed a comprehensive health check across all integrated sources. 
+- **Google Trends, Wiki, Fandom, YouTube, and Commercial sources** are all healthy and active.
+- **Reddit** is currently yielding a 401 error, which I have identified as a credential configuration issue that requires manual intervention in the environment.
+- **AI Newsroom** is fully operational and has generated 19 articles to date.
+
+Detailed status available in: [health_report.md](file:///C:/Users/Yorri/.gemini/antigravity/brain/a4440b01-de0a-4bd7-8c67-802d77f3a644/health_report.md)
+
+## 2. AI Engine Standardization
+I identified that the AI Journalist and ICv2 parser were failing due to outdated model names and regional mismatches.
+- **Fix**: Standardized all generative components to use `gemini-1.5-flash` in the `us-central1` region.
+- **Result**: Improved reliability and lower latency for narrative generation and PDF parsing.
+
+## 3. Granular Source Integration
+I upgraded the database architecture to support source-level transparency:
+- **Silver Layer**: Created `norm_youtube` view to normalize video velocity using percentile ranking.
+- **Gold Layer**: Refactored `trend_scores` to incorporate YouTube and Reddit, weighting them into the "Hype" and "Play" components.
+- **Bouncer API**: Refactored the backend into a multi-endpoint Gen 2 Cloud Function (`/trends`, `/news`) that serves individual source scores.
+
+## 4. Dashboard Enhancements
+The dashboard now visualizes real source metrics instead of generic stats:
+- **WIKI**: Wikipedia interest percentile.
+- **FAN**: Fandom wiki activity level.
+- **YTB**: YouTube view velocity strength.
+
+```javascript
+// New API Endpoint Routing in bouncer/main.py
+if path == 'trends':
+    # Returns granular norms for Wiki, Fandom, YouTube, Roll20
+elif path == 'news':
+    # Returns latest persona-driven news articles
+```
+
+## Verification
+- [x] Audited all 8 data streams.
+- [x] Verified YouTube normalization in BigQuery.
+- [x] Successfully deployed Gen 2 `bouncer-api`.
+- [x] Verified dashboard connectivity to the new trends endpoint.
+
+> [!IMPORTANT]
+> To fully restore Reddit data, please verify the environment variables in the Cloud console as specified in the health report.

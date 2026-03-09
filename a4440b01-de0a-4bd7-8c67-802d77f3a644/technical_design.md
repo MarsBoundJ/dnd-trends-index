@@ -1,0 +1,105 @@
+# Technical Design Document (TDD)
+## Project: Arcane Analytics (dnd-trends-tracker)
+**Date:** 2025-12-31
+
+---
+
+### 1. System Architecture
+Arcane Analytics follows a **Serverless Event-Driven Architecture** utilizing a **Medallion Data Pattern** within Google BigQuery.
+
+```mermaid
+graph TD
+    subgraph "External Sources"
+        A[Reddit API]
+        B[Wiki APIs]
+        C[YouTube Data]
+        D[Commercial Sales]
+    end
+
+    subgraph "GCP Harvesters"
+        E[Cloud Run Jobs]
+        F[Cloud Functions]
+    end
+
+    subgraph "BigQuery (Medallion)"
+        G[(Raw Data)]
+        H[(Silver: Normalized)]
+        I[(Gold: Scored)]
+    end
+
+    subgraph "Inference & Delivery"
+        J[Vertex AI]
+        K[Bouncer API]
+        L[Web Dashboard]
+    end
+
+    A & B & C & D --> E & F
+    E & F --> G
+    G --> H
+    H --> I
+    I --> J
+    I & J --> K
+    K --> L
+```
+
+---
+
+### 2. Technology Stack
+| Component | Technology |
+| :--- | :--- |
+| **Compute** | Google Cloud Functions (Gen 2), Cloud Run Jobs |
+| **Database** | Google BigQuery |
+| **AI/ML** | Vertex AI (Gemini 1.5 Flash) |
+| **Language** | Python 3.10+ |
+| **Frontend** | Vanilla JS, CSS3, HTML5 |
+| **Orchestration** | Cloud Scheduler |
+
+---
+
+### 3. Data Modeling
+The system uses three layers of abstraction in BigQuery:
+
+#### 3.1 Raw Layer (`dnd_trends_raw`, `commercial_data`, `social_data`)
+- **Purpose**: Immutable landing zone for ingested data.
+- **Key Tables**: `trend_data_pilot`, `reddit_daily_metrics`, `youtube_videos`, `roll20_rankings`.
+
+#### 3.2 Silver Layer (`silver_data`)
+- **Purpose**: Data cleaning and keyword normalization.
+- **Logic**: Uses `PERCENT_RANK()` partitioned by date to create relative scores (0 to 1).
+- **Views**: `norm_wikipedia`, `norm_fandom`, `norm_youtube`, `norm_roll20`.
+
+#### 3.3 Gold Layer (`gold_data`)
+- **Purpose**: Business-level aggregates and high-level scoring.
+- **Metric Formula**: 
+  - `Hype = Average(Wiki, Fandom, YouTube)`
+  - `Play = Roll20`
+  - `Total Score = (Hype * 0.4) + (Play * 0.3) + (Buy * 0.3)`
+
+---
+
+### 4. API & Interface Design
+#### 4.1 Bouncer API (Cloud Function)
+- **Endpoint**: `https://.../bouncer-api`
+- **Method**: `GET`
+- **Routes**:
+  - `/trends`: Returns JSON array of top-performing keywords with granular source metrics.
+  - `/news`: Returns latest AI-generated articles (date, headline, body).
+
+#### 4.2 Harvester Interfaces
+- **Reddit Harvester**: Uses Aho-Corasick trie (`matcher.py`) for O(n) keyword matching across high-volume subreddits.
+- **YouTube Harvester**: Maps video "Velocity" (views/24h) to specific keywords via `matched_keywords` array.
+
+---
+
+### 5. AI Reasoning Engine
+The "Daily Journalist" engine utilizes **Gemini 1.5 Flash** for multi-persona reasoning:
+1. **Context Construction**: Injects current Spike/Anomaly data from BigQuery into the prompt.
+2. **Persona Mapping**: Uses System Instructions to pivot between distinct voices (Tavern Keeper, Sage, Goblin).
+3. **Structured Output**: Enforces JSON response schema for direct insertion into `gold_data.daily_articles`.
+
+---
+
+### 6. Deployment & Security
+- **CI/CD**: Manual triggers via `gcloud` CLI (builds and deploys from source).
+- **Secrets**: API keys (Reddit Client Secret) are injected via Environment Variables in the Cloud Run/Function templates.
+- **CORS**: Restricted to target dashboard domains to prevent unauthorized API usage.

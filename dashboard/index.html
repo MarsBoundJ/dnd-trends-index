@@ -8,23 +8,36 @@
     <link rel="stylesheet" href="css/style.css">
     <!-- Fonts -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Cinzel:wght@400;700&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap"
         rel="stylesheet">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
     <nav class="arcane-hud">
         <div class="logo">ARCANE <span class="highlight">ANALYTICS</span></div>
         <div class="nav-links">
-            <a href="#" class="nav-tab active" data-tab="search" onclick="switchTab('search')">[SEARCH]</a>
+            <a href="#" class="nav-tab active" data-tab="market-pulse" onclick="switchTab('market-pulse')">[MARKET
+                PULSE]</a>
+            <a href="#" class="nav-tab" data-tab="search" onclick="switchTab('search')">[SEARCH]</a>
             <a href="#" class="nav-tab" data-tab="social" onclick="switchTab('social')">[SOCIAL]</a>
             <a href="#" class="nav-tab" data-tab="sales" onclick="switchTab('sales')">[SALES]</a>
+            <a href="admin.html" class="nav-tab">[ADMIN]</a>
+        </div>
+        <div class="arcane-pulse" id="arcane-pulse">
+            <span class="pulse-stat">THEME: <a href="#" id="theme-toggle" onclick="toggleTheme()"
+                    style="color:var(--color-search); text-decoration:none;">[VOID]</a></span> |
+            <span class="pulse-stat">HEATMAP: <a href="#" id="heatmap-toggle" onclick="toggleHeatmap()"
+                    style="color:var(--text-muted); text-decoration:none;">[OFF]</a></span> |
+            <span class="pulse-stat">MIGRATION: <span id="pulse-migration">--</span>%</span> |
+            <span class="pulse-stat">DM DEFICIT: <span id="pulse-deficit">--</span>x</span>
+
         </div>
     </nav>
 
-    <div class="control-bar">
+    <div class="control-bar" id="standard-controls" style="display:none;">
         <div class="source-selector" id="source-selector">
             <span class="label">SOURCE:</span>
             <button id="btn-google" class="source-btn active" onclick="switchSource('google')">> GOOGLE TRENDS</button>
@@ -32,15 +45,146 @@
             <button id="btn-wikipedia" class="source-btn" onclick="switchSource('wikipedia')">WIKIPEDIA</button>
             <button id="btn-reddit" class="source-btn" onclick="switchSource('reddit')">REDDIT</button>
             <button id="btn-youtube" class="source-btn" onclick="switchSource('youtube')">YOUTUBE</button>
+            <button id="btn-bgg" class="source-btn" onclick="switchSource('bgg')">BGG</button>
+            <button id="btn-rpggeek" class="source-btn" onclick="switchSource('rpggeek')">RPGGEEK</button>
         </div>
     </div>
 
-    <main id="accordion-deck">
+    <!-- MARKET PULSE PAGE -->
+    <main id="market-pulse-view">
+        <div class="pulse-dashboard">
+            <div id="market-weather-hero" class="weather-hero">
+                <div class="weather-label">MARKET WEATHER</div>
+                <div class="weather-condition" id="weather-condition">ANALYZING DATASTREAMS...</div>
+            </div>
+
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">EDITION MIGRATION (2024 TO 5E)</div>
+                    <div class="kpi-value"><span id="metric-migration">--</span><span class="kpi-unit">%</span></div>
+                    <div class="kpi-subtext">Share of total concept searches referencing 2024 terms</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">DM DEFICIT RATIO</div>
+                    <div class="kpi-value"><span id="metric-deficit">--</span><span class="kpi-unit">x</span></div>
+                    <div class="kpi-subtext">Player-facing vs DM-facing search volume</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value" id="metric-3p">0.0%</div>
+                    <div class="kpi-label">3P MARKET SHARE</div>
+                    <div class="kpi-subtext">Ratio of 2024 to 5e Legacy products trending</div>
+                </div>
+            </div>
+
+            <div class="dashboard-row" style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                <!-- Chart Container -->
+                <div class="chart-container"
+                    style="flex: 2; min-width: 400px; background: var(--glass-panel); border: 1px solid var(--glass-border); border-radius: 8px; padding: 1.5rem;">
+                    <h3 style="font-family: 'Cinzel', serif; color: var(--color-search); margin-top: 0;">EDITION
+                        MIGRATION TREND (30 DAYS)</h3>
+                    <div style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="editionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Deltas Table Container -->
+                <div class="deltas-container"
+                    style="flex: 1; min-width: 300px; background: var(--glass-panel); border: 1px solid var(--glass-border); border-radius: 8px; padding: 1.5rem; overflow-y: auto; max-height: 400px;">
+                    <h3 style="font-family: 'Cinzel', serif; color: var(--color-search); margin-top: 0;">BIGGEST SEARCH
+                        DELTAS (7D)</h3>
+                    <table id="deltas-table"
+                        style="width: 100%; text-align: left; font-family: 'Inter', sans-serif; font-size: 0.9rem; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid var(--glass-border); color: var(--text-muted);">
+                                <th style="padding-bottom: 0.5rem;">CONCEPT</th>
+                                <th style="padding-bottom: 0.5rem; text-align: right;">DELTA</th>
+                            </tr>
+                        </thead>
+                        <tbody id="deltas-tbody">
+                            <!-- Populated by JS -->
+                            <tr>
+                                <td colspan="2" style="text-align: center; padding: 1rem;">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="dashboard-row" style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                <!-- DM Shortage Chart -->
+                <div class="chart-container"
+                    style="flex: 1; min-width: 400px; background: var(--glass-panel); border: 1px solid var(--glass-border); border-radius: 8px; padding: 1.5rem;">
+                    <h3 style="font-family: 'Cinzel', serif; color: var(--color-search); margin-top: 0;">DM SHORTAGE
+                        INDEX (YoY GROWTH)</h3>
+                    <div style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="dmShortageChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Momentum Sparklines -->
+                <div class="momentum-container"
+                    style="flex: 1; min-width: 300px; background: var(--glass-panel); border: 1px solid var(--glass-border); border-radius: 8px; padding: 1.5rem;">
+                    <h3 style="font-family: 'Cinzel', serif; color: var(--color-search); margin-top: 0;">TOP 5 MOMENTUM
+                        (7D)</h3>
+                    <div id="sparklines-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <!-- Sparklines injected here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- THE ARCANE ANALYST (GEMINI) -->
+            <div class="analyst-container">
+                <div class="analyst-header">
+                    <span class="material-symbols-outlined"
+                        style="vertical-align: middle; margin-right: 10px;">robot_2</span>
+                    THE ARCANE ANALYST
+                </div>
+                <div class="chat-window" id="chat-window">
+                    <div class="chat-message bot">
+                        <strong>Arcane Analyst:</strong> Greetings. I am your Strategic Intelligence Advisor. I have
+                        reviewed the latest telemetry from the Scrying Chamber. How can I assist you with market
+                        analysis today?
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input"
+                        placeholder="Ask the Analyst about migration trends, class dominance, or market health..."
+                        onkeypress="handleChatKeyPress(event)">
+                    <button id="chat-send" onclick="sendMessage()">[SEND]</button>
+                </div>
+                <div style="padding: 1rem; border-top: 1px solid var(--glass-border); text-align: center;">
+                    <button id="btn-generate-briefing" onclick="generateBriefing()" class="source-btn"
+                        style="width: 100%;">[ 📋 GENERATE BRIEFING ]</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <main id="accordion-deck" style="display:none;">
         <!-- Ribbons injected here by JS -->
         <div class="skeleton-ribbon"></div>
         <div class="skeleton-ribbon"></div>
         <div class="skeleton-ribbon"></div>
     </main>
+
+    <!-- BRIEFING MODAL -->
+    <div id="briefing-modal" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>INTELLIGENCE BRIEFING</h2>
+                <button class="close-btn" onclick="closeBriefingModal()">&times;</button>
+            </div>
+            <div id="briefing-content" class="modal-body">
+                <!-- Distilled content injected here -->
+            </div>
+            <div class="briefing-actions" style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                <input type="email" id="team-email" placeholder="senior-staff@wizards.com"
+                    style="flex: 1; min-width: 200px;">
+                <button class="source-btn" onclick="emailBriefing()">[EMAIL TO TEAM]</button>
+                <button class="source-btn" onclick="window.print()">[PRINT / SAVE AS PDF]</button>
+            </div>
+        </div>
+    </div>
 
     <script src="js/app.js"></script>
 </body>

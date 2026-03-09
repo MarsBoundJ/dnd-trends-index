@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcane Analytics</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <nav class="arcane-hud">
+        <div class="logo">ARCANE <span class="highlight">ANALYTICS</span></div>
+        <div class="nav-links">
+            <a href="#" class="nav-tab active" data-tab="search" onclick="switchTab('search')">[SEARCH]</a>
+            <a href="#" class="nav-tab" data-tab="social" onclick="switchTab('social')">[SOCIAL]</a>
+            <a href="#" class="nav-tab" data-tab="sales" onclick="switchTab('sales')">[SALES]</a>
+        </div>
+    </nav>
+
+    <div class="control-bar">
+        <div class="source-selector" id="source-selector">
+            <span class="label">SOURCE:</span>
+            <!-- Buttons dynamically swap here -->
+            <button id="btn-google" class="source-btn active" onclick="switchSource('google')">> GOOGLE TRENDS</button>
+            <button id="btn-fandom" class="source-btn" onclick="switchSource('fandom')">FANDOM</button>
+            <button id="btn-wikipedia" class="source-btn" onclick="switchSource('wikipedia')">WIKIPEDIA</button>
+        </div>
+    </div>
+
+    <main id="accordion-deck">
+        <!-- Ribbons injected here by JS -->
+        <div class="skeleton-ribbon"></div>
+        <div class="skeleton-ribbon"></div>
+        <div class="skeleton-ribbon"></div>
+    </main>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>

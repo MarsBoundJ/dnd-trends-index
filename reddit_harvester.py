@@ -4,13 +4,14 @@ import os
 from google.cloud import bigquery
 from matcher import KeywordMatcher
 from meme_sentinel import MemeSentinel
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 # Config
 DATASET_ID = 'dnd-trends-index.dnd_trends_categorized'
 REGISTRY_TABLE = f'{DATASET_ID}.subreddit_registry'
+CONCEPT_LIBRARY_TABLE = f'{DATASET_ID}.concept_library'
 
 # Anchor Words for Tier 2/3 Filtering
-# Only count mentions if one of these is present in the text
 ANCHOR_WORDS = {
     '5e', 'dnd', 'd&d', 'dungeons', 'dragons', 'dm', 'gm', 'ttrpg', 'rpg',
     'wizard', 'cleric', 'rogue', 'paladin', 'bard', 'druid', 'monk', 
@@ -29,7 +30,9 @@ class RedditHarvester:
         self.bq_client = bigquery.Client()
         self.matcher = KeywordMatcher(refresh=False) # Load cached trie
         self.sentinel = MemeSentinel()
+        self.analyzer = SentimentIntensityAnalyzer()
         self.registry = self.load_registry()
+        self.concept_map = self.load_concept_library()
         
     def load_registry(self):
         print("Loading Subreddit Registry...")
@@ -44,52 +47,63 @@ class RedditHarvester:
         print(f"Loaded {len(registry)} subreddits.")
         return registry
 
+    def load_concept_library(self):
+        print("Loading Concept Library...")
+        # Fix: concept_name instead of name
+        query = f"SELECT concept_name, category FROM `{CONCEPT_LIBRARY_TABLE}`"
+        rows = self.bq_client.query(query).result()
+        concept_map = {row.concept_name.lower(): row.category for row in rows}
+        print(f"Loaded {len(concept_map)} concepts.")
+        return concept_map
+
+    def get_longest_match(self, text):
+        matches = self.matcher.find_matches(text)
+        if not matches:
+            return None
+        # Sort by length of term descending
+        sorted_matches = sorted(matches, key=lambda x: len(x['term']), reverse=True)
+        return sorted_matches[0]
+
     def has_anchor(self, text):
-        # Quick check for context in Tier 2/3
         text_lower = text.lower()
         return any(anchor in text_lower for anchor in ANCHOR_WORDS)
 
     def process_subreddits(self):
-        aggregated_metrics = {}
+        daily_metrics = []
         viral_events = []
         
         for sub_name, valid_config in self.registry.items():
             print(f"Scanning r/{sub_name}...")
             try:
                 subreddit = self.reddit.subreddit(sub_name)
-                # Fetch Top 50 Hot posts
                 posts = subreddit.hot(limit=50)
                 
                 for post in posts:
-                    # Combined text (Title + Body)
                     full_text = f"{post.title} \n {post.selftext}"
                     
-                    # Tier Logic
                     if valid_config['tier'] > 1:
                         if not self.has_anchor(full_text):
-                            continue # Skip non-D&D context in specific subs
+                            continue 
                     
-                    # 1. Match Keywords
+                    # 1. Concept Match (All matches in Title + Body)
                     matches = self.matcher.find_matches(full_text)
                     
-                    for match in matches:
-                        # Aggregate by Date, Sub, Keyword, Category
-                        # Note: We use the daily date as key
-                        key = (datetime.date.today().isoformat(), sub_name, match['term'], match['category'])
-                        if key not in aggregated_metrics:
-                            aggregated_metrics[key] = {
-                                "extraction_date": key[0],
-                                "subreddit": key[1],
-                                "keyword": key[2],
-                                "category": key[3],
-                                "mention_count": 0,
-                                "weighted_score": 0.0
-                            }
-                        aggregated_metrics[key]["mention_count"] += 1
-                        # Weighted score = post upvotes * tier weight
-                        aggregated_metrics[key]["weighted_score"] += post.score * valid_config['weight']
+                    if matches:
+                        # 2. Sentiment Analysis on full text
+                        vs = self.analyzer.polarity_scores(full_text)
+                        sentiment_score = vs['compound']
                         
-                    # 2. Viral Sentinel Check
+                        for match in matches:
+                            daily_metrics.append({
+                                "extraction_date": datetime.date.today().isoformat(),
+                                "subreddit": sub_name,
+                                "keyword": match['term'],
+                                "category": match['category'],
+                                "weighted_score": sentiment_score,
+                                "mention_count": 1
+                            })
+                        
+                    # 3. Viral Sentinel Check
                     insight = self.sentinel.analyze_post(sub_name, full_text, post.score)
                     if insight:
                         viral_events.append({
@@ -106,11 +120,11 @@ class RedditHarvester:
             except Exception as e:
                 print(f"Error scanning r/{sub_name}: {e}")
                 
-        return list(aggregated_metrics.values()), viral_events
+        return daily_metrics, viral_events
 
     def save_to_bq(self, metrics, viral_events):
         print(f"\n--- HARVEST COMPLETE ---")
-        print(f"Captured {len(metrics)} keyword mentions.")
+        print(f"Captured {len(metrics)} concept mentions.")
         print(f"Detected {len(viral_events)} viral events.")
 
         if metrics:

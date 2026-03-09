@@ -1,24 +1,46 @@
 # Development Dockerfile for D&D Trends Index
-FROM python:3.11-slim
+FROM mcr.microsoft.com/devcontainers/python:3.11-bullseye
 
 # Prevent Python from writing .pyc files and enable unbuffered logging
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
+USER root
+# Fix for apt signature issues and install networking tools
+RUN rm -f /etc/apt/sources.list.d/yarn.list \
+    && apt-get update && apt-get install -y \
+    socat \
+    netcat-openbsd \
+    bash-completion \
+    sudo \
     curl \
-    git \
+    lsb-release \
+    gnupg \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
+# Install Node.js (needed for VS Code's port forwarding and server)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Google Cloud CLI
+RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
+    && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg \
+    && apt-get update && apt-get install -y google-cloud-cli \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory and ensure permissions
 WORKDIR /app
+RUN chown -R vscode:vscode /app
 
 # Install Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip install curl_cffi playwright playwright-stealth \
+    && playwright install-deps chromium firefox \
+    && playwright install chromium firefox
+
+# Switch to the non-root user
+USER vscode
 
 # We don't COPY the code here because we will use volume mounting
 # This ensures that changes on your host machine are immediately reflected in the container.

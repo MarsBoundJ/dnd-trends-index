@@ -1,0 +1,99 @@
+Ability Score Improvement
+Actor
+Alert
+Artificer Spells
+Athlete
+Bard Spells
+Blind Fighting
+Category:Character
+Category:Divination
+Category:Enchantment
+Category:Feats
+Category:Illusion
+Category:Necromancy
+Charger
+Chef
+Cleric Spells
+Crafter
+Crossbow Expert
+Crusher
+Defensive Duelist
+Detect Thoughts
+Druid Spells
+Dual Wielder
+Durable
+Elemental Adept
+Epic Boon of Combat Prowess
+Epic Boon of Dimensional Travel
+Epic Boon of Energy Resistance
+Epic Boon of Fate
+Epic Boon of Fortitude
+Epic Boon of Irresistible Offense
+Epic Boon of Luck
+Epic Boon of Peerless Aim
+Epic Boon of Recovery
+Epic Boon of Skill Proficiency
+Epic Boon of Speed
+Epic Boon of Spell Recall
+Epic Boon of Truesight
+Epic Boon of Undetectability
+Epic Boon of the Night Spirit
+Fey-Touched
+Fighter
+Fighting Style: Archery
+Fighting Style: Defense
+Fighting Style: Dueling
+Fighting Style: Great Weapon
+Fighting Style: Interception
+Fighting Style: Protection
+Fighting Style: Thrown Weapon Fighting
+Fighting Style: Two-weapon
+Fighting Style: Unarmed Fighting
+Find Familiar
+Grappler
+Great Weapon Master
+Healer
+Heavily Armored
+Heavy Armor Master
+Inspiring Leader
+Invisibility
+Keen Mind
+Lightly Armored
+Lucky
+Mage Hand
+Mage Slayer
+Magic Initiate
+Medium Armor Master
+Misty Step
+Moderately Armored
+Mounted Combatant
+Musician
+Observant
+Piercer
+Poisoner
+Polearm Master
+Resiliant
+Ritual Caster
+Savage Attacker
+Sentinel
+Shadow-Touched
+Sharpshooter
+Shield Master
+Skill Expert
+Skilled
+Skulker
+Slasher
+Sorcerer
+Sorcerer Spells
+Special:Categories
+Speedster
+Spell Sniper
+Tavern Brawler
+Telekinetic
+Telepathic
+Tough
+War Caster
+Warlock Spells
+Weapon Master
+Weapon Training
+Wizard Spells

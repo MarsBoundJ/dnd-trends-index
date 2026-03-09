@@ -105,6 +105,31 @@ def expand_term(row):
             # Wait, if 'original' is "Oath of Devotion", `original + 5e` = "Oath of Devotion 5e".
             # The nickname `Devotion Paladin` is added as an EXTRA term. Perfect.
 
+    # 3. ACTUAL PLAY
+    elif category == 'Actual Play':
+        # Rule: Standalone (critical for Dimension 20, etc.)
+        add_result(original, "standalone")
+        # Rule: [Term] Dnd (for safety)
+        add_result(f"{original} Dnd", "suffix_dnd")
+
+    # 4. BATTLE MAPS
+    elif category == 'Battle Maps & Tactical Surfaces':
+        # Rule: Standalone (critical for specific brands/products)
+        add_result(original, "standalone")
+        # Rule: [Term] Dnd
+        add_result(f"{original} Dnd", "suffix_dnd")
+        # Rule: [Term] 5e
+        add_result(f"{original} 5e", "suffix_5e")
+
+    # 5. CARTOGRAPHER
+    elif category == 'Cartographer':
+        # Rule: Standalone (critical for specific artists/brands)
+        add_result(original, "standalone")
+        # Rule: [Term] Dnd
+        add_result(f"{original} Dnd", "suffix_dnd")
+        # Rule: [Term] 5e
+        add_result(f"{original} 5e", "suffix_5e")
+
     return results
 
 def main():
@@ -114,7 +139,7 @@ def main():
     query = """
         SELECT concept_name, category 
         FROM `dnd-trends-index.dnd_trends_categorized.concept_library`
-        WHERE category IN ('Class', 'Subclass')
+        WHERE category IN ('Class', 'Subclass', 'Actual Play', 'Battle Maps & Tactical Surfaces', 'Cartographer')
     """
     query_job = client.query(query)
     rows = list(query_job.result())

@@ -1,0 +1,405 @@
+3.5
+4e
+4venger
+5e
+Ability Score Improvement
+AC
+Acid
+Action Economy
+Actor
+Advantage
+Adventure
+Adventurers League
+AL
+Alpha Player
+Analysis Paralysis
+Anti-synergy
+AoE
+AP
+Archetype
+Area of Effect
+Armor Class
+Arrow through the Neck
+Artifact
+ASI
+Attrition
+AttN
+Attunement
+Avenger
+Back Loaded
+Backstory
+Bardic Inspiration
+Bardic Knock
+Battlefield Control
+Bear-barian
+Beardy
+Beer and Pretzel Gaming
+Bell Curve
+Bent
+BBEG
+Big Bad Evil Guy
+Blaster
+Bleed
+Blinded
+Bloodied
+Bludgeoning
+Bonus Action
+Bounded Accuracy
+Broken
+Buff
+Build
+Bump
+Called Shot
+Campaign
+Cantrip
+Casting Time
+CC
+ChaLord
+Challenge Rating
+Character Arc
+Character Concept
+Character Development
+Character Sheet
+Charmed
+Cheese
+Cheese Monkey
+Cliche
+CoDzilla
+Coffeelock
+Cold
+Combo
+Common
+Components
+Concentration
+Concept
+Condition
+Consigliere
+Consent
+Contest
+Controller
+Corner Case
+CR
+Crit
+Critical Failure
+Critical Hit
+Critical Role Effect
+Crowd Control
+Crunch
+Crunchy
+Cursed
+Damage Per Round
+Damage Type
+Darklock
+Dash
+Dead Level
+Deafened
+Death Spiral
+Debrief
+Debuff
+Defender
+Deus Ex Machina
+Dice Jail
+Dice Notation
+Dice Shame
+Difficulty Class
+Dip
+Dirty 20
+Disadvantage
+Disengage
+DM
+DMG
+DMPC
+Dodge
+Downtime
+DPR
+Drama Sink
+Dread Gazebo
+Drizzt Clone
+Drop-in Campaign
+Dump Stat
+Dungeon Crawl
+Dungeon Master
+Dungeon Master's Guide
+Duration
+EGtW
+Edgelord
+Edition Wars
+Elemental Damage
+Enchanted
+Encounter
+Endurance
+Engine
+ENT Attack
+Eric and the Dread Gazebo
+Exhaustion
+Experience Points
+Exploding Die
+Explorer
+Explorer's Guide to Wildemount
+Face
+Fanboy
+FAQ
+Feat Tax
+Feycharger
+Feylock
+Fighter
+Fire
+Flavor
+FLGS
+Fluff
+Fluffy
+Force
+Forced Movement
+Forever DM
+Foreshadowing
+Free Action
+Frequently Asked Questions
+Frightened
+Front Loaded
+Fumble
+Game Master
+Gish
+Glass Cannon
+GM
+Grappled
+Grognard
+Guidance
+Half-feat
+Head of Vecna
+Healing
+Help
+Help Action
+Hexblade
+Hexblade Dip
+Hide
+Hit Dice
+Hit Points
+Homebrew
+House Rules
+How Do You Want To Do This
+HP
+IC
+Immunity
+In-Character
+Incapacitated
+Initiative
+Instigator
+Inspiration
+Interrupt
+Intro Session
+Invisible
+Kiting
+Lair Action
+Leader
+Legendary Action
+Legendary Item
+Legendary Resistance
+LFG
+LFM
+Lightning
+Lines and Veils
+Long Rest
+Looking For Group
+Looking For More
+Low Level
+LR
+Lucky Halfling
+M
+MAD
+Magic Item
+Magic Missile the Darkness
+Magical Damage
+Magical Healing
+Masterwork
+Material
+Matt Mercer Effect
+Meta
+Metagame
+Metagaming
+Metamagic
+Mid Level
+Min-Max
+MM
+Module
+Monster Manual
+Mordenkainen's Tome of Foes
+Movement
+MToF
+Multi-Ability Dependent
+Multiclass
+Munchkin
+Mundane
+Murder Hobo
+Nat 20
+Natural 20
+Natural Healing
+Narrative
+Necro
+Necropost
+Necrotic
+Nerf
+NPC
+Non-Player Character
+Nova
+Nova Build
+OA
+OOC
+OP
+Opportunity Attack
+Opportunity Cost
+Opposed Roll
+Optimization
+OSR
+Old Man Henderson
+Old School Revival
+Out-of-Character
+Overpowered
+Package Deal
+Pacing
+Padlock
+Palette Swap
+Paralyzed
+Party Face
+Party Leader
+Passive Perception
+PBP
+PC
+Peasant Railgun
+Petrified
+PHB
+Physical Damage
+Piercing
+Pin
+Play by Post
+Player Character
+Player's Handbook
+Point Buy
+Poison
+Poisoned
+Post
+Powergamer
+Practical
+Problem Solver
+Prone
+Psychic
+PWYW
+Pay What You Want
+Quarterbacking
+Radiant
+RAI
+RAW
+Railroading
+Range
+Rare
+Ready
+Reaction
+Red Herring
+Reflavor
+Reskin
+Resistance
+Resource Management
+Resolution
+Restrained
+Ritual
+RNG
+Rocks Fall Everyone Dies
+Roleplay
+Rolling Stats
+Round
+RP
+Rule of Cool
+Rules As Intended
+Rules As Written
+Rules Lawyer
+S
+SAD
+Safety Tools
+Sandbox
+Save
+Saving Throw
+Scaling
+SCAG
+School of Magic
+Screen Time
+Search
+Session 0
+Session Report
+Short Rest
+Single-Ability Dependent
+Sir Bearington
+Skill Check
+Slashing
+Socializer
+Somatic
+Sorlock
+Spell Attack
+Spell Economy
+Spell Save DC
+Spell Slot
+Spike Damage
+Spotlight
+Squishy
+SR
+Stack
+Stacking
+Stakes
+Standard Array
+Sticky
+Storyteller
+Straight Class
+Striker
+Stunned
+Sustained Damage
+Sweet Spot
+Sword Coast Adventurer's Guide
+Swingy
+Synergy
+Table Variation
+Tankadin
+Tanking
+Tasha's Cauldron of Everything
+TCE
+Temporary Hit Points
+Tension
+Theoretical
+THP
+Thread
+Thunder
+Tier 1
+Tier 2
+Tier 3
+Tier 4
+Tiers of Play
+Timing
+TLDR
+Too Long Didn't Read
+TPK
+Total Party Kill
+Trope
+Tucker's Kobolds
+Turn Order
+Unconscious
+Uncommon
+Underpowered
+UP
+Use Object
+V
+V-Human
+Vanilla
+Variant Human
+Verbal
+Very Rare
+VGtM
+Virtual Tabletop
+Volo's Guide to Monsters
+VSM
+VTT
+Vulnerability
+Warlock
+Whiff
+White Room
+X Card
+Xanathar's Guide to Everything
+XGtE
+XP
+Zoning

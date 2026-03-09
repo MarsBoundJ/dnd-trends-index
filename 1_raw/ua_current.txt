@@ -1,0 +1,623 @@
+UA
+Unearthed Arcana
+
+Psion and Subclasses
+Psion
+
+# Class Features
+
+Psionic Power
+Spellcasting
+Subtle Telekinesis
+Psionic Discipline
+Psion Subclass
+Ability Score Improvement
+Psionic Restoration
+Psionic Surge
+Psionic Reserves
+Epic Boon
+Enkindled Life Force
+Telekinetic Propel
+Telepathic Connection
+Psionic Spellcasting
+
+Psionic Disciplines
+
+Biofeedback
+Bolstering Precognition
+Destructive Thoughts
+Devilish Tongue
+Expanded Awareness
+Id Insinuation
+Inerrant Aim
+Observant Mind
+Psionic Backlash
+Psionic Guards
+Sharpened Mind
+
+# Subclasses
+
+Metamorph
+Metamorph Spells
+Mutable Form
+Organic Weapons
+Bone Blade
+Flesh Maul
+Viscera Launcher
+Extra Attack
+Flesh Weaver
+Improved Mutable Form
+Life-Bending Weapons
+
+Psykinetic
+Psykinetic Spells
+Stronger Telekinesis
+Telekinetic Techniques
+Destructive Trance
+Rebounding Field
+Enhanced Telekinetic Crush
+Heightened Telekinesis
+
+Telepath
+Mind Infiltrator
+Telepath Spells
+Telepathic Distraction
+Bulwark Mind
+Potent Thoughts
+Telepathic Bolstering
+Scramble Minds
+
+New Psion Spells
+Psion Spells
+
+Abi-dalzim's Horrid Wilting
+Bleeding Darkness
+Ectoplasmic Trail
+Ego Whip
+Enemies Abound
+Intellect Fortress
+Life Inversion Field
+Life Siphon
+Mental Prison
+Psionic Blast
+Psychic Scream
+Raulothim's Psychic Lance
+Summon Astral Entity
+Telekinetic Crush
+Telekinetic Fling
+Thought Form
+
+
+
+Arcane Subclasses
+Arcane Archer
+
+# Class Features
+Arcane Archer Lore
+Arcane Shot
+Curving Shot
+Magical Ammunition
+Ever-Ready Shot
+Arcane Burst
+Masterful Shots
+
+Arcane Shot Options
+Banishing Shot
+Beguiling Shot
+Bursting Shot
+Enfeebling Shot
+Grasping Shot
+Piercing Shot
+Seeking Shot
+Shadow Shot
+
+#Subclasses
+Tattooed Warrior
+Magic Tattoos
+Beast Tattoos
+Celestial Tattoo
+Nature Tattoo
+Monster Tattoo
+Bat
+Butterfly
+Crane
+Horse
+Tortoise
+Comet
+Eclipse
+Sunburst
+Sea Storm
+Volcano
+Beholder
+Chromatic Dragon
+Displacer Beast
+Troll
+
+Conjurer
+Benign Transposition
+Conjuration Savant
+Distant Transposition
+Durable Summons
+Focused Conjuration
+Splintered Summons
+
+Enchanter
+Enchanting Conversationalist
+Enchantment Savant
+Hypnotic Presence
+Split Enchantment
+Instinctive Charm
+Alter Memories
+
+Necromancer
+Necromancy Savant
+Necromancy Spellbook
+Necrotic Resistance
+Grim Harvest
+Undead Familiar
+Grave Power
+Grave Resilience
+Overwhelming Necrosis
+Undead Thralls
+Undead Fortitude
+Withering Strike
+Harvest Undead
+Death's Master
+Bolster Undead
+Extinguish Undead
+
+Transmuter
+Transmutation Savant
+Transmuter's Stone
+Darkvision
+Speed
+Resistance
+Wondrous Alteration
+Aquatic Adaptation
+Change Appearance
+Natural Weapons
+Empowered Transmutation
+Potent Stone
+Mighty Build
+Tremorsense
+Shapechanger
+Game Statistics
+Transmute Spells
+Master Transmuter
+Major Transformation
+Panacea
+Restore Life
+Restore Youth
+
+Apocalyptic Subclasses
+Circle of Preservation
+
+# Class Features
+Circle of Preservation Spells
+Preserved Land
+Bolster
+Purify
+Student of Preservation
+Frugal Casting
+Tool Proficiency
+Improved Preservation
+Fortify Protectors
+Reject Desecrators
+Facilitated Restoration
+Sacrosanct Land
+
+Gladiator
+
+# Class Features
+Brutality
+Bleed
+Bluff
+Stumble
+Combat Theatrics
+Athletic Flair
+Bonus Proficiency
+Flourish Parry
+Flourish Counter
+Bolder Brutalities
+Rive
+Rush
+Stagger
+Brutal Resurgence
+Mutilate
+Maimed
+Sluggish
+
+Defiled Sorcery
+
+# Class Features
+Defile and Empower
+Life Steal
+Defiler Spells
+Corrupted Caster
+Defiler's Ward
+Strengthened Rot
+Withering Aura
+Defiling Shroud
+Essence Siphon
+Superior Defiler
+Fouled Soul
+Furthered Defilement
+
+Sorcerer-King Patron
+
+# Class Features
+Sorcerer-King Spells
+Psionic Casting
+Tyrant's Herald
+Intimidating Presence
+Voice of Tyranny
+Decisive Edict
+Marshal
+Oppress
+Vindictive Rebuke
+Absolute Tyranny
+
+Apocalyptic Subclasses
+Artificer Reanimator
+
+Class Features
+Reanimator Spells
+Jolt to Life
+Reanimated Companion
+Strange Modifications
+Improved Reanimation
+Promethean Reanimation
+
+Bard College of Spirits
+
+Class Features
+Channeler
+Spirits from Beyond
+Empowered Channeling
+Mystical Connection
+
+Cleric Grave Domain
+
+Class Features
+Circle of Mortality
+Grave Domain Spells
+Path to the Grave
+Sentinel at Death’s Door
+Divine Reaper
+
+Ranger Hollow Warden
+
+Class Features
+Hollow Warden Spells
+Wrath of the Wild
+Hungering Might
+Rot and Violence
+Ancient Endurance
+
+Rogue Phantom
+
+Class Features
+Wails from the Grave
+Whispers of the Dead
+Tokens of the Departed
+Voice of Death
+Ghost Walk
+Deaths Friend
+
+Sorcerer Shadow Sorcery
+
+Class Features
+Eyes of the Dark
+Shadow Spells
+Spirits of Ill Omen
+Shadow Walk
+Umbral Form
+
+Warlock Hexblade Patron
+
+Class Features
+Hexblade Spells
+Hexblade Manifest
+Life Stealer
+Armor of Hexes
+Masterful Hex
+
+Warlock Undead Patron
+
+Class Features
+Form of Dread
+Undead Spells
+Grave Touched
+Necrotic Husk
+Superior Dread
+
+Artificer
+Cartographer
+
+# Class Features
+# Tool Proficiencies
+Cartographer Spells
+Adventurers Atlas
+Scouting Gadgets
+Portal Jump
+Ingenious Movement
+Superior Atlas
+
+# Spells
+Faerie Fire
+Guiding Bolt
+Healing Word
+Locate Object
+Mind Spike
+Clairvoyance
+Haste
+Freedom of Movement
+Locate Creature
+Scrying
+Teleportation Circle
+Homunculus Servant
+
+# Magic Items
+Boots of the Winding Path
+Helm of Awareness
+Manifold Tool
+Mind Sharpener
+Radiant Weapon
+Repeating Shot
+Repulsion Shield
+Returning Weapon
+Spell-Refueling Ring
+
+# Feats 
+Dragonmarks
+Aberrant Dragonmark
+Mark of Detection
+Mark of Finding
+Mark of Handling
+Mark of Healing
+Mark of Hospitality
+Mark of Making
+Mark of Passage
+Mark of Scribing
+Mark of Sentinel
+Mark of Shadow
+Mark of Storm
+Mark of Warding
+Potent Dragonmark
+Boon of Siberys
+
+Forgotten Realms Subclasses
+
+College of the Moon
+Bard
+
+# Class Features
+Moonshae Folktales
+Primal Lorist
+Blessing of the Moonwells
+Bolstered Folktales
+
+Knowledge Domain
+Cleric
+
+# Class Features
+Blessings of Knowledge
+Knowledge Domain Spells
+Mind Magic
+Unfettered Mind
+Divine Foreknowledge
+
+Purple Dragon Knight
+Fighter
+
+# Class Features
+Knightly Envoy
+Purple Dragon Companion
+Dragon Rider
+Rallying Surge
+Amethyst Pinnacle
+Enduring Commander
+
+Oath of the Noble Genies
+Paladin
+
+# Class Features
+Elemental Smite
+Genie Spells
+Genies Splendor
+Aura of Elemental Shielding
+Elemental Rebuke
+Noble Scion
+
+Winter Walker
+Ranger
+
+# Class Features
+Frigid Explorer
+Hunters Rime
+Winter Walker Spells
+Fortifying Soul
+Chilling Retribution
+Frozen Haunt
+
+Scion of the Three
+Rogue
+
+# Class Features
+Bloodthirst
+Dread Allegiance
+Strike Fear
+Aura of Malevolence
+Dread Incarnate
+
+Spellfire Sorcery
+Sorcerer
+
+# Class Features
+Spellfire Burst
+Spellfire Spells
+Absorb Spells
+Honed Spellfire
+Crown of Spellfire
+
+Bladesinger
+Wizard
+
+# Class Features
+Bladesong
+Training in War and Song
+Extra Attack
+Song of Defense
+Song of Victory
+
+Artificer
+
+# Class Features
+Magical Tinkering
+Spellcasting
+Replicate Magic Item
+Right Tool for the Job
+Ability Score Improvement
+Magic Item Tinker
+Flash of Genius
+Magic Item Adept
+Spell-Storing Item
+Magic Item Savant
+Magic Item Master
+Epic Boon
+Soul of Artifice
+
+Artificer Spells
+Acid Splash
+Dancing Lights
+Elementalism
+Fire Bolt
+Guidance
+Light
+Mage Hand
+Mending
+Message
+Poison Spray
+Prestidigitation
+Ray of Frost
+Resistance
+Shocking Grasp
+Spare the Dying
+Thorn Whip
+Thunderclap
+True Strike
+Alarm
+Cure Wounds
+Detect Magic
+Disguise Self
+Expeditious Retreat
+Faerie Fire
+False Life
+Feather Fall
+Grease
+Identify
+Jump
+Longstrider
+Purify Food and Drink
+Sanctuary
+Aid
+Alter Self
+Arcane Lock
+Arcane Vigor
+Blur
+Continual Flame
+Darkvision
+Dragons Breath
+Enhance Ability
+Enlarge/Reduce
+Heat Metal
+Homunculus Servant
+Invisibility
+Lesser Restoration
+Levitate
+Magic Mouth
+Magic Weapon
+Protection from Poison
+Rope Trick
+See Invisibility
+Spider Climb
+Web
+Blink
+Create Food and Water
+Dispel Magic
+Elemental Weapon
+Fly
+Glyph of Warding
+Haste
+Protection from Energy
+Revivify
+Water Breathing
+Water Walk
+Arcane Eye
+Fabricate
+Freedom of Movement
+Leomund's Secret Chest
+Mordenkainen's Faithful Hound
+Mordenkainen's Private Sanctum
+Otiluke's Resilient Sphere
+Stone Shape
+Stoneskin
+Summon Construct
+Animate Objects
+Bigby's Hand
+Circle of Power
+Creation
+Greater Restoration
+Wall of Stone
+
+Alchemist Subclass
+# Class Features
+Tool Proficiency
+Alchemist Spells
+Experimental Elixir
+Alchemical Savant
+Restorative Reagents
+Chemical Mastery
+
+Armorer Subclass
+# Class Features
+Tools of the Trade
+Armorer Spells
+Arcane Armor
+Armor Model 
+Dreadnought
+Guardian
+Infiltrator
+Extra Attack
+Armor Replication
+Perfected Armor
+
+Artillerist Subclass
+# Class Features
+Tools of the Trade
+Artillerist Spells
+Eldritch Cannon
+Arcane Firearm
+Explosive Cannon
+Fortified Position
+
+Battle Smith Subclass
+# Class Features
+Tools of the Trade
+Battle Smith Spells
+Battle Ready
+Steel Defender
+Extra Attack
+Arcane Jolt
+Improved Defender
+
+# Additional Magic Items
+Boots of the Winding Path
+Helm of Awareness
+Mind Sharpener
+Radiant Weapon
+Repeating Shot
+Repulsion Shield
+Returning Weapon
+Spell-Refueling Ring
+

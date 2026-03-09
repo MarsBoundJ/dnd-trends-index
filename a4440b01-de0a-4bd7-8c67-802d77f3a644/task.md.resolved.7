@@ -1,0 +1,37 @@
+# D&D Trends Index Project Plan
+
+## Phase 1: Keyword Preparation & Expansion <!-- id: 1 -->
+- [ ] Analyze user-provided Google Trends CSVs (e.g., "witch class homebrew.csv") to derive empirical expansion rules <!-- id: 2 -->
+- [ ] Analyze current `concept_library` categories to determine expansion logic <!-- id: 3 -->
+- [ ] Design schema for `expanded_search_terms` table <!-- id: 4 -->
+- [x] **PILOT:** Implement expansion script for **Classes & Subclasses ONLY** <!-- id: 5 -->
+- [x] **PILOT:** Verify expanded terms list for Pilot batch <!-- id: 6 -->
+
+## Phase 2: Google Trends Pipeline (`pytrends` + Proxies) <!-- id: 7 -->
+- [ ] [/] Design architecture for batch processing (5 terms per request: 4 target + 1 control) <!-- id: 8 -->
+- [x] Select and configure proxy solution (Webshare Configuration Provided) <!-- id: 9 -->
+- [x] **PROXY FIX:** Whitelist IP in Webshare and switch to `p.webshare.io:9999` <!-- id: 27 -->
+- [x] **PILOT:** Develop script to query Google Trends API (Classes/Subclasses only) <!-- id: 10 -->
+- [ ] **PILOT:** Evaluate success rate / data quality of Pilot run (56% COMPLETE - 912/1619) <!-- id: 11 -->
+- [ ] **FULL ROLLOUT:** Expand remaining categories (Spells, Monsters, etc.) <!-- id: 12 -->
+- [ ] **FULL ROLLOUT:** Standardize and run full backfill <!-- id: 13 -->
+- [ ] Implement "Monthly incremental" logic <!-- id: 11 -->
+
+## Phase 3: Ancillary Data Sources <!-- id: 12 -->
+- [ ] **Reddit API**: Design ingestion for subreddit stats/sentiment <!-- id: 13 -->
+- [ ] **DMs Guild**: Implement scraper for top selling/popular items <!-- id: 14 -->
+- [ ] **DriveThruRPG**: Implement scraper for D&D related top charts <!-- id: 15 -->
+- [ ] **Fandom**: Use `fandom-py` to get page view metrics <!-- id: 16 -->
+
+## Phase 4: BigQuery Warehouse & Automation <!-- id: 17 -->
+- [ ] Centralize all data into appropriate BigQuery schema <!-- id: 18 -->
+- [ ] Set up Cloud Scheduler or similar for monthly automation <!-- id: 19 -->
+
+## Phase 5: Web Application (Frontend) <!-- id: 20 -->
+- [ ] Design UI for "Top XX" lists and interactive charts <!-- id: 21 -->
+- [ ] Implement search functionality <!-- id: 22 -->
+- [ ] Build interactive visualizations (trends over time) <!-- id: 23 -->
+
+## Phase 6: AI Analysis & Insights <!-- id: 24 -->
+- [ ] Develop prompts/scripts for Gemini to analyze aggregated data <!-- id: 25 -->
+- [ ] Automate generation of "Insight Articles" <!-- id: 26 -->

@@ -1,0 +1,5 @@
+^
+functions-framework>=3.8.0
+google-cloud-bigquery>=3.25.0
+google-cloud-aiplatform>=1.60.0
+^"(0346c7b262db785b9f82b154e34994382565350e27file:///C:/Users/Yorri/.gemini/insight_requirements.txt:file:///C:/Users/Yorri/.gemini

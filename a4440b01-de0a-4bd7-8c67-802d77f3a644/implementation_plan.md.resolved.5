@@ -1,0 +1,35 @@
+# Phase 2.5: Data Disambiguation & Collision Filtering
+
+## Goal
+Improve data purity by excluding search terms that are semantically broad or collide with other categories (Spells, Monsters) or external intellectual properties (Baldur's Gate 3, Diablo, Skyrim).
+
+## User Review Required
+> [!IMPORTANT]
+> Some terms (e.g., "Warden", "Champion", "Raven Queen") are inherently ambiguous across multiple gaming franchises. We will prioritize **Data Quality** over **Exhaustiveness**, meaning we will drop terms that cannot be cleanly disambiguated.
+
+## Proposed Changes
+
+### 1. Master Collision Index (MCI)
+We will build a lookup index containing:
+- **Internal Categories**: All names from `Spells`, `Monsters`, `NPCs` and `Items` in the `concept_library`.
+- **External IPs**: Known high-volume gaming terms (e.g., "Baldur's Gate 3", "BG3", "Diablo", "Skyrim").
+- **Generic Vague Words**: Words like "Water", "Fire", "Air", "Strength" when used without specific D&D qualifiers.
+
+### 2. Disambiguation Logic
+Updated `expand_keywords.py` logic:
+- **Collision Check**: If a `search_term` exists in the MCI, it is flagged for manual review or dropped.
+- **Qualification**: For highly popular but ambiguous terms, we will append a "D&D" qualifier (e.g., "Warden D&D 5e") instead of the generic "Warden build".
+- **The "Build" Filter**: The suffix "build" will be restricted or combined with "5e" to separate TTRPG theorycrafting from video game build guides.
+
+### 3. Execution Steps
+1.  **Draft the MCI**: Export all non-Class/Subclass terms from BigQuery to a local JSON list.
+2.  **Cleanse Expanded Terms**: Write a script `cleanse_expanded_terms.py` to run the current `trend_data_pilot` against the MCI.
+3.  **Purge & Refill**: Delete the "dirty" records from `trend_data_pilot` and re-run with qualified strings.
+
+## Verification Plan
+### Automated Tests
+- Script to count collisions between Category A and Category B search strings.
+- Count of terms containing "build" vs "D&D 5e".
+
+### Manual Verification
+- Review the "Top 50" list to ensure no non-D&D terms (like "Warden" from another game) are spiking the charts.

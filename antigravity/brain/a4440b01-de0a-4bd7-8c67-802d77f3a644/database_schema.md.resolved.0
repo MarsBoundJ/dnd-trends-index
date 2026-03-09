@@ -1,0 +1,97 @@
+# Database Schema Documentation: Arcane Analytics
+**Project:** `dnd-trends-index`  
+**Date:** 2025-12-31  
+
+This document describes the BigQuery schema follow the **Medallion Architecture** (Raw, Silver, Gold).
+
+---
+
+## 1. Landing / Raw Layers
+These datasets contain immutable, source-specific data.
+
+### Dataset: `dnd_trends_categorized`
+Primary repository for community and trend data.
+
+#### Table: `reddit_daily_metrics`
+| Column | Type | Mode | Description |
+| :--- | :--- | :--- | :--- |
+| `extraction_date` | DATE | REQUIRED | Date data was pulled. |
+| [subreddit](file:///C:/Users/Yorri/.gemini/reddit_harvester.py#52-110) | STRING | REQUIRED | Source subreddit (e.g., `dndnext`). |
+| `keyword` | STRING | REQUIRED | The matched TTRPG keyword. |
+| [category](file:///C:/Users/Yorri/.gemini/wiki_crawler.py#15-31) | STRING | NULLABLE | Keyword category (e.g., `Subclass`, `Monster`). |
+| `mention_count` | INTEGER | REQUIRED | Total occurrences in scanned posts. |
+| `weighted_score` | FLOAT | REQUIRED | Sum of (post_score * sub_weight). |
+
+#### Table: `trend_data_pilot` (Google Trends)
+| Column | Type | Mode | Description |
+| :--- | :--- | :--- | :--- |
+| `keyword` | STRING | REQUIRED | Search term. |
+| [date](file:///C:/Users/Yorri/.gemini/marketplace-search.js#391-436) | DATE | REQUIRED | Interest date. |
+| `value` | INTEGER | REQUIRED | Relative search volume (0-100). |
+
+### Dataset: `social_data`
+#### Table: `youtube_videos`
+| Column | Type | Mode | Description |
+| :--- | :--- | :--- | :--- |
+| `video_id` | STRING | REQUIRED | YouTube Video ID. |
+| [title](file:///C:/Users/Yorri/.gemini/fandom_scraper.py#24-38) | STRING | REQUIRED | Video title. |
+| `published_at` | TIMESTAMP | REQUIRED | Upload date. |
+| `velocity_24h` | FLOAT | REQUIRED | Normalized view count in first 24h. |
+| `matched_keywords` | STRING | REPEATED | Array of keywords found in metadata. |
+
+---
+
+## 2. Silver Layer (`silver_data`)
+Standardized normalization views.
+
+#### View: `norm_wikipedia` | `norm_fandom` | `norm_youtube`
+| Column | Type | Description |
+| :--- | :--- | :--- |
+| [date](file:///C:/Users/Yorri/.gemini/marketplace-search.js#391-436) | DATE | Snapshot date. |
+| `keyword` | STRING | Standardized entity name. |
+| `score_[source]` | FLOAT | **Percentile Rank (0.0 to 1.0)** of the raw metric. |
+
+---
+
+## 3. Gold Layer (`gold_data`)
+Business-level insights and the final Trend Score.
+
+#### View: `trend_scores`
+| Column | Type | Description |
+| :--- | :--- | :--- |
+| [date](file:///C:/Users/Yorri/.gemini/marketplace-search.js#391-436) | DATE | Tracking date. |
+| `keyword` | STRING | The entity being tracked. |
+| `norm_wiki` | FLOAT | Normalized Wikipedia score. |
+| `norm_fandom` | FLOAT | Normalized Fandom score. |
+| `norm_youtube` | FLOAT | Normalized YouTube velocity score. |
+| `norm_roll20` | FLOAT | Normalized Roll20 ranking score. |
+| `hype_score` | FLOAT | Composite: `avg(wiki, fandom, youtube)`. |
+| `play_score` | FLOAT | Composite: [roll20](file:///C:/Users/Yorri/.gemini/roll20_scraper.py#18-108). |
+| `trend_score_raw` | FLOAT | Final Weighted Score (0-100 scale). |
+
+#### Table: `daily_articles`
+| Column | Type | Description |
+| :--- | :--- | :--- |
+| [date](file:///C:/Users/Yorri/.gemini/marketplace-search.js#391-436) | DATE | Article publication date. |
+| `headline` | STRING | Generated headline. |
+| `hook` | STRING | Lead-in summary sentence. |
+| `body_markdown` | STRING | Full article content (Markdown). |
+| `persona` | STRING | Author voice (Tavern Keeper, Sage, Goblin). |
+
+---
+
+## 4. Metadata Layer
+#### Table: `expanded_search_terms`
+| Column | Type | Description |
+| :--- | :--- | :--- |
+| `keyword` | STRING | The canonical term. |
+| [category](file:///C:/Users/Yorri/.gemini/wiki_crawler.py#15-31) | STRING | Category (Class, Race, etc.). |
+| `ruleset` | STRING | 2014 or 2024. |
+| `source` | STRING | Book or publisher source. |
+
+---
+
+## 5. Relationships & Constraints
+- **Key Joins**: Most views join on [(date, keyword)](file:///C:/Users/Yorri/.gemini/marketplace-search.js#657-660).
+- **Partitioning**: Large raw tables (e.g., `trend_data_pilot`) are partitioned by [date](file:///C:/Users/Yorri/.gemini/marketplace-search.js#391-436) for query performance.
+- **Constraints**: BigQuery does not enforce Foreign Keys, but logical integrity is maintained via the `silver_data` cleaning layer.

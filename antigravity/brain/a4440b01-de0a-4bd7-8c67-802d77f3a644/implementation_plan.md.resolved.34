@@ -1,0 +1,32 @@
+# Implementation Plan: Finalizing Phase 15 Fandom Scraper
+
+This plan covers the transition of the Fandom Scraper from a standalone script to a production Cloud Function, along with the required SQL transformation logic.
+
+## Proposed Changes
+
+### [Component] Harvester & Deployment
+#### [MODIFY] [requirements.txt](file:///C:/Users/Yorri/.gemini/requirements.txt)
+- Add `functions-framework` to the dependency list.
+
+#### [MODIFY] [fandom_scraper.py](file:///C:/Users/Yorri/.gemini/fandom_scraper.py)
+- Wrap the execution logic in an HTTP handler (`fandom_scraper_http`) using `functions_framework`.
+- Ensure standard JSON responses for success/error states.
+
+### [Component] BigQuery (Silver Layer)
+#### [NEW] Create View `silver_data.norm_fandom`
+- Implement normalization logic to aggregate multi-wiki scores into a single 0-1 range.
+- Apply a "Breadth Boost" for keywords appearing across multiple wikis.
+
+---
+
+## Execution Steps
+1. **Prepare Dependencies**: Update [requirements.txt](file:///C:/Users/Yorri/.gemini/requirements.txt).
+2. **Implement Cloud Function Wrapper**: Overwrite [fandom_scraper.py](file:///C:/Users/Yorri/.gemini/fandom_scraper.py).
+3. **Deploy to GCP**: Run `gcloud functions deploy fandom-scraper`.
+4. **Create Silver Layer**: Execute the `silver_data.norm_fandom` DDL.
+5. **Verification**: Trigger the function and verify the raw data flow and silver view output.
+
+## Verification Plan
+1. **Deployment Success**: Confirm the function is `ACTIVE` and accessible.
+2. **Smoke Test**: HTTP trigger using `curl` or browser.
+3. **Data Integrity**: Query `silver_data.norm_fandom` to confirm valid normalization.

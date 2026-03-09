@@ -5,3 +5,6 @@ praw>=7.7.0
 pyahocorasick>=2.0.0
 requests>=2.28.0
 functions-framework>=3.0.0
+vaderSentiment
+google-api-python-client
+nltk

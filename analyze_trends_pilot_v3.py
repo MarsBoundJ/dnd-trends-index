@@ -21,6 +21,9 @@ DEST_TABLE = f"{PROJECT_ID}.{DATASET_ID}.trend_data_pilot"
 BATCH_SIZE = 5
 PAUSE_SECONDS = 10 # Can be faster with rotating proxies
 
+if not os.getenv("GOOGLE_APPLICATION_CREDENTIALS") and os.path.exists("/workspaces/dnd-trends/dnd-key.json"):
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/workspaces/dnd-trends/dnd-key.json"
+
 client = bigquery.Client(project=PROJECT_ID)
 
 def fetch_unprocessed_terms():
@@ -32,10 +35,11 @@ def fetch_unprocessed_terms():
     query = f"""
         SELECT e.term_id, e.search_term 
         FROM `{SOURCE_TABLE}` e
+        JOIN `{PROJECT_ID}.{DATASET_ID}.concept_library` c ON e.original_keyword = c.concept_name
         LEFT JOIN (
             SELECT DISTINCT search_term FROM `{DEST_TABLE}`
         ) t ON e.search_term = t.search_term
-        WHERE e.is_pilot = TRUE AND t.search_term IS NULL
+        WHERE e.is_pilot = TRUE AND t.search_term IS NULL AND c.is_active = TRUE
     """
     return list(client.query(query).result())
 

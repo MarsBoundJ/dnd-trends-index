@@ -1,0 +1,376 @@
+# Phase 2.5: Data Disambiguation & Collision Filtering
+
+## Goal
+Improve data purity by excluding search terms that are semantically broad or collide with other categories (Spells, Monsters) or external intellectual properties (Baldur's Gate 3, Diablo, Skyrim).
+
+## User Review Required
+> [!IMPORTANT]
+> Some terms (e.g., "Warden", "Champion", "Raven Queen") are inherently ambiguous across multiple gaming franchises. We will prioritize **Data Quality** over **Exhaustiveness**, meaning we will drop terms that cannot be cleanly disambiguated.
+
+### 3. Volume-Weighted Risk Analysis
+We will apply different levels of scrutiny based on search volume:
+- **High-Volume Outliers**: Manual review of top terms by interest.
+- **Ambiguous Terms (< 500 Interest)**: If an MCI collision occurs, mandatory transformation to `[term] Dnd`.
+    *   *Verification*: `Champion Dnd` (2765) > `Champion 5e` (2316) > `Champion Dnd 5e` (460).
+    *   *Decision*: "Dnd" is the primary disambiguator.
+- **Low-Volume terms (< 200 Interest)**: Aggressive auto-pruning. If a low-volume term hits the MCI or is a generic single word, it is **dropped** by default to clear "low-level noise."
+
+### 4. Official vs. 3rd Party Separation
+We will implement a logical separation (metadata tag) instead of separating the files.
+- **Goal**: Allow "Official Only" reporting while maintaining a unified ecosystem view.
+- **Method**: Add `is_official` (BOOL) column to `expanded_search_terms`.
+- **Logic**: 
+    - `TRUE` if `source_book` is in the Official WotC List (PHB, XGtE, TCoE, FToD, etc.).
+    - `FALSE` if `source_book` is "Partnered Content" (MCDM, Grim Hollow, etc.).
+
+### 5. Execution Steps
+1.  **Draft the MCI**: Export all non-Class/Subclass terms from BigQuery to a local JSON list.
+2.  **Tag Metadata**: Update `expand_keywords.py` to check `concept_library.source_book` and assign `is_official`.
+3.  **Cleanse Expanded Terms**: Write a script `cleanse_expanded_terms.py` to run the current `trend_data_pilot` against the MCI.
+4.  **Purge & Refill**: Delete the "dirty" records from `trend_data_pilot` and re-run with qualified strings.
+
+## Phase 3: Category-Sequenced Batch Collection
+
+### Strategy
+We execute the data collection in prioritized batches to monitor quality and handle collisions dynamically.
+
+### Batches
+1.  **Backgrounds & Feats** (Completed)
+    *   Validation: 100% success rate. 52-week data collected.
+2.  **Races** (Completed & Refined)
+    *   *Crucial Pivot*: Split "Monstrous Races" (Orc, Goblin) from Monsters.
+    *   **Race Data**: collected as `[Race] Race 5e` (e.g., `Orc Race 5e`) to isolate PC intent.
+3.  **Monsters, NPCs, Villains** (In Progress)
+    *   **Monster Data**: collected as `[Monster] 5e` or `[Monster] Dnd`.
+    *   *Safety*: "Stat block" terms were purged and replaced with "Dnd" to avoid BG3 wiki confusion.
+    *   *Execution*: Parallel launch of 3 collectors to handle ~7,000 terms.
+4.  **Spells, Items, MagicItems** (Completed)
+    *   **Scope**: ~5,300 terms.
+    *   **Magic Items**: Largest component (~3,740 terms).
+5.  **Community & Influencers** (Running)
+    *   **Scope**: YouTubers, Podcasts, Websites.
+    *   **Strategy**: Identity-based expansion (`[Name]`, `[Name] Dnd`).
+6.  **Lore** (Running)
+    *   **Scope**: Deities, Factions, Planes, Settings.
+7.  **Mechanics** (Running)
+    *   **Scope**: Invocations, Rules, Builds, Slang.
+8.  **Meta** (Running)
+    *   **Scope**: AI Art, Tools, Editions.
+9.  **Events & Beta** (Running)
+    *   **Scope**: UA Content (~700 terms) & Conventions (~280 terms).
+    *   **Strategy**: "Event-based" expansion.
+
+### 7. API Strategy Note
+*   **Technical Reality**: Google Trends `today 12-m` returns 52 weeks in a single API call.
+*   **Decision**: We keep the full 52-week resolution (standard year-over-year data) but stick strictly to the **Category Stops** to allow for "fail fast" pivots.
+
+## Phase 4: External Data Sources
+
+### Reddit Sentiment Engine
+- **Objective**: Scrape 20+ D&D subreddits and analyze sentiment using Gemini 1.5 Flash.
+- **Components**:
+    - `subreddit_registry`: BQ table defining targets and weights.
+    - `matcher.py`: Aho-Corasick keyword trie.
+    - `mime_sentinel.py`: Vertex AI wrapper for viral events.
+    - `reddit_harvester.py`: Main PRAW scraper.
+
+## Phase 5: Sales Data Scrapers
+- **DMs Guild**: Scrape top-selling "Platinum" and "Adamantine" titles to correlate community sentiment with sales.
+- **DriveThruRPG**: Scrape general RPG charts to contextulize D&D's market share.
+
+## Phase 6: Kickstarter Crowdfunding Engine
+- **Objective**: Track high-earning D&D 5e/TTRPG campaigns as "Leading Indicators" of market trends.
+- **Source**: `kickstarter.com/discover/advanced.json` (Category 34: Tabletop Games).
+- **Architecture**:
+    - `kickstarter_discovery.py`: Iterates API pagination.
+    - `filter_dnd_projects()`: Distinguishes "5e" from generic Board Games/Other RPGs.
+    - `commercial_data.kickstarter_projects`: BigQuery storage without anti-bot friction.
+- **Signal**: Money pledged is the ultimate "vote" for a trend (e.g., "5e Setting Books" vs "3D Printable Minis").
+
+## Phase 7: RPGGeek Ownership Engine
+- **Objective**: Quantify "Staple Power" by tracking ownership counts (`numowned`) and GeekList inclusions via BGG XML API2.
+- **Signal**: Ownership indicates "Collector Interest" vs "Player Interest".
+- **Architecture**:
+    - `rpggeek_client.py`: XML API2 wrapper with rate limiting (5s sleep) and `Retry-After` handling.
+    - **Discovery**: Search API `type=rpgitem`.
+    - **Extraction**: Thing API `stats=1` for ownership/wishlist data.
+    - **Storage**: `commercial_data.rpggeek_items`.
+- **Key Metrics**: `num_owned` (Staple Power), `num_wishlist` (Hype).
+
+## Phase 8: BackerKit Crowdfunding Engine
+- **Objective**: Scrape BackerKit trending campaigns using `curl_cffi` to bypass modern anti-bot headers.
+- **Signal**: Capture the "Exodus" of major creators from Kickstarter.
+- **Architecture**:
+    - `backerkit_scraper.py`: Uses `curl_cffi` (impersonating Chrome 120) and `BeautifulSoup`.
+    - **Discovery**: Scrape `backerkit.com/c/games/tabletop-games?sort=trending`.
+    - **Filtering**: Identify "5e", "Black Flag", "MCDM" keywords.
+    - **Storage**: `commercial_data.backerkit_projects`.
+- **Key Metrics**: `funding_usd` (Commercial Weight), `backers_count` (Audience Size).
+
+## Phase 9: ICv2 Sales Data Engine
+- **Objective**: Ingest quarterly "Top RPGs" charts from ICv2 using Gemini-parsed articles.
+- **Signal**: Broad Industry "health check" and D&D's relative dominance.
+- **Architecture**:
+    - `icv2_scanner.py`: Finds seasonal "Top 5 RPG" articles.
+    - `icv2_gemini_parser.py`: Uses Gemini 1.5 Flash to extract JSON rankings from prose.
+    - `icv2_market_reports`: BigQuery table for historical dominance tracking.
+- **Weights**: #1 Rank = 1.5x Commercial Multiplier.
+
+## Phase 10: Amazon Best Sellers
+- **Objective**: Track the hourly/daily "Best Sellers in Fantasy Gaming" list.
+- **Signal**: Extremely high-velocity retail trends (often driven by TikTok/YouTube spikes).
+
+
+## Phase 11: Google Shopping Market Index
+
+### Objective
+To validate the commercial availability and price variance of trending D&D keywords. This acts as a "Reality Check"—distinguishing "Homebrew Trends" (no products) from "Retail Trends" (products available).
+
+### Architecture
+1.  **Source**: Google Custom Search JSON API (Programmable Search Engine).
+2.  **Constraint**: Free Tier limit of 100 queries/day.
+3.  **Targeting**: Scan only the "Daily Top 50 Trending Keywords" from Phase 2/4.
+4.  **Storage**: `commercial_data.google_shopping_snapshots`.
+
+### Implementation Steps
+
+#### 11.1 GCP & Search Engine Setup
+*   **User Action Required**:
+    *   Enable Custom Search API in GCP.
+    *   Create Programmable Search Engine (CSE) at `programmablesearchengine.google.com`.
+    *   Refine CSE to look for Schema.org/Product types (optional but recommended).
+    *   Provide `GOOGLE_CSE_API_KEY` and `GOOGLE_CSE_CX`.
+
+#### 11.2 Targeted Fetcher (`shopping_sampler.py`)
+*   **Input**: Query BigQuery for top keywords by `trend_velocity` (24h).
+*   **Query**: `q={keyword} + "dnd" + "price"`.
+*   **Safety**: Hard cap at 95 queries/day to stay within free tier.
+
+#### 11.3 Parser Logic
+*   **Extraction**: Look for `pagemap` -> `offer` (price, currency) and `product`.
+*   **Validation**: Exclude results without pricing data (Wikis, Reddit).
+
+#### 11.4 BigQuery Schema (`google_shopping_snapshots`)
+| Field | Type | Description |
+|---|---|---|
+| `snapshot_date` | DATE | Date of query |
+| `keyword` | STRING | The trending term |
+| `product_title` | STRING | Title from search result |
+| `retailer` | STRING | Store name (`og:site_name` or display link) |
+| `price` | FLOAT | Extracted price |
+| `currency` | STRING | Price currency |
+| `link` | STRING | Product URL |
+
+#### 11.5 Availability Signal
+*   **Logic**:
+    *   `>5 Retailers` = Mass Market Available.
+    *   `0 Retailers` + High Trend = Gap in Market / Homebrew.
+
+## Phase 12: YouTube Influencer Intelligence Engine
+
+### Objective
+To monitor high-impact D&D content creators for new uploads, track "View Velocity" to detect viral trends, and analyze sentiment via comment mining.
+
+### Architecture
+- **Registry**: `social_data.youtube_channel_registry` (Tiers 1–6).
+- **Ingestion**: `youtube_listener.py` using `google-api-python-client`.
+- **Optimization**: Convert Channel ID (`UC...`) to Playlist ID (`UU...`) to save quota.
+- **Sentiment**: `nltk.sentiment.vader` on top 20 comments per video.
+
+#### 12.1 Channel Registry Setup
+*   **Action**: Create `social_data.youtube_channel_registry`.
+*   **Schema**: `channel_id`, `channel_name`, `handle`, `uploads_playlist_id`, `tier`.
+*   **Seed Data**: Populate with Tiers 1-6 (Critical Role, Dungeon Dudes, emerging channels, etc.).
+
+#### 12.2 Upload Listener Engine (`youtube_listener.py`)
+*   **Logic**: Fetch last 5 videos from `uploads_playlist_id`.
+*   **Filter**: Videos published in last 7 days.
+*   **Quota**: ~1 unit per channel.
+
+#### 12.3 Velocity Tracker (`youtube_stats_updater.py`)
+*   **Logic**: Batch fetch video statistics.
+*   **Metric**: `velocity = current_views - prev_views`.
+
+#### 12.4 Sentiment Engine
+*   **Library**: `nltk.sentiment.vader`.
+*   **Logic**: Score top 20 comments (`commentThreads.list`).
+*   **Output**: Positive/Negative ratio per video.
+
+#### 12.5 BigQuery Schema (`youtube_videos`)
+| Field | Type | Description |
+|---|---|---|
+| `video_id` | STRING | YouTube Video ID |
+| `channel_name` | STRING | Channel Name |
+| `tier` | INT64 | Influencer Tier (1-6) |
+| `published_at` | TIMESTAMP | Upload time |
+| [title](file:///C:/Users/Yorri/.gemini/fandom_scraper.py#24-38) | STRING | Video Title |
+| `view_count` | INT64 | Total Views |
+| `velocity_24h` | INT64 | Views gained in last 24h |
+| `sentiment_pos_ratio` | FLOAT | % Positive Comments |
+| `matched_keyword_ids` | ARRAY<INT> | Linked IDs from Keyword Library |
+
+## Phase 13: Roll20 VTT Market Engine
+
+### Objective
+To track the "Best Selling" and "Most Popular" assets on the Roll20 Marketplace, serving as a proxy for *active play* trends (what DMs are buying to run games *right now*).
+
+### Architecture
+- **Target**: `marketplace.roll20.net/browse/search?category=itemtype:Games&sortby=popular`
+- **Ingestion**: [roll20_scraper.py](file:///C:/Users/Yorri/.gemini/roll20_scraper.py) (BeautifulSoup/Requests or Browser).
+- **Storage**: `commercial_data.roll20_rankings`.
+
+### Implementation Steps
+
+#### 13.1 Marketplace Scraper ([roll20_scraper.py](file:///C:/Users/Yorri/.gemini/roll20_scraper.py))
+- **Action**: Scrape top 100 items sorted by popularity.
+- **Pagination**: Numbered pagination (static).
+- **Selectors**:
+    - **Container**: `.card.card-product`
+    - **Title**: `.card-title`
+    - **Publisher**: `.marketplace-item-subtitle`
+    - **Price**: `.card-price`
+    - **Link**: `a.stretched-link`
+
+#### 13.2 BigQuery Schema (`roll20_rankings`)
+| Field | Type | Description |
+|---|---|---|
+| `snapshot_date` | DATE | Date of scrape |
+| `rank` | INTEGER | 1-100 |
+| [title](file:///C:/Users/Yorri/.gemini/fandom_scraper.py#24-38) | STRING | Item Name |
+| `publisher` | STRING | Creator |
+| [category](file:///C:/Users/Yorri/.gemini/wiki_crawler.py#15-31) | STRING | Type (Rulebook, Art, etc) |
+| `price` | STRING | Price |
+| `url` | STRING | |
+
+## Phase 14: Wikipedia Cultural Intelligence
+
+### Objective
+To measure the "Mainstream relevance" of D&D by tracking daily page views for high-level topics (e.g., "Dungeons & Dragons", "Critical Role", "Stranger Things") and specific lore/mechanics. This serves as a control signal for broader pop-culture interest versus hardcore player interest.
+
+### Architecture
+1.  **Source**: Wikimedia REST API (`/metrics/pageviews/per-article`).
+2.  **Ingestion**: [wikipedia_scraper.py](file:///C:/Users/Yorri/.gemini/wikipedia_scraper.py) (API Fetcher).
+3.  **Storage**: `commercial_data.wikipedia_daily_views`.
+
+### Implementation Steps
+
+### Implementation Steps
+
+#### 14.1 Wikipedia Article Discovery Engine ([wiki_crawler.py](file:///C:/Users/Yorri/.gemini/wiki_crawler.py))
+- **Objective**: Programmatically discover ~1,000+ D&D articles by recursively crawling `Category:Dungeons_&_Dragons`.
+- **Source**: MediaWiki API (`list=categorymembers`).
+- **Logic**:
+    - **Recursive Crawler**: Traverse subcategories up to Depth 3.
+    - **Endpoint**: `https://en.wikipedia.org/w/api.php`
+    - **Filters**: Exclude "List of...", "Template:", "User:" namespaces.
+- **Storage**: Populate `social_data.wikipedia_article_registry`.
+    - Schema: `article_title` (STRING), `parent_category` (STRING), `discovery_date` (DATE), `is_tracked` (BOOL).
+
+#### 14.2 Page Views Scraper ([wikipedia_scraper.py](file:///C:/Users/Yorri/.gemini/wikipedia_scraper.py))
+- **API**: `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia.org/all-access/user/{title}/daily/{start}/{end}`
+- **Logic**:
+    - Iterate through registry.
+    - Fetch last 30 days of history (or backfill if needed).
+    - Respect API User-Agent policy.
+
+#### 14.3 BigQuery Schema (`wikipedia_daily_views`)
+| Field | Type | Description |
+|---|---|---|
+| [date](file:///C:/Users/Yorri/.gemini/debug_roll20.html#2738-2746) | DATE | View date |
+| `article_title` | STRING | Wikipedia Title |
+| [views](file:///C:/Users/Yorri/.gemini/wikipedia_scraper.py#25-51) | INTEGER | Daily User Views |
+| [category](file:///C:/Users/Yorri/.gemini/wiki_crawler.py#15-31) | STRING | Tag (from parent_category) |
+
+## Phase 15: Fandom Wiki Intelligence Engine
+
+### Objective
+To ingest daily "Trending Articles" lists from major D&D Fandom wikis to identify which lore, monsters, and mechanics are being actively researched by the core community ("Active DM Prep" signal).
+
+### Architecture
+1.  **Targets**: `forgottenrealms`, `dnd5e`, `criticalrole`, `eberron`.
+2.  **Source**: Fandom API (`/api/v1/Articles/Top`).
+3.  **Storage**: `social_data.fandom_trending`.
+
+### Implementation Steps
+
+#### 15.1 Wiki Registry & Scraper ([fandom_scraper.py](file:///C:/Users/Yorri/.gemini/fandom_scraper.py))
+- **API**: `https://{wiki}.fandom.com/api/v1/Articles/Top?limit=100&expand=1`
+- **Logic**:
+    - Iterate through target wikis.
+    - Fetch Top 100.
+    - **Cleaning**: Exclude 'User:', 'Talk:', 'Category:', and generic 'Home' pages.
+    - **Metric**: Rank (1-100) serves as the popularity signal (since raw views aren't public).
+
+#### 15.2 BigQuery Schema (`fandom_trending`)
+| Field | Type | Description |
+|---|---|---|
+| `snapshot_date` | DATE | Date of scrape |
+| `wiki_name` | STRING | e.g. 'forgottenrealms' |
+| `rank` | INT64 | 1-100 |
+| `article_title` | STRING | Title |
+| `article_id` | INT64 | Fandom ID |
+| `url_path` | STRING | Relative URL |
+
+## Phase 16: Data Warehouse Orchestration & The "Trend Score" Algorithm
+
+### Objective
+To automate the execution of all data scrapers, centralize data into a Medallion Architecture (Bronze/Silver/Gold) in BigQuery, and calculate a unified "Trend Score" (0-100).
+
+### Architecture: The Lakehouse
+- **Bronze Layer (Raw)**: Raw JSON/HTML dumps.
+- **Silver Layer (Clean)**: Normalized data (Percentile Rankings).
+- **Gold Layer (Aggregated)**: Final weighted Trend Scores.
+
+### Orchestration (Google Cloud Workflows)
+- **Fast Lane (Daily @ 6:00 AM UTC)**: Reddit, Google Trends, YouTube, Fandom, Amazon, Wikipedia.
+- **Slow Lane (Weekly @ Sundays)**: Kickstarter, BackerKit, Roll20, RPGGeek, DTRPG.
+
+### Implementation Steps
+
+#### 16.1 Scheduling Architecture
+- Define [workflow_fast_lane.yaml](file:///C:/Users/Yorri/.gemini/workflow_fast_lane.yaml) and [workflow_slow_lane.yaml](file:///C:/Users/Yorri/.gemini/workflow_slow_lane.yaml).
+- Use Cloud Scheduler to trigger Workflows.
+
+#### 16.2 Data Normalization (Silver Layer)
+- **Logic**: Calculate Percentile Rank (0.0 - 1.0) for each metric per day.
+- **Goal**: Compare apples (Upvotes) to oranges (Dollars).
+
+#### 16.3 Trend Score Algorithm (Gold Layer)
+- **Formula**: `Score = (0.4 * Hype) + (0.3 * Play) + (0.3 * Buy)`
+- **Hype Inputs**: Google Trends, Reddit, YouTube, Fandom, Wiki.
+- **Play Inputs**: Roll20, Reddit (DMAcademy).
+- **Buy Inputs**: Kickstarter, BackerKit, Amazon, RPGGeek.
+
+#### 16.4 Time Decay & Anomalies
+- **Time Decay**: `Today_Score = (0.7 * Current) + (0.3 * Yesterday)`
+- **Anomaly**: Trigger alert if `Today > (Avg + 3*StdDev)`.
+
+## Phase 17: Web Application (The "Arcane" Dashboard)
+
+### Objective
+To build a "Premium", high-aesthetic dashboard that visualizes the Trend Scores and Anomalies for the user.
+
+### Technology Stack
+- **Backend**: Python (FastAPI) - Lightweight, fast, distinct from the heavy scraper scripts.
+- **Frontend**: HTML5 + Vanilla CSS + JavaScript (No heavy frameworks, per User Rules).
+- **Visualization**: Chart.js (via CDN).
+- **Design Language**: "Arcane Intelligence" (Dark Mode, Purple/Gold Accents, Glassmorphism).
+
+### Architecture
+1.  **API Layer (`dashboard_api.py`)**
+    -   `GET /api/trends/top`: Queries `gold_data.trend_scores` for Top 20.
+    -   `GET /api/trends/anomalies`: Queries `gold_data.anomalies`.
+    -   `GET /api/history/{keyword}`: Queries Bronze/Silver layers for sparklines.
+
+2.  **Frontend (`dashboard/`)**
+    -   `index.html`: Single Page Application structure.
+    -   `style.css`: Custom CSS with CSS Variables for theming.
+    -   `app.js`: Fetches data and renders Chart.js graphs.
+
+### Implementation Steps
+1.  **Setup API**: Create `dashboard_api.py` with BigQuery Client.
+2.  **Build UI Skeleton**: Create HTML structure with "Command Center" layout.
+3.  **Style & Polish**: Apply "Premium" styles (Glow effects, smooth transitions).
+4.  **Wire Data**: Connect JS to API and render live charts.
+
+

@@ -5,21 +5,22 @@ import sys
 import logging
 from datetime import date
 from google.cloud import bigquery
-from google.cloud import logging as cloud_logging
-
 # CONFIG
 PROJECT_ID = "dnd-trends-index"
 REGISTRY_TABLE = f"{PROJECT_ID}.social_data.wikipedia_article_registry"
 LIBRARY_TABLE = f"{PROJECT_ID}.dnd_trends_categorized.concept_library"
 FANDOM_TABLE = f"{PROJECT_ID}.silver_data.norm_fandom"
-LIMIT_CONCEPTS = 300
+LIMIT_CONCEPTS = 500
 BATCH_SIZE = 50
 WIKI_API_BASE = "https://en.wikipedia.org/api/rest_v1/page/summary/"
 USER_AGENT = "DndTrendsIndexDiscoveryBot/2.0 (luckys-story-garden.com)"
 
 # Initialize Logging
-log_client = cloud_logging.Client()
-log_client.setup_logging()
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
 logger = logging.getLogger("wiki-discovery-bot")
 
 def get_missing_concepts(client):
@@ -32,7 +33,6 @@ def get_missing_concepts(client):
         LEFT JOIN `{FANDOM_TABLE}` f
             ON LOWER(c.concept_name) = LOWER(f.keyword)
         WHERE w.article_title IS NULL -- Only missing items
-        AND c.category IN ('Monster', 'Spell', 'MagicItem')
         GROUP BY 1
         ORDER BY MAX(f.score_fandom) DESC -- Priorities High Hype terms
         LIMIT {LIMIT_CONCEPTS}

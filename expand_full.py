@@ -92,6 +92,9 @@ def generate_terms(row, mci_set, refill_map):
         
         if cat == 'Race' and term_base in MONSTROUS_RACES:
             variations = [f"{term_base} Race 5e", f"{term_base} Race Dnd"]
+        elif cat == 'Background':
+             # Enforce qualifiers even for Backgrounds to avoid general noise
+             variations = [f"{term_base} 5e", f"{term_base} 2024", f"{term_base} Dnd"]
         else:
             variations = [f"{term_base} 5e", f"{term_base} 2024"]
             # For standard races, maybe add "Race" variant too?
@@ -108,7 +111,8 @@ def generate_terms(row, mci_set, refill_map):
         variations = [f"{term_base} Dnd", f"{term_base} 5e"]
         
     elif cat == 'Build':
-        variations = [f"{term_base} 5e", f"{term_base} Build"]
+        # Rule: Only qualified builds (5e/Dnd) to avoid generic video game noise
+        variations = [f"{term_base} 5e build", f"{term_base} Dnd build", f"{term_base} 5e"]
         
     elif cat in ['Deity', 'Faction', 'Plane', 'Setting', 'Invocation', 'Eldritch Invocation']:
         # Lore-based

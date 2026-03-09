@@ -40,12 +40,12 @@ def setup_silver():
     sql_fandom = f"""
     CREATE OR REPLACE VIEW `{PROJECT_ID}.{DATASET_ID}.norm_fandom` AS
     SELECT
-        snapshot_date as date,
+        extraction_date as date,
         article_title as keyword,
-        wiki_name,
-        rank,
-        PERCENT_RANK() OVER (PARTITION BY snapshot_date, wiki_name ORDER BY rank DESC) as score_fandom
-    FROM `{PROJECT_ID}.social_data.fandom_trending`
+        wiki_slug as wiki_name,
+        rank_position as rank,
+        PERCENT_RANK() OVER (PARTITION BY extraction_date, wiki_slug ORDER BY rank_position DESC) as score_fandom
+    FROM `{PROJECT_ID}.dnd_trends_raw.fandom_daily_metrics`
     """
 
     # 4. Normalize Roll20 Ranks (Lower Rank = Better, same logic)

@@ -15,7 +15,7 @@ main:
                   - call_reddit:
                       call: http.post
                       args:
-                        url: "https://us-central1-${project_id}.cloudfunctions.net/reddit_harvester"
+                        url: "https://reddit-harvester-187467566422.us-central1.run.app"
                         auth:
                           type: OIDC
                       result: reddit_result
@@ -25,7 +25,7 @@ main:
                   - call_fandom:
                       call: http.post
                       args:
-                        url: "https://us-central1-${project_id}.cloudfunctions.net/fandom_scraper"
+                        url: "https://fandom-scraper-187467566422.us-central1.run.app"
                         auth:
                           type: OIDC
                       result: fandom_result
@@ -35,20 +35,44 @@ main:
                   - call_youtube:
                       call: http.post
                       args:
-                        url: "https://us-central1-${project_id}.cloudfunctions.net/youtube_listener"
+                        url: "https://youtube-listener-187467566422.us-central1.run.app"
                         auth:
                           type: OIDC
                       result: youtube_result
             
+            - google_trends:
+                steps:
+                  - call_google_trends:
+                      try:
+                        call: googleapis.run.v1.namespaces.jobs.run
+                        args:
+                          name: "namespaces/${project_id}/jobs/google-trends-job"
+                          location: ${location}
+                        result: google_trends_result
+                      except:
+                        as: e
+                        steps:
+                          - ignore_google_trends_error:
+                              assign:
+                                - google_trends_result: "failed but continuing"
+
             - wikipedia:
                 steps:
                   - call_wikipedia:
                       call: http.post
                       args:
-                        url: "https://us-central1-${project_id}.cloudfunctions.net/wikipedia_scraper"
+                        url: "https://wikipedia-scraper-187467566422.us-central1.run.app"
                         auth:
                           type: OIDC
                       result: wiki_result
+
+    - refresh_gold_views:
+        call: http.post
+        args:
+          url: "https://bouncer-api-187467566422.us-central1.run.app/refresh_views?source=youtube"
+          auth:
+            type: OIDC
+        result: refresh_result
 
     - return_results:
         return: "Fast Lane Complete"

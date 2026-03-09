@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcane Library Clerk - D&D Trends</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --panel-bg: rgba(16, 24, 40, 0.7);
+            --border-glow: #38bdf8;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --approve-color: #22c55e;
+            --reject-color: #ef4444;
+            --gold: #fbbf24;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background-image: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.15) 0%, transparent 50%);
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: var(--gold);
+            text-align: center;
+            letter-spacing: 2px;
+            font-weight: 300;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            color: var(--text-sub);
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            padding: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .concept-name {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 1.1rem;
+        }
+
+        .reason-text {
+            color: var(--text-sub);
+            font-size: 0.9rem;
+            max-width: 400px;
+            line-height: 1.4;
+        }
+
+        select {
+            background: rgba(0, 0, 0, 0.5);
+            color: var(--text-main);
+            border: 1px solid var(--glass-border);
+            padding: 0.5rem;
+            border-radius: 6px;
+            outline: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        select:focus {
+            border-color: var(--border-glow);
+            box-shadow: 0 0 5px rgba(56, 189, 248, 0.4);
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-approve {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--approve-color);
+            border: 1px solid var(--approve-color);
+            margin-right: 0.5rem;
+        }
+
+        .btn-approve:hover {
+            background: var(--approve-color);
+            color: #000;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+        }
+
+        .btn-reject {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--reject-color);
+            border: 1px solid var(--reject-color);
+        }
+
+        .btn-reject:hover {
+            background: var(--reject-color);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-sub);
+            font-style: italic;
+        }
+
+        .security-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .security-bar input {
+            background: rgba(0, 0, 0, 0.5);
+            color: var(--gold);
+            border: 1px solid var(--glass-border);
+            padding: 0.6rem;
+            border-radius: 6px;
+            width: 250px;
+            text-align: center;
+            letter-spacing: 3px;
+            font-family: monospace;
+        }
+
+        .btn-done {
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--text-sub);
+            border: 1px solid var(--text-sub);
+        }
+
+        .btn-archive {
+            background: transparent;
+            color: rgba(239, 68, 68, 0.6);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            font-size: 0.65rem;
+            padding: 0.3rem 0.6rem;
+            margin-left: 0.5rem;
+        }
+
+        .btn-archive:hover {
+            border-color: var(--reject-color);
+            color: var(--reject-color);
+        }
+
+        .locked {
+            filter: grayscale(1) opacity(0.5);
+            pointer-events: none !important;
+        }
+
+        .processing {
+            opacity: 0.4 !important;
+            pointer-events: none !important;
+            filter: blur(1px);
+        }
+
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+        }
+
+        .btn-loading::after {
+            content: "";
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            top: 50%;
+            left: 50%;
+            margin: -6px 0 0 -6px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            background: var(--panel-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Catalog Harvester Styles */
+        .harvester-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .raw-input-area {
+            width: 100%;
+            height: 400px;
+            background: rgba(0, 0, 0, 0.4);
+            color: var(--text-main);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.85rem;
+            resize: none;
+            outline: none;
+        }
+
+        .raw-input-area:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
+        }
+
+        .parser-results {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .product-card {
+            padding: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-info h4 {
+            margin: 0;
+            color: var(--gold);
+            font-size: 0.95rem;
+        }
+
+        .product-meta {
+            font-size: 0.75rem;
+            color: var(--text-sub);
+            margin-top: 0.25rem;
+        }
+
+        .product-price {
+            font-weight: bold;
+            color: var(--approve-color);
+        }
+
+        .harvester-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .badge-source {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .badge-dmsguild {
+            background: #6c2e31;
+            color: #fff;
+        }
+
+        .badge-drivethru {
+            background: #2e4a6c;
+            color: #fff;
+        }
+
+        .incursion-link {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #000;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+            transition: all 0.3s ease;
+            cursor: grab;
+        }
+
+        .incursion-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(251, 191, 36, 0.6);
+        }
+
+        .incursion-link:active {
+            cursor: grabbing;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>SCRYING SCRIBE</h1>
+
+        <div class="security-bar">
+            <input type="password" id="ritualKey" placeholder="ENTER RITUAL KEY" oninput="checkRitualKey()">
+            <button class="btn btn-done" onclick="lockSession()">DONE</button>
+        </div>
+
+        <div class="glass-panel">
+            <table id="suggestionsTable">
+                <thead>
+                    <tr>
+                        <th>Concept Name</th>
+                        <th>Suggested Category</th>
+                        <th>Reason</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="suggestionsBody">
+                    <tr>
+                        <td colspan="4" class="empty-state">Loading suggestions from the Bouncer API...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2
+            style="color: var(--gold); margin-top: 4rem; font-weight: 300; text-transform: uppercase; letter-spacing: 2px;">
+            The Incursion Forge</h2>
+        <div class="glass-panel action-btn locked" style="text-align: center; padding: 3rem;">
+            <p style="color: var(--text-sub); margin-bottom: 2rem;">Drag the blade below to your Bookmarks Bar. Click it
+                while on a DMs Guild bestseller page to harvest data directly.</p>
+            <a href="javascript:%28function%20%28%29%20%7B%0A%20%20%20%20const%20existing%20%3D%20document.getElementById%28%27arcane-incursion-panel%27%29%3B%0A%20%20%20%20if%20%28existing%29%20%7B%20existing.remove%28%29%3B%20return%3B%20%7D%0A%0A%20%20%20%20console.log%28%22%E2%9A%94%20Arcane%20Incursion%20Initiated%20%28V10%20-%20The%20Librarian%20Engine%29...%22%29%3B%0A%0A%20%20%20%20const%20today%20%3D%20new%20Date%28%29.toISOString%28%29.split%28%27T%27%29%5B0%5D%3B%0A%20%20%20%20const%20productMap%20%3D%20new%20Map%28%29%3B%20//%20Use%20Map%20to%20dedup%20by%20URL%0A%20%20%20%20const%20isMetalPage%20%3D%20window.location.pathname.includes%28%27metal.php%27%29%3B%0A%20%20%20%20const%20source%20%3D%20window.location.hostname.includes%28%27dmsguild%27%29%20%3F%20%22DMs%20Guild%22%20%3A%20%22DriveThruRPG%22%3B%0A%0A%20%20%20%20const%20tiers%20%3D%20%5B%27Adamantine%27%2C%20%27Mithral%27%2C%20%27Platinum%27%2C%20%27Gold%27%2C%20%27Silver%27%2C%20%27Electrum%27%2C%20%27Copper%27%5D%3B%0A%0A%20%20%20%20//%20Helper%20to%20find%20the%20current%20shelf%20tier%0A%20%20%20%20function%20findTierForElement%28el%29%20%7B%0A%20%20%20%20%20%20%20%20let%20prev%20%3D%20el.previousElementSibling%3B%0A%20%20%20%20%20%20%20%20while%20%28prev%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20text%20%3D%20%28prev.innerText%20%7C%7C%20prev.textContent%20%7C%7C%20%27%27%29.trim%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20for%20%28const%20t%20of%20tiers%29%20%7B%20if%20%28text.includes%28t%29%29%20return%20t%3B%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20//%20Check%20children%20of%20prev%20if%20it%27s%20a%20container%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20childHeading%20%3D%20prev.querySelector%28%27.infoBoxHeading%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20%28childHeading%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20hText%20%3D%20childHeading.innerText%20%7C%7C%20childHeading.textContent%20%7C%7C%20%27%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20for%20%28const%20t%20of%20tiers%29%20%7B%20if%20%28hText.includes%28t%29%29%20return%20t%3B%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20prev%20%3D%20prev.previousElementSibling%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20//%20If%20not%20found%20in%20siblings%2C%20go%20up%20one%20level%20and%20check%20predecessors%0A%20%20%20%20%20%20%20%20if%20%28el.parentElement%20%26%26%20el.parentElement%20%21%3D%3D%20document.body%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20return%20findTierForElement%28el.parentElement%29%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20return%20%22Normal%22%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20//%20---%20UNIFIED%20HARVEST%20---%0A%20%20%20%20//%20Target%20all%20product%20links.%20DTRPG%20Metal%20page%20is%20usually%20a%20giant%20table.%0A%20%20%20%20const%20allLinks%20%3D%20document.querySelectorAll%28%27a%5Bhref%2A%3D%22/product/%22%5D%27%29%3B%0A%20%20%20%20console.log%28%22%E2%9A%94%20Scanned%20%22%20%2B%20allLinks.length%20%2B%20%22%20links.%20Filtering...%22%29%3B%0A%0A%20%20%20%20allLinks.forEach%28link%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20const%20url%20%3D%20link.href.split%28%27%3F%27%29%5B0%5D%3B%0A%20%20%20%20%20%20%20%20if%20%28productMap.has%28url%29%29%20return%3B%20//%20Avoid%20duplicate%20links%20for%20same%20product%20%28image%20%2B%20text%29%0A%0A%20%20%20%20%20%20%20%20const%20container%20%3D%20link.closest%28%27td%2C%20th%2C%20div.obs-title-card%2C%20div.title-strip-title-card%27%29%3B%0A%20%20%20%20%20%20%20%20if%20%28%21container%29%20return%3B%0A%0A%20%20%20%20%20%20%20%20const%20titleText%20%3D%20%28link.innerText%20%7C%7C%20link.textContent%20%7C%7C%20%27%27%29.trim%28%29%3B%0A%20%20%20%20%20%20%20%20if%20%28titleText.length%20%3C%202%20%7C%7C%20/%5E%5Cd%2B%24/.test%28titleText%29%29%20return%3B%20//%20Skip%20image%20links%20or%20tiny%20text%0A%0A%20%20%20%20%20%20%20%20//%20Extraction%20logic%0A%20%20%20%20%20%20%20%20let%20price%20%3D%200.0%3B%0A%20%20%20%20%20%20%20%20const%20specialPrice%20%3D%20container.querySelector%28%27.productSpecialPrice%2C%20.cy-prc%27%29%3B%0A%20%20%20%20%20%20%20%20if%20%28specialPrice%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20price%20%3D%20parseFloat%28specialPrice.innerText.replace%28/%5B%5E%5Cd.%5D/g%2C%20%27%27%29%29%20%7C%7C%200.0%3B%0A%20%20%20%20%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20//%20Find%20price%20in%20text%20nodes%20of%20container%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20m%20%3D%20container.innerText.match%28/%5C%24%3F%28%5B%5Cd.%5D%2B%29/%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20%28m%29%20price%20%3D%20parseFloat%28m%5B1%5D%29%20%7C%7C%200.0%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20const%20tier%20%3D%20findTierForElement%28container%29%3B%0A%0A%20%20%20%20%20%20%20%20let%20snippet%20%3D%20%22%22%3B%0A%20%20%20%20%20%20%20%20const%20descEl%20%3D%20container.querySelector%28%27.product-description%2C%20.smallText%27%29%3B%0A%20%20%20%20%20%20%20%20if%20%28descEl%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20snippet%20%3D%20%28descEl.innerText%20%7C%7C%20descEl.textContent%20%7C%7C%20%27%27%29.trim%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20//%20Optional%3A%20Truncate%20very%20long%20snippets%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20%28snippet.length%20%3E%20500%29%20snippet%20%3D%20snippet.substring%280%2C%20500%29%20%2B%20%27...%27%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20productMap.set%28url%2C%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20collected_date%3A%20today%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20source%3A%20source%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20title%3A%20titleText.replace%28/%5E%5Cd%2B%5C.%5Cs%2A/%2C%20%27%27%29%2C%20//%20Strip%20ranking%20numbers%0A%20%20%20%20%20%20%20%20%20%20%20%20publisher%3A%20source%20%2B%20%22%20%28Universal%29%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20seller_tier%3A%20tier%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20price%3A%20price%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20rating%3A%200%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20tags%3A%20%5BisMetalPage%20%3F%20%22Metal%20List%22%20%3A%20%22Browse%22%2C%20tier%2C%20%22V10%22%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20snippet%3A%20snippet%0A%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%7D%29%3B%0A%0A%20%20%20%20const%20products%20%3D%20Array.from%28productMap.values%28%29%29%3B%0A%0A%20%20%20%20if%20%28products.length%20%3D%3D%3D%200%29%20%7B%0A%20%20%20%20%20%20%20%20alert%28%27%E2%9A%94%20Incursion%20Failed%3A%20No%20products%20detected.%27%29%3B%0A%20%20%20%20%20%20%20%20return%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20//%20UI%20Overlay%20%28V9%20-%20Neon%20Chrome%29%0A%20%20%20%20const%20panel%20%3D%20document.createElement%28%27div%27%29%3B%0A%20%20%20%20panel.id%20%3D%20%27arcane-incursion-panel%27%3B%0A%20%20%20%20Object.assign%28panel.style%2C%20%7B%0A%20%20%20%20%20%20%20%20position%3A%20%27fixed%27%2C%20top%3A%20%2720px%27%2C%20right%3A%20%2720px%27%2C%20width%3A%20%27340px%27%2C%20padding%3A%20%2724px%27%2C%0A%20%20%20%20%20%20%20%20background%3A%20%27rgba%2810%2C%2015%2C%2025%2C%200.95%29%27%2C%20border%3A%20%272px%20solid%20rgb%28201%2C%20145%2C%2058%29%27%2C%20borderRadius%3A%20%2712px%27%2C%0A%20%20%20%20%20%20%20%20color%3A%20%27rgb%28248%2C%20250%2C%20252%29%27%2C%20zIndex%3A%20%272147483647%27%2C%20fontFamily%3A%20%27Inter%2C%20sans-serif%27%2C%0A%20%20%20%20%20%20%20%20boxShadow%3A%20%270%2015px%2040px%20rgba%280%2C0%2C0%2C0.8%29%27%2C%20backdropFilter%3A%20%27blur%2810px%29%27%2C%20textAlign%3A%20%27left%27%0A%20%20%20%20%7D%29%3B%0A%0A%20%20%20%20panel.innerHTML%20%3D%20%60%0A%20%20%20%20%20%20%20%20%3Ch2%20style%3D%22color%3Argb%28201%2C%20145%2C%2058%29%3Bmargin%3A0%200%2020px%200%3Bfont-weight%3Abold%3Bletter-spacing%3A1px%3Btext-align%3Acenter%3Btext-transform%3Auppercase%3B%22%3E%E2%9A%94%20Incursion%20V10%3C/h2%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20style%3D%22background%3Argba%28255%2C255%2C255%2C0.05%29%3Bpadding%3A15px%3Bborder-radius%3A8px%3Bmargin-bottom%3A20px%3Bfont-size%3A15px%3Bline-height%3A1.6%3Bborder-left%3A4px%20solid%20rgb%28201%2C%20145%2C%2058%29%3B%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%20style%3D%22margin%3A5px%200%3B%22%3ESource%3A%20%3Cspan%20style%3D%22float%3Aright%3Bcolor%3Argb%28201%2C%20145%2C%2058%29%3B%22%3E%24%7Bsource%7D%3C/span%3E%3C/p%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%20style%3D%22margin%3A5px%200%3B%22%3EHarvester%3A%20%3Cspan%20style%3D%22float%3Aright%3Bcolor%3Argb%28201%2C%20145%2C%2058%29%3B%22%3EThe%20Librarian%20Engine%3C/span%3E%3C/p%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%20style%3D%22margin%3A10px%200%3Bfont-weight%3Abold%3Bfont-size%3A18px%3B%22%3ETotal%20items%3A%20%3Cspan%20style%3D%22float%3Aright%3Bcolor%3Argb%2834%2C%20197%2C%2094%29%3B%22%3E%24%7Bproducts.length%7D%3C/span%3E%3C/p%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%3Cbutton%20id%3D%22beam-btn%22%20style%3D%22width%3A100%25%3Bpadding%3A16px%3Bbackground%3Argb%28201%2C%20145%2C%2058%29%3Bborder%3Anone%3Bborder-radius%3A8px%3Bfont-weight%3A900%3Bcursor%3Apointer%3Bcolor%3Ablack%3Btext-transform%3Auppercase%3Bletter-spacing%3A1px%3Bfont-size%3A14px%3Bbox-shadow%3A0%200%2015px%20rgba%28201%2C145%2C58%2C0.4%29%3B%22%3E%F0%9F%9A%80%20Transmit%20Batch%3C/button%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20id%3D%22progress-container%22%20style%3D%22display%3Anone%3Bmargin-top%3A15px%3B%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20style%3D%22width%3A100%25%3Bheight%3A8px%3Bbackground%3A%23333%3Bborder-radius%3A4px%3Boverflow%3Ahidden%3B%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20id%3D%22progress-bar%22%20style%3D%22width%3A0%25%3Bheight%3A100%25%3Bbackground%3Argb%2834%2C%20197%2C%2094%29%3Btransition%3Awidth%200.3s%3B%22%3E%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%20id%3D%22progress-text%22%20style%3D%22font-size%3A12px%3Bmargin-top%3A5px%3Btext-align%3Acenter%3Bcolor%3A%23999%3B%22%3EPreparing%20transmission...%3C/p%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%3Cbutton%20id%3D%22close-incursion%22%20style%3D%22width%3A100%25%3Bmargin-top%3A12px%3Bbackground%3Atransparent%3Bborder%3A1px%20solid%20%23333%3Bcolor%3A%23666%3Bpadding%3A10px%3Bborder-radius%3A8px%3Bcursor%3Apointer%3Bfont-size%3A12px%3B%22%3EDismiss%20Overlay%3C/button%3E%0A%20%20%20%20%60%3B%0A%0A%20%20%20%20document.body.appendChild%28panel%29%3B%0A%20%20%20%20document.getElementById%28%27close-incursion%27%29.onclick%20%3D%20%28%29%20%3D%3E%20panel.remove%28%29%3B%0A%20%20%20%20document.getElementById%28%27beam-btn%27%29.onclick%20%3D%20async%20%28%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20const%20key%20%3D%20prompt%28%22Enter%20Ritual%20Key%3A%22%29%3B%0A%20%20%20%20%20%20%20%20if%20%28%21key%29%20return%3B%0A%0A%20%20%20%20%20%20%20%20const%20btn%20%3D%20document.getElementById%28%27beam-btn%27%29%3B%0A%20%20%20%20%20%20%20%20const%20prog%20%3D%20document.getElementById%28%27progress-container%27%29%3B%0A%20%20%20%20%20%20%20%20const%20bar%20%3D%20document.getElementById%28%27progress-bar%27%29%3B%0A%20%20%20%20%20%20%20%20const%20progText%20%3D%20document.getElementById%28%27progress-text%27%29%3B%0A%0A%20%20%20%20%20%20%20%20btn.style.display%20%3D%20%27none%27%3B%0A%20%20%20%20%20%20%20%20prog.style.display%20%3D%20%27block%27%3B%0A%0A%20%20%20%20%20%20%20%20//%20Chunking%20for%20large%20batches%20%281000%20items%20per%20chunk%29%0A%20%20%20%20%20%20%20%20const%20chunkSize%20%3D%201000%3B%0A%20%20%20%20%20%20%20%20let%20successCount%20%3D%200%3B%0A%0A%20%20%20%20%20%20%20%20for%20%28let%20i%20%3D%200%3B%20i%20%3C%20products.length%3B%20i%20%2B%3D%20chunkSize%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20chunk%20%3D%20products.slice%28i%2C%20i%20%2B%20chunkSize%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20percent%20%3D%20Math.round%28%28%28i%20%2B%20chunk.length%29%20/%20products.length%29%20%2A%20100%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20bar.style.width%20%3D%20percent%20%2B%20%27%25%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20progText.innerText%20%3D%20%60Transmitting%20Chunk%20%24%7BMath.floor%28i%20/%20chunkSize%29%20%2B%201%7D%20%28%24%7Bpercent%7D%25%29%60%3B%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20res%20%3D%20await%20fetch%28%27https%3A//us-central1-dnd-trends-index.cloudfunctions.net/bouncer-api/system/library/ingest-catalog%27%2C%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20method%3A%20%27POST%27%2C%20headers%3A%20%7B%20%27Content-Type%27%3A%20%27application/json%27%2C%20%27X-Ritual-Key%27%3A%20key%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20body%3A%20JSON.stringify%28chunk%29%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28res.ok%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20successCount%20%2B%3D%20chunk.length%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20errText%20%3D%20await%20res.text%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20alert%28%60%E2%9A%A0%20BATCH%20ERROR%20at%20item%20%24%7Bi%7D%3A%20%60%20%2B%20errText%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20btn.style.display%20%3D%20%27block%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20prog.style.display%20%3D%20%27none%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20return%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%20catch%20%28e%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20alert%28%60%F0%9F%9A%A8%20NETWORK%20ERROR%20at%20item%20%24%7Bi%7D%3A%20%60%20%2B%20e.message%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20btn.style.display%20%3D%20%27block%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20prog.style.display%20%3D%20%27none%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20return%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20alert%28%60%F0%9F%93%9C%20SUCCESS%3A%20%24%7BsuccessCount%7D%20items%20archived%20in%20BigQuery.%60%29%3B%0A%20%20%20%20%20%20%20%20panel.remove%28%29%3B%0A%20%20%20%20%7D%3B%0A%7D%28%29%29%3B%0A"
+                class="incursion-link">⚔ Incursion Tool V10</a>
+
+        </div>
+
+        <h2
+            style="color: var(--gold); margin-top: 4rem; font-weight: 300; text-transform: uppercase; letter-spacing: 2px;">
+            Catalog Harvester</h2>
+
+        <div class="glass-panel action-btn locked">
+            <div class="harvester-controls">
+                <div>
+                    <select id="catalogSource">
+                        <option value="DMs Guild">DMs Guild</option>
+                        <option value="DriveThruRPG">DriveThruRPG</option>
+                    </select>
+                    <button class="btn btn-approve" onclick="runParser()">Preview Extracted Rows</button>
+                    <button class="btn btn-approve locked" id="aiEnrichBtn" onclick="runLibrarian()"
+                        style="background: linear-gradient(90deg, #6366f1, #a855f7); color: white; border: none; font-weight: bold; border-radius: 8px; font-size: 11px;">✨
+                        AI ENRICH ALL</button>
+                    <button class="btn btn-reject" onclick="clearHarvester()">Clear</button>
+                </div>
+                <button id="pushBtn" class="btn btn-approve locked" style="background: var(--gold); color: #000;"
+                    onclick="pushToLibrary()">Push <span id="rowCount">0</span> Rows to Library</button>
+            </div>
+
+            <div class="harvester-grid">
+                <div>
+                    <div style="margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-sub);">PASTE CATALOG TEXT
+                        HERE (BESTSELLERS PAGE)</div>
+                    <textarea id="rawCatalogData" class="raw-input-area" placeholder="Paste text here... e.g.
+Curse of Strahd
+Wizards of the Coast
+Gold
+$29.99
+(1234 ratings)"></textarea>
+                </div>
+                <div>
+                    <div style="margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-sub);">EXTRACTION PREVIEW
+                    </div>
+                    <div id="parserResults" class="parser-results">
+                        <div class="empty-state" style="padding: 2rem;">No data extracted yet.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">Action recorded.</div>
+
+    <script>
+        const API_BASE = 'https://us-central1-dnd-trends-index.cloudfunctions.net/bouncer-api';
+        const CATEGORIES = [
+            "Monster", "Spell", "Mechanic", "Class", "Subclass", "Feat", "Species & Lineage",
+            "Background", "Deity", "Party Role", "Equipment", "Location", "NPC", "PC", "Faction",
+            "Lore", "Art", "Accessory", "Rulebooks", "Setting", "TTRPG System", "YouTube",
+            "Influencer", "Actual Play", "Convention", "VTT Platform", "Other", "Uncategorized"
+        ];
+
+        async function fetchSuggestions() {
+            try {
+                const res = await fetch(`${API_BASE}/system/suggestions/pending`);
+                const data = await res.json();
+
+                const tbody = document.getElementById('suggestionsBody');
+                tbody.innerHTML = '';
+
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="empty-state">No pending AI suggestions. The library is clean.</td></tr>`;
+                    return;
+                }
+
+                data.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.id = `row-${btoa(item.concept_name).replace(/=/g, '')}`;
+
+                    // Create dropdown
+                    let options = CATEGORIES.map(c =>
+                        `<option value="${c}" ${c === item.suggested_category ? 'selected' : ''}>${c}</option>`
+                    ).join('');
+
+                    // Fallback if AI suggested a weird string
+                    if (!CATEGORIES.includes(item.suggested_category) && item.suggested_category) {
+                        options += `<option value="${item.suggested_category}" selected>${item.suggested_category}</option>`;
+                    }
+
+                    tr.innerHTML = `
+                        <td class="concept-name">${item.concept_name}</td>
+                        <td>
+                            <select id="select-${btoa(item.concept_name).replace(/=/g, '')}">
+                                ${options}
+                            </select>
+                        </td>
+                        <td class="reason-text">${item.reason || 'No reasoning provided.'}</td>
+                        <td>
+                            <button class="btn btn-approve action-btn locked" onclick="handleAction('${item.concept_name}', 'APPROVE')">Approve</button>
+                            <button class="btn btn-reject action-btn locked" onclick="handleAction('${item.concept_name}', 'REJECT')">Reject</button>
+                            <button class="btn btn-archive action-btn locked" title="Archive Term" onclick="handleAction('${item.concept_name}', 'ARCHIVE')">📁</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (e) {
+                console.error(e);
+                document.getElementById('suggestionsBody').innerHTML = `<tr><td colspan="4" class="empty-state" style="color:red">Error connecting to Bouncer API.</td></tr>`;
+            }
+        }
+
+        async function handleAction(conceptName, action) {
+            const rowId = btoa(conceptName).replace(/=/g, '');
+            const row = document.getElementById(`row-${rowId}`);
+
+            let payload = {
+                concept_name: conceptName,
+                action: action
+            };
+
+            if (action === 'APPROVE') {
+                const selectElement = document.getElementById(`select-${rowId}`);
+                payload.category = selectElement.value;
+            }
+
+            row.classList.add('processing');
+            const btns = row.querySelectorAll('.btn');
+            btns.forEach(b => {
+                if (b.onclick && b.onclick.toString().includes(action)) {
+                    b.classList.add('btn-loading');
+                }
+            });
+
+            try {
+                const res = await fetch(`${API_BASE}/system/suggestions/update`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    showToast(`${action === 'APPROVE' ? 'Approved' : 'Rejected'}: ${conceptName}`);
+
+                    // Safety Buffer
+                    setTimeout(() => {
+                        row.remove();
+                        if (document.getElementById('suggestionsBody').children.length === 0) {
+                            document.getElementById('suggestionsBody').innerHTML = `<tr><td colspan="4" class="empty-state">No pending AI suggestions. The library is clean.</td></tr>`;
+                        }
+                    }, 500);
+                } else {
+                    row.classList.remove('processing');
+                    btns.forEach(b => b.classList.remove('btn-loading'));
+                    showToast(`Error updating ${conceptName}`, true);
+                }
+            } catch (e) {
+                console.error(e);
+                row.classList.remove('processing');
+                btns.forEach(b => b.classList.remove('btn-loading'));
+                showToast(`Network error updating ${conceptName}`, true);
+            }
+        }
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.style.borderColor = isError ? 'var(--reject-color)' : 'var(--approve-color)';
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+        }
+
+        let parsedData = [];
+
+        function runParser() {
+            const rawText = document.getElementById('rawCatalogData').value;
+            const source = document.getElementById('catalogSource').value;
+            const resultsDiv = document.getElementById('parserResults');
+
+            let lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+
+            // 1. Deduplicate consecutive identical lines (DMs Guild thumb + title link issue)
+            const cleanLines = [];
+            for (let i = 0; i < lines.length; i++) {
+                if (i === 0 || lines[i].toLowerCase() !== lines[i - 1].toLowerCase()) {
+                    cleanLines.push(lines[i]);
+                }
+            }
+            lines = cleanLines;
+
+            // 2. Implementation of hardened parser logic
+            const ignoreList = ['Search', 'Filter', 'My Account', 'Cart', 'Log In', 'Register', 'Wishlist', 'Checkout', 'Notifications', 'Account', 'Support', 'Contact'];
+
+            parsedData = [];
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+
+                // Exclude common UI noise
+                if (ignoreList.some(term => line.includes(term))) continue;
+
+                // Price Anchor Strategy: Locate lines with $ or PWYW
+                const prices = line.match(/\$(\d+\.?\d*)|PWYW/gi);
+                if (prices) {
+                    try {
+                        // Take the last price in the line (usually the active/sale price)
+                        const activePriceStr = prices[prices.length - 1];
+                        const priceValue = activePriceStr.toUpperCase() === 'PWYW' ? 0.0 : parseFloat(activePriceStr.replace('$', ''));
+
+                        // Look back for Title/Publisher/Tier
+                        // We scan backwards for lines that are NOT prices and NOT noise
+                        const candidates = [];
+                        let j = i - 1;
+                        while (j >= 0 && candidates.length < 3) {
+                            const prevLine = lines[j];
+                            if (!prevLine.match(/\$(\d+\.?\d*)|PWYW/i) &&
+                                !ignoreList.some(term => prevLine.includes(term)) &&
+                                prevLine.length > 2) {
+                                candidates.push(prevLine);
+                            }
+                            j--;
+                        }
+
+                        let title = "Unknown Title";
+                        let publisher = "Unknown Publisher";
+                        let tier = "Normal";
+
+                        if (candidates.length === 1) {
+                            title = candidates[0];
+                        } else if (candidates.length === 2) {
+                            title = candidates[1];
+                            publisher = candidates[0];
+                        } else if (candidates.length >= 3) {
+                            title = candidates[2];
+                            publisher = candidates[1];
+                            tier = candidates[0];
+                        }
+
+                        const ratingLine = lines[i + 1] || "";
+                        const ratingMatch = ratingLine.match(/(\d+\.?\d*)\s*rating/i);
+                        const rating = ratingMatch ? parseFloat(ratingMatch[1]) : 0;
+
+                        parsedData.push({
+                            collected_date: new Date().toISOString().split('T')[0],
+                            source: source,
+                            title: title,
+                            publisher: publisher,
+                            seller_tier: tier,
+                            price: priceValue,
+                            rating: rating,
+                            tags: []
+                        });
+                    } catch (e) {
+                        console.warn("Skip block", e);
+                    }
+                }
+            }
+
+            // Deduplication (Title + Source + Date)
+            const seen = new Set();
+            parsedData = parsedData.filter(item => {
+                const key = `${item.title.toLowerCase()}|${item.source}|${item.collected_date}`;
+                if (seen.has(key)) return false;
+                seen.add(key);
+                return true;
+            });
+
+            // Update UI
+            resultsDiv.innerHTML = '';
+            if (parsedData.length === 0) {
+                resultsDiv.innerHTML = '<div class="empty-state">No valid product blocks found. Ensure price ($) anchors are present.</div>';
+                document.getElementById('pushBtn').classList.add('locked');
+            } else {
+                parsedData.forEach((p, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
+                        <div class="product-info">
+                            <h4>${p.title}</h4>
+                            <div class="product-meta" id="meta-${index}">${p.publisher} • ${p.seller_tier}</div>
+                        </div>
+                        <div class="product-price">${p.price === 0 ? 'PWYW' : '$' + p.price.toFixed(2)}</div>
+                    `;
+                    resultsDiv.appendChild(card);
+                });
+                document.getElementById('rowCount').textContent = parsedData.length;
+                document.getElementById('pushBtn').classList.remove('locked');
+                document.getElementById('aiEnrichBtn').classList.remove('locked');
+            }
+        }
+
+        async function runLibrarian() {
+            if (parsedData.length === 0) return;
+            const btn = document.getElementById('aiEnrichBtn');
+            btn.classList.add('btn-loading');
+            try {
+                const targetUrl = window.location.hostname === 'localhost' ? 'http://localhost:8082' : API_BASE;
+                const response = await fetch(`${targetUrl}/system/library/enrich`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(parsedData.map(p => ({ title: p.title, snippet: p.snippet || '' })))
+                });
+
+                if (response.ok) {
+                    const enriched = await response.json();
+                    enriched.forEach((data, index) => {
+                        parsedData[index].publisher = data.publisher || parsedData[index].publisher;
+                        if (data.primary_category) {
+                            parsedData[index].tags.push(data.primary_category);
+                        }
+
+                        // Update UI
+                        const meta = document.getElementById(`meta-${index}`);
+                        if (meta) {
+                            meta.innerHTML = `<span style="color: #a855f7;">[${data.primary_category || 'N/A'}]</span> ${parsedData[index].publisher} • ${parsedData[index].seller_tier}<br><span style="font-size:10px;color:rgba(255,255,255,0.5);">✨ ${data.summary || 'Enriched'}</span>`;
+                        }
+                    });
+                    showToast("AI Enrichment Complete ✨");
+                } else {
+                    showToast("Enrichment Failed.", true);
+                }
+            } catch (e) {
+                console.error(e);
+                showToast("Connection Error to Librarian.", true);
+            } finally {
+                btn.classList.remove('btn-loading');
+            }
+        }
+
+        async function pushToLibrary() {
+            if (parsedData.length === 0) return;
+            const btn = document.getElementById('pushBtn');
+            btn.classList.add('btn-loading');
+
+            try {
+                // Pointing to internal local bouncer for testing, or GCF in production
+                const targetUrl = window.location.hostname === 'localhost' ? 'http://localhost:8082' : API_BASE;
+                const ritualKey = document.getElementById('ritualKey').value;
+                const response = await fetch(`${targetUrl}/system/library/ingest-catalog`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Ritual-Key': ritualKey
+                    },
+                    body: JSON.stringify(parsedData)
+                });
+
+
+                if (response.ok) {
+                    showToast(`Successfully harvested ${parsedData.length} records.`);
+                    clearHarvester();
+                } else {
+                    const err = await response.text();
+                    showToast("Ingestion Failed: " + err, true);
+                }
+            } catch (e) {
+                console.error(e);
+                showToast("Connection Error to Bouncer.", true);
+            } finally {
+                btn.classList.remove('btn-loading');
+            }
+        }
+
+        function clearHarvester() {
+            document.getElementById('rawCatalogData').value = '';
+            parsedData = [];
+            document.getElementById('parserResults').innerHTML = '<div class="empty-state" style="padding: 2rem;">No data extracted yet.</div>';
+            document.getElementById('rowCount').textContent = '0';
+            document.getElementById('pushBtn').classList.add('locked');
+        }
+
+        const RITUAL_KEY = "ArcaneLibrarian2026";
+        let sessionTimer;
+
+        function checkRitualKey() {
+            const input = document.getElementById('ritualKey');
+            const btns = document.querySelectorAll('.action-btn');
+
+            if (input.value === RITUAL_KEY) {
+                btns.forEach(b => b.classList.remove('locked'));
+                resetSessionTimer();
+            } else {
+                btns.forEach(b => b.classList.add('locked'));
+            }
+        }
+
+        function resetSessionTimer() {
+            clearTimeout(sessionTimer);
+            sessionTimer = setTimeout(lockSession, 15 * 60 * 1000); // 15 mins
+        }
+
+        function lockSession() {
+            document.getElementById('ritualKey').value = '';
+            document.querySelectorAll('.action-btn').forEach(b => b.classList.add('locked'));
+            showToast("Session Locked.");
+        }
+
+        // Init
+        fetchSuggestions();
+    </script>
+</body>
+
+</html>

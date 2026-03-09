@@ -1,0 +1,87 @@
+createTime: '2026-02-18T11:43:40.842129168Z'
+description: Daily D&D Trends Scrapers (Reddit, Fandom, YouTube, Wiki, Google Trends)
+name: projects/dnd-trends-index/locations/us-central1/workflows/dnd-fast-lane
+revisionCreateTime: '2026-03-02T18:18:01.938226628Z'
+revisionId: 000005-f39
+serviceAccount: projects/dnd-trends-index/serviceAccounts/187467566422-compute@developer.gserviceaccount.com
+sourceContents: |2
+
+  main:
+    steps:
+      - init:
+          assign:
+            - project_id: ${sys.get_env("GOOGLE_CLOUD_PROJECT_ID")}
+            - location: "us-central1"
+
+      # Parallel Execution of Daily Scrapers
+      - run_scrapers_parallel:
+          parallel:
+            branches:
+              - reddit:
+                  steps:
+                    - call_reddit:
+                        call: http.post
+                        args:
+                          url: "https://reddit-harvester-187467566422.us-central1.run.app"
+                          auth:
+                            type: OIDC
+                        result: reddit_result
+
+              - fandom:
+                  steps:
+                    - call_fandom:
+                        call: http.post
+                        args:
+                          url: "https://fandom-scraper-187467566422.us-central1.run.app"
+                          auth:
+                            type: OIDC
+                        result: fandom_result
+
+              - youtube:
+                  steps:
+                    - call_youtube:
+                        call: http.post
+                        args:
+                          url: "https://youtube-listener-187467566422.us-central1.run.app"
+                          auth:
+                            type: OIDC
+                        result: youtube_result
+              
+              - google_trends:
+                  steps:
+                    - call_google_trends:
+                        try:
+                          call: googleapis.run.v1.namespaces.jobs.run
+                          args:
+                            name: "namespaces/${project_id}/jobs/google-trends-job"
+                            location: ${location}
+                          result: google_trends_result
+                        except:
+                          as: e
+                          steps:
+                            - ignore_google_trends_error:
+                                assign:
+                                  - google_trends_result: "failed but continuing"
+
+              - wikipedia:
+                  steps:
+                    - call_wikipedia:
+                        call: http.post
+                        args:
+                          url: "https://wikipedia-scraper-187467566422.us-central1.run.app"
+                          auth:
+                            type: OIDC
+                        result: wiki_result
+
+      - refresh_gold_views:
+          call: http.post
+          args:
+            url: "https://bouncer-api-187467566422.us-central1.run.app/refresh_views?source=youtube"
+            auth:
+              type: OIDC
+          result: refresh_result
+
+      - return_results:
+          return: "Fast Lane Complete"
+state: ACTIVE
+updateTime: '2026-03-02T18:18:02.063303764Z'

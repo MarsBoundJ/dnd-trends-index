@@ -1,0 +1,42 @@
+# Walkthrough: Fandom Scraper Phase 15 Upgrade
+
+I have successfully upgraded the Fandom Monitoring stream to Phase 15 specifications. This upgrade expands the monitoring scope to 13 wikis and implements a more robust data model.
+
+## 1. BigQuery Schema Update
+The table `dnd_trends_raw.fandom_daily_metrics` has been re-created with the following structure:
+- `extraction_date` (DATE): Partitioned for performance.
+- `wiki_slug` (STRING): Captures 13 target wikis.
+- `article_title` (STRING): Cleaned and filtered titles.
+- `rank_position` (INT64): 1-100.
+- `hype_score` (FLOAT64): Inverted rank (1.0 to 0.01).
+- `view_count` (INT64).
+- `url_path` (STRING).
+
+## 2. Multi-Wiki Harvester Implementation
+Modified [fandom_scraper.py](file:///C:/Users/Yorri/.gemini/fandom_scraper.py) with the new Phase 15 logic:
+- **13 Target Wikis**: Added `dungeonsdragons` (General Lore) and `mystara` (OSR/Retro).
+- **Hype Score Algorithm**: Implemented [calculate_hype](file:///C:/Users/Yorri/.gemini/fandom_scraper.py#35-38) to normalize cross-wiki interest.
+- **Strict Filtering**: Added namespace filters for "User:", "File:", etc., and excluded meta-pages like "Main Page".
+
+## 3. Dependency Management
+Updated [requirements.txt](file:///C:/Users/Yorri/.gemini/requirements.txt) to include `requests>=2.28.0`, ensuring the scraper has its core networking library for deployment.
+
+## 4. Deployment Complete (Gen 2)
+The scraper is now live as a GCF Gen 2 function.
+- **Function Name**: `fandom-scraper`
+- **Region**: `us-central1`
+- **Entry Point**: [fandom_scraper_http](file:///C:/Users/Yorri/.gemini/fandom_scraper.py#80-103)
+- **Trigger**: HTTP (Accessible by Workflows)
+
+## 5. Silver Layer Normalization
+Created the view `silver_data.norm_fandom` which performs the following:
+- **Aggregation**: Takes the `MAX` hype score across all 13 wikis for a keyword.
+- **Breadth Boost**: Applies a 5% boost for every additional wiki mentioning the keyword (capped at 1.0).
+- **Format**: Standardized `extraction_date`, `keyword`, and `score_fandom` (0.0 - 1.0).
+
+---
+
+## Verification Results
+- **HTTP Trigger**: Verified with `success` status response ("✅ Success! Inserted 12xx rows.").
+- **View Check**: Verified `silver_data.norm_fandom` returns projected normalized scores.
+- **Data Integrity**: Confirmed raw table `fandom_daily_metrics` is populating with Phase 15 metadata.

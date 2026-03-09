@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcane Library Clerk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-obsidian: #0a0a0c;
+            --glass-panel: rgba(20, 20, 25, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --color-primary: #00d4ff;
+            --color-archive: #ff3377;
+            --text-main: #e0e0e0;
+            --text-muted: #8888aa;
+            --glow-primary: 0 0 15px rgba(0, 212, 255, 0.2);
+        }
+
+        body {
+            background-color: var(--bg-obsidian);
+            background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, var(--bg-obsidian) 70%);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--color-primary);
+            letter-spacing: 3px;
+            text-align: center;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+        }
+
+        .search-card {
+            background: var(--glass-panel);
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            border-radius: 12px;
+            backdrop-filter: blur(12px);
+            margin-bottom: 2rem;
+            box-shadow: var(--glow-primary);
+        }
+
+        .search-box {
+            display: flex;
+            gap: 1rem;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            padding: 12px 20px;
+            color: #fff;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--color-primary);
+        }
+
+        button.search-btn {
+            background: var(--color-primary);
+            color: #000;
+            border: none;
+            padding: 0 2rem;
+            border-radius: 8px;
+            font-weight: bold;
+            font-family: 'Cinzel', serif;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        button.search-btn:active {
+            transform: scale(0.98);
+        }
+
+        .results-card {
+            background: var(--glass-panel);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            backdrop-filter: blur(12px);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        select {
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border: 1px solid var(--glass-border);
+            padding: 6px 10px;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-update {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .btn-update:hover {
+            background: var(--color-primary);
+            color: #000;
+        }
+
+        .btn-archive {
+            border-color: var(--color-archive);
+            color: var(--color-archive);
+            background: rgba(255, 51, 119, 0.05);
+        }
+
+        .btn-archive:hover {
+            background: var(--color-archive);
+            color: #fff;
+        }
+
+        .status-msg {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+            z-index: 100;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LIBRARY <span style="color: #fff;">CLERK</span></h1>
+        
+        <div class="search-card">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search 18k concepts (e.g., Fireball, Vecna, Monk)...">
+                <button class="search-btn" onclick="performSearch()">SCRIBE</button>
+            </div>
+        </div>
+
+        <div class="results-card">
+            <table id="results-table">
+                <thead>
+                    <tr>
+                        <th>Concept Name</th>
+                        <th>Category</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="results-body">
+                    <!-- Results will be injected here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="toast" class="status-msg"></div>
+
+    <script>
+        const API_BASE = "http://localhost:8081";
+        const CATEGORIES = [
+            "Class", "Species & Lineage", "Mechanic", "Subclass", "Spell", 
+            "Background", "Location", "Equipment", "Feat", "NPC", 
+            "Monster", "Lore", "Dungeon", "Archive", "Uncategorized", "TTRPG System"
+        ];
+
+        async function performSearch() {
+            const query = document.getElementById('search-input').value;
+            if (!query) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/system/library/search?q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                renderResults(data);
+            } catch (err) {
+                showToast("Search failed: " + err.message, true);
+            }
+        }
+
+        function renderResults(concepts) {
+            const tbody = document.getElementById('results-body');
+            tbody.innerHTML = '';
+
+            concepts.forEach(concept => {
+                const tr = document.createElement('tr');
+                
+                // Name
+                const tdName = document.createElement('td');
+                tdName.textContent = concept.name;
+                tdName.style.fontWeight = concept.is_active ? '600' : '400';
+                if (!concept.is_active) tdName.style.color = '#666';
+                tr.appendChild(tdName);
+
+                // Category Dropdown
+                const tdCat = document.createElement('td');
+                const select = document.createElement('select');
+                CATEGORIES.forEach(cat => {
+                    const opt = document.createElement('option');
+                    opt.value = cat;
+                    opt.textContent = cat;
+                    if (cat === concept.category) opt.selected = true;
+                    select.appendChild(opt);
+                });
+                tdCat.appendChild(select);
+                tr.appendChild(tdCat);
+
+                // Actions
+                const tdActions = document.createElement('td');
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'action-btns';
+
+                const btnUpdate = document.createElement('button');
+                btnUpdate.className = 'btn btn-update';
+                btnUpdate.textContent = 'UPDATE';
+                btnUpdate.onclick = () => updateConcept(concept.name, select.value, concept.is_active);
+                
+                const btnArchive = document.createElement('button');
+                btnArchive.className = 'btn btn-archive';
+                btnArchive.textContent = concept.is_active ? 'ARCHIVE' : 'RESTORE';
+                btnArchive.onclick = () => updateConcept(concept.name, concept.category, !concept.is_active);
+
+                actionsDiv.appendChild(btnUpdate);
+                actionsDiv.appendChild(btnArchive);
+                tdActions.appendChild(actionsDiv);
+                tr.appendChild(tdActions);
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function updateConcept(name, category, isActive) {
+            try {
+                const response = await fetch(`${API_BASE}/system/library/update`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        concept_name: name,
+                        category: category,
+                        is_active: isActive
+                    })
+                });
+                const result = await response.json();
+                if (result.status === 'success') {
+                    showToast(`Updated ${name} to ${category} (${isActive ? 'Active' : 'Archived'})`);
+                    performSearch(); // Refresh
+                } else {
+                    showToast("Error: " + result.error, true);
+                }
+            } catch (err) {
+                showToast("Update failed: " + err.message, true);
+            }
+        }
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.style.display = 'block';
+            toast.style.background = isError ? 'rgba(255, 51, 119, 0.9)' : 'rgba(0, 212, 255, 0.9)';
+            toast.style.color = isError ? '#fff' : '#000';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Search on Enter
+        document.getElementById('search-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch();
+        });
+    </script>
+</body>
+</html>

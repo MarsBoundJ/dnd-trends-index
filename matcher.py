@@ -1,7 +1,9 @@
 import ahocorasick
 import pickle
 import os
+import re
 from google.cloud import bigquery
+from nltk.stem import SnowballStemmer
 
 # Config
 KEYWORD_CACHE_FILE = 'keyword_trie.pkl'
@@ -12,7 +14,7 @@ class KeywordMatcher:
     def __init__(self, refresh=False):
         self.automaton = ahocorasick.Automaton()
         self.client = bigquery.Client()
-        self.keyword_map = {} # ID -> Term
+        self.stemmer = SnowballStemmer("english")
         
         if os.path.exists(KEYWORD_CACHE_FILE) and not refresh:
             print("Loading keyword trie from cache...")
@@ -21,28 +23,48 @@ class KeywordMatcher:
             print("Fetching keywords from BigQuery...")
             self.build_trie()
 
-    def build_trie(self):
-        query = f"""
-            SELECT search_term, category, original_keyword 
-            FROM `{TABLE_ID}`
+    def stem_text(self, text):
         """
-        rows = self.client.query(query).result()
+        Tokenizes text, stems each word, and pads with spaces for boundary matching.
+        """
+        if not text:
+            return ""
+        # Simple tokenization: split by non-alphanumeric
+        tokens = re.findall(r'\b\w+\b', text.lower())
+        stemmed_tokens = [self.stemmer.stem(t) for t in tokens]
+        # Pad with spaces to ensure word boundary matching in Aho-Corasick
+        return " " + " ".join(stemmed_tokens) + " "
+
+    def build_trie(self):
+        # 1. Fetch base concepts
+        query_base = f"SELECT concept_name as term, category FROM `{DATASET_ID}.concept_library`"
+        # 2. Fetch expanded concepts
+        query_expanded = f"SELECT search_term as term, category FROM `{TABLE_ID}`"
         
         count = 0
-        for row in rows:
-            term = row.search_term.lower()
-            # Store metadata we might need later (Category, Original)
-            payload = {
-                "term": row.search_term,
-                "category": row.category,
-                "original": row.original_keyword
-            }
-            # Add to automaton
-            # Note: Aho-Corasick matches patterns. 
-            self.automaton.add_word(term, payload)
-            count += 1
+        self.automaton = ahocorasick.Automaton() # Reset
+        
+        for query in [query_base, query_expanded]:
+            rows = self.client.query(query).result()
+            for row in rows:
+                term_raw = row.term
+                term_stemmed = self.stem_text(term_raw)
+                # Ensure we don't add empty padded strings
+                if not term_stemmed or term_stemmed.strip() == "":
+                    continue
+                    
+                payload = {
+                    "term": term_raw,
+                    "category": row.category
+                }
+                
+                try:
+                    self.automaton.add_word(term_stemmed, payload)
+                    count += 1
+                except Exception:
+                    pass
             
-        print(f"Building automaton with {count} terms...")
+        print(f"Building automaton with {count} stemmed terms from both libraries...")
         self.automaton.make_automaton()
         print("Automaton built.")
         
@@ -56,15 +78,16 @@ class KeywordMatcher:
 
     def find_matches(self, text):
         """
-        Returns a list of unique matched payloads found in the text.
-        Text is normalized to lowercase.
+        Stems input text and returns unique matched payloads.
         """
-        text_lower = text.lower()
+        if not text:
+            return []
+            
+        text_stemmed = self.stem_text(text)
         matches = []
         seen = set()
         
-        # iter() returns (end_index, value)
-        for end_index, payload in self.automaton.iter(text_lower):
+        for end_index, payload in self.automaton.iter(text_stemmed):
             term = payload['term']
             if term not in seen:
                 matches.append(payload)
@@ -76,9 +99,15 @@ if __name__ == "__main__":
     # Test Run
     matcher = KeywordMatcher(refresh=True)
     
-    test_text = "I am building a Hexblade Warlock with a Holy Avenger."
-    print(f"\nTest Text: '{test_text}'")
-    hits = matcher.find_matches(test_text)
-    print(f"Hits: {len(hits)}")
-    for h in hits:
-        print(f" - {h['term']} ({h['category']})")
+    test_cases = [
+        "I am building a Hexblade Warlock with a Holy Avenger.",
+        "Check out these fighters and their martial maneuvers.",
+        "A band of goblins attacks the clerics."
+    ]
+    
+    for test_text in test_cases:
+        print(f"\nTarget: '{test_text}'")
+        hits = matcher.find_matches(test_text)
+        print(f"Hits: {len(hits)}")
+        for h in hits:
+            print(f" - {h['term']} ({h['category']})")

@@ -1,0 +1,35 @@
+# Data Stream Health Report (2025-12-30)
+
+Below is the status of our current data pipeline as of this morning.
+
+## Summary Table
+
+| Stream | Status | Healthy? | Rows/Metrics | Latest Update | Notes |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Google Trends** | Healthy | ✅ | 945,461 rows | 2025-12-23 | Breadth: 18,524 unique terms. |
+| **Wikipedia** | Healthy | ✅ | 71,222 views | 2025-12-27 | Breadth: 3,190 articles. |
+| **Fandom** | Healthy | ✅ | 1,400 ranks | 2025-12-28 | Breadth: 957 items. |
+| **YouTube** | Healthy | ✅ | 63 videos | 2025-12-28 | View velocity tracking active. |
+| **Reddit** | Healthy | ✅ | 52 rows | 2025-12-30 | Aggregated metrics active. |
+| **Kickstarter** | Healthy | ✅ | 240 projects | 2025-12-26 | |
+| **BackerKit** | Healthy | ✅ | 28 projects | 2025-12-26 | |
+| **Roll20** | Healthy | ✅ | 200 items | 2025-12-28 | |
+| **AI Articles** | Healthy | ✅ | 19 articles | 2025-12-29 | Last run successful (Multi-persona). |
+
+## Critical Issues
+
+### 1. Reddit Stream is Silent
+The `reddit_daily_metrics` table is currently showing **0 rows**. 
+- **Registry**: Confirmed 16 subreddits are whitelisted for scanning.
+- **Harvester**: Needs local testing to verify PRAW credentials and keyword matching logic.
+- **Potential Reason**: Environment variables (`REDDIT_CLIENT_ID`) might be missing or expired.
+
+### 2. Vertex AI 404 Errors
+Our AI generation (ICv2 parser and Daily Journalist) is experiencing 404 errors when calling Vertex AI.
+- **Observation**: [main.py](file:///C:/Users/Yorri/.gemini/bouncer/main.py) is currently referencing `gemini-3-pro-preview`, which is likely a non-existent model name.
+- **Correction**: We need to standardize on `gemini-1.5-pro-002` or `gemini-1.5-flash-002` in the `us-central1` region.
+
+## Next Steps
+1. [ ] **Troubleshoot Reddit**: Run [reddit_harvester.py](file:///C:/Users/Yorri/.gemini/reddit_harvester.py) locally with diagnostic logging.
+2. [ ] **Fix AI Connection**: Update Cloud Function model names and re-verify connectivity.
+3. [ ] **Phase 19 Integration**: Proceed with dashboard updates once streams are verified "Fresh".

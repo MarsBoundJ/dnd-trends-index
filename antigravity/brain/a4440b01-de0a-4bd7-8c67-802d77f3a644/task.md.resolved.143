@@ -1,0 +1,200 @@
+# D&D Trends Index Project Plan
+
+## Phase 1: Keyword Preparation & Expansion <!-- id: 1 -->
+- [ ] Analyze user-provided Google Trends CSVs (e.g., "witch class homebrew.csv") to derive empirical expansion rules <!-- id: 2 -->
+- [ ] Analyze current `concept_library` categories to determine expansion logic <!-- id: 3 -->
+- [ ] Design schema for `expanded_search_terms` table <!-- id: 4 -->
+- [x] **PILOT:** Implement expansion script for **Classes & Subclasses ONLY** <!-- id: 5 -->
+- [x] **PILOT:** Verify expanded terms list for Pilot batch <!-- id: 6 -->
+
+## Phase 2: Google Trends Pipeline (`pytrends` + Proxies) <!-- id: 7 -->
+- [ ] [/] Design architecture for batch processing (5 terms per request: 4 target + 1 control) <!-- id: 8 -->
+- [x] Select and configure proxy solution (Webshare Configuration Provided) <!-- id: 9 -->
+- [x] **PROXY FIX:** Whitelist IP in Webshare and switch to `p.webshare.io:9999` <!-- id: 27 -->
+- [x] **PILOT:** Develop script to query Google Trends API (Classes/Subclasses only) <!-- id: 10 -->
+- [x] **PILOT:** Evaluate success rate / data quality of Pilot run (100% COMPLETE - 1207 UNIQUE TERMS) <!-- id: 11 -->
+- [ ] **AUDIT:** Manually review [pilot_audit.csv](file:///C:/Users/Yorri/.gemini/pilot_audit.csv) for broad/bad terms and mark for exclusion <!-- id: 28 -->
+- [x] **DISAMBIGUATE:** Build 'Master Collision Index' (Spells, Monsters, BG3, Diablo) <!-- id: 30 -->
+- [x] **QUALIFY:** Verify optimal string: `[term] 5e` vs `[term] Dnd` vs `[term] Dnd 5e` (Winner: **Dnd**) <!-- id: 32 -->
+- [x] **QUALIFY:** Apply 'Volume-Weighted Risk' logic with verified qualifier (List Ready) <!-- id: 31 -->
+- [x] **CLEAN:** Apply exclusions (54 Purged) and re-refill `trend_data_pilot` (Pending) <!-- id: 29 -->
+- [x] **FULL ROLLOUT:** Expand remaining categories (Spells, Monsters, etc.) (16k+ Terms Added) <!-- id: 12 -->
+- [x] **FULL ROLLOUT:** Standardize and run full backfill (`is_official` Tagging Complete) <!-- id: 13 -->
+- [x] **BATCH 1:** Collection for 'Background' & 'Feat' (100% Complete) <!-- id: 33 -->
+- [x] **BATCH 2:** Collection for 'Race' (Refill Complete: 300+ terms) <!-- id: 34 -->
+- [x] **BATCH 3:** Collection for 'Monster', 'NPC', 'Villain' (>99% Complete) <!-- id: 35 -->
+- [x] **BATCH 4:** Collection for 'Spells', 'Items', & 'MagicItems' (>99% Complete) <!-- id: 36 -->
+- [x] **BATCH 5 (Community):** Influencers, Websites, Podcasts, Play Platforms (Complete: ~300 terms) <!-- id: 37 -->
+- [x] **BATCH 6 (Lore):** Deities, Factions, Planes, Settings (Complete: ~1k terms) <!-- id: 38 -->
+- [x] **BATCH 7 (Mechanics):** Invocations, Rules, PC Builds, Slang (Complete: ~400 terms) <!-- id: 39 -->
+- [x] **BATCH 8 (Meta):** AI, Art, Accessories, Editions, Comparative TTRPGs (Complete: ~600 terms) <!-- id: 40 -->
+- [x] **BATCH 9 (Events & Beta):** UA Content (~700), Conventions (Complete: ~280) <!-- id: 41 -->
+
+## Phase 4: External Data Sources (Reddit, Sales, Wikis) <!-- id: 12 -->
+- [x] **Task 4.1:** Create & Populate `subreddit_registry` (BQ) <!-- id: 13 -->
+- [x] **Task 4.2:** Build [matcher.py](file:///C:/Users/Yorri/.gemini/matcher.py) (Aho-Corasick Keyword Trie) <!-- id: 42 -->
+- [x] **Troubleshoot Reddit**: Refactored [reddit_harvester.py](file:///C:/Users/Yorri/.gemini/reddit_harvester.py) for aggregated schema, verified credentials, and redeployed Cloud Run Job.
+- [x] **Fix AI Connection**: Standardized model names to `gemini-1.5-flash` in `us-central1`.
+- [x] **Phase 19 Integration**: Updated Silver/Gold layers with YouTube and Reddit metrics.
+- [x] **Dashboard Verification**: Confirmed source-level visibility in the frontend.
+- [x] **Documentation**: Created Software Requirements Specification (SRS) for `dnd-trends-tracker`.
+- [x] **Tech Design**: Created Technical Design Document (TDD) for `dnd-trends-tracker`.
+- [x] **Schema Docs**: Created Database Schema documentation for `arcane-analytics`.
+- [x] **AI Spec**: Created AI-friendly Technical Specification for AI Studio.
+- [x] **Frontend Spec**: Created Frontend Design Specification for AI Studio.
+- [x] **Fandom Spec**: Created Fandom Monitoring Specification for AI Studio.
+- [x] **Task 4.3:** Develop [reddit_harvester.py](file:///C:/Users/Yorri/.gemini/reddit_harvester.py) (PRAW Scraper) <!-- id: 43 -->
+- [x] **Task 4.4:** Implement "Meme Sentinel" (Gemini Sentiment) <!-- id: 44 -->
+- [x] **Task 4.5:** Finalize BigQuery Schema (`daily_metrics`, `viral_events`) <!-- id: 45 -->
+- [x] **Task 4.6:** Deploy Harvester to Cloud Run (Serverless Batch) <!-- id: 54 -->
+
+## Phase 5: Sales Data Scrapers (DMs Guild & DriveThruRPG) <!-- id: 50 -->
+- [x] **Task 5.1:** Define Medal Weights & Ruleset Maps <!-- id: 55 -->
+- [ ] **Task 5.2:** Build [dtrpg_scraper.py](file:///C:/Users/Yorri/.gemini/dtrpg_scraper.py) (Playwright Engine) (BLOCKED: Cloudflare) <!-- id: 56 -->
+- [ ] **Task 5.3:** Implement Ruleset Classification (Legacy vs 2024) (BLOCKED) <!-- id: 57 -->
+- [ ] **Task 5.4:** Implement Category Logic (Breadcrumbs) (BLOCKED) <!-- id: 58 -->
+- [x] **Task 5.5:** Create BigQuery Tables (`dtrpg_velocity`, `dtrpg_inventory`) <!-- id: 59 -->
+
+## Phase 6: Kickstarter Crowdfunding Engine (The Pivot) <!-- id: 51 -->
+- [x] **Task 6.1:** Setup BigQuery Table `kickstarter_projects` <!-- id: 60 -->
+- [x] **Task 6.2:** Build [kickstarter_discovery.py](file:///C:/Users/Yorri/.gemini/kickstarter_discovery.py) (JSON API Fetcher) <!-- id: 61 -->
+- [x] **Task 6.3:** Implement `filter_dnd_projects` Logic <!-- id: 62 -->
+- [x] **Task 6.4:** Implement Project Categorization <!-- id: 63 -->
+- [x] **Task 6.5:** Execute Data Ingestion (Tabletop Games Category) <!-- id: 64 -->
+- [x] **Task 6.6:** "The Join": Implement Keyword Commercial Weighting <!-- id: 65 -->
+
+## Phase 7: RPGGeek Ownership Engine <!-- id: 70 -->
+- [ ] **Task 7.1:** Scrape RPGGeek "GeekList" data <!-- id: 71 -->
+  - [!] **BLOCKED**: Waiting for BGG API Key.
+
+## Phase 8: BackerKit Support <!-- id: 80 -->
+- [x] **Task 8.1:** Implement BackerKit Scraper <!-- id: 81 -->
+  - [x] Create BigQuery schema `backerkit_projects`
+  - [x] Scrape "Tabletop Games" trending page
+  - [x] Implement 5e filtering logic
+- [x] **Task 8.2:** Dockerization & Git Integration.
+  - [x] Create [Dockerfile.dev](file:///C:/Users/Yorri/.gemini/Dockerfile.dev) and [docker-compose.yml](file:///C:/Users/Yorri/.gemini/docker-compose.yml).
+  - [x] Move `key.json` and secure [.gitignore](file:///C:/Users/Yorri/.gemini/.gitignore).
+  - [x] Build and launch Docker environment.
+  - [x] Initialize Git repository and link to GitHub.
+  - [x] Configure VS Code `.devcontainer` support.
+- [x] **Task 8.3:** Hype Analysis <!-- id: 82 -->
+  - [x] Create `backerkit_hype_analysis` table
+  - [x] Join with `concept_library` for Hype Multiplier
+
+## Phase 9: ICv2 Sales Data Engine <!-- id: 90 -->
+- [x] **Task 9.1:** Article Discovery ([icv2_scanner.py](file:///C:/Users/Yorri/.gemini/icv2_scanner.py)) <!-- id: 91 -->
+- [x] **Task 9.2:** Content Extraction & Rate Limiting <!-- id: 92 -->
+- [ ] **Task 9.3:** AI-Semantic Parser ([icv2_gemini_parser.py](file:///C:/Users/Yorri/.gemini/icv2_gemini_parser.py)) <!-- id: 93 -->
+  - [!] **BLOCKED**: Vertex AI returned 404 for all models/regions.
+- [x] **Task 9.4:** BigQuery Integration (`icv2_market_reports`) <!-- id: 94 -->
+- [ ] **Task 9.5:** Signal Weighting (Pending Data) <!-- id: 95 -->
+
+## Phase 10: Amazon Best Sellers <!-- id: 100 -->
+- [ ] **Task 10.1:** Track Amazon "Best Sellers in RPGs" <!-- id: 101 -->
+  - [!] **PAUSED**: Pinned by user request.
+
+## Phase 11: Google Shopping Market Index <!-- id: 110 -->
+- [x] **Task 11.1:** Google Shopping Sampler ([shopping_sampler.py](file:///C:/Users/Yorri/.gemini/shopping_sampler.py)) <!-- id: 111 -->
+  - [x] Query Custom Search JSON API for pricing/availability
+  - [x] Implemented Fallback Logic for Roll20/Indie stores
+- [x] **Task 11.2:** BigQuery Schema (`google_shopping_snapshots`) <!-- id: 113 -->
+
+## Phase 12: YouTube Influencer Intelligence <!-- id: 120 -->
+- [ ] **Task 12.1:** Channel Registry Setup (`youtube_channel_registry`) <!-- id: 121 -->
+  - [x] Create BigQuery Table
+  - [x] Seed Tiers 1-6 (Master Channel List) (59 Channels Indexed)
+- [x] **Task 12.2:** Upload Listener Engine ([youtube_listener.py](file:///C:/Users/Yorri/.gemini/youtube_listener.py)) <!-- id: 122 -->
+  - [x] Implement efficient Playlist ID fetching (UC -> UU)
+- [x] **Task 12.3:** Velocity Tracker ([youtube_stats_updater.py](file:///C:/Users/Yorri/.gemini/youtube_stats_updater.py)) <!-- id: 123 -->
+- [x] **Task 12.4:** Keyword Mapping (Aho-Corasick) <!-- id: 124 -->
+- [x] **Task 12.5:** Comment Sentiment Engine (NLTK/VADER) <!-- id: 125 -->
+- [x] **Task 12.6:** BigQuery Schema (`youtube_videos`) <!-- id: 126 -->
+
+## Phase 13: Roll20 VTT Market Engine <!-- id: 130 -->
+- [x] **Task 13.1:** Roll20 Marketplace Scraper ([roll20_scraper.py](file:///C:/Users/Yorri/.gemini/roll20_scraper.py)) <!-- id: 131 -->
+  - [x] Scrape Top 100 by Popularity
+  - [x] Extract Title, Publisher, Price, Link
+- [x] **Task 13.2:** BigQuery Schema (`roll20_rankings`) <!-- id: 133 -->
+
+## Phase 14: Wikipedia Cultural Intelligence <!-- id: 140 -->
+- [x] **Task 14.1:** Wiki Discovery Engine ([wiki_crawler.py](file:///C:/Users/Yorri/.gemini/wiki_crawler.py)) <!-- id: 141 -->
+  - [x] build `recursive_crawler` (Depth 2)
+  - [x] Create `wikipedia_article_registry` table
+  - [x] Execute Crawl (Target: 800-1500 articles)
+- [x] **Task 14.2:** Daily Views Scraper ([wikipedia_scraper.py](file:///C:/Users/Yorri/.gemini/wikipedia_scraper.py)) <!-- id: 142 -->
+- [x] **Task 14.3:** BigQuery Schema (`wikipedia_daily_views`) <!-- id: 143 -->
+
+## Phase 15: Fandom Wiki Intelligence Engine <!-- id: 53 -->
+- [x] **Task 15.1:** Wiki Registry Setup (Target List: 11 Wikis) <!-- id: 144 -->
+- [x] **Task 15.2:** Fandom Scraper ([fandom_scraper.py](file:///C:/Users/Yorri/.gemini/fandom_scraper.py)) <!-- id: 145 -->
+  - [x] Implement `fetch_fandom_trending` (API: /Articles/Top)
+  - [x] Implement `clean_fandom_data` (Filter namespaces)
+- [x] **Task 15.3:** BigQuery Schema (`fandom_trending`) <!-- id: 146 -->
+- [x] **Task 15.4:** Velocity & Normalization (Silver View) <!-- id: 147 -->
+- [x] **Task 15.5:** Deploy as Cloud Function (Gen 2) <!-- id: 501 -->
+- [x] **Task 15.6:** Retrofit Categorization (Silver/Gold Layers) <!-- id: 502 -->
+- [x] **Task 15.7:** Reload Concept Library from [dnd_keywords.csv](file:///C:/Users/Yorri/.gemini/antigravity/scratch/dnd_keywords.csv) (Safe Merge) <!-- id: 503 -->
+
+## Phase 16: Data Warehouse Orchestration & Trend Score <!-- id: 17 -->
+- [/] **Task 16.1:** Scheduling Architecture (Cloud Workflows) <!-- id: 148 -->
+  - [x] Define "Fast Lane" Workflow (Daily)
+  - [x] Define "Slow Lane" Workflow (Weekly)
+  - [x] Create Deployment Scripts
+- [x] **Task 16.2:** Data Normalization (Silver Layer) <!-- id: 149 -->
+  - [x] Implement `silver_normalization` SQL logic (Percentile Ranking)
+- [x] **Task 16.3:** Trend Score Algorithm (Gold Layer) <!-- id: 150 -->
+  - [x] Create `gold_trend_scores` table/view
+  - [x] Implement Hype/Play/Buy weighting
+- [x] **Task 16.4:** Time Decay & Anomaly Detection <!-- id: 151 -->
+
+## Phase 17: Web Application (Frontend) <!-- id: 20 -->
+- [x] **Task 17.1:** The "Bouncer" API (Cloud Function) <!-- id: 152 -->
+  - [x] Create [main.py](file:///C:/Users/Yorri/.gemini/main.py) (BigQuery Connector)
+  - [x] Deploy `get_trend_data` function (URL: `https://get-trend-data-appfh5mgjgiq-uc.a.run.app`)
+- [x] **Task 17.2:** Frontend Stack (Vanilla JS + CDN) <!-- id: 153 -->
+  - [x] Create [index.html](file:///C:/Users/Yorri/.gemini/dashboard/index.html) (Single File Dashboard)
+  - [x] Import Chart.js (CDN)
+  - [x] Implement [style.css](file:///C:/Users/Yorri/.gemini/dashboard/style.css) (Glassmorphism)
+- [x] **Task 17.3:** UI Components (HTML/JS) <!-- id: 154 -->
+  - [x] Build "Stat Block" Card Generator
+  - [x] Build "Initiative Ticker"
+- [x] **Task 17.4:** Deployment <!-- id: 155 -->
+  - [x] Testing local file access
+
+## Phase 18: AI Insight & Editorial Engine (Cloud Migration) <!-- id: 24 -->
+- [x] **Chunk 1: The "Heavy Lifting" (BigQuery Views)** <!-- id: 181 -->
+  - [x] `view_trend_spikes`: >50% growth in 7d.
+  - [x] `view_sentiment_divergence`: High Sales / Low Sentiment.
+  - [x] `view_platform_gaps`: High Wiki / Low Roll20.
+- [x] **Chunk 1: The "Heavy Lifting" (BigQuery Views)** <!-- id: 181 -->
+  - [x] `view_trend_spikes`: >50% growth in 7d.
+  - [x] `view_sentiment_divergence`: High Sales / Low Sentiment.
+  - [x] `view_platform_gaps`: High Wiki / Low Roll20.
+- [x] **Chunk 2: The "Writer" (Cloud Function)** <!-- id: 182 -->
+  - [x] Create [cloud_functions/daily_journalist/main.py](file:///C:/Users/Yorri/.gemini/cloud_functions/daily_journalist/main.py).
+  - [x] Query Views -> Gemini 1.5 Pro -> Write Article.
+  - [x] Save output to `gold_data.daily_articles`.
+  - [ ] **FIX**: Update Model to `gemini-1.5-pro-002` (Fix 404).
+- [x] **Chunk 3: The Deployment** <!-- id: 184 -->
+  - [x] Deploy `dnd-daily-journalist` (Gen 2 Cloud Function).
+  - [ ] Verify HTTP Trigger (Smoke Test Success).
+- [x] **Chunk 4: Automation (Scheduler)** <!-- id: 185 -->
+  - [x] Create Cloud Scheduler Job (Daily 4:30 AM).
+  - [x] **UPGRADE**: Multi-Persona Newsroom (3 articles per day).
+
+- [x] **Phase 19: Full Data Stream Integration (Frontend)** <!-- id: 190 -->
+  - [x] Audit existing data sources and frontend capability.
+  - [x] Create `silver_data.norm_youtube` normalization view.
+  - [x] Upgrade `gold_data.trend_scores` to include YouTube and raw source metrics.
+  - [x] Update "Bouncer" API to serve granular source data and latest news.
+  - [x] Activate Frontend Metrics (Badges & Fandom Bar).
+  - [x] Implement The Mana Grid (Category Heatmap & Filtering).
+  - [x] Wikipedia Discovery Protocol (Gap Filling).
+    - [x] Create [utils/wiki_gap_filler.py](file:///C:/Users/Yorri/.gemini/utils/wiki_gap_filler.py) discovery script.
+    - [x] Run discovery for top 500 missing Monster/Spell/MagicItem concepts.
+    - [x] Update `social_data.wikipedia_article_registry` with new valid pages.
+    - [/] Re-run [wikipedia_scraper.py](file:///C:/Users/Yorri/.gemini/wikipedia_scraper.py) for newly discovered pages.
+  - [ ] Build "Daily Newsroom" UI section in dashboard.
+  - [ ] Add "Source Breakdown" icons/stats to trend cards.
+  - [ ] Final Verification: Verified synchronized multi-source dashboard.

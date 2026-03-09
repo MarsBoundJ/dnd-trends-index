@@ -1,0 +1,183 @@
+--- gold_data.view_api_leaderboards ---
+WITH date_stats AS (
+    SELECT 
+        category, 
+        date, 
+        COUNT(*) as item_count
+    FROM `dnd-trends-index.gold_data.deep_dive_metrics`
+    GROUP BY 1, 2
+),
+max_category_volume AS (
+    SELECT category, MAX(item_count) as max_vol
+    FROM date_stats
+    GROUP BY 1
+),
+stable_latest_dates AS (
+    SELECT 
+        ds.category, 
+        MAX(ds.date) as latest_stable_date
+    FROM date_stats ds
+    JOIN max_category_volume mv ON ds.category = mv.category
+    WHERE ds.item_count >= mv.max_vol * 0.8
+    GROUP BY 1
+),
+ranked AS (
+    SELECT 
+        m.category,
+        m.canonical_concept,
+        m.google_score_avg,
+        ROW_NUMBER() OVER (PARTITION BY m.category ORDER BY m.google_score_avg DESC) as rank_position
+    FROM `dnd-trends-index.gold_data.deep_dive_metrics` m
+    INNER JOIN stable_latest_dates sld ON m.category = sld.category AND m.date = sld.latest_stable_date
+    INNER JOIN `dnd-trends-index.dnd_trends_categorized.concept_library` c ON m.canonical_concept = c.concept_name
+    WHERE c.is_active = TRUE
+),
+sector_stats AS (
+    SELECT 
+        category, 
+        AVG(google_score_avg) as heat_score
+    FROM ranked 
+    WHERE rank_position <= 20
+    GROUP BY 1
+)
+SELECT 
+    r.category,
+    r.canonical_concept,
+    r.google_score_avg,
+    r.rank_position,
+    s.heat_score
+FROM ranked r
+JOIN sector_stats s ON r.category = s.category
+WHERE r.rank_position <= 40
+ORDER BY s.heat_score DESC, r.rank_position ASC
+----------------------------------------
+--- gold_data.view_fandom_leaderboards ---
+WITH latest_extraction AS (
+    SELECT MAX(extraction_date) as max_date FROM `dnd-trends-index.silver_data.view_fandom_mapping`
+),
+ranked_items AS (
+    SELECT 
+        category,
+        canonical_concept,
+        MAX(hype_score) * 100 as score,
+        ARRAY_AGG(wiki_slug ORDER BY hype_score DESC LIMIT 1)[OFFSET(0)] as top_wiki
+    FROM `dnd-trends-index.silver_data.view_fandom_mapping`
+    WHERE extraction_date = (SELECT max_date FROM latest_extraction)
+    GROUP BY 1, 2
+),
+sector_stats AS (
+    SELECT category, AVG(score) as heat_score
+    FROM ranked_items 
+    GROUP BY 1
+)
+SELECT 
+    r.category,
+    r.canonical_concept,
+    r.score,
+    r.top_wiki,
+    ROUND(s.heat_score, 1) as heat_score,
+    ROW_NUMBER() OVER (PARTITION BY r.category ORDER BY r.score DESC) as rank_position
+FROM ranked_items r
+JOIN sector_stats s ON r.category = s.category
+ORDER BY s.heat_score DESC, r.score DESC
+----------------------------------------
+--- gold_data.view_wikipedia_leaderboards ---
+WITH recent_data AS (
+        SELECT 
+            TRIM(REGEXP_REPLACE(keyword, r' \(.*\)$', '')) as clean_wiki_key,
+            views,
+            COALESCE(score_wiki * 100, 0) as score,
+            ROW_NUMBER() OVER (PARTITION BY keyword ORDER BY date DESC) as rn,
+            date
+        FROM `silver_data.norm_wikipedia`
+        WHERE date >= DATE_SUB(CURRENT_DATE(), INTERVAL 180 DAY)
+    ),
+    latest_data AS (
+        SELECT * FROM recent_data WHERE rn = 1
+    ),
+    categorized AS (
+        SELECT 
+            c.category,
+            c.concept_name as canonical_concept,
+            COALESCE(AVG(l.score), 0) as average_score,
+            COALESCE(SUM(l.views), 0) as total_views,
+            MAX(l.date) as last_updated
+        FROM `dnd_trends_categorized.concept_library` c
+        LEFT JOIN latest_data l ON LOWER(c.concept_name) = LOWER(l.clean_wiki_key)
+        WHERE c.is_active = TRUE
+        GROUP BY c.category, c.concept_name
+    ),
+    sector_scores AS (
+        SELECT 
+            category,
+            canonical_concept,
+            total_views as views,
+            average_score as score,
+            AVG(average_score) OVER (PARTITION BY category) as heat_score
+        FROM categorized
+    )
+    SELECT * FROM sector_scores ORDER BY heat_score DESC, score DESC
+----------------------------------------
+--- gold_data.view_social_leaderboards ---
+WITH daily_agg AS (
+    SELECT 
+        keyword as name,
+        extraction_date as date,
+        AVG(weighted_score) as sentiment, 
+        SUM(mention_count) as mentions
+    FROM `dnd-trends-index.dnd_trends_categorized.reddit_daily_metrics`
+    GROUP BY 1, 2
+),
+history_trails AS (
+    SELECT 
+        name,
+        ARRAY_AGG(
+            CASE 
+                WHEN mentions > 10 THEN 1 -- High volume spike
+                WHEN mentions < 2 THEN -1 -- Low volume drop
+                ELSE 0
+            END ORDER BY date DESC LIMIT 7
+        ) as history
+    FROM daily_agg
+    GROUP BY 1
+),
+latest_stats AS (
+    SELECT 
+        name,
+        sentiment,
+        mentions as score
+    FROM daily_agg
+    WHERE date = (SELECT MAX(date) FROM daily_agg)
+),
+joined_data AS (
+    SELECT 
+        COALESCE(c.category, 'Uncategorized') as category,
+        l.name,
+        l.score as metric_score,
+        l.sentiment,
+        COALESCE(h.history, []) as history,
+        'reddit' as source
+    FROM latest_stats l
+    INNER JOIN `dnd-trends-index.dnd_trends_categorized.concept_library` c ON l.name = c.concept_name
+    LEFT JOIN history_trails h ON l.name = h.name
+    WHERE c.is_active = TRUE
+),
+sector_stats AS (
+    SELECT 
+        category, 
+        AVG(metric_score) as heat_score
+    FROM joined_data
+    GROUP BY 1
+)
+SELECT 
+    j.category,
+    j.name,
+    j.metric_score,
+    j.sentiment,
+    j.history,
+    j.source,
+    RANK() OVER(PARTITION BY j.category ORDER BY j.metric_score DESC) as rank_position,
+    s.heat_score
+FROM joined_data j
+JOIN sector_stats s ON j.category = s.category
+----------------------------------------

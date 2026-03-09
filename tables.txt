@@ -1,0 +1,10 @@
+              tableId                Type    Labels        Time Partitioning         Clustered Fields  
+ ---------------------------------- ------- -------- ------------------------------ ------------------ 
+  amazon_daily_stats                 TABLE                                                             
+  backup_fandom_metrics_before_cat   TABLE                                                             
+  bgg_product_stats                  TABLE                                                             
+  channel_registry                   TABLE                                                             
+  fandom_daily_metrics               TABLE            DAY (field: extraction_date)                     
+  raw_discovered_queries             TABLE                                                             
+  yt_video_index                     TABLE                                                             
+  yt_video_intelligence              TABLE                                                             

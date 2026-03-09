@@ -1,0 +1,22 @@
+2026-03-02 18:02:13 POST 504 https://wikipedia-scraper-187467566422.us-central1.run.app/
+2026-03-02 18:02:15 🚀 Starting Wikipedia Scraper...
+2026-03-02 18:02:16 ⚠️ No watermark found (Marker not found). Using default lookback of 168h.
+2026-03-02 18:02:16 🕒 Target Date Range: 2026-02-23 -> 2026-03-02
+2026-03-02 18:02:17 Found 8171 tracked articles.
+2026-03-02 18:02:17 Processing 0/8171: Al-Qadim:_The_Genie's_Curse
+2026-03-02 18:02:29 Processing 50/8171: Player's_Secrets_of_Endier
+2026-03-02 18:02:40 Processing 100/8171: Dragons_in_the_Archives:_The_Best_of_Weis_and_Hickman_Anthology
+2026-03-02 18:02:46 Rate limit hit. Sleeping...
+2026-03-02 18:02:53 Rate limit hit. Sleeping...
+2026-03-02 18:03:00 Rate limit hit. Sleeping...
+2026-03-02 18:03:07 Processing 150/8171: Sithel_Silvanos
+2026-03-02 18:03:08 Rate limit hit. Sleeping...
+2026-03-02 18:12:48 Processing 200/8171: Flint_Fireforge
+2026-03-02 18:28:49 POST 500 https://wikipedia-scraper-187467566422.us-central1.run.app/
+2026-03-02 18:28:49 🚀 Starting Wikipedia Scraper...
+2026-03-02 18:28:49 ⚠️ No watermark found (Marker not found). Using default lookback of 168h.
+2026-03-02 18:28:49 🕒 Target Date Range: 2026-02-23 -> 2026-03-02
+2026-03-02 18:28:50 CRITICAL ERROR: 400 Unrecognized name: score_wiki at [5:18]; reason: invalidQuery, location: query, message: Unrecognized name: score_wiki at [5:18]
+
+Location: US
+Job ID: f3252027-fec2-464f-9df2-44418a28b1ba

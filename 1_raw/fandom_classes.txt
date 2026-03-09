@@ -1,0 +1,18 @@
+Artificer
+Barbarian
+Bard (Class)
+Category:Character
+Category:Game Mechanics
+Category:Player's Handbook
+Cleric
+Druid (Class)
+Fighter
+Monk
+Mystic
+Paladin
+Ranger
+Rogue
+Sorcerer
+Special:Categories
+Warlock
+Wizard

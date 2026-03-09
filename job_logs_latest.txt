@@ -1,0 +1,100 @@
+
+Container called exit(0).
+  [DEBUG] Page Title: Monk - Explore - Google Trends
+  [-] No data points intercepted. Saving debug HTML...
+  [*] Waiting 20s for chart and API pulse...
+  [*] Performing human mimicry (Jiggle & Scroll)...
+  [HTTP] Main Page Status: 200
+    [INTERCEPT] 200 | https://ssl.google-analytics.com/r/__utm.gif?utmwv=5.7.2&utms=1&utmn=1864762861&utmhn=trends.google....
+    [INTERCEPT] 204 | https://www.google-analytics.com/g/collect?v=2&tid=G-VWZPXDNJJB&gtm=45je62p1v899589902za200zd8995899...
+    [INTERCEPT] 204 | https://www.google-analytics.com/g/collect?v=2&tid=G-VWZPXDNJJB&gtm=45je62p1v899589902za200zd8995899...
+    [INTERCEPT] 200 | https://trends.google.com/trends/api/explore/pickers/category?hl=en-US&tz=0...
+    [INTERCEPT] 200 | https://trends.google.com/trends/api/explore/pickers/geo?hl=en-US&tz=0...
+    [INTERCEPT] 200 | https://trends.google.com/trends/explore?q=Monk&date=2026-02-01%202026-03-01&geo=US...
+  [*] Navigating to Trends via Firefox Engine...
+  [+] Injected 1 curl_cffi cookies.
+  [curl_cffi] Status: 429
+  [*] Applying curl_cffi TLS mimicry to pre-fetch cookies...
+[SCAN] Scrying for: Monk via GOST_BRIDGE
+[*] Running targeted smoke test for: Monk
+2026/03/02 00:26:50 http.go:306: [http] 127.0.0.1:40476 >-< fonts.googleapis.com:443
+2026/03/02 00:26:50 http.go:306: [http] 127.0.0.1:40444 >-< trends.google.com:443
+2026/03/02 00:26:50 http.go:306: [http] 127.0.0.1:47234 >-< aus5.mozilla.org:443
+2026/03/02 00:26:50 http.go:306: [http] 127.0.0.1:40686 >-< www.google-analytics.com:443
+2026/03/02 00:26:50 http.go:306: [http] 127.0.0.1:40672 >-< ogads-pa.clients6.google.com:443
+2026/03/02 00:26:50 http.go:306: [http] 127.0.0.1:40720 >-< play.google.com:443
+2026/03/02 00:26:48 http.go:306: [http] 127.0.0.1:40536 >-< ssl.gstatic.com:443
+2026/03/02 00:26:48 http.go:306: [http] 127.0.0.1:40586 >-< www.google.com:443
+2026/03/02 00:26:42 http.go:306: [http] 127.0.0.1:47230 >-< aus5.mozilla.org:443
+2026/03/02 00:26:41 http.go:304: [http] 127.0.0.1:47230 <-> aus5.mozilla.org:443
+2026/03/02 00:26:41 http.go:304: [http] 127.0.0.1:47234 <-> aus5.mozilla.org:443
+2026/03/02 00:26:40 http.go:251: [route] 127.0.0.1:47234 -> auto://:3128 -> 1@socks5://p.webshare.io:9999 -> aus5.mozilla.org:443
+2026/03/02 00:26:40 http.go:161: [http] 127.0.0.1:47234 -> auto://:3128 -> aus5.mozilla.org:443
+2026/03/02 00:26:40 http.go:251: [route] 127.0.0.1:47230 -> auto://:3128 -> 1@socks5://p.webshare.io:9999 -> aus5.mozilla.org:443
+2026/03/02 00:26:40 http.go:161: [http] 127.0.0.1:47230 -> auto://:3128 -> aus5.mozilla.org:443
+2026/03/02 00:26:34 http.go:306: [http] 127.0.0.1:40636 >-< ssl.google-analytics.com:443
+2026/03/02 00:26:31 http.go:306: [http] 127.0.0.1:40718 >-< ogads-pa.clients6.google.com:443
+2026/03/02 00:26:29 http.go:306: [http] 127.0.0.1:40682 >-< apis.google.com:443
+2026/03/02 00:26:29 http.go:306: [http] 127.0.0.1:40634 >-< fonts.gstatic.com:443
+2026/03/02 00:26:29 http.go:306: [http] 127.0.0.1:40604 >-< www.googletagmanager.com:443
+2026/03/02 00:26:28 http.go:306: [http] 127.0.0.1:40524 >-< www.gstatic.com:443
+2026/03/02 00:26:25 http.go:306: [http] 127.0.0.1:40552 >-< ajax.googleapis.com:443
+2026/03/02 00:26:20 http.go:304: [http] 127.0.0.1:40720 <-> play.google.com:443
+2026/03/02 00:26:20 http.go:304: [http] 127.0.0.1:40718 <-> ogads-pa.clients6.google.com:443
+2026/03/02 00:26:20 http.go:306: [http] 127.0.0.1:40704 >-< www.google-analytics.com:443
+2026/03/02 00:26:20 http.go:306: [http] 127.0.0.1:40702 >-< fonts.gstatic.com:443
+2026/03/02 00:26:19 http.go:304: [http] 127.0.0.1:40704 <-> www.google-analytics.com:443
+2026/03/02 00:26:19 http.go:306: [http] 127.0.0.1:40670 >-< fonts.gstatic.com:443
+2026/03/02 00:26:19 http.go:251: [route] 127.0.0.1:40720 -> auto://:3128 -> 1@socks5://p.webshare.io:9999 -> play.google.com:443
+2026/03/02 00:26:19 http.go:161: [http] 127.0.0.1:40720 -> auto://:3128 -> play.google.com:443
+2026/03/02 00:26:19 http.go:251: [route] 127.0.0.1:40718 -> auto://:3128 -> 1@socks5://p.webshare.io:9999 -> ogads-pa.clients6.google.com:443
+2026/03/02 00:26:19 http.go:161: [http] 127.0.0.1:40718 -> auto://:3128 -> ogads-pa.clients6.google.com:443
+2026/03/02 00:26:19 http.go:306: [http] 127.0.0.1:40654 >-< fonts.gstatic.com:443
+2026/03/02 00:26:19 http.go:304: [http] 127.0.0.1:40702 <-> fonts.gstatic.com:443
+2026/03/02 00:26:19 http.go:306: [http] 127.0.0.1:40662 >-< fonts.gstatic.com:443
+2026/03/02 00:26:19 http.go:306: [http] 127.0.0.1:40652 >-< fonts.gstatic.com:443
+2026/03/02 00:26:19 http.go:304: [http] 127.0.0.1:40686 <-> www.google-analytics.com:443
+2026/03/02 00:26:19 http.go:251: [route] 127.0.0.1:40704 -> auto://:3128 -> 1@socks5://p.webshare.io:9999 -> www.google-analytics.com:443
+2026/03/02 00:26:19 http.go:161: [http] 127.0.0.1:40704 -> auto://:3128 -> www.google-analytics.com:443
+2026/03/02 00:26:19 http.go:304: [http] 127.0.0.1:40682 <-> apis.google.com:443
+2026/03/02 00:26:19 http.go:304: [http] 127.0.0.1:40672 <-> ogads-pa.clients6.google.com:443
+2026/03/02 00:26:19 http.go:304: [http] 127.0.0.1:40652 <-> fonts.gstatic.com:443
+2026/03/02 00:26:19 http.go:304: [http] 127.0.0.1:40654 <-> fonts.gstatic.com:443
+2026/03/02 00:26:19 http.go:304: [http] 127.0.0.1:40662 <-> fonts.gstatic.com:443
+2026/03/02 00:26:18 http.go:304: [http] 127.0.0.1:40670 <-> fonts.gstatic.com:443
+2026/03/02 00:26:18 http.go:304: [http] 127.0.0.1:40634 <-> fonts.gstatic.com:443
+2026/03/02 00:26:18 http.go:251: [route] 127.0.0.1:40702 -> auto://:3128 -> 1@socks5://p.webshare.io:9999 -> fonts.gstatic.com:443
+2026/03/02 00:26:18 http.go:161: [http] 127.0.0.1:40702 -> auto://:3128 -> fonts.gstatic.com:443
+2026/03/02 00:26:18 http.go:251: [route] 127.0.0.1:40686 -> auto://:3128 -> 1@socks5://p.webshare.io:9999 -> www.google-analytics.com:443
+2026/03/02 00:26:18 http.go:161: [http] 127.0.0.1:40686 -> auto://:3128 -> www.google-analytics.com:443
+2026/03/02 00:26:18 http.go:251: [route] 127.0.0.1:40682 -> auto://:3128 -> 1@socks5://p.webshare.io:9999 -> apis.google.com:443
+2026/03/02 00:26:18 http.go:161: [http] 127.0.0.1:40682 -> auto://:3128 -> apis.google.com:443
+2026/03/02 00:26:18 http.go:304: [http] 127.0.0.1:40636 <-> ssl.google-analytics.com:443
+2026/03/02 00:26:18 http.go:251: [route] 127.0.0.1:40672 -> auto://:3128 -> 1@socks5://p.webshare.io:9999 -> ogads-pa.clients6.google.com:443
+2026/03/02 00:26:18 http.go:161: [http] 127.0.0.1:40672 -> auto://:3128 -> ogads-pa.clients6.google.com:443
+2026/03/02 00:26:18 http.go:251: [route] 127.0.0.1:40670 -> auto://:3128 -> 1@socks5://p.webshare.io:9999 -> fonts.gstatic.com:443
+2026/03/02 00:26:18 http.go:161: [http] 127.0.0.1:40670 -> auto://:3128 -> fonts.gstatic.com:443
+2026/03/02 00:26:18 http.go:251: [route] 127.0.0.1:40654 -> auto://:3128 -> 1@socks5://p.webshare.io:9999 -> fonts.gstatic.com:443
+2026/03/02 00:26:18 http.go:161: [http] 127.0.0.1:40654 -> auto://:3128 -> fonts.gstatic.com:443
+2026/03/02 00:26:18 http.go:251: [route] 127.0.0.1:40662 -> auto://:3128 -> 1@socks5://p.webshare.io:9999 -> fonts.gstatic.com:443
+2026/03/02 00:26:18 http.go:161: [http] 127.0.0.1:40662 -> auto://:3128 -> fonts.gstatic.com:443
+2026/03/02 00:26:18 http.go:251: [route] 127.0.0.1:40652 -> auto://:3128 -> 1@socks5://p.webshare.io:9999 -> fonts.gstatic.com:443
+2026/03/02 00:26:18 http.go:161: [http] 127.0.0.1:40652 -> auto://:3128 -> fonts.gstatic.com:443
+2026/03/02 00:26:18 http.go:251: [route] 127.0.0.1:40636 -> auto://:3128 -> 1@socks5://p.webshare.io:9999 -> ssl.google-analytics.com:443
+2026/03/02 00:26:18 http.go:161: [http] 127.0.0.1:40636 -> auto://:3128 -> ssl.google-analytics.com:443
+2026/03/02 00:26:18 http.go:251: [route] 127.0.0.1:40634 -> auto://:3128 -> 1@socks5://p.webshare.io:9999 -> fonts.gstatic.com:443
+2026/03/02 00:26:18 http.go:161: [http] 127.0.0.1:40634 -> auto://:3128 -> fonts.gstatic.com:443
+2026/03/02 00:26:18 http.go:272: [http] 127.0.0.1:40460 -> 127.0.0.1:3128 : Service unavailable
+2026/03/02 00:26:17 http.go:306: [http] [::1]:52208 >-< trends.google.com:443
+2026/03/02 00:26:16 http.go:306: [http] 127.0.0.1:40508 >-< ssl.gstatic.com:443
+2026/03/02 00:26:16 http.go:306: [http] 127.0.0.1:40602 >-< ssl.gstatic.com:443
+2026/03/02 00:26:15 http.go:306: [http] 127.0.0.1:40494 >-< fonts.googleapis.com:443
+2026/03/02 00:26:15 http.go:306: [http] 127.0.0.1:40566 >-< fonts.googleapis.com:443
+2026/03/02 00:26:15 http.go:306: [http] 127.0.0.1:40500 >-< fonts.googleapis.com:443
+2026/03/02 00:26:15 http.go:306: [http] 127.0.0.1:40492 >-< fonts.googleapis.com:443
+2026/03/02 00:26:15 http.go:306: [http] 127.0.0.1:40618 >-< www.gstatic.com:443
+2026/03/02 00:26:15 http.go:306: [http] 127.0.0.1:40580 >-< fonts.googleapis.com:443
+2026/03/02 00:26:15 http.go:304: [http] 127.0.0.1:40602 <-> ssl.gstatic.com:443
+2026/03/02 00:26:15 http.go:304: [http] 127.0.0.1:40494 <-> fonts.googleapis.com:443
+2026/03/02 00:26:15 http.go:304: [http] 127.0.0.1:40566 <-> fonts.googleapis.com:443
+2026/03/02 00:26:15 http.go:304: [http] 127.0.0.1:40500 <-> fonts.googleapis.com:443

@@ -1,0 +1,33 @@
+============================================================
+[INITIATING LOCAL ORACLE BRIDGE]
+============================================================
+
+[Fighter] Gap Analysis: Max Date is 2026-03-01. Fetching from 2026-02-28 to 2026-03-01.
+[Fighter] Data is already current. Skipping.
+
+[Monk] Gap Analysis: Max Date is 2026-03-01. Fetching from 2026-02-28 to 2026-03-01.
+[Monk] Data is already current. Skipping.
+
+[Wizard] Gap Analysis: Max Date is 2026-02-01. Fetching from 2026-01-31 to 2026-03-01.
+[*] Targeting: Wizard
+[*] URL: https://trends.google.com/trends/explore?q=Wizard&date=2026-01-31%202026-03-01&geo=US
+  [*] Phase 1: The Scout (curl_cffi TLS Mimicry)
+  [curl_cffi Error] Failed to perform, curl: (97) cannot complete SOCKS5 connection to trends.google.com. (4). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.
+[Wizard] Failed to retrieve data.
+
+[Fireball] Gap Analysis: Max Date is 2026-02-01. Fetching from 2026-01-31 to 2026-03-01.
+[*] Targeting: Fireball
+[*] URL: https://trends.google.com/trends/explore?q=Fireball&date=2026-01-31%202026-03-01&geo=US
+  [*] Phase 1: The Scout (curl_cffi TLS Mimicry)
+  [curl_cffi Error] Failed to perform, curl: (97) cannot complete SOCKS5 connection to trends.google.com. (4). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.
+[Fireball] Failed to retrieve data.
+
+[Dragon] Gap Analysis: Max Date is 2026-02-01. Fetching from 2026-01-31 to 2026-03-01.
+[*] Targeting: Dragon
+[*] URL: https://trends.google.com/trends/explore?q=Dragon&date=2026-01-31%202026-03-01&geo=US
+  [*] Phase 1: The Scout (curl_cffi TLS Mimicry)
+  [curl_cffi Error] Failed to perform, curl: (97) cannot complete SOCKS5 connection to trends.google.com. (4). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.
+[Dragon] Failed to retrieve data.
+============================================================
+[ORACLE BRIDGE RUN COMPLETE]
+============================================================
