@@ -47,7 +47,7 @@ def bouncer_api(request):
     if request.method == 'OPTIONS':
         headers = {
             'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Methods': 'GET, POST',
             'Access-Control-Allow-Headers': 'Content-Type, X-Ritual-Key',
             'Access-Control-Max-Age': '3600'
         }
@@ -76,6 +76,8 @@ def bouncer_api(request):
             path = 'system/library/search'
         elif 'update' in full_path:
             path = 'system/library/update'
+        elif 'enrich' in full_path:
+            path = 'system/library/enrich'
         elif 'suggestions/pending' in full_path:
             path = 'system/suggestions/pending'
         elif 'suggestions/update' in full_path:
@@ -386,6 +388,10 @@ def bouncer_api(request):
                 SELECT 'backerkit' as source_name, 'backerkit_projects' as table_id, TIMESTAMP_MILLIS(last_modified_time) as last_modified_time, row_count FROM `dnd-trends-index.commercial_data.__TABLES__` WHERE table_id = 'backerkit_projects'
                 UNION ALL
                 SELECT 'catalog_supply' as source_name, 'catalog_supply' as table_id, TIMESTAMP_MILLIS(last_modified_time) as last_modified_time, row_count FROM `dnd-trends-index.dnd_trends_raw.__TABLES__` WHERE table_id = 'catalog_supply'
+                UNION ALL
+                SELECT 'itchio_products' as source_name, 'itchio_products' as table_id, TIMESTAMP_MILLIS(last_modified_time) as last_modified_time, row_count FROM `dnd-trends-index.dnd_trends_raw.__TABLES__` WHERE table_id = 'itchio_products'
+                UNION ALL
+                SELECT 'itchio_jams' as source_name, 'itchio_jams' as table_id, TIMESTAMP_MILLIS(last_modified_time) as last_modified_time, row_count FROM `dnd-trends-index.dnd_trends_raw.__TABLES__` WHERE table_id = 'itchio_jams'
             )
             SELECT 
                 source_name,
@@ -412,7 +418,7 @@ def bouncer_api(request):
                 }
             
             # Ensure all sources are represented
-            expected_sources = ['google', 'fandom', 'wikipedia', 'reddit', 'youtube', 'bgg', 'amazon', 'kickstarter', 'backerkit', 'catalog_supply']
+            expected_sources = ['google', 'fandom', 'wikipedia', 'reddit', 'youtube', 'bgg', 'amazon', 'kickstarter', 'backerkit', 'catalog_supply', 'itchio_products', 'itchio_jams']
 
             for src in expected_sources:
                 if src not in sources_health:
@@ -494,70 +500,6 @@ def bouncer_api(request):
         except Exception as e:
             return (json.dumps({"error": str(e)}, cls=ArcaneEncoder), 500, headers)
 
-    elif path == 'system/suggestions/pending':
-        query = """
-            SELECT concept_name, suggested_category, reason
-            FROM `dnd-trends-index.dnd_trends_raw.ai_suggestions`
-            WHERE status = 'PENDING'
-            LIMIT 100
-        """
-        try:
-            results = [dict(row) for row in client.query(query)]
-            return (json.dumps(results, cls=ArcaneEncoder), 200, headers)
-        except Exception as e:
-            return (json.dumps({"error": str(e)}, cls=ArcaneEncoder), 500, headers)
-            
-    elif path == 'system/suggestions/update':
-        if request.method != 'POST':
-            return (json.dumps({"error": "Method not allowed"}), 405, headers)
-        try:
-            data = request.get_json(silent=True)
-            concept_name = data.get('concept_name')
-            action = data.get('action')
-            category = data.get('category')
-            
-            if not concept_name or not action:
-                return (json.dumps({"error": "Missing params"}), 400, headers)
-                
-            if action == 'APPROVE':
-                sql_lib = "UPDATE `dnd-trends-index.dnd_trends_categorized.concept_library` SET category = @category WHERE concept_name = @concept_name"
-                job_cfg1 = bigquery.QueryJobConfig(query_parameters=[
-                    bigquery.ScalarQueryParameter("category", "STRING", category),
-                    bigquery.ScalarQueryParameter("concept_name", "STRING", concept_name),
-                ])
-                client.query(sql_lib, job_config=job_cfg1).result()
-                
-                sql_sug = "UPDATE `dnd-trends-index.dnd_trends_raw.ai_suggestions` SET status = 'APPROVED' WHERE concept_name = @concept_name"
-                job_cfg2 = bigquery.QueryJobConfig(query_parameters=[
-                    bigquery.ScalarQueryParameter("concept_name", "STRING", concept_name),
-                ])
-                client.query(sql_sug, job_config=job_cfg2).result()
-                
-            elif action == 'REJECT':
-                sql_sug = "UPDATE `dnd-trends-index.dnd_trends_raw.ai_suggestions` SET status = 'REJECTED' WHERE concept_name = @concept_name"
-                job_cfg2 = bigquery.QueryJobConfig(query_parameters=[
-                    bigquery.ScalarQueryParameter("concept_name", "STRING", concept_name),
-                ])
-                client.query(sql_sug, job_config=job_cfg2).result()
-            
-            elif action == 'ARCHIVE':
-                # Soft delete from library
-                sql_lib = "UPDATE `dnd-trends-index.dnd_trends_categorized.concept_library` SET is_active = FALSE WHERE concept_name = @concept_name"
-                job_cfg1 = bigquery.QueryJobConfig(query_parameters=[
-                    bigquery.ScalarQueryParameter("concept_name", "STRING", concept_name),
-                ])
-                client.query(sql_lib, job_config=job_cfg1).result()
-
-                # Mark suggestion as ARCHIVED
-                sql_sug = "UPDATE `dnd-trends-index.dnd_trends_raw.ai_suggestions` SET status = 'ARCHIVED' WHERE concept_name = @concept_name"
-                job_cfg2 = bigquery.QueryJobConfig(query_parameters=[
-                    bigquery.ScalarQueryParameter("concept_name", "STRING", concept_name),
-                ])
-                client.query(sql_sug, job_config=job_cfg2).result()
-                
-            return (json.dumps({"status": "success", "action": action}), 200, headers)
-        except Exception as e:
-            return (json.dumps({"error": str(e)}, cls=ArcaneEncoder), 500, headers)
 
     elif path == 'system/vista/summary':
         try:
@@ -996,126 +938,126 @@ def bouncer_api(request):
         except Exception as e:
             return (json.dumps({"error": str(e)}), 500, headers)
 
+    elif path == 'system/suggestions/pending':
+        query = """
+            SELECT concept_name, suggested_category, reason, status
+            FROM `dnd-trends-index.dnd_trends_raw.ai_suggestions`
+            WHERE status = 'PENDING'
+            ORDER BY concept_name
+        """
+        try:
+            results = [dict(row) for row in client.query(query)]
+            return (json.dumps(results, cls=ArcaneEncoder), 200, headers)
+        except Exception as e:
+            return (json.dumps({"error": str(e)}), 500, headers)
+
+    elif path == 'system/suggestions/update':
+        if request.method != 'POST':
+            return (json.dumps({"error": "POST required"}), 405, headers)
+        body = request.get_json()
+        concept_name = body.get('concept_name', '')
+        action = body.get('action', '')
+        new_category = body.get('category', '')
+
+        if action == 'APPROVE' and new_category:
+            # Update status in ai_suggestions
+            update_query = f"""
+                UPDATE `dnd-trends-index.dnd_trends_raw.ai_suggestions`
+                SET status = 'APPROVED'
+                WHERE concept_name = @concept_name
+            """
+            # Also update the concept_library category
+            library_query = f"""
+                UPDATE `dnd-trends-index.dnd_trends_categorized.concept_library`
+                SET category = @new_category
+                WHERE concept_name = @concept_name
+            """
+            job_config = bigquery.QueryJobConfig(query_parameters=[
+                bigquery.ScalarQueryParameter("concept_name", "STRING", concept_name),
+                bigquery.ScalarQueryParameter("new_category", "STRING", new_category),
+            ])
+            try:
+                client.query(update_query, job_config=job_config).result()
+                client.query(library_query, job_config=job_config).result()
+                return (json.dumps({"status": "approved", "concept": concept_name}), 200, headers)
+            except Exception as e:
+                return (json.dumps({"error": str(e)}), 500, headers)
+
+        elif action in ('REJECT', 'ARCHIVE'):
+            update_query = """
+                UPDATE `dnd-trends-index.dnd_trends_raw.ai_suggestions`
+                SET status = @action
+                WHERE concept_name = @concept_name
+            """
+            job_config = bigquery.QueryJobConfig(query_parameters=[
+                bigquery.ScalarQueryParameter("concept_name", "STRING", concept_name),
+                bigquery.ScalarQueryParameter("action", "STRING", action),
+            ])
+            try:
+                client.query(update_query, job_config=job_config).result()
+                return (json.dumps({"status": action.lower(), "concept": concept_name}), 200, headers)
+            except Exception as e:
+                return (json.dumps({"error": str(e)}), 500, headers)
+
+        return (json.dumps({"error": "Invalid action"}), 400, headers)
+
     elif path == 'system/library/ingest-catalog':
         if request.method != 'POST':
-            return (json.dumps({"error": "Method not allowed"}), 405, headers)
-        
-        # Security: Validate Ritual Key
-        ritual_key = request.headers.get('X-Ritual-Key')
-        if ritual_key != "ArcaneLibrarian2026":
-            return (json.dumps({"error": "Forbidden: Invalid Ritual Key"}), 403, headers)
+            return (json.dumps({"error": "POST required"}), 405, headers)
+        ritual_key = request.headers.get('X-Ritual-Key', '')
+        if ritual_key != 'ArcaneLibrarian2026':
+            return (json.dumps({"error": "Unauthorized"}), 403, headers)
+        rows = request.get_json()
+        if not rows:
+            return (json.dumps({"error": "No data"}), 400, headers)
+        errors = client.insert_rows_json('dnd-trends-index.dnd_trends_raw.catalog_supply', rows)
+        if errors:
+            return (json.dumps({"error": str(errors)}), 500, headers)
+        return (json.dumps({"inserted": len(rows)}), 200, headers)
 
-        try:
-            data = request.get_json(silent=True)
-            if not data or not isinstance(data, list):
-                return (json.dumps({"error": "Invalid data format. Expected a JSON array."}), 400, headers)
-            # ⚓ Phase 77g: Unified Classification Engine
-            def classify_product(title, source):
-                t = title.lower()
-                sys_tag = "External System"
-                ed_tag = "N/A"
-                
-                if source == "DMs Guild":
-                    sys_tag = "D&D"
-                    if "2024" in t:
-                        ed_tag = "2024"
-                    elif "5e" in t or "fifth edition" in t:
-                        ed_tag = "5e"
-                    elif "3.5" in t or "3e" in t or "third edition" in t:
-                        ed_tag = "Legacy"
-                    elif "2e" in t or "second edition" in t or "ad&d" in t:
-                        ed_tag = "Legacy"
-                    elif "1e" in t or "first edition" in t:
-                        ed_tag = "Legacy"
-                    elif "becmi" in t or "basic" in t:
-                        ed_tag = "Legacy"
-                    else:
-                        ed_tag = "5e" # Fallback for DMs Guild
-                else: # DriveThruRPG
-                    dnd_kws = ["5e", "fifth edition", "d&d", "dungeons & dragons", "dungeons and dragons", "2024", "d20"]
-                    if any(kw in t for kw in dnd_kws):
-                        sys_tag = "D&D"
-                        if "2024" in t:
-                            ed_tag = "2024"
-                        else:
-                            ed_tag = "5e"
-                    else:
-                        comp_kws = ["pathfinder", "cthulhu", "savage worlds", "vts", "gurps", "pbta", "mörk borg", "cyberpunk"]
-                        if any(kw in t for kw in comp_kws):
-                            sys_tag = "Competitor"
-                        else:
-                            sys_tag = "External System"
-                return sys_tag, ed_tag
-                
-            processed_data = []
-            for item in data:
-                source = item.get("source", "")
-                title = item.get("title", "")
-                
-                sys_tag, ed_tag = classify_product(title, source)
-                item["system_tag"] = sys_tag
-                item["edition_tag"] = ed_tag
-                processed_data.append(item)
+    elif path == 'system/library/enrich':
+        if request.method != 'POST':
+            return (json.dumps({"error": "POST required"}), 405, headers)
+        items = request.get_json()
+        if not items or not isinstance(items, list):
+            return (json.dumps({"error": "Invalid input, expected list of product titles/snippets"}), 400, headers)
+        
+        model = get_gemini_model()
+        if not model:
+            return (json.dumps({"error": "Vertex AI Init Failure"}), 500, headers)
             
-            table_id = "`dnd-trends-index.dnd_trends_raw.catalog_supply`"
-            
-            # ⚓ Phase 77f: Hardened MERGE Logic (No Correlated Subqueries)
-            # Goal: Handle large volumes and complex array merges by pre-calculating in USING.
-            json_data = json.dumps(processed_data)
-            
-            merge_query = f"""
-            MERGE {table_id} T
-            USING (
-                SELECT 
-                    CAST(JSON_VALUE(item, '$.collected_date') AS DATE) as ld,
-                    JSON_VALUE(item, '$.source') as src,
-                    JSON_VALUE(item, '$.title') as ttl,
-                    COALESCE(JSON_VALUE(item, '$.publisher'), 'DMsGuild (Universal)') as pub,
-                    JSON_VALUE(item, '$.seller_tier') as tier,
-                    CAST(JSON_VALUE(item, '$.price') AS FLOAT64) as prc,
-                    CAST(JSON_VALUE(item, '$.rating') AS FLOAT64) as rat,
-                    JSON_VALUE(item, '$.system_tag') as sys_tag,
-                    JSON_VALUE(item, '$.edition_tag') as ed_tag,
-                    ARRAY(SELECT DISTINCT JSON_VALUE(tag) FROM UNNEST(JSON_QUERY_ARRAY(item, '$.tags')) tag) as tgs
-                FROM (
-                    -- Ensure we only take one entry per product/date from the incoming batch
-                    SELECT item,
-                           ROW_NUMBER() OVER(PARTITION BY JSON_VALUE(item, '$.title'), JSON_VALUE(item, '$.collected_date') ORDER BY JSON_VALUE(item, '$.collected_date') DESC) as rn
-                    FROM UNNEST(JSON_QUERY_ARRAY(@json_data)) item
-                ) WHERE rn = 1
-            ) S
-            ON T.title = S.ttl AND T.collected_date = S.ld AND T.source = S.src
-            WHEN MATCHED THEN
-                UPDATE SET 
-                    T.tags = S.tgs,
-                    T.price = S.prc,
-                    T.seller_tier = S.tier,
-                    T.rating = S.rat,
-                    T.system_tag = S.sys_tag,
-                    T.edition_tag = S.ed_tag
-            WHEN NOT MATCHED THEN
-                INSERT (collected_date, source, title, publisher, seller_tier, price, rating, tags, system_tag, edition_tag)
-                VALUES (S.ld, S.src, S.ttl, S.pub, S.tier, S.prc, S.rat, S.tgs, S.sys_tag, S.ed_tag)
+        enriched_results = []
+        for item in items:
+            title = item.get('title', 'Unknown Title')
+            snippet = item.get('snippet', '')
+            prompt = f"""
+            Analyze this TTRPG product:
+            Title: {title}
+            Snippet: {snippet}
+
+            Return a RAW JSON object with:
+            - publisher (string, use 'Universal' if unknown)
+            - primary_category (string from: Monster, Spell, Mechanic, Class, Subclass, Feat, Species & Lineage, Background, Deity, Party Role, Equipment, Location, NPC, PC, Faction, Lore, Art, Accessory, Rulebooks, Setting, TTRPG System)
+            - summary (concise 1-sentence description)
+
+            Rules:
+            - ONLY return the JSON. 
+            - No markdown blocks.
             """
-            
-            job_config = bigquery.QueryJobConfig(
-                query_parameters=[
-                    bigquery.ScalarQueryParameter("json_data", "STRING", json_data)
-                ]
-            )
-            
-            query_job = client.query(merge_query, job_config=job_config)
-            query_job.result() 
-            
-            return (json.dumps({
-                "status": "success", 
-                "message": "MERGE Archetype Complete", 
-                "items_processed": len(data)
-            }), 200, headers)
-            
-        except Exception as e:
-            print(f"MERGE ERROR: {e}")
-            return (json.dumps({"error": str(e)}), 500, headers)
+            try:
+                # Use generate_content for quick batching (ideally batch but simple loop for now)
+                response = model.generate_content(prompt)
+                raw_text = response.text.replace('```json', '').replace('```', '').strip()
+                enriched_results.append(json.loads(raw_text))
+            except Exception as e:
+                print(f"Enrichment error for {title}: {e}")
+                enriched_results.append({
+                    "publisher": "Unknown",
+                    "primary_category": "Uncategorized",
+                    "summary": "Error during enrichment"
+                })
+        
+        return (json.dumps(enriched_results, cls=ArcaneEncoder), 200, headers)
 
     return (json.dumps({"error": "Endpoint not found"}), 404, headers)
 
