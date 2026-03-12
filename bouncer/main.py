@@ -972,13 +972,16 @@ def bouncer_api(request):
                 SET category = @new_category
                 WHERE concept_name = @concept_name
             """
-            job_config = bigquery.QueryJobConfig(query_parameters=[
+            job_config_1 = bigquery.QueryJobConfig(query_parameters=[
+                bigquery.ScalarQueryParameter("concept_name", "STRING", concept_name),
+            ])
+            job_config_2 = bigquery.QueryJobConfig(query_parameters=[
                 bigquery.ScalarQueryParameter("concept_name", "STRING", concept_name),
                 bigquery.ScalarQueryParameter("new_category", "STRING", new_category),
             ])
             try:
-                client.query(update_query, job_config=job_config).result()
-                client.query(library_query, job_config=job_config).result()
+                client.query(update_query, job_config=job_config_1).result()
+                client.query(library_query, job_config=job_config_2).result()
                 return (json.dumps({"status": "approved", "concept": concept_name}), 200, headers)
             except Exception as e:
                 return (json.dumps({"error": str(e)}), 500, headers)
