@@ -66,22 +66,22 @@ def bouncer_api(request):
     try:
         full_path = request.path
         # Flexible matching: if 'health' or 'telemetry' is in the path, use that. Otherwise default to leaderboards.
-        if 'ingest-catalog' in full_path:
+        if full_path.endswith('suggestions/update'):
+            path = 'system/suggestions/update'
+        elif full_path.endswith('suggestions/pending'):
+            path = 'system/suggestions/pending'
+        elif full_path.endswith('ingest-catalog'):
             path = 'system/library/ingest-catalog'
+        elif full_path.endswith('enrich'):
+            path = 'system/library/enrich'
+        elif full_path.endswith('update'):
+            path = 'system/library/update'
+        elif full_path.endswith('search'):
+            path = 'system/library/search'
         elif 'health' in full_path:
             path = 'system/health'
         elif 'telemetry' in full_path:
             path = 'system/telemetry'
-        elif 'search' in full_path:
-            path = 'system/library/search'
-        elif 'update' in full_path:
-            path = 'system/library/update'
-        elif 'enrich' in full_path:
-            path = 'system/library/enrich'
-        elif 'suggestions/pending' in full_path:
-            path = 'system/suggestions/pending'
-        elif 'suggestions/update' in full_path:
-            path = 'system/suggestions/update'
         elif 'vista/summary' in full_path:
             path = 'system/vista/summary'
         elif 'vista/dm-shortage' in full_path:
@@ -960,30 +960,41 @@ def bouncer_api(request):
         new_category = body.get('category', '')
 
         if action == 'APPROVE' and new_category:
-            # Update status in ai_suggestions
-            update_query = f"""
+            # 1. Update status in ai_suggestions
+            update_query = """
                 UPDATE `dnd-trends-index.dnd_trends_raw.ai_suggestions`
                 SET status = 'APPROVED'
                 WHERE concept_name = @concept_name
             """
-            # Also update the concept_library category
-            library_query = f"""
-                UPDATE `dnd-trends-index.dnd_trends_categorized.concept_library`
-                SET category = @new_category
-                WHERE concept_name = @concept_name
+            
+            # 2. UPSERT into concept_library
+            library_query = """
+                MERGE `dnd-trends-index.dnd_trends_categorized.concept_library` T
+                USING (SELECT @concept_name AS concept_name, @new_category AS category) S
+                ON T.concept_name = S.concept_name
+                WHEN MATCHED THEN
+                  UPDATE SET category = S.category, last_processed_at = CURRENT_TIMESTAMP()
+                WHEN NOT MATCHED THEN
+                  INSERT (concept_name, category, last_processed_at, is_active)
+                  VALUES (S.concept_name, S.category, CURRENT_TIMESTAMP(), true)
             """
-            job_config_1 = bigquery.QueryJobConfig(query_parameters=[
+            
+            # We can use a single job_config if we use the same parameters in both or separate them
+            # To be safest with the user's previous "unreferenced parameter" issue, let's stick to separate configs or a unified one for MERGE
+            job_config_suggestions = bigquery.QueryJobConfig(query_parameters=[
                 bigquery.ScalarQueryParameter("concept_name", "STRING", concept_name),
             ])
-            job_config_2 = bigquery.QueryJobConfig(query_parameters=[
+            job_config_library = bigquery.QueryJobConfig(query_parameters=[
                 bigquery.ScalarQueryParameter("concept_name", "STRING", concept_name),
                 bigquery.ScalarQueryParameter("new_category", "STRING", new_category),
             ])
+            
             try:
-                client.query(update_query, job_config=job_config_1).result()
-                client.query(library_query, job_config=job_config_2).result()
+                client.query(update_query, job_config=job_config_suggestions).result()
+                client.query(library_query, job_config=job_config_library).result()
                 return (json.dumps({"status": "approved", "concept": concept_name}), 200, headers)
             except Exception as e:
+                print(f"ERROR in suggestions/update (APPROVE): {e}")
                 return (json.dumps({"error": str(e)}), 500, headers)
 
         elif action in ('REJECT', 'ARCHIVE'):
