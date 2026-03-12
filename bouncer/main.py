@@ -960,38 +960,40 @@ def bouncer_api(request):
         new_category = body.get('category', '')
 
         if action == 'APPROVE' and new_category:
-            # 1. Update status in ai_suggestions
-            update_query = """
-                UPDATE `dnd-trends-index.dnd_trends_raw.ai_suggestions`
-                SET status = 'APPROVED'
-                WHERE concept_name = @concept_name
-            """
-            
-            # 2. UPSERT into concept_library
-            library_query = """
-                MERGE `dnd-trends-index.dnd_trends_categorized.concept_library` T
-                USING (SELECT @concept_name AS concept_name, @new_category AS category) S
-                ON T.concept_name = S.concept_name
-                WHEN MATCHED THEN
-                  UPDATE SET category = S.category, last_processed_at = CURRENT_TIMESTAMP()
-                WHEN NOT MATCHED THEN
-                  INSERT (concept_name, category, last_processed_at, is_active)
-                  VALUES (S.concept_name, S.category, CURRENT_TIMESTAMP(), true)
-            """
-            
-            # We can use a single job_config if we use the same parameters in both or separate them
-            # To be safest with the user's previous "unreferenced parameter" issue, let's stick to separate configs or a unified one for MERGE
-            job_config_suggestions = bigquery.QueryJobConfig(query_parameters=[
-                bigquery.ScalarQueryParameter("concept_name", "STRING", concept_name),
-            ])
-            job_config_library = bigquery.QueryJobConfig(query_parameters=[
-                bigquery.ScalarQueryParameter("concept_name", "STRING", concept_name),
-                bigquery.ScalarQueryParameter("new_category", "STRING", new_category),
-            ])
-            
             try:
-                client.query(update_query, job_config=job_config_suggestions).result()
-                client.query(library_query, job_config=job_config_library).result()
+                # Step 1: Update ai_suggestions status
+                update_query = """
+                    UPDATE `dnd-trends-index.dnd_trends_raw.ai_suggestions`
+                    SET status = 'APPROVED'
+                    WHERE concept_name = @concept_name
+                """
+                job_config_1 = bigquery.QueryJobConfig(query_parameters=[
+                    bigquery.ScalarQueryParameter("concept_name", "STRING", concept_name),
+                ])
+                job1 = client.query(update_query, job_config=job_config_1)
+                job1.result()
+                rows_affected = job1.num_dml_affected_rows
+                print(f"ai_suggestions update: {rows_affected} rows affected for '{concept_name}'")
+
+                # Step 2: UPSERT into concept_library
+                upsert_query = """
+                    MERGE `dnd-trends-index.dnd_trends_categorized.concept_library` AS target
+                    USING (SELECT @concept_name AS concept_name, @new_category AS category) AS source
+                    ON LOWER(target.concept_name) = LOWER(source.concept_name)
+                    WHEN MATCHED THEN
+                        UPDATE SET category = source.category, last_processed_at = CURRENT_TIMESTAMP()
+                    WHEN NOT MATCHED THEN
+                        INSERT (concept_name, category, is_active, last_processed_at)
+                        VALUES (source.concept_name, source.category, TRUE, CURRENT_TIMESTAMP())
+                """
+                job_config_2 = bigquery.QueryJobConfig(query_parameters=[
+                    bigquery.ScalarQueryParameter("concept_name", "STRING", concept_name),
+                    bigquery.ScalarQueryParameter("new_category", "STRING", new_category),
+                ])
+                job2 = client.query(upsert_query, job_config=job_config_2)
+                job2.result()
+                print(f"concept_library upsert: {job2.num_dml_affected_rows} rows affected for '{concept_name}'")
+
                 return (json.dumps({"status": "approved", "concept": concept_name}), 200, headers)
             except Exception as e:
                 print(f"ERROR in suggestions/update (APPROVE): {e}")
