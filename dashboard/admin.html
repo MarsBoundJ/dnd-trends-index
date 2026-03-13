@@ -453,7 +453,8 @@ $29.99
 
         async function fetchSuggestions() {
             try {
-                const res = await fetch(`${API_BASE}/system/suggestions/pending`);
+                const targetUrl = window.location.hostname === 'localhost' ? 'http://localhost:8082' : API_BASE;
+                const res = await fetch(`${targetUrl}/system/suggestions/pending`);
                 const data = await res.json();
 
                 const tbody = document.getElementById('suggestionsBody');
@@ -465,8 +466,9 @@ $29.99
                 }
 
                 data.forEach(item => {
+                    const safeId = item.concept_name.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 40);
                     const tr = document.createElement('tr');
-                    tr.id = `row-${btoa(item.concept_name).replace(/=/g, '')}`;
+                    tr.id = `row-${safeId}`;
 
                     // Create dropdown
                     let options = CATEGORIES.map(c =>
@@ -481,7 +483,7 @@ $29.99
                     tr.innerHTML = `
                         <td class="concept-name">${item.concept_name}</td>
                         <td>
-                            <select id="select-${btoa(item.concept_name).replace(/=/g, '')}">
+                            <select id="select-${safeId}">
                                 ${options}
                             </select>
                         </td>
@@ -501,8 +503,12 @@ $29.99
         }
 
         async function handleAction(conceptName, action) {
-            const rowId = btoa(conceptName).replace(/=/g, '');
-            const row = document.getElementById(`row-${rowId}`);
+            const safeId = conceptName.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 40);
+            const row = document.getElementById(`row-${safeId}`);
+            if (!row) {
+                console.error("Could not find row for", conceptName);
+                return;
+            }
 
             let payload = {
                 concept_name: conceptName,
@@ -510,7 +516,7 @@ $29.99
             };
 
             if (action === 'APPROVE') {
-                const selectElement = document.getElementById(`select-${rowId}`);
+                const selectElement = document.getElementById(`select-${safeId}`);
                 payload.category = selectElement.value;
             }
 
@@ -523,7 +529,8 @@ $29.99
             });
 
             try {
-                const res = await fetch(`${API_BASE}/system/suggestions/update`, {
+                const targetUrl = window.location.hostname === 'localhost' ? 'http://localhost:8082' : API_BASE;
+                const res = await fetch(`${targetUrl}/system/suggestions/update`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
