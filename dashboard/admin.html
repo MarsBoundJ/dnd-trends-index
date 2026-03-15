@@ -489,9 +489,9 @@ $29.99
                         </td>
                         <td class="reason-text">${item.reason || 'No reasoning provided.'}</td>
                         <td>
-                            <button class="btn btn-approve action-btn locked" onclick="handleAction('${item.concept_name}', 'APPROVE')">Approve</button>
-                            <button class="btn btn-reject action-btn locked" onclick="handleAction('${item.concept_name}', 'REJECT')">Reject</button>
-                            <button class="btn btn-archive action-btn locked" title="Archive Term" onclick="handleAction('${item.concept_name}', 'ARCHIVE')">📁</button>
+                            <button class="btn btn-approve action-btn locked" onclick='handleAction("${item.concept_name.replace(/"/g, "&quot;")}", "APPROVE")'>Approve</button>
+                            <button class="btn btn-reject action-btn locked" onclick='handleAction("${item.concept_name.replace(/"/g, "&quot;")}", "REJECT")'>Reject</button>
+                            <button class="btn btn-archive action-btn locked" title="Archive Term" onclick='handleAction("${item.concept_name.replace(/"/g, "&quot;")}", "ARCHIVE")'>📁</button>
                         </td>
                     `;
                     tbody.appendChild(tr);
