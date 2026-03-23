@@ -4,6 +4,41 @@
 
 ---
 
+## Session: 2026-03-23
+
+**Topics covered:** Gemini classifier (Stage 2); review report (Stage 3); variant-resolver full deployment; IAM permissions resolution
+
+### What was built
+- `gemini_classifier.py` — Stage 2; reads pending_gemini rows from variant_staging, calls Gemini 1.5 Flash in batches of 20, writes decisions back with review_status → pending_claude
+- `review_report.py` — Stage 3; reads pending_claude rows, generates structured markdown report grouped by: edge cases (BG3/Homebrew/UA), high-confidence variants, medium-confidence variants, new concepts, noise
+- `main.py` updated — runs all three stages sequentially; accepts stage parameter ("fuzzy" | "gemini" | "report" | "all")
+- `requirements.txt` updated — added google-cloud-aiplatform
+
+### What was deployed
+- `variant-resolver` Cloud Function — fully redeployed with all 6 files
+- Final dry run confirmed: {"status": "dry_run", "message": "No data written.", "run_id": null, "stage": "all"}
+- Deployed from Cloud Shell (owner credentials) due to Antigravity IAM limitations on Gen2 functions
+
+### IAM permissions resolved (for future reference)
+Gen2 Cloud Functions require bindings applied via Cloud Shell with owner credentials:
+1. gcloud run services add-iam-policy-binding — roles/run.invoker on Cloud Run service
+2. gcloud functions add-invoker-policy-binding — roles/run.invoker via functions API  
+3. gcloud functions add-iam-policy-binding --gen2 + answer Y — roles/cloudfunctions.invoker
+4. Future redeployments: always deploy from Cloud Shell as halftonejones@gmail.com, not via Antigravity
+
+### Next session: pick up here
+1. Deploy related_queries_discovery Cloud Function (scaffolded, not yet deployed)
+   - Same IAM pattern as variant-resolver — deploy from Cloud Shell
+   - Add to dnd-fast-lane workflow or give its own schedule
+2. Run first live end-to-end test:
+   - Trigger related_queries_discovery → populates emerging_terms
+   - Trigger variant-resolver {"stage": "all"} → fuzzy match + Gemini + report
+   - Claude reviews the report and annotates decisions
+   - Phil gives final approval on pending_phil rows
+3. Wire variant-resolver into dnd-fast-lane workflow after related_queries_discovery step
+
+---
+
 ## Session: 2026-03-22 (continued — afternoon)
 
 **Topics covered:** concept_variations schema; variant_staging schema; BigQuery deployment
