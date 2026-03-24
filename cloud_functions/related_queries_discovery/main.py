@@ -78,19 +78,28 @@ def _build_proxy_url() -> str:
     return f"http://{PROXY_HOST}:{PROXY_PORT}"
 
 
-def _build_pytrends_session(proxy_url: str) -> TrendReq:
+def _build_pytrends_session(proxy_url: str = None) -> TrendReq:
     """
-    Build a TrendReq that routes through the Webshare residential proxy.
-    requests_args is passed through to the underlying requests.Session.
+    Build a TrendReq that optionally routes through a proxy.
     """
+    proxies = None
+    if proxy_url:
+        proxies = {"https": proxy_url, "http": proxy_url}
+
     return TrendReq(
         hl=LANG,
-        tz=360,  # UTC-6, adjust if needed
+        tz=360,
         timeout=(10, 30),
-        proxies={"https": proxy_url, "http": proxy_url},
+        proxies=proxies,
         retries=2,
         backoff_factor=0.5,
-        requests_args={"verify": True},
+        requests_args={
+            "verify": True,
+            "headers": {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                "Accept-Language": "en-US,en;q=0.9",
+            }
+        },
     )
 
 
@@ -380,8 +389,9 @@ def discover_related_queries(request):
         }), 200, {"Content-Type": "application/json"}
 
     # Build proxy-authenticated pytrends session
-    proxy_url = _build_proxy_url()
-    pytrends  = _build_pytrends_session(proxy_url)
+    # proxy_url = _build_proxy_url()
+    # pytrends  = _build_pytrends_session(proxy_url)
+    pytrends  = _build_pytrends_session(None)
 
     # BigQuery client — uses Application Default Credentials (ADC)
     bq = bigquery.Client(project=PROJECT_ID)
