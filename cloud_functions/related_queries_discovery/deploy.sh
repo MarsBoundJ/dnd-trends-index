@@ -8,15 +8,17 @@ set -euo pipefail
 PROJECT="dnd-trends-index"
 FUNCTION="discover-related-queries"
 REGION="us-central1"
-SA="dnd-trends-sa@${PROJECT}.iam.gserviceaccount.com"   # adjust to existing SA
+SA="antigravity-turbo-agent@${PROJECT}.iam.gserviceaccount.com"   # adjust to existing SA
 
 # ---------------------------------------------------------------------------
 # Pull Webshare credentials from Secret Manager (same secrets as scraper)
 # ---------------------------------------------------------------------------
-PROXY_USER=$(gcloud secrets versions access latest \
-    --secret="webshare-proxy-user" --project="${PROJECT}")
-PROXY_PASS=$(gcloud secrets versions access latest \
-    --secret="webshare-proxy-pass" --project="${PROJECT}")
+# Pull Webshare credentials from Secret Manager (consolidated secret)
+RAW_CREDS=$(gcloud secrets versions access latest --secret="pytrends-proxy-creds" --project="${PROJECT}")
+PROXY_USER=$(echo "${RAW_CREDS}" | cut -d':' -f1)
+PROXY_PASS=$(echo "${RAW_CREDS}" | cut -d':' -f2 | cut -d'@' -f1)
+PROXY_HOST=$(echo "${RAW_CREDS}" | cut -d'@' -f2 | cut -d':' -f1)
+PROXY_PORT=$(echo "${RAW_CREDS}" | cut -d':' -f3)
 
 gcloud functions deploy "${FUNCTION}" \
     --project="${PROJECT}" \
