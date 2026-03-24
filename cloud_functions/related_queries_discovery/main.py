@@ -389,9 +389,8 @@ def discover_related_queries(request):
         }), 200, {"Content-Type": "application/json"}
 
     # Build proxy-authenticated pytrends session
-    # proxy_url = _build_proxy_url()
-    # pytrends  = _build_pytrends_session(proxy_url)
-    pytrends  = _build_pytrends_session(None)
+    proxy_url = _build_proxy_url()
+    pytrends  = _build_pytrends_session(proxy_url)
 
     # BigQuery client — uses Application Default Credentials (ADC)
     bq = bigquery.Client(project=PROJECT_ID)
