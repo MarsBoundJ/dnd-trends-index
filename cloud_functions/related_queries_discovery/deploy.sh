@@ -8,7 +8,7 @@ set -euo pipefail
 PROJECT="dnd-trends-index"
 FUNCTION="discover-related-queries"
 REGION="us-central1"
-SA="cloud-functions-sa@${PROJECT}.iam.gserviceaccount.com"   # adjust to existing SA
+SA="dnd-trends-sa@${PROJECT}.iam.gserviceaccount.com"   # adjust to existing SA
 
 # ---------------------------------------------------------------------------
 # Pull Webshare credentials from Secret Manager (same secrets as scraper)
@@ -53,7 +53,7 @@ FUNCTION_URL=$(gcloud functions describe "${FUNCTION}" \
     --format="value(serviceConfig.uri)")
 
 curl -s -X POST "${FUNCTION_URL}" \
-    -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
+    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
     -H "Content-Type: application/json" \
     -d '{"dry_run": true}' | jq .
 
