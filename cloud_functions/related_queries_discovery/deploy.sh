@@ -28,7 +28,7 @@ gcloud functions deploy "${FUNCTION}" \
     --source="." \
     --entry-point="discover_related_queries" \
     --trigger-http \
-    --allow-unauthenticated=false \
+    --no-allow-unauthenticated \
     --service-account="${SA}" \
     --memory="512Mi" \
     --timeout="540s" \
