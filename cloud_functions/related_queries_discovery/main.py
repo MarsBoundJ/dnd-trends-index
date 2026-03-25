@@ -86,7 +86,7 @@ def _build_pytrends_session(proxy_url: str = None) -> TrendReq:
     """
     proxies = None
     if proxy_url:
-        proxies = {"https": proxy_url, "http": proxy_url}
+        proxies = [proxy_url] * 50
 
     return TrendReq(
         hl=LANG,
@@ -263,7 +263,7 @@ def _get_known_terms(client: bigquery.Client) -> set[str]:
     Used for novelty-check against Rising terms.
     """
     query = f"""
-        SELECT LOWER(TRIM(keyword)) AS kw
+        SELECT LOWER(TRIM(concept_name)) AS kw
         FROM `{LIBRARY_TABLE}`
         WHERE keyword IS NOT NULL
     """
