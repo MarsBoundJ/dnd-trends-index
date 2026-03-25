@@ -72,7 +72,9 @@ DEFAULT_SEEDS = [
 # Proxy helpers (mirrors existing scraper pattern)
 # ---------------------------------------------------------------------------
 
-def _build_proxy_url() -> str:
+def _build_proxy_url():
+    if not PROXY_HOST or not PROXY_PORT:
+        return None
     if PROXY_USER and PROXY_PASS:
         return f"http://{PROXY_USER}:{PROXY_PASS}@{PROXY_HOST}:{PROXY_PORT}"
     return f"http://{PROXY_HOST}:{PROXY_PORT}"
