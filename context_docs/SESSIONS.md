@@ -2,7 +2,54 @@
 **GCP Project:** `dnd-trends-index`
 **Format:** Newest session at top. Each entry appended by Claude at session end, committed by Antigravity.
 
+## Session: 2026-03-25
+
+**Topics covered:** related_queries_discovery deployment; Webshare proxy debugging; gcloud SDK issues
+
+### What was accomplished
+
+- `discover-related-queries` Cloud Function fully deployed and verified ACTIVE (revision 00015+)
+- Dry run confirmed working: `{"status": "dry_run", "run_id": "...", "seeds": [...], "message": "No data written."}`
+- Webshare proxy connectivity confirmed from Cloud Run: `curl -x "http://oxsjenoi-residential-US-rotate:yw72fdfu37vt@p.webshare.io:80" https://httpbin.org/ip` returned a US residential IP
+- `dnd_trends_raw.related_queries` and `dnd_trends_raw.emerging_terms` tables created in BigQuery (via `_ensure_tables()`)
+- Function reached `status: ok` — pytrends connected through proxy successfully
+- All code patches committed to GitHub (commit `ce7b035`)
+
+### Bugs fixed during session
+
+- `KeyError: 0` — pytrends requires proxies as a list, not a dict → fixed: `proxies = [proxy_url] * 50`
+- `407 Proxy Authentication Required` — Webshare was in IP Authentication mode; switched to Username/Password mode in Webshare dashboard
+- `402 Payment Required` — Proxy Server plan was cancelled; confirmed Rotating Residential plan is the active plan (port 80, not 9999)
+- `InvalidProxyURL` — `_build_proxy_url()` returned malformed URL when env vars were empty → fixed: returns `None` when no host configured
+- `Retry.__init__() got an unexpected keyword argument 'method_whitelist'` — urllib3 v2 breaking change → fixed: pinned `urllib3<2.0` in requirements.txt
+- `Unrecognized name: keyword` — BigQuery column is `concept_name` not `keyword` → fixed in `_get_known_terms()`
+
+### Current blocker
+
+`raw_rows: 0` — Function runs successfully (`status: ok`, `seeds_processed: 1`) but pytrends returns empty DataFrames. Root cause not yet confirmed. Two hypotheses:
+1. The `ce7b035` fixes (`concept_name`, `[proxy_url] * 50`) have not been deployed yet — gcloud SDK on Cloud Shell started crashing with `TypeError: string indices must be integers, not 'str'` on all `functions deploy` and `run services update` commands after gcloud updated to 562.0.0
+2. Pytrends `related_queries()` genuinely returning empty results for these seeds
+
+### Infrastructure decisions made
+
+- Webshare Rotating Residential plan (ACTIVE): `p.webshare.io:80`, username/password auth, `-US-rotate` suffix for US-only IPs
+- Webshare Proxy Server plan: CANCELLED — port 9999 no longer works
+- Deploy pattern confirmed: always deploy from Cloud Shell as `halftonejones@gmail.com`, not via Antigravity
+- Google Drive backup of Windows hard drive recommended before removing Docker constraint on Antigravity
+
+### Next session: pick up here
+
+1. **Unblock the deploy** — gcloud 562 is crashing on `functions deploy`. Options:
+   - Open a fresh Cloud Shell session and check if gcloud crash persists
+   - Downgrade gcloud: `sudo apt-get install google-cloud-cli=560.0.0-0`
+   - Use Antigravity from Windows host (outside Docker) after setting up Google Drive backup
+2. **Deploy commit `ce7b035`** — contains the three critical fixes: `concept_name`, `[proxy_url] * 50`, `_build_proxy_url()` None check
+3. **Verify `raw_rows > 0`** — after clean deploy, trigger with `{"seeds": ["dungeons and dragons"]}` and confirm rows land in `dnd_trends_raw.related_queries`
+4. **Full pipeline run** — once single seed works, run all 7 default seeds and review `emerging_terms`
+5. **Wire into dnd-fast-lane workflow** after first successful full run
+
 ---
+
 
 ## Session: 2026-03-23
 
@@ -53,7 +100,9 @@ Gen2 Cloud Functions require bindings applied via Cloud Shell with owner credent
 - `variant_staging` — review workspace for the variant resolution pipeline; captures fuzzy match score, Gemini decision + reasoning, Claude override if any, Phil final approval; nothing here is live until Phil approves
 
 ### review_status flow
-`pending_claude` → `pending_phil` → `approved` | `rejected`
+`pending_claude` → `pending_phil`
+    - [x] Deploy and verify with `dry_run` (Infra Ready, Library Blocked) <!-- id: 80 -->
+    - [/] Sync Precision Proxy Patches (List*50 & Auth) <!-- id: 82 -->
 
 ### Next session: pick up here
 1. Build fuzzy match pre-filter (token overlap against concept_library keywords)
