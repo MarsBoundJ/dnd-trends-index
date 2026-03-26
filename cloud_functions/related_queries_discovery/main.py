@@ -81,27 +81,23 @@ def _build_proxy_url():
 
 
 def _build_pytrends_session(proxy_url: str = None) -> TrendReq:
-    """
-    Build a TrendReq that optionally routes through a proxy.
-    """
-    proxies = None
+    """ Build a TrendReq that optionally routes through a proxy. """
+    requests_args = {
+        "verify": True,
+        "headers": {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            "Accept-Language": "en-US,en;q=0.9",
+        }
+    }
     if proxy_url:
-        proxies = [proxy_url] * 50
-
+        requests_args["proxies"] = {"http": proxy_url, "https": proxy_url}
     return TrendReq(
         hl=LANG,
         tz=360,
         timeout=(10, 30),
-        proxies=proxies,
         retries=2,
         backoff_factor=0.5,
-        requests_args={
-            "verify": True,
-            "headers": {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-                "Accept-Language": "en-US,en;q=0.9",
-            }
-        },
+        requests_args=requests_args,
     )
 
 
@@ -265,7 +261,7 @@ def _get_known_terms(client: bigquery.Client) -> set[str]:
     query = f"""
         SELECT LOWER(TRIM(concept_name)) AS kw
         FROM `{LIBRARY_TABLE}`
-        WHERE keyword IS NOT NULL
+        WHERE concept_name IS NOT NULL
     """
     try:
         return {row["kw"] for row in client.query(query).result()}
