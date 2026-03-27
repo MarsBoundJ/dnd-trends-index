@@ -1,0 +1,46 @@
+main:
+  steps:
+    - init:
+        assign:
+          - project_id: ${sys.get_env("GOOGLE_CLOUD_PROJECT_ID")}
+          - location: "us-central1"
+          - discover_url: "https://discover-related-queries-187467566422.us-central1.run.app"
+          - resolve_url: "https://variant-resolver-187467566422.us-central1.run.app"
+
+    # Stage 1 — Discover related queries from Google Trends → BQ raw tables
+    - run_discover:
+        call: http.post
+        args:
+          url: ${discover_url}
+          auth:
+            type: OIDC
+          body: {}
+        result: discover_result
+
+    - log_discover:
+        call: sys.log
+        args:
+          text: ${"discover-related-queries complete: " + json.encode_to_string(discover_result.body)}
+          severity: INFO
+
+    # Stage 2 — Variant resolver: fuzzy match + Gemini + review report
+    - run_resolve:
+        call: http.post
+        args:
+          url: ${resolve_url}
+          auth:
+            type: OIDC
+          body:
+            stage: "all"
+        result: resolve_result
+
+    - log_resolve:
+        call: sys.log
+        args:
+          text: ${"variant-resolver complete: " + json.encode_to_string(resolve_result.body)}
+          severity: INFO
+
+    - return_results:
+        return:
+          discover: ${discover_result.body}
+          resolve: ${resolve_result.body}
