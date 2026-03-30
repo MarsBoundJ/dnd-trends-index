@@ -1,38 +1,26 @@
 import json
 import os
 
-# Try to import Vertex AI, handle error gracefully for dev environment
-try:
-    import vertexai
-    from vertexai.generative_models import GenerativeModel
-    VERTEX_AVAILABLE = True
-except ImportError:
-    VERTEX_AVAILABLE = False
+from google import genai
+from google.genai import types as genai_types
+from google.cloud import secretmanager
 
 # Config
 PROJECT_ID = "dnd-trends-index"
-LOCATION = "us-central1"
-MODEL_ID = "gemini-1.5-flash-001"
-HEAT_THRESHOLD = 5000 
+MODEL_ID = "gemini-2.5-flash"
+GEMINI_SECRET_NAME = f"projects/{PROJECT_ID}/secrets/gemini-api-key/versions/latest"
+HEAT_THRESHOLD = 5000
 
 class MemeSentinel:
     def __init__(self):
-        self.project_id = PROJECT_ID
-        self.location = LOCATION
-        self.model = None
-        
-        if VERTEX_AVAILABLE:
-            try:
-                # vertexai.init(project=self.project_id, location=self.location)
-                # Note: In some setups, explicit init might be needed, or ADC picks it up.
-                # Assuming ADC (Application Default Credentials)
-                vertexai.init(project=self.project_id, location=self.location)
-                self.model = GenerativeModel(MODEL_ID)
-                print(f"Meme Sentinel initialized with {MODEL_ID}")
-            except Exception as e:
-                print(f"Error initializing Vertex AI: {e}")
-        else:
-            print("WARNING: google-cloud-aiplatform not installed. Sentinel is dormant.")
+        self.client = None
+        try:
+            sm = secretmanager.SecretManagerServiceClient()
+            api_key = sm.access_secret_version(name=GEMINI_SECRET_NAME).payload.data.decode("utf-8")
+            self.client = genai.Client(api_key=api_key)
+            print(f"Meme Sentinel initialized with {MODEL_ID}")
+        except Exception as e:
+            print(f"Error initializing Meme Sentinel: {e}")
 
     def analyze_post(self, subreddit, text, upvotes):
         """
@@ -44,7 +32,7 @@ class MemeSentinel:
             # Not viral enough
             return None
             
-        if not self.model:
+        if not self.client:
             print(f"Viral event in r/{subreddit} ({upvotes} ups), but Model not ready.")
             return None
 
@@ -73,9 +61,14 @@ class MemeSentinel:
         """
         
         try:
-            response = self.model.generate_content(
-                prompt,
-                generation_config={"response_mime_type": "application/json"}
+            response = self.client.models.generate_content(
+                model=MODEL_ID,
+                contents=prompt,
+                config=genai_types.GenerateContentConfig(
+                    temperature=0.1,
+                    max_output_tokens=512,
+                    response_mime_type="application/json",
+                ),
             )
             return json.loads(response.text)
         except Exception as e:

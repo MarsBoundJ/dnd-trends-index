@@ -4,3 +4,5 @@ google-cloud-aiplatform>=1.0.0
 praw>=7.7.0
 pyahocorasick>=2.0.0
 google-cloud-storage>=2.0.0
+google-genai>=1.0.0
+google-cloud-secret-manager>=2.0.0
