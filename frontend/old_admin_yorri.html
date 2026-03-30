@@ -23,94 +23,26 @@
             --glow-primary: 0 0 15px rgba(0, 212, 255, 0.2);
         }
 
-        /* ── Ritual Lock Bar ──────────────────────────────────────── */
-        #ritual-bar {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: rgba(10, 10, 14, 0.95);
-            border-bottom: 1px solid var(--glass-border);
-            padding: 0.55rem 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            backdrop-filter: blur(12px);
-        }
-        #ritual-bar .ritual-label {
-            font-family: 'Cinzel', serif;
-            font-size: 0.65rem;
-            letter-spacing: 2px;
-            color: var(--text-muted);
-            white-space: nowrap;
-        }
-        #ritual-bar .ritual-label.unlocked { color: var(--color-approve); }
-        #ritual-key-input {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid var(--glass-border);
-            border-radius: 4px;
-            color: var(--text-main);
-            font-family: 'Roboto Mono', monospace;
-            font-size: 0.8rem;
-            padding: 4px 10px;
-            width: 220px;
-            letter-spacing: 2px;
-        }
-        #ritual-key-input:focus { outline: none; border-color: var(--color-primary); }
-        #ritual-lock-btn {
-            background: rgba(255,51,119,0.15);
-            border: 1px solid var(--color-archive);
-            border-radius: 4px;
-            color: var(--color-archive);
-            font-family: 'Cinzel', serif;
-            font-size: 0.65rem;
-            letter-spacing: 1px;
-            padding: 4px 12px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        #ritual-lock-btn:hover { background: rgba(255,51,119,0.3); }
-        #ritual-status {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            margin-left: auto;
-        }
-        #ritual-status.unlocked { color: var(--color-approve); }
-
-        /* ── Locked / Unlocked content states ─────────────────────── */
-        #main-content {
-            transition: filter 0.4s ease;
-        }
-        #main-content.locked {
-            filter: blur(5px);
-            pointer-events: none;
-            user-select: none;
-        }
-
-        /* Title always visible — sits above the blur layer */
-        #page-title {
-            font-family: 'Cinzel', serif;
-            color: var(--color-primary);
-            letter-spacing: 3px;
-            text-align: center;
-            margin: 1.5rem 0 1rem;
-            text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
-            font-size: 2rem;
-            font-weight: 700;
-        }
-        #page-title span { color: #fff; }
-
         body {
             background-color: var(--bg-obsidian);
             background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, var(--bg-obsidian) 70%);
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
             margin: 0;
-            padding: 0;
+            padding: 2rem;
             min-height: 100vh;
         }
 
-        .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+        .container { max-width: 1100px; margin: 0 auto; }
 
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--color-primary);
+            letter-spacing: 3px;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+        }
 
         /* ── Tabs ──────────────────────────────────────────────── */
         .tabs {
@@ -314,69 +246,6 @@
         .seed-manual { color: var(--color-warn); font-size: 0.8rem; }
         tr.seed-inactive td { opacity: 0.4; }
 
-        /* ── Scrying Chamber ────────────────────────────────────── */
-        .stream-card {
-            background: var(--glass-panel);
-            border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            padding: 1.2rem 1.4rem;
-            backdrop-filter: blur(8px);
-            transition: border-color 0.2s;
-        }
-        .stream-card:hover { border-color: var(--color-primary); }
-        .stream-card.healthy { border-left: 3px solid var(--color-approve); }
-        .stream-card.stale   { border-left: 3px solid var(--color-archive); }
-        .stream-card.no-data { border-left: 3px solid var(--text-muted); }
-
-        .stream-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.9rem;
-            padding-bottom: 0.6rem;
-            border-bottom: 1px solid var(--glass-border);
-        }
-        .stream-name {
-            font-family: 'Cinzel', serif;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            color: var(--text-main);
-        }
-        .status-dot {
-            width: 9px; height: 9px;
-            border-radius: 50%;
-            display: inline-block;
-            flex-shrink: 0;
-        }
-        .status-dot.healthy {
-            background: var(--color-approve);
-            box-shadow: 0 0 6px var(--color-approve);
-            animation: dot-pulse 2s infinite;
-        }
-        .status-dot.stale {
-            background: var(--color-archive);
-            box-shadow: 0 0 6px var(--color-archive);
-            animation: dot-pulse 2s infinite;
-        }
-        .status-dot.no-data {
-            background: var(--text-muted);
-        }
-        @keyframes dot-pulse {
-            0%,100% { opacity: 1; }
-            50%      { opacity: 0.35; }
-        }
-        .stream-vital {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;
-            margin-bottom: 0.45rem;
-        }
-        .stream-vital .label { color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .stream-vital .value { color: var(--text-main); font-family: 'Roboto Mono', monospace; }
-        .stream-vital .value.warn  { color: var(--color-warn); }
-        .stream-vital .value.bad   { color: var(--color-archive); }
-        .stream-vital .value.good  { color: var(--color-approve); }
-
         /* ── Misc ────────────────────────────────────────────────── */
         .empty-state {
             text-align: center;
@@ -410,21 +279,8 @@
     </style>
 </head>
 <body>
-
-<!-- ── Ritual Lock Bar (always visible) ─────────────────────────── -->
-<div id="ritual-bar">
-    <span class="ritual-label" id="ritual-label">RITUAL KEY</span>
-    <input type="password" id="ritual-key-input" placeholder="••••••••••••••••••" maxlength="40"
-           onkeydown="if(event.key==='Enter') attemptUnlock()">
-    <button onclick="attemptUnlock()" style="background:rgba(0,212,255,0.12);border:1px solid var(--color-primary);border-radius:4px;color:var(--color-primary);font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:1px;padding:4px 14px;cursor:pointer;">UNLOCK</button>
-    <button id="ritual-lock-btn" onclick="lockPage()" style="display:none">LOCK</button>
-    <span id="ritual-status">🔒 Locked — enter ritual key to edit</span>
-</div>
-
-<h1 id="page-title">LIBRARY <span>CLERK</span></h1>
-
-<div id="main-content" class="locked">
 <div class="container">
+    <h1>LIBRARY <span style="color:#fff;">CLERK</span></h1>
 
     <!-- ── Tab Navigation ───────────────────────────────────────── -->
     <div class="tabs">
@@ -433,7 +289,6 @@
             REVIEW QUEUE <span class="badge" id="queue-badge" style="display:none">0</span>
         </button>
         <button class="tab-btn" onclick="showTab('seeds')">SEEDS</button>
-        <button class="tab-btn" onclick="showTab('scrying')">SCRYING CHAMBER</button>
     </div>
 
     <!-- ════════════════════════════════════════════════════════════
@@ -531,45 +386,7 @@
             </table>
         </div>
     </div>
-
-    <!-- ════════════════════════════════════════════════════════════
-         TAB 4 — SCRYING CHAMBER
-         ════════════════════════════════════════════════════════════ -->
-    <div id="tab-scrying" class="tab-section">
-
-        <!-- Caldean Master Clock -->
-        <div class="panel-card" id="caldean-clock-card">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-                <div>
-                    <div style="font-family:'Cinzel',serif; color:var(--color-warn); letter-spacing:2px; font-size:0.75rem; margin-bottom:0.4rem;">CALDEAN CYCLE</div>
-                    <div id="caldean-mode" style="font-family:'Cinzel',serif; font-size:1.2rem; color:var(--color-approve);">—</div>
-                </div>
-                <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:2rem; text-align:center;">
-                    <div>
-                        <div style="font-size:0.65rem; color:var(--text-muted); letter-spacing:1px; margin-bottom:0.3rem;">LAST RUN</div>
-                        <div id="caldean-last" style="font-family:'Roboto Mono',monospace; font-size:0.9rem;">—</div>
-                    </div>
-                    <div>
-                        <div style="font-size:0.65rem; color:var(--text-muted); letter-spacing:1px; margin-bottom:0.3rem;">NEXT RUN</div>
-                        <div id="caldean-next" style="font-family:'Roboto Mono',monospace; font-size:0.9rem;">—</div>
-                    </div>
-                    <div>
-                        <div style="font-size:0.65rem; color:var(--text-muted); letter-spacing:1px; margin-bottom:0.3rem;">REFRESH</div>
-                        <div id="scrying-refresh-ts" style="font-family:'Roboto Mono',monospace; font-size:0.9rem; color:var(--text-muted);">—</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Stream Cards Grid -->
-        <div id="scrying-grid" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:1rem;">
-            <div class="panel-card" style="color:var(--text-muted); text-align:center; padding:2rem;">Loading streams...</div>
-        </div>
-
-    </div>
 </div>
-
-</div><!-- /#main-content -->
 
 <div id="toast" class="status-msg"></div>
 
@@ -592,81 +409,15 @@
 
     const BUCKETS = ["concept", "insight", "competitor", "noise"];
 
-    // ══════════════════════════════════════════════════════════════
-    // Ritual Lock / Unlock
-    // ══════════════════════════════════════════════════════════════
-    const RITUAL_HASH = "ArcaneLibrarian2026";   // plaintext stored client-side (same as old Scrying Scribe)
-    const LOCK_TIMEOUT_MS = 15 * 60 * 1000;     // 15 min inactivity auto-lock
-    let _lockTimer = null;
-
-    function _applyLockState(locked) {
-        const content   = document.getElementById('main-content');
-        const status    = document.getElementById('ritual-status');
-        const label     = document.getElementById('ritual-label');
-        const lockBtn   = document.getElementById('ritual-lock-btn');
-        const keyInput  = document.getElementById('ritual-key-input');
-
-        if (locked) {
-            content.classList.add('locked');
-            status.textContent = '🔒 Locked — enter ritual key to edit';
-            status.className = '';
-            label.textContent = 'RITUAL KEY';
-            label.className = 'ritual-label';
-            lockBtn.style.display = 'none';
-            keyInput.value = '';
-            keyInput.disabled = false;
-        } else {
-            content.classList.remove('locked');
-            status.textContent = '✦ Unlocked';
-            status.className = 'unlocked';
-            label.textContent = 'RITUAL KEY';
-            label.className = 'ritual-label unlocked';
-            lockBtn.style.display = 'inline-block';
-            keyInput.disabled = true;
-            _resetLockTimer();
-        }
-    }
-
-    function _resetLockTimer() {
-        clearTimeout(_lockTimer);
-        _lockTimer = setTimeout(() => {
-            lockPage();
-            showToast("Session locked after 15 minutes of inactivity.", true);
-        }, LOCK_TIMEOUT_MS);
-    }
-
-    function attemptUnlock() {
-        const input = document.getElementById('ritual-key-input').value.trim();
-        if (input === RITUAL_HASH) {
-            sessionStorage.setItem('ritual_key', input);
-            _applyLockState(false);
-        } else {
-            document.getElementById('ritual-key-input').value = '';
-            document.getElementById('ritual-key-input').style.borderColor = 'var(--color-archive)';
-            setTimeout(() => {
-                document.getElementById('ritual-key-input').style.borderColor = '';
-            }, 1200);
-            showToast("Incorrect ritual key.", true);
-        }
-    }
-
-    function lockPage() {
-        sessionStorage.removeItem('ritual_key');
-        clearTimeout(_lockTimer);
-        _applyLockState(true);
-    }
-
-    // Restore session on page load
+    // ── Auth ──────────────────────────────────────────────────────
     function getRitualKey() {
-        return sessionStorage.getItem('ritual_key') || '';
+        let key = sessionStorage.getItem('ritual_key');
+        if (!key) {
+            key = prompt("Library Clerk Key:");
+            if (key) sessionStorage.setItem('ritual_key', key);
+        }
+        return key || '';
     }
-
-    // Reset inactivity timer on any user interaction
-    ['click','keydown','mousemove','scroll'].forEach(evt =>
-        document.addEventListener(evt, () => {
-            if (sessionStorage.getItem('ritual_key')) _resetLockTimer();
-        }, { passive: true })
-    );
 
     // ── Tabs ──────────────────────────────────────────────────────
     function showTab(name) {
@@ -674,10 +425,8 @@
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('tab-' + name).classList.add('active');
         document.querySelector(`.tab-btn[onclick="showTab('${name}')"]`).classList.add('active');
-        if (name === 'queue')   loadQueue('pending');
-        if (name === 'seeds')   loadSeeds();
-        if (name === 'scrying') initScryingTab();
-        else                    pauseScryingTab();
+        if (name === 'queue') loadQueue('pending');
+        if (name === 'seeds') loadSeeds();
     }
 
     // ══════════════════════════════════════════════════════════════
@@ -1047,148 +796,8 @@
         setTimeout(() => { toast.style.display = 'none'; }, 3500);
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // Scrying Chamber
-    // ══════════════════════════════════════════════════════════════
-    let _scryingInterval = null;
-
-    const STREAM_LABELS = {
-        google:          'Google Trends',
-        emerging_terms:  'Trends: Related Queries',
-        fandom:          'Fandom Wiki',
-        wikipedia:       'Wikipedia',
-        reddit:          'Reddit',
-        youtube:         'YouTube',
-        bgg:             'BoardGameGeek',
-        rpggeek:         'RPGGeek',
-        amazon:          'Amazon',
-        kickstarter:     'Kickstarter',
-        backerkit:       'BackerKit',
-        catalog_supply:  'Catalog Supply',
-        itchio_products: 'Itch.io Products',
-        itchio_jams:     'Itch.io Jams',
-    };
-
-    function _ageLabel(hours) {
-        if (hours == null) return { text: 'Never', cls: 'bad' };
-        if (hours < 1)     return { text: 'Just now', cls: 'good' };
-        if (hours < 24)    return { text: `${hours}h ago`, cls: 'good' };
-        const days = Math.floor(hours / 24);
-        if (days === 1)    return { text: '1 day ago', cls: 'warn' };
-        if (days <= 7)     return { text: `${days} days ago`, cls: 'warn' };
-        return { text: `${days} days ago`, cls: 'bad' };
-    }
-
-    async function loadScryingChamber() {
-        try {
-            const res  = await fetch(`${API_BASE}/system/health`);
-            const data = await res.json();
-
-            // Master clock
-            const cycle = data.caldean_cycle || {};
-            const modeEl = document.getElementById('caldean-mode');
-            modeEl.textContent = cycle.mode || 'UNKNOWN';
-            modeEl.style.color = (cycle.mode || '').includes('Pause')
-                ? 'var(--color-warn)' : 'var(--color-approve)';
-
-            const fmt = ts => ts ? new Date(ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '—';
-            document.getElementById('caldean-last').textContent = fmt(cycle.last_run);
-            document.getElementById('caldean-next').textContent = fmt(cycle.next_run);
-            document.getElementById('scrying-refresh-ts').textContent =
-                new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-
-            // Stream cards
-            const sources = data.sources || {};
-            const grid = document.getElementById('scrying-grid');
-            grid.innerHTML = '';
-
-            const order = [
-                'google', 'emerging_terms', 'fandom', 'wikipedia', 'reddit',
-                'youtube', 'bgg', 'rpggeek', 'amazon', 'kickstarter',
-                'backerkit', 'catalog_supply', 'itchio_products', 'itchio_jams',
-            ];
-
-            order.forEach(key => {
-                const info    = sources[key] || {};
-                const label   = STREAM_LABELS[key] || key;
-                const status  = (info.status || '').includes('HEALTHY') ? 'healthy'
-                              : (info.status || '').includes('NO DATA')  ? 'no-data'
-                              : 'stale';
-                const hours   = info.hours_since_update != null ? info.hours_since_update : null;
-                const age     = _ageLabel(hours);
-                const rowCount = (info.row_count || 0).toLocaleString();
-                const tableId  = info.table_id || '—';
-
-                // Build human-readable error hint when stale/no-data
-                let errorHint = '';
-                if (status === 'no-data') {
-                    errorHint = `<div class="stream-vital">
-                        <span class="label">⚠ Issue</span>
-                        <span class="value bad">Table empty or missing</span>
-                    </div>`;
-                } else if (status === 'stale') {
-                    errorHint = `<div class="stream-vital">
-                        <span class="label">⚠ Issue</span>
-                        <span class="value bad">Feed overdue — check scraper</span>
-                    </div>`;
-                }
-
-                const card = document.createElement('div');
-                card.className = `stream-card ${status}`;
-                card.innerHTML = `
-                    <div class="stream-header">
-                        <span class="stream-name">${label}</span>
-                        <span class="status-dot ${status}" title="${info.status || 'Unknown'}"></span>
-                    </div>
-                    <div class="stream-vital">
-                        <span class="label">Table</span>
-                        <span class="value" style="font-size:0.7rem">${tableId}</span>
-                    </div>
-                    <div class="stream-vital">
-                        <span class="label">Rows</span>
-                        <span class="value">${rowCount}</span>
-                    </div>
-                    <div class="stream-vital">
-                        <span class="label">Last Scribed</span>
-                        <span class="value ${age.cls}">${age.text}</span>
-                    </div>
-                    ${errorHint}
-                `;
-                grid.appendChild(card);
-            });
-
-        } catch (err) {
-            document.getElementById('scrying-grid').innerHTML =
-                `<div class="panel-card" style="color:var(--color-archive); text-align:center; padding:2rem;">
-                    ⚠ Could not reach Bouncer API<br>
-                    <span style="font-size:0.75rem; color:var(--text-muted); margin-top:0.5rem; display:block">${err.message}</span>
-                </div>`;
-        }
-    }
-
-    // Called by showTab when switching to scrying tab
-    function initScryingTab() {
-        loadScryingChamber();
-        if (!_scryingInterval) {
-            _scryingInterval = setInterval(loadScryingChamber, 30000);
-        }
-    }
-    function pauseScryingTab() {
-        clearInterval(_scryingInterval);
-        _scryingInterval = null;
-    }
-
-    // Page load: restore session lock state + queue badge
+    // Load queue badge on page load
     (async () => {
-        // Restore lock state if key is in sessionStorage
-        const savedKey = sessionStorage.getItem('ritual_key');
-        if (savedKey === RITUAL_HASH) {
-            _applyLockState(false);
-        } else {
-            _applyLockState(true);
-        }
-
-        // Load queue badge
         try {
             const res = await fetch(`${API_BASE}/system/review-queue/list?status=pending&limit=200`);
             const data = await res.json();

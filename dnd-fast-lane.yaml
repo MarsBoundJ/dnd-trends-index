@@ -65,6 +65,22 @@ main:
                           type: OIDC
                       result: wiki_result
 
+            - itchio:
+                steps:
+                  - call_itchio:
+                      try:
+                        call: googleapis.run.v1.namespaces.jobs.run
+                        args:
+                          name: ${"namespaces/" + project_id + "/jobs/itchio-rss-harvester"}
+                          location: ${location}
+                        result: itchio_result
+                      except:
+                        as: e
+                        steps:
+                          - ignore_itchio_error:
+                              assign:
+                                - itchio_result: "failed but continuing"
+
             - bgg:
                 steps:
                   - call_bgg:

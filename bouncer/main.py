@@ -96,6 +96,16 @@ def bouncer_api(request):
             path = 'system/vista/email-report'
         elif 'vista/chart_data' in full_path:
             path = 'system/vista/chart_data'
+        elif 'review-queue/action' in full_path:
+            path = 'system/review-queue/action'
+        elif 'review-queue/list' in full_path:
+            path = 'system/review-queue/list'
+        elif 'seeds/add' in full_path:
+            path = 'system/seeds/add'
+        elif 'seeds/toggle' in full_path:
+            path = 'system/seeds/toggle'
+        elif 'seeds/list' in full_path:
+            path = 'system/seeds/list'
         else:
             path = 'leaderboards'
         
@@ -392,18 +402,23 @@ def bouncer_api(request):
                 SELECT 'itchio_products' as source_name, 'itchio_products' as table_id, TIMESTAMP_MILLIS(last_modified_time) as last_modified_time, row_count FROM `dnd-trends-index.dnd_trends_raw.__TABLES__` WHERE table_id = 'itchio_products'
                 UNION ALL
                 SELECT 'itchio_jams' as source_name, 'itchio_jams' as table_id, TIMESTAMP_MILLIS(last_modified_time) as last_modified_time, row_count FROM `dnd-trends-index.dnd_trends_raw.__TABLES__` WHERE table_id = 'itchio_jams'
+                UNION ALL
+                SELECT 'emerging_terms' as source_name, 'emerging_terms' as table_id, TIMESTAMP_MILLIS(last_modified_time) as last_modified_time, row_count FROM `dnd-trends-index.dnd_trends_raw.__TABLES__` WHERE table_id = 'emerging_terms'
             )
             SELECT 
                 source_name,
                 table_id,
                 last_modified_time,
                 row_count,
-                CASE 
+                CASE
                     WHEN source_name IN ('wikipedia', 'youtube') THEN
                         IF(TIMESTAMP_DIFF(CURRENT_TIMESTAMP(), last_modified_time, HOUR) < 120, '🟢 HEALTHY', '🔴 STALE')
+                    WHEN source_name IN ('bgg', 'rpggeek', 'kickstarter', 'backerkit', 'catalog_supply', 'itchio_products', 'itchio_jams') THEN
+                        IF(TIMESTAMP_DIFF(CURRENT_TIMESTAMP(), last_modified_time, HOUR) < 168, '🟢 HEALTHY', '🔴 STALE')
                     ELSE
-                        IF(TIMESTAMP_DIFF(CURRENT_TIMESTAMP(), last_modified_time, HOUR) < 24, '🟢 HEALTHY', '🔴 STALE')
-                END as status
+                        IF(TIMESTAMP_DIFF(CURRENT_TIMESTAMP(), last_modified_time, HOUR) < 36, '🟢 HEALTHY', '🔴 STALE')
+                END as status,
+                TIMESTAMP_DIFF(CURRENT_TIMESTAMP(), last_modified_time, HOUR) as hours_since_update
             FROM all_tables
         """
         try:
@@ -414,15 +429,20 @@ def bouncer_api(request):
                     "table_id": row.table_id,
                     "status": row.status,
                     "last_modified": row.last_modified_time,
-                    "row_count": safe_int(row.row_count)
+                    "row_count": safe_int(row.row_count),
+                    "hours_since_update": safe_int(row.hours_since_update),
                 }
-            
-            # Ensure all sources are represented
-            expected_sources = ['google', 'fandom', 'wikipedia', 'reddit', 'youtube', 'bgg', 'amazon', 'kickstarter', 'backerkit', 'catalog_supply', 'itchio_products', 'itchio_jams']
+
+            # Ensure all sources are represented (including new emerging_terms stream)
+            expected_sources = [
+                'google', 'fandom', 'wikipedia', 'reddit', 'youtube',
+                'bgg', 'rpggeek', 'amazon', 'kickstarter', 'backerkit',
+                'catalog_supply', 'itchio_products', 'itchio_jams', 'emerging_terms',
+            ]
 
             for src in expected_sources:
                 if src not in sources_health:
-                    sources_health[src] = {"status": "🔴 STALE", "last_modified": None, "row_count": 0}
+                    sources_health[src] = {"status": "🔴 NO DATA", "last_modified": None, "row_count": 0, "hours_since_update": None}
 
             response_data = {
                 "caldean_cycle": caldean_cycle,
@@ -1074,6 +1094,270 @@ def bouncer_api(request):
                 })
         
         return (json.dumps(enriched_results, cls=ArcaneEncoder), 200, headers)
+
+    # ── Review Queue ────────────────────────────────────────────────────────────
+
+    elif path == 'system/review-queue/list':
+        status_filter = request.args.get('status', 'pending')
+        limit = min(int(request.args.get('limit', 50)), 200)
+        query = f"""
+            SELECT
+                review_id, term, suggested_bucket, suggested_signal_category,
+                suggested_native_category, suggested_dnd_analog, suggested_game_system,
+                suggested_variant_of, is_new_concept, confidence, reasoning,
+                search_value, is_breakout, source_seed, run_id,
+                status, reviewer_notes, reviewed_at, added_at
+            FROM `dnd-trends-index.dnd_trends_categorized.review_queue`
+            WHERE status = @status_filter
+            ORDER BY
+                is_breakout DESC,
+                confidence DESC,
+                added_at DESC
+            LIMIT {limit}
+        """
+        try:
+            job_config = bigquery.QueryJobConfig(query_parameters=[
+                bigquery.ScalarQueryParameter("status_filter", "STRING", status_filter),
+            ])
+            results = [dict(row) for row in client.query(query, job_config=job_config).result()]
+            return (json.dumps({"items": results, "count": len(results)}, cls=ArcaneEncoder), 200, headers)
+        except Exception as e:
+            return (json.dumps({"error": str(e)}), 500, headers)
+
+    elif path == 'system/review-queue/action':
+        if request.method != 'POST':
+            return (json.dumps({"error": "POST required"}), 405, headers)
+        ritual_key = request.headers.get('X-Ritual-Key', '')
+        if ritual_key != 'ArcaneLibrarian2026':
+            return (json.dumps({"error": "Unauthorized"}), 403, headers)
+
+        body = request.get_json(silent=True) or {}
+        review_id = body.get('review_id', '')
+        action    = body.get('action', '')   # "approve" | "reject"
+        overrides = body.get('overrides', {}) or {}
+
+        if not review_id or action not in ('approve', 'reject'):
+            return (json.dumps({"error": "review_id and action (approve|reject) required"}), 400, headers)
+
+        try:
+            # Fetch the review_queue row
+            fetch_q = """
+                SELECT * FROM `dnd-trends-index.dnd_trends_categorized.review_queue`
+                WHERE review_id = @review_id LIMIT 1
+            """
+            rows = list(client.query(fetch_q, job_config=bigquery.QueryJobConfig(query_parameters=[
+                bigquery.ScalarQueryParameter("review_id", "STRING", review_id),
+            ])).result())
+            if not rows:
+                return (json.dumps({"error": "review_id not found"}), 404, headers)
+
+            item = dict(rows[0])
+            now = datetime.datetime.utcnow().isoformat()
+
+            if action == 'reject':
+                client.query(f"""
+                    UPDATE `dnd-trends-index.dnd_trends_categorized.review_queue`
+                    SET status = 'rejected', reviewed_at = '{now}'
+                    WHERE review_id = '{review_id}'
+                """).result()
+                return (json.dumps({"status": "rejected", "term": item["term"]}), 200, headers)
+
+            # action == 'approve' — apply overrides then route
+            bucket           = overrides.get('bucket')           or item.get('suggested_bucket')           or 'noise'
+            signal_category  = overrides.get('signal_category')  or item.get('suggested_signal_category')
+            game_system      = overrides.get('game_system')       or item.get('suggested_game_system')
+            native_category  = overrides.get('native_category')  or item.get('suggested_native_category')
+            dnd_analog       = overrides.get('dnd_analog')        or item.get('suggested_dnd_analog')
+            variant_of       = overrides.get('variant_of')        or item.get('suggested_variant_of')
+            is_new_concept   = overrides.get('is_new_concept',   item.get('is_new_concept', False))
+            category         = overrides.get('category')          or None
+            destination      = 'unknown'
+
+            if bucket == 'concept':
+                if variant_of:
+                    # Insert into concept_variations
+                    import uuid
+                    variation_row = {
+                        "variation_id":  str(uuid.uuid4()),
+                        "concept_id":    variant_of,
+                        "variant_string": item["term"],
+                        "is_best_variant": False,
+                        "source":        "review_queue",
+                        "status":        "active",
+                        "date_added":    now,
+                        "added_by":      "library_clerk",
+                        "trend_score":   int(item["search_value"]) if str(item.get("search_value","")).isdigit() else None,
+                        "notes":         item.get("reasoning"),
+                    }
+                    errs = client.insert_rows_json('dnd-trends-index.dnd_trends_categorized.concept_variations', [variation_row])
+                    if errs: raise RuntimeError(f"concept_variations insert error: {errs}")
+                    destination = 'concept_variations'
+                else:
+                    # Insert into concept_library
+                    import uuid
+                    lib_row = {
+                        "concept_name":      item["term"],
+                        "category":          category or "Other",
+                        "source_book":       None, "ruleset": None,
+                        "tags":              [], "sub_tags": [],
+                        "last_processed_at": now, "is_active": True,
+                        "canonical_parent":  None, "persona_target": None,
+                        "publisher":         None,
+                        "is_breakout":       item.get("is_breakout") or False,
+                        "seed_promoted":     False,
+                    }
+                    errs = client.insert_rows_json('dnd-trends-index.dnd_trends_categorized.concept_library', [lib_row])
+                    if errs: raise RuntimeError(f"concept_library insert error: {errs}")
+                    # Auto-promote to seeds
+                    seed_row = {
+                        "term": item["term"], "added_by": "auto",
+                        "source_concept": item["term"], "is_active": True,
+                        "added_at": now, "last_used_at": None,
+                        "notes": "Auto-promoted via Library Clerk approval.",
+                    }
+                    client.insert_rows_json('dnd-trends-index.dnd_trends_categorized.seeds', [seed_row])
+                    destination = 'concept_library'
+
+            elif bucket == 'insight':
+                insight_row = {
+                    "term":            item["term"],
+                    "canonical_name":  None,
+                    "signal_category": signal_category or "other",
+                    "search_value":    str(item.get("search_value") or ""),
+                    "is_breakout":     item.get("is_breakout") or False,
+                    "source_seed":     item.get("source_seed"),
+                    "run_id":          item.get("run_id"),
+                    "is_active":       True,
+                    "notes":           item.get("reasoning"),
+                    "added_at":        now,
+                }
+                errs = client.insert_rows_json('dnd-trends-index.dnd_trends_categorized.insight_library', [insight_row])
+                if errs: raise RuntimeError(f"insight_library insert error: {errs}")
+                destination = 'insight_library'
+
+            elif bucket == 'competitor':
+                comp_row = {
+                    "concept_name":      item["term"],
+                    "category":          category,
+                    "source_book":       None, "ruleset": None,
+                    "tags":              [], "sub_tags": [],
+                    "last_processed_at": now, "is_active": True,
+                    "canonical_parent":  None, "persona_target": None, "publisher": None,
+                    "game_system":       game_system,
+                    "native_category":   native_category,
+                    "dnd_analog":        dnd_analog,
+                    "source_seed":       item.get("source_seed"),
+                    "search_value":      str(item.get("search_value") or ""),
+                    "is_breakout":       item.get("is_breakout") or False,
+                    "run_id":            item.get("run_id"),
+                    "added_at":          now,
+                }
+                errs = client.insert_rows_json('dnd-trends-index.dnd_trends_categorized.competitor_concepts', [comp_row])
+                if errs: raise RuntimeError(f"competitor_concepts insert error: {errs}")
+                destination = 'competitor_concepts'
+
+            elif bucket == 'noise':
+                destination = 'noise'  # No table insert — just mark approved
+
+            # Mark review_queue row as approved
+            client.query(f"""
+                UPDATE `dnd-trends-index.dnd_trends_categorized.review_queue`
+                SET status = 'approved', reviewed_at = '{now}'
+                WHERE review_id = '{review_id}'
+            """).result()
+
+            return (json.dumps({
+                "status": "approved",
+                "term": item["term"],
+                "bucket": bucket,
+                "destination": destination,
+            }, cls=ArcaneEncoder), 200, headers)
+
+        except Exception as e:
+            print(f"ERROR in review-queue/action: {e}")
+            return (json.dumps({"error": str(e)}), 500, headers)
+
+    # ── Seeds ────────────────────────────────────────────────────────────────────
+
+    elif path == 'system/seeds/list':
+        show_inactive = request.args.get('show_inactive', 'false').lower() == 'true'
+        active_filter = "" if show_inactive else "WHERE is_active = TRUE"
+        query = f"""
+            SELECT term, added_by, source_concept, is_active, added_at, last_used_at, notes
+            FROM `dnd-trends-index.dnd_trends_categorized.seeds`
+            {active_filter}
+            ORDER BY is_active DESC, added_at DESC
+        """
+        try:
+            results = [dict(row) for row in client.query(query).result()]
+            return (json.dumps({"seeds": results, "count": len(results)}, cls=ArcaneEncoder), 200, headers)
+        except Exception as e:
+            return (json.dumps({"error": str(e)}), 500, headers)
+
+    elif path == 'system/seeds/add':
+        if request.method != 'POST':
+            return (json.dumps({"error": "POST required"}), 405, headers)
+        ritual_key = request.headers.get('X-Ritual-Key', '')
+        if ritual_key != 'ArcaneLibrarian2026':
+            return (json.dumps({"error": "Unauthorized"}), 403, headers)
+
+        body = request.get_json(silent=True) or {}
+        term  = (body.get('term') or '').strip().lower()
+        notes = body.get('notes', '')
+
+        if not term:
+            return (json.dumps({"error": "term is required"}), 400, headers)
+
+        try:
+            # Check for duplicate
+            check_q = """
+                SELECT COUNT(*) AS cnt FROM `dnd-trends-index.dnd_trends_categorized.seeds`
+                WHERE LOWER(term) = @term
+            """
+            row = list(client.query(check_q, job_config=bigquery.QueryJobConfig(query_parameters=[
+                bigquery.ScalarQueryParameter("term", "STRING", term),
+            ])).result())[0]
+            if row["cnt"] > 0:
+                return (json.dumps({"status": "exists", "term": term}), 200, headers)
+
+            now = datetime.datetime.utcnow().isoformat()
+            seed_row = {
+                "term": term, "added_by": "manual", "source_concept": None,
+                "is_active": True, "added_at": now, "last_used_at": None,
+                "notes": notes or "Added manually via Library Clerk.",
+            }
+            errs = client.insert_rows_json('dnd-trends-index.dnd_trends_categorized.seeds', [seed_row])
+            if errs:
+                return (json.dumps({"error": str(errs)}), 500, headers)
+            return (json.dumps({"status": "added", "term": term}), 200, headers)
+        except Exception as e:
+            return (json.dumps({"error": str(e)}), 500, headers)
+
+    elif path == 'system/seeds/toggle':
+        if request.method != 'POST':
+            return (json.dumps({"error": "POST required"}), 405, headers)
+        ritual_key = request.headers.get('X-Ritual-Key', '')
+        if ritual_key != 'ArcaneLibrarian2026':
+            return (json.dumps({"error": "Unauthorized"}), 403, headers)
+
+        body     = request.get_json(silent=True) or {}
+        term     = (body.get('term') or '').strip()
+        is_active = bool(body.get('is_active', True))
+
+        if not term:
+            return (json.dumps({"error": "term is required"}), 400, headers)
+
+        try:
+            active_val  = "TRUE" if is_active else "FALSE"
+            safe_term   = term.replace("'", "\\'")
+            client.query(f"""
+                UPDATE `dnd-trends-index.dnd_trends_categorized.seeds`
+                SET is_active = {active_val}
+                WHERE LOWER(term) = LOWER('{safe_term}')
+            """).result()
+            return (json.dumps({"status": "updated", "term": term, "is_active": is_active}), 200, headers)
+        except Exception as e:
+            return (json.dumps({"error": str(e)}), 500, headers)
 
     return (json.dumps({"error": "Endpoint not found"}), 404, headers)
 

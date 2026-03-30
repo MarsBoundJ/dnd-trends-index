@@ -1,0 +1,166 @@
+main:
+  steps:
+    - init:
+        assign:
+          - project_id: ${sys.get_env("GOOGLE_CLOUD_PROJECT_ID")}
+          - location: "us-central1"
+
+    - run_scrapers_parallel:
+        parallel:
+          branches:
+
+            - reddit:
+                steps:
+                  - call_reddit:
+                      try:
+                        call: http.post
+                        args:
+                          url: "https://reddit-harvester-187467566422.us-central1.run.app"
+                          auth:
+                            type: OIDC
+                        result: reddit_result
+                      except:
+                        as: e
+                        steps:
+                          - skip_reddit:
+                              assign:
+                                - reddit_result: "skipped"
+
+            - fandom:
+                steps:
+                  - call_fandom:
+                      try:
+                        call: http.post
+                        args:
+                          url: "https://fandom-scraper-187467566422.us-central1.run.app"
+                          auth:
+                            type: OIDC
+                        result: fandom_result
+                      except:
+                        as: e
+                        steps:
+                          - skip_fandom:
+                              assign:
+                                - fandom_result: "skipped"
+
+            - youtube:
+                steps:
+                  - call_youtube:
+                      try:
+                        call: http.post
+                        args:
+                          url: "https://youtube-listener-187467566422.us-central1.run.app"
+                          auth:
+                            type: OIDC
+                        result: youtube_result
+                      except:
+                        as: e
+                        steps:
+                          - skip_youtube:
+                              assign:
+                                - youtube_result: "skipped"
+
+            - google_trends:
+                steps:
+                  - call_google_trends:
+                      try:
+                        call: googleapis.run.v1.namespaces.jobs.run
+                        args:
+                          name: ${"namespaces/" + project_id + "/jobs/google-trends-job"}
+                          location: ${location}
+                        result: google_trends_result
+                      except:
+                        as: e
+                        steps:
+                          - skip_google_trends:
+                              assign:
+                                - google_trends_result: "skipped"
+
+            - wikipedia:
+                steps:
+                  - call_wikipedia:
+                      try:
+                        call: http.post
+                        args:
+                          url: "https://wikipedia-scraper-187467566422.us-central1.run.app"
+                          auth:
+                            type: OIDC
+                        result: wiki_result
+                      except:
+                        as: e
+                        steps:
+                          - skip_wikipedia:
+                              assign:
+                                - wiki_result: "skipped"
+
+            - itchio:
+                steps:
+                  - call_itchio:
+                      try:
+                        call: googleapis.run.v1.namespaces.jobs.run
+                        args:
+                          name: ${"namespaces/" + project_id + "/jobs/itchio-rss-harvester"}
+                          location: ${location}
+                        result: itchio_result
+                      except:
+                        as: e
+                        steps:
+                          - skip_itchio:
+                              assign:
+                                - itchio_result: "skipped"
+
+            - bgg:
+                steps:
+                  - call_bgg:
+                      try:
+                        call: http.post
+                        args:
+                          url: "https://bgg-harvester-187467566422.us-central1.run.app"
+                          auth:
+                            type: OIDC
+                          body:
+                            rpg: false
+                        result: bgg_result
+                      except:
+                        as: e
+                        steps:
+                          - skip_bgg:
+                              assign:
+                                - bgg_result: "skipped"
+
+            - rpggeek:
+                steps:
+                  - call_rpggeek:
+                      try:
+                        call: http.post
+                        args:
+                          url: "https://bgg-harvester-187467566422.us-central1.run.app"
+                          auth:
+                            type: OIDC
+                          body:
+                            rpg: true
+                        result: rpggeek_result
+                      except:
+                        as: e
+                        steps:
+                          - skip_rpggeek:
+                              assign:
+                                - rpggeek_result: "skipped"
+
+    - refresh_gold_views:
+        try:
+          call: http.post
+          args:
+            url: "https://bouncer-api-187467566422.us-central1.run.app/refresh_views?source=youtube"
+            auth:
+              type: OIDC
+          result: refresh_result
+        except:
+          as: e
+          steps:
+            - skip_refresh:
+                assign:
+                  - refresh_result: "skipped"
+
+    - return_results:
+        return: "Fast Lane Complete"
