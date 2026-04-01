@@ -50,15 +50,15 @@ class RedditHarvester:
         text_lower = text.lower()
         return any(anchor in text_lower for anchor in ANCHOR_WORDS)
 
-    def process_subreddits(self):
+    def process_subreddits(self, post_limit=50):
         aggregated_metrics = {}
         viral_events = []
-        
+
         for sub_name, valid_config in self.registry.items():
             print(f"Scanning r/{sub_name}...")
             try:
                 subreddit = self.reddit.subreddit(sub_name)
-                posts = subreddit.hot(limit=50)
+                posts = subreddit.hot(limit=post_limit)
                 
                 for post in posts:
                     full_text = f"{post.title} \n {post.selftext}"
@@ -134,16 +134,21 @@ def reddit_harvester_http(request):
     """
     print("🚀 Starting Reddit Harvest...")
     from watermark import HighWatermark
-    
+
+    body = request.get_json(silent=True) or {}
+    extended = bool(body.get("extended", False))
+    post_limit = 100 if extended else 50
+    print(f"📋 Mode: {'extended/makeup (100 posts)' if extended else 'standard (50 posts)'}")
+
     watermark = HighWatermark("reddit")
     start_time, end_time = watermark.get_range()
-    
+
     print(f"🕒 Target Range: {start_time} -> {end_time}")
-    
+
     try:
         harvester = RedditHarvester()
         # Note: Reddit .hot() is heuristic, but we still track the window for system consistency
-        metrics, viral_events = harvester.process_subreddits()
+        metrics, viral_events = harvester.process_subreddits(post_limit=post_limit)
         stats = harvester.save_to_bq(metrics, viral_events)
         
         if stats['status'] == 'success':
