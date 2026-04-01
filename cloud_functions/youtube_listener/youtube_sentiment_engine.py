@@ -7,7 +7,7 @@ from google.cloud import bigquery
 # Config
 API_KEY = "AIzaSyCIGyZyvf4m13f46pb0GAVGy4lsd88yQJ8"
 PROJECT_ID = "dnd-trends-index"
-VIDEOS_TABLE = f"{PROJECT_ID}.social_data.youtube_videos"
+VIDEOS_TABLE = f"{PROJECT_ID}.dnd_trends_raw.youtube_videos"
 
 def get_videos_for_sentiment(client):
     # Fetch videos from last 7 days that haven't been scored yet (or re-score recently)

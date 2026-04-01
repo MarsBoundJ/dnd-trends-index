@@ -7,8 +7,8 @@ from dateutil import parser as date_parser
 # Configuration
 API_KEY = "AIzaSyCIGyZyvf4m13f46pb0GAVGy4lsd88yQJ8"
 PROJECT_ID = "dnd-trends-index"
-REGISTRY_TABLE = f"{PROJECT_ID}.social_data.youtube_channel_registry"
-VIDEOS_TABLE = f"{PROJECT_ID}.social_data.youtube_videos"
+REGISTRY_TABLE = f"{PROJECT_ID}.dnd_trends_raw.channel_registry"
+VIDEOS_TABLE = f"{PROJECT_ID}.dnd_trends_raw.youtube_videos"
 
 # Quota Safety
 MAX_CHANNELS_PER_RUN = 60 # Iterate through all ~60 seeded channels

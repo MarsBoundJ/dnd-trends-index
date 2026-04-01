@@ -6,7 +6,7 @@ from google.cloud import bigquery
 # Config
 API_KEY = "AIzaSyCIGyZyvf4m13f46pb0GAVGy4lsd88yQJ8"
 PROJECT_ID = "dnd-trends-index"
-VIDEOS_TABLE = f"{PROJECT_ID}.social_data.youtube_videos"
+VIDEOS_TABLE = f"{PROJECT_ID}.dnd_trends_raw.youtube_videos"
 
 def get_monitored_videos(client):
     # Fetch videos from last 7 days to update stats for

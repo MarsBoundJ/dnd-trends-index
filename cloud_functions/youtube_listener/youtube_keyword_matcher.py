@@ -12,7 +12,7 @@ except ImportError:
 
 # Config
 PROJECT_ID = "dnd-trends-index"
-VIDEOS_TABLE = f"{PROJECT_ID}.social_data.youtube_videos"
+VIDEOS_TABLE = f"{PROJECT_ID}.dnd_trends_raw.youtube_videos"
 
 def get_videos(client):
     query = f"""
