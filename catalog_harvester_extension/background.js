@@ -119,8 +119,13 @@ function harvestSite(site, ritualKey) {
         chrome.tabs.create({ url: site.url, active: false }, (tab) => {
             const tabId = tab.id;
 
-            function onUpdated(updatedId, info) {
+            function onUpdated(updatedId, info, updatedTab) {
                 if (updatedId !== tabId || info.status !== "complete") return;
+                // Wait until we're actually on the target page (not a Cloudflare challenge)
+                if (!updatedTab.url || !updatedTab.url.includes("metal.php")) {
+                    console.log("[Incursion] Tab not yet on metal.php (url=" + updatedTab.url + "), waiting...");
+                    return;
+                }
                 chrome.tabs.onUpdated.removeListener(onUpdated);
 
                 // Inject the harvest runner directly via scripting
