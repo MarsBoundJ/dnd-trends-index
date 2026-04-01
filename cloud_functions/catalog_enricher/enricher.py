@@ -194,34 +194,6 @@ def _build_user_prompt(batch: list[dict]) -> str:
     return "Classify these TTRPG products:\n\n" + json.dumps(items, indent=2)
 
 
-# ---------- Gemini call ----------
-
-def _call_gemini(client: genai.Client, user_prompt: str, attempt: int = 1) -> list[dict]:
-    if attempt > 3:
-        raise RuntimeError("Gemini failed after 3 attempts")
-    try:
-        response = client.models.generate_content(
-            model=GEMINI_MODEL,
-            contents=user_prompt,
-            config=genai_types.GenerateContentConfig(
-                system_instruction=SYSTEM_PROMPT,
-                temperature=0.1,
-                max_output_tokens=8192,
-                response_mime_type="application/json",
-            ),
-        )
-        raw = response.text.strip()
-        return json.loads(raw)
-    except json.JSONDecodeError as e:
-        log.warning("JSON parse error on attempt %d: %s", attempt, e)
-        time.sleep(2 ** attempt)
-        return _call_gemini(client, user_prompt, attempt + 1)
-    except Exception as e:
-        log.warning("Gemini error on attempt %d: %s", attempt, e)
-        time.sleep(2 ** attempt)
-        return _call_gemini(client, user_prompt, attempt + 1)
-
-
 # ---------- Response parsing ----------
 
 VALID_PRODUCT_TYPES = {
@@ -242,6 +214,51 @@ VALID_THEMES = {
     "Horror", "Exploration", "Combat-Heavy", "Social/Political",
     "Mystery", "Comedy", "High Fantasy", "Cosmic/Planar", "Mixed"
 }
+
+
+# ---------- Gemini call ----------
+
+RESPONSE_SCHEMA = genai_types.Schema(
+    type=genai_types.Type.ARRAY,
+    items=genai_types.Schema(
+        type=genai_types.Type.OBJECT,
+        properties={
+            "id":           genai_types.Schema(type=genai_types.Type.INTEGER),
+            "product_type": genai_types.Schema(type=genai_types.Type.STRING, enum=sorted(VALID_PRODUCT_TYPES)),
+            "game_system":  genai_types.Schema(type=genai_types.Type.STRING, enum=sorted(VALID_GAME_SYSTEMS)),
+            "setting":      genai_types.Schema(type=genai_types.Type.STRING, enum=sorted(VALID_SETTINGS)),
+            "theme":        genai_types.Schema(type=genai_types.Type.STRING, enum=sorted(VALID_THEMES)),
+        },
+        required=["id", "product_type", "game_system", "setting", "theme"],
+    )
+)
+
+
+def _call_gemini(client: genai.Client, user_prompt: str, attempt: int = 1) -> list[dict]:
+    if attempt > 3:
+        raise RuntimeError("Gemini failed after 3 attempts")
+    try:
+        response = client.models.generate_content(
+            model=GEMINI_MODEL,
+            contents=user_prompt,
+            config=genai_types.GenerateContentConfig(
+                system_instruction=SYSTEM_PROMPT,
+                temperature=0.1,
+                max_output_tokens=8192,
+                response_mime_type="application/json",
+                response_schema=RESPONSE_SCHEMA,
+            ),
+        )
+        raw = response.text.strip()
+        return json.loads(raw)
+    except json.JSONDecodeError as e:
+        log.warning("JSON parse error on attempt %d: %s", attempt, e)
+        time.sleep(2 ** attempt)
+        return _call_gemini(client, user_prompt, attempt + 1)
+    except Exception as e:
+        log.warning("Gemini error on attempt %d: %s", attempt, e)
+        time.sleep(2 ** attempt)
+        return _call_gemini(client, user_prompt, attempt + 1)
 
 
 def _validate(value: str | None, valid_set: set, default: str) -> str:
