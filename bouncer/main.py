@@ -1046,7 +1046,12 @@ def bouncer_api(request):
         rows = request.get_json()
         if not rows:
             return (json.dumps({"error": "No data"}), 400, headers)
-        errors = client.insert_rows_json('dnd-trends-index.dnd_trends_raw.catalog_supply', rows)
+        errors = client.insert_rows_json(
+            'dnd-trends-index.dnd_trends_raw.catalog_supply',
+            rows,
+            skip_invalid_rows=True,
+            ignore_unknown_values=True,
+        )
         if errors:
             return (json.dumps({"error": str(errors)}), 500, headers)
         return (json.dumps({"inserted": len(rows)}), 200, headers)
