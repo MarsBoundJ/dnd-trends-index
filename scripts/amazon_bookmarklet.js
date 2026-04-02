@@ -96,7 +96,30 @@
       const priceStr = priceEl ? priceEl.textContent.trim() : '';
       const price = parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 0;
 
-      items.push({ asin, rank, title, price, label, listType });
+      // Author / byline ("by Author Name")
+      const authorEl = el.querySelector(
+        'span.a-color-secondary, .a-row .a-color-base.a-size-small'
+      );
+      const author = authorEl
+        ? authorEl.textContent.trim().replace(/^by\s+/i, '').trim()
+        : '';
+
+      // Star rating — aria-label e.g. "4.8 out of 5 stars"
+      const ratingEl = el.querySelector('span[aria-label*="out of 5"]');
+      const ratingMatch = ratingEl
+        ? ratingEl.getAttribute('aria-label').match(/([\d.]+)\s+out of/)
+        : null;
+      const starRating = ratingMatch ? parseFloat(ratingMatch[1]) : 0;
+
+      // Review count — aria-label e.g. "1,234 ratings"
+      const reviewEl = el.querySelector(
+        'span[aria-label*="rating"], span[aria-label*="review"]'
+      );
+      const reviewCount = reviewEl
+        ? parseInt(reviewEl.getAttribute('aria-label').replace(/[^0-9]/g, ''), 10) || 0
+        : 0;
+
+      items.push({ asin, rank, title, price, author, starRating, reviewCount, label, listType });
     }
 
     // De-duplicate by ASIN (keep the one with the lowest rank)
@@ -158,13 +181,14 @@
           collected_date: TODAY,
           source: 'Amazon',
           title: item.title,
-          publisher: '',
+          publisher: item.author || '',
           seller_tier: rankTier,
           price: item.price,
-          rating: 0,
+          rating: item.starRating,
           tags: ['Amazon', label, listType, 'V10-auto'],
           system_tag: '',
           edition_tag: '',
+          asin: item.asin,
         });
 
         // amazon_daily_stats row
@@ -175,6 +199,9 @@
           date: TODAY,
           title: item.title,
           category: `${listType}: ${label}`,
+          author: item.author,
+          rating: item.starRating,
+          review_count: item.reviewCount,
         });
       }
     }
