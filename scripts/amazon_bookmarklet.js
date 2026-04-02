@@ -20,22 +20,22 @@
 
   // Source definitions: [path, label, type]
   // type: 'bestseller' | 'movers' | 'new-releases' | 'wished'
+  // All node IDs verified live in browser April 2026
   const SOURCES = [
     // ── Best Sellers ────────────────────────────────────────────────────────
-    ['/zgbs/books/156091011',                       'D&D Books',          'Best Sellers'],
-    ['/zgbs/toys-and-games/166228011',              'RPG Games',          'Best Sellers'],
-    ['/zgbs/toys-and-games/166225011',              'Dice',               'Best Sellers'],
-    ['/zgbs/toys-and-games/166229011',              'Miniatures',         'Best Sellers'],
-    ['/zgbs/toys-and-games/166220011',              'Hobby Games',        'Best Sellers'],
-    ['/zgbs/books/16272',                           'Gaming Books',       'Best Sellers'],
+    ['/Best-Sellers-Books-Dungeons-Dragons-Game/zgbs/books/16215',               'D&D Books',         'Best Sellers'],
+    ['/Best-Sellers-Books-Fantasy-Gaming/zgbs/books/16211',                      'All RPG Books',     'Best Sellers'],
+    ['/Best-Sellers-Toys-Games-Games-Accessories/zgbs/toys-and-games/166220011', 'Games & Accessories','Best Sellers'],
+    ['/Best-Sellers-Toys-Games-Role-Playing-Dice/zgbs/toys-and-games/1265808011','RPG Dice',          'Best Sellers'],
     // ── Movers & Shakers (trend velocity) ───────────────────────────────────
-    ['/gp/movers-and-shakers/books/156091011',              'D&D Books',  'Movers & Shakers'],
-    ['/gp/movers-and-shakers/toys-and-games/166228011',     'RPG Games',  'Movers & Shakers'],
+    ['/gp/movers-and-shakers/books/16215',               'D&D Books',            'Movers & Shakers'],
+    ['/gp/movers-and-shakers/books/16211',               'All RPG Books',        'Movers & Shakers'],
+    ['/gp/movers-and-shakers/toys-and-games/166220011',  'Games & Accessories',  'Movers & Shakers'],
     // ── New Releases (launch momentum) ──────────────────────────────────────
-    ['/gp/new-releases/books/156091011',            'D&D Books',          'New Releases'],
-    ['/gp/new-releases/toys-and-games/166228011',   'RPG Games',          'New Releases'],
+    ['/gp/new-releases/books/16215',                     'D&D Books',            'New Releases'],
+    ['/gp/new-releases/toys-and-games/166220011',        'Games & Accessories',  'New Releases'],
     // ── Most Wished For (demand/acquisition signal) ──────────────────────────
-    ['/gp/most-wished-for/books/156091011',         'D&D Books',          'Most Wished For'],
+    ['/gp/most-wished-for/books/16215',                  'D&D Books',            'Most Wished For'],
   ];
 
   // ── UI ────────────────────────────────────────────────────────────────────
