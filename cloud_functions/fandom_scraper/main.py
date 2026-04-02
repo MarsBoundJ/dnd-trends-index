@@ -97,7 +97,8 @@ def fetch_wiki_trends(wiki_slug):
             "article_title": title,
             "rank_position": rank,
             "hype_score": calculate_hype(rank),
-            "view_count": count,  # stores edit_count_7d; schema field kept for compatibility
+            "view_count": None,   # populated separately by fandom-view-fetcher (Playwright)
+            "edit_count": count,  # 7-day edit frequency from MediaWiki recentchanges
             "url_path": f"/wiki/{title.replace(' ', '_')}"
         })
 
