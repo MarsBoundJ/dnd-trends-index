@@ -14,11 +14,8 @@ SA="antigravity-turbo-agent@${PROJECT}.iam.gserviceaccount.com"   # adjust to ex
 # Pull Webshare credentials from Secret Manager (same secrets as scraper)
 # ---------------------------------------------------------------------------
 # Pull Webshare credentials from Secret Manager (consolidated secret)
-RAW_CREDS=$(gcloud secrets versions access latest --secret="pytrends-proxy-creds" --project="${PROJECT}")
-PROXY_USER=$(echo "${RAW_CREDS}" | cut -d':' -f1)
-PROXY_PASS=$(echo "${RAW_CREDS}" | cut -d':' -f2 | cut -d'@' -f1)
-PROXY_HOST=$(echo "${RAW_CREDS}" | cut -d'@' -f2 | cut -d':' -f1)
-PROXY_PORT=$(echo "${RAW_CREDS}" | cut -d':' -f3)
+PROXY_PASS=$(gcloud secrets versions access latest --secret="webshare-proxy-pass" --project="${PROJECT}" 2>/dev/null \
+    || gcloud secrets versions access latest --secret="pytrends-proxy-creds" --project="${PROJECT}" | cut -d':' -f2 | cut -d'@' -f1)
 
 gcloud functions deploy "${FUNCTION}" \
     --project="${PROJECT}" \
@@ -43,8 +40,8 @@ TRENDS_RETRIES=3,\
 TRENDS_RETRY_BACKOFF=30,\
 WEBSHARE_PROXY_HOST=p.webshare.io,\
 WEBSHARE_PROXY_PORT=80,\
-WEBSHARE_PROXY_USER=${PROXY_USER},\
-WEBSHARE_PROXY_PASS=${PROXY_PASS}"
+WEBSHARE_PROXY_PASS=${PROXY_PASS},\
+WEBSHARE_STATIC_BASE=oxsjenoi-residential"
 
 echo ""
 echo "✓ Deployed ${FUNCTION} to ${REGION}"
@@ -60,16 +57,19 @@ curl -s -X POST "${FUNCTION_URL}" \
     -d '{"dry_run": true}' | jq .
 
 echo ""
-echo "--- Schedule (weekly, Monday 06:00 UTC) ---"
-echo "Run this once to create the Cloud Scheduler job:"
+echo "--- Schedule (weekly, Monday 06:00 UTC via discover-and-resolve workflow) ---"
+echo "Run this once to create the Cloud Scheduler job (targets the chaining workflow):"
 echo ""
-echo "gcloud scheduler jobs create http ${FUNCTION}-weekly \\"
+echo "WORKFLOW_URL=\"https://workflowexecutions.googleapis.com/v1/projects/${PROJECT}/locations/${REGION}/workflows/discover-and-resolve/executions\""
+echo ""
+echo "gcloud scheduler jobs create http discover-and-resolve-weekly \\"
 echo "    --project=${PROJECT} \\"
 echo "    --location=${REGION} \\"
 echo "    --schedule='0 6 * * 1' \\"
-echo "    --uri=\${FUNCTION_URL} \\"
+echo "    --uri=\${WORKFLOW_URL} \\"
 echo "    --http-method=POST \\"
 echo "    --headers='Content-Type=application/json' \\"
-echo "    --message-body='{}' \\"
-echo "    --oidc-service-account-email=${SA} \\"
+echo "    --message-body='{\"argument\":\"{}\"}' \\"
+echo "    --oauth-service-account-email=${SA} \\"
+echo "    --oauth-token-scope='https://www.googleapis.com/auth/cloud-platform' \\"
 echo "    --time-zone='UTC'"

@@ -18,14 +18,16 @@ MASTER_JOB_NAME = "caldean-master-trigger"
 URI = f"https://workflowexecutions.googleapis.com/v1/projects/{PROJECT_ID}/locations/{LOCATION}/workflows/{WORKFLOW_NAME}/executions"
 SERVICE_ACCOUNT = "antigravity-turbo-agent@dnd-trends-index.iam.gserviceaccount.com"
 
-# Mercury Hour Mapping (1-indexed hour of the day)
+# Mercury Hour Mapping (1-indexed daytime planetary hour, Chaldean order)
+# Each day's first hour is ruled by its namesake planet; hours cycle
+# Saturn→Jupiter→Mars→Sun→Venus→Mercury→Moon→Saturn...
 MERCURY_MAP = {
-    6: 4, # Sunday
-    0: 7, # Monday
-    1: 3, # Tuesday
-    2: 1, # Wednesday
-    3: 5, # Thursday
-    4: 2  # Friday
+    6: 3, # Sunday    (Sun→Venus→Mercury)
+    0: 7, # Monday    (Moon→Saturn→Jupiter→Mars→Sun→Venus→Mercury)
+    1: 4, # Tuesday   (Mars→Sun→Venus→Mercury)
+    2: 1, # Wednesday (Mercury rules hour 1 — Mercury's own day)
+    3: 5, # Thursday  (Jupiter→Mars→Sun→Venus→Mercury)
+    4: 2  # Friday    (Venus→Mercury)
 }
 
 def get_zmanim_data(target_date_str):

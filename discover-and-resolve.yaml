@@ -1,0 +1,94 @@
+main:
+  steps:
+    - init:
+        assign:
+          - project_id: ${sys.get_env("GOOGLE_CLOUD_PROJECT_ID")}
+          - discover_url: "https://discover-related-queries-187467566422.us-central1.run.app"
+          - resolve_url: "https://variant-resolver-187467566422.us-central1.run.app"
+
+    # Stage 1 — Discover related queries from Google Trends → BQ staging
+    - run_discover:
+        try:
+          call: http.post
+          args:
+            url: ${discover_url}
+            auth:
+              type: OIDC
+            body: {}
+            timeout: 540
+          result: discover_result
+        except:
+          as: e
+          steps:
+            - log_discover_error:
+                call: sys.log
+                args:
+                  text: "discover-related-queries HTTP error"
+                  severity: ERROR
+            - fail_discover:
+                raise: ${e}
+
+    - log_discover:
+        call: sys.log
+        args:
+          text: ${"discover-related-queries complete, status=" + discover_result.body.status}
+          severity: INFO
+
+    # Abort if discover did not succeed
+    - check_discover_status:
+        switch:
+          - condition: ${discover_result.body.status != "ok"}
+            next: abort_discover
+        next: extract_run_id
+
+    - abort_discover:
+        raise:
+          code: 500
+          message: "discover-related-queries returned non-ok status"
+
+    # Extract run_id so resolver scopes to this run's new terms only
+    - extract_run_id:
+        assign:
+          - run_id: ${discover_result.body.run_id}
+
+    - log_run_id:
+        call: sys.log
+        args:
+          text: ${"Passing run_id to resolver=" + run_id}
+          severity: INFO
+
+    # Stage 2 — Fuzzy match + Gemini classification, scoped to this run
+    - run_resolve:
+        try:
+          call: http.post
+          args:
+            url: ${resolve_url}
+            auth:
+              type: OIDC
+            body:
+              stage: "all"
+              run_id: ${run_id}
+            timeout: 540
+          result: resolve_result
+        except:
+          as: e
+          steps:
+            - log_resolve_error:
+                call: sys.log
+                args:
+                  text: "variant-resolver HTTP error"
+                  severity: ERROR
+            - fail_resolve:
+                raise: ${e}
+
+    - log_resolve:
+        call: sys.log
+        args:
+          text: ${"variant-resolver complete, status=" + resolve_result.body.status}
+          severity: INFO
+
+    - return_results:
+        return:
+          run_id: ${run_id}
+          discover: ${discover_result.body}
+          resolve: ${resolve_result.body}

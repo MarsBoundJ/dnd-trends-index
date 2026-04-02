@@ -2,6 +2,60 @@
 **GCP Project:** `dnd-trends-index`
 **Format:** Newest session at top. Each entry appended by Claude at session end, committed by Antigravity.
 
+## Session: 2026-03-26
+
+**Topics covered:** related_queries_discovery end-to-end success; Webshare static proxy architecture; pytrends token binding; related_topics() empty rankedList bug
+
+### What was accomplished
+
+- **Primary goal achieved:** Full end-to-end pipeline run — 177 rows written to `dnd_trends_raw.related_queries`, 49 emerging terms flagged to `dnd_trends_raw.emerging_terms`
+- All 7 default seeds processed: `dungeons and dragons`, `dnd 5e`, `dnd 2024`, `pathfinder 2e`, `ttrpg`, `one dnd`, `dnd beyond`
+- Final run result: `{"status": "ok", "run_id": "1ae55ece734e139a", "seeds_processed": 7, "raw_rows": 177, "emerging_flagged": 49}`
+- All code committed to GitHub (commits `ce7b035`, `11036fa`, `44945c9`, `42a9590`)
+
+### Bugs fixed during session
+
+- **`list index out of range` (rotating proxy)** — Webshare rotating proxy assigns different residential IPs between `build_payload()` and `related_queries()`. Google Trends tokens are bound to the requesting IP, so a different IP on the second call causes token rejection. Fix: switched from rotating to **static** proxies (`oxsjenoi-residential-1/-2/-3`).
+- **Session proxy silent hang (540s, no Python logs)** — Attempted session proxies (`residential-1-session-XXXXX`) via `requests_args={"proxies": {...}}` format caused the Cloud Run container to hang for 540s with zero application logs. Root cause: deep blocking in urllib3 prevented log flush. Fix: use `proxies=[url]*50` constructor format instead of `requests_args`.
+- **`NameError: name '_build_proxy_url' is not defined`** — Removed `_build_proxy_url()` during refactor but entry point still called it. Fix: `proxy_url = PROXY_POOL[0] if PROXY_POOL else None`.
+- **`IndexError: list index out of range` in `related_topics()`** — pytrends 4.9.2 crashes at `req_json['default']['rankedList'][0]['rankedKeyword']` when Google returns valid JSON but empty `rankedList` (no topic data). Fix: wrapped `related_topics()` in `try-except (IndexError, KeyError)`, returns `topics = {}` on failure.
+
+### Architecture decision: static proxy pool
+
+Root cause of all pytrends failures: **Google Trends tokens are IP-bound**. The token from `/trends/api/explore` (called by `build_payload()`) is only valid for the same IP that makes the subsequent `related_queries()` call.
+
+- **Rotating proxy** (`-US-rotate`): different IP per request → token mismatch → `list index out of range`
+- **Session proxy** via `requests_args`: silent 540s hang, no logs
+- **Static proxies** (`-1`, `-2`, `-3`) via `proxies=[url]*50` constructor: same IP for all calls within a TrendReq → **works**
+
+Env var: `WEBSHARE_STATIC_BASE=oxsjenoi-residential` → builds pool `[residential-1, residential-2, residential-3]`
+
+### BigQuery state after session (218 total rows, 2 runs)
+
+| seed_keyword | rows | rising | top |
+|---|---|---|---|
+| dungeons and dragons | 87 | 37 | 50 |
+| ttrpg | 41 | 16 | 25 |
+| pathfinder 2e | 34 | 9 | 25 |
+| dnd beyond | 24 | 3 | 21 |
+| dnd 5e | 25 | 0 | 25 |
+| dnd 2024 | 7 | 0 | 7 |
+| one dnd | 0 | — | — |
+
+Top signals: `kali dungeons and dragons` (value 41200, rising), `mtg secret lair dungeons and dragons` (31350, rising)
+
+Note: `one dnd` returns 0 rows — Google Trends has no related query data for this term. Not a bug.
+
+### Next session: pick up here
+
+1. **Review `emerging_terms`** — 49 flagged terms in `dnd_trends_raw.emerging_terms` (review_status = 'PENDING') need human review
+2. **Wire variant-resolver** — trigger variant-resolver `{"stage": "all"}` to process the new emerging_terms through fuzzy match → Gemini → staging
+3. **Cloud Scheduler** — set up recurring schedule for `discover-related-queries` (weekly or bi-weekly)
+4. **Consider removing `one dnd`** from DEFAULT_SEEDS — produces zero data consistently
+5. **Optional cleanup** — remove `import traceback` / `traceback.format_exc()` debug logging added in rev 00032 (or keep for production value)
+
+---
+
 ## Session: 2026-03-25
 
 **Topics covered:** related_queries_discovery deployment; Webshare proxy debugging; gcloud SDK issues

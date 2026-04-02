@@ -1,0 +1,23 @@
+{
+    "manifest_version": 3,
+    "name": "Arcane Incursion - Catalog Harvester",
+    "version": "1.0",
+    "description": "Auto-harvest DMs Guild & DriveThruRPG bestseller data weekly.",
+    "permissions": [
+        "alarms",
+        "storage",
+        "tabs",
+        "scripting"
+    ],
+    "host_permissions": [
+        "*://*.dmsguild.com/*",
+        "*://*.drivethrurpg.com/*"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_popup": "popup.html",
+        "default_title": "Arcane Incursion"
+    }
+}

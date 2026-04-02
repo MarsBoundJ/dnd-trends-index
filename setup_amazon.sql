@@ -6,10 +6,15 @@ CREATE TABLE IF NOT EXISTS `dnd-trends-index.dnd_trends_categorized.amazon_asin_
 );
 
 CREATE TABLE IF NOT EXISTS `dnd-trends-index.dnd_trends_raw.amazon_daily_stats` (
-    asin STRING,
-    rank INT64,
-    price_cents INT64,
-    date DATE
+    asin         STRING,
+    rank         INT64,
+    price_cents  INT64,
+    date         DATE,
+    title        STRING,
+    category     STRING,
+    author       STRING,
+    rating       FLOAT64,
+    review_count INT64
 );
 
 -- Seed Initial ASINs

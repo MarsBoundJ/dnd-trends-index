@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcane Incursion</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            width: 320px;
+            background: #0a0f19;
+            color: #f8fafc;
+            font-family: Inter, system-ui, sans-serif;
+            font-size: 13px;
+        }
+        header {
+            background: rgba(201, 145, 58, 0.15);
+            border-bottom: 1px solid rgba(201, 145, 58, 0.4);
+            padding: 12px 16px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: rgb(201, 145, 58);
+            text-transform: uppercase;
+        }
+        header p {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+        .section {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .section-title {
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            color: #cbd5e1;
+        }
+        .status-row .label { color: #64748b; }
+        .badge {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge.ok    { background: rgba(34,197,94,0.15); color: #22c55e; }
+        .badge.warn  { background: rgba(251,191,36,0.15); color: #fbbf24; }
+        .badge.err   { background: rgba(239,68,68,0.15); color: #ef4444; }
+        .badge.idle  { background: rgba(100,116,139,0.15); color: #94a3b8; }
+        .site-result {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 8px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 4px;
+            margin-bottom: 4px;
+            font-size: 12px;
+        }
+        .site-result .count { color: #22c55e; font-weight: 600; }
+        .site-result .error { color: #ef4444; font-size: 11px; max-width: 160px; text-align: right; }
+        input[type="password"], input[type="text"] {
+            width: 100%;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            color: #f8fafc;
+            padding: 7px 10px;
+            font-size: 13px;
+            outline: none;
+            margin-top: 4px;
+        }
+        input:focus { border-color: rgba(201,145,58,0.5); }
+        .btn {
+            width: 100%;
+            padding: 9px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 6px;
+        }
+        .btn-primary {
+            background: rgb(201, 145, 58);
+            color: #000;
+        }
+        .btn-primary:hover { background: rgb(220, 160, 70); }
+        .btn-primary:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+        .btn-ghost {
+            background: rgba(255,255,255,0.05);
+            color: #94a3b8;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+        .save-msg {
+            font-size: 11px;
+            color: #22c55e;
+            text-align: center;
+            margin-top: 5px;
+            height: 14px;
+        }
+        .schedule-note {
+            font-size: 11px;
+            color: #475569;
+            line-height: 1.5;
+            margin-top: 4px;
+        }
+        #in-progress-indicator {
+            display: none;
+            font-size: 11px;
+            color: rgb(201, 145, 58);
+            text-align: center;
+            padding: 6px;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>⚔ Arcane Incursion</h1>
+        <p>DMs Guild &amp; DriveThruRPG Harvester</p>
+    </header>
+
+    <div class="section">
+        <div class="section-title">Status</div>
+        <div class="status-row">
+            <span class="label">Schedule</span>
+            <span id="schedule-badge" class="badge idle">Loading…</span>
+        </div>
+        <div class="status-row">
+            <span class="label">This week</span>
+            <span id="week-badge" class="badge idle">—</span>
+        </div>
+        <div class="status-row">
+            <span class="label">Last run</span>
+            <span id="last-run">—</span>
+        </div>
+        <div id="in-progress-indicator">⚙ Harvest in progress…</div>
+    </div>
+
+    <div class="section" id="results-section" style="display:none">
+        <div class="section-title">Last Run Results</div>
+        <div id="results-list"></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Ritual Key</div>
+        <input type="password" id="ritual-key-input" placeholder="Enter ritual key…">
+        <button class="btn btn-ghost" id="save-key-btn" style="margin-top:6px">Save Key</button>
+        <div class="save-msg" id="save-msg"></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Manual Trigger</div>
+        <p class="schedule-note">Runs Mon 6am automatically, retries daily (skips Sat) until success.</p>
+        <button class="btn btn-primary" id="run-now-btn">Run Now</button>
+        <div class="save-msg" id="run-msg"></div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

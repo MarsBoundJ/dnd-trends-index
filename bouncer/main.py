@@ -106,6 +106,8 @@ def bouncer_api(request):
             path = 'system/seeds/toggle'
         elif 'seeds/list' in full_path:
             path = 'system/seeds/list'
+        elif 'amazon/ingest-ranks' in full_path:
+            path = 'system/amazon/ingest-ranks'
         else:
             path = 'leaderboards'
         
@@ -1048,6 +1050,25 @@ def bouncer_api(request):
             return (json.dumps({"error": "No data"}), 400, headers)
         errors = client.insert_rows_json(
             'dnd-trends-index.dnd_trends_raw.catalog_supply',
+            rows,
+            skip_invalid_rows=True,
+            ignore_unknown_values=True,
+        )
+        if errors:
+            return (json.dumps({"error": str(errors)}), 500, headers)
+        return (json.dumps({"inserted": len(rows)}), 200, headers)
+
+    elif path == 'system/amazon/ingest-ranks':
+        if request.method != 'POST':
+            return (json.dumps({"error": "POST required"}), 405, headers)
+        ritual_key = request.headers.get('X-Ritual-Key', '')
+        if ritual_key != 'ArcaneLibrarian2026':
+            return (json.dumps({"error": "Unauthorized"}), 403, headers)
+        rows = request.get_json()
+        if not rows:
+            return (json.dumps({"error": "No data"}), 400, headers)
+        errors = client.insert_rows_json(
+            'dnd-trends-index.dnd_trends_raw.amazon_daily_stats',
             rows,
             skip_invalid_rows=True,
             ignore_unknown_values=True,
