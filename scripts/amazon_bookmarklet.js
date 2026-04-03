@@ -27,10 +27,6 @@
     ['/Best-Sellers-Books-Fantasy-Gaming/zgbs/books/16211',                      'All RPG Books',     'Best Sellers'],
     ['/Best-Sellers-Toys-Games-Games-Accessories/zgbs/toys-and-games/166220011', 'Games & Accessories','Best Sellers'],
     ['/Best-Sellers-Toys-Games-Role-Playing-Dice/zgbs/toys-and-games/1265808011','RPG Dice',          'Best Sellers'],
-    // ── Movers & Shakers (trend velocity) ───────────────────────────────────
-    ['/gp/movers-and-shakers/books/16215',               'D&D Books',            'Movers & Shakers'],
-    ['/gp/movers-and-shakers/books/16211',               'All RPG Books',        'Movers & Shakers'],
-    ['/gp/movers-and-shakers/toys-and-games/166220011',  'Games & Accessories',  'Movers & Shakers'],
     // ── New Releases (launch momentum) ──────────────────────────────────────
     ['/gp/new-releases/books/16215',                     'D&D Books',            'New Releases'],
     ['/gp/new-releases/toys-and-games/166220011',        'Games & Accessories',  'New Releases'],
