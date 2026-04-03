@@ -233,6 +233,7 @@
     }
   }
 
+  let ranksSkipped = false;
   for (let i = 0; i < rankRows.length; i += CHUNK) {
     const chunk = rankRows.slice(i, i + CHUNK);
     try {
@@ -242,6 +243,7 @@
         body: JSON.stringify(chunk),
       });
       const d = await r.json();
+      if (d.skipped) { ranksSkipped = true; break; }
       ranksOk += d.inserted || chunk.length;
     } catch (e) {
       console.error('[amz-bk] ranks chunk failed', e);
@@ -249,7 +251,9 @@
   }
 
   // ── Done ──────────────────────────────────────────────────────────────────
-  const summary = `✅ Done! ${catalogOk} catalog rows · ${ranksOk} rank rows`;
+  const summary = ranksSkipped
+    ? `✅ Catalog: ${catalogOk} rows · ⚠️ Ranks already ingested today — skipped`
+    : `✅ Done! ${catalogOk} catalog rows · ${ranksOk} rank rows`;
   log(summary);
   console.log('[amz-bk]', summary);
 
