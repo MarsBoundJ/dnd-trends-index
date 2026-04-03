@@ -15,7 +15,7 @@
   // ── Config ────────────────────────────────────────────────────────────────
   const BOUNCER = 'https://us-central1-dnd-trends-index.cloudfunctions.net/bouncer-api';
   const KEY = 'ArcaneLibrarian2026';
-  const MAX_PAGES = 4;   // Amazon shows 50 items/page → up to 200 items/source
+  const MAX_PAGES = 6;   // Amazon shows ~20 items/page → up to 120 items/source (covers top 100)
   const TODAY = new Date().toISOString().slice(0, 10);
 
   // Source definitions: [path, label, type]
