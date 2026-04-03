@@ -77,7 +77,8 @@
             price: price,
             rating: 0,
             tags: [isMetalPage ? "Metal List" : "Browse", tier, "V10"],
-            snippet: snippet
+            snippet: snippet,
+            product_url: url
         });
     });
 

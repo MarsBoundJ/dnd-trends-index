@@ -235,7 +235,8 @@ async function runExtractionInPage(siteName, ritualKey, endpoint, chunkSize) {
                 price,
                 rating: 0,
                 tags: [isMetalPage ? "Metal List" : "Browse", tier, "V10-auto"],
-                snippet
+                snippet,
+                product_url: url
             });
         });
 

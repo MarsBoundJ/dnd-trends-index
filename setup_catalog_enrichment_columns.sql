@@ -9,3 +9,6 @@ ADD COLUMN IF NOT EXISTS setting STRING;
 
 ALTER TABLE `dnd-trends-index.dnd_trends_raw.catalog_supply`
 ADD COLUMN IF NOT EXISTS summary STRING;
+
+ALTER TABLE `dnd-trends-index.dnd_trends_raw.catalog_supply`
+ADD COLUMN IF NOT EXISTS product_url STRING;
