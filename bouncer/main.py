@@ -1048,6 +1048,19 @@ def bouncer_api(request):
         rows = request.get_json()
         if not rows:
             return (json.dumps({"error": "No data"}), 400, headers)
+        # Classify is_ttrpg inline — avoids Gemini overhead for clear-cut cases
+        TTRPG_SOURCES = {'DMs Guild', 'DriveThruRPG', 'itch.io'}
+        TTRPG_AMAZON_TAGS = {'D&D Books', 'All RPG Books'}
+        for row in rows:
+            if 'is_ttrpg' not in row:
+                source = row.get('source', '')
+                tags = set(row.get('tags', []))
+                if source in TTRPG_SOURCES:
+                    row['is_ttrpg'] = True
+                elif source == 'Amazon' and tags & TTRPG_AMAZON_TAGS:
+                    row['is_ttrpg'] = True
+                else:
+                    row['is_ttrpg'] = None  # uncertain — needs enrichment
         errors = client.insert_rows_json(
             'dnd-trends-index.dnd_trends_raw.catalog_supply',
             rows,
@@ -1067,6 +1080,13 @@ def bouncer_api(request):
         rows = request.get_json()
         if not rows:
             return (json.dumps({"error": "No data"}), 400, headers)
+        today = rows[0].get('date') if rows else None
+        if today:
+            check = list(client.query(
+                f"SELECT COUNT(*) as n FROM `dnd-trends-index.dnd_trends_raw.amazon_daily_stats` WHERE date = '{today}'"
+            ).result())
+            if check and check[0].n > 0:
+                return (json.dumps({"skipped": True, "reason": f"Amazon ranks already ingested for {today}"}), 200, headers)
         errors = client.insert_rows_json(
             'dnd-trends-index.dnd_trends_raw.amazon_daily_stats',
             rows,
@@ -1093,17 +1113,18 @@ def bouncer_api(request):
             title = item.get('title', 'Unknown Title')
             snippet = item.get('snippet', '')
             prompt = f"""
-            Analyze this TTRPG product:
+            Analyze this product listing:
             Title: {title}
             Snippet: {snippet}
 
             Return a RAW JSON object with:
+            - is_ttrpg (boolean: true if this is a tabletop RPG product such as a rulebook, adventure, supplement, dice set, or TTRPG accessory; false if it is a board game, card game, video game, toy, or unrelated product)
             - publisher (string, use 'Universal' if unknown)
-            - primary_category (string from: Monster, Spell, Mechanic, Class, Subclass, Feat, Species & Lineage, Background, Deity, Party Role, Equipment, Location, NPC, PC, Faction, Lore, Art, Accessory, Rulebooks, Setting, TTRPG System)
+            - primary_category (string from: Monster, Spell, Mechanic, Class, Subclass, Feat, Species & Lineage, Background, Deity, Party Role, Equipment, Location, NPC, PC, Faction, Lore, Art, Accessory, Rulebooks, Setting, TTRPG System, Non-TTRPG)
             - summary (concise 1-sentence description)
 
             Rules:
-            - ONLY return the JSON. 
+            - ONLY return the JSON.
             - No markdown blocks.
             """
             try:
