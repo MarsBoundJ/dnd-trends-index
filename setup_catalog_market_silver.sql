@@ -16,7 +16,7 @@ WITH amazon AS (
         date                        AS snapshot_date,
         category                    AS list_name,
         rank                        AS raw_rank,
-        NULL                        AS seller_tier,
+        CAST(NULL AS STRING)        AS seller_tier,
         -- Lower rank is better → invert with 1 - PERCENT_RANK
         ROUND(
             (1.0 - PERCENT_RANK() OVER (
@@ -35,7 +35,7 @@ catalog AS (
         source                       AS platform,
         DATE(collected_date)         AS snapshot_date,
         seller_tier                  AS list_name,
-        NULL                         AS raw_rank,
+        CAST(NULL AS INT64)          AS raw_rank,
         seller_tier,
         -- Map tier to ordinal so PERCENT_RANK has something to order by
         ROUND(
