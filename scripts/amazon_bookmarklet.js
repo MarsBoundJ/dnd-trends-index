@@ -15,7 +15,7 @@
   // ── Config ────────────────────────────────────────────────────────────────
   const BOUNCER = 'https://us-central1-dnd-trends-index.cloudfunctions.net/bouncer-api';
   const KEY = 'ArcaneLibrarian2026';
-  const MAX_PAGES = 4;   // Amazon shows 50 items/page → up to 200 items/source
+  const MAX_PAGES = 6;   // Amazon shows ~20 items/page → up to 120 items/source (covers top 100)
   const TODAY = new Date().toISOString().slice(0, 10);
 
   // Source definitions: [path, label, type]
@@ -27,10 +27,6 @@
     ['/Best-Sellers-Books-Fantasy-Gaming/zgbs/books/16211',                      'All RPG Books',     'Best Sellers'],
     ['/Best-Sellers-Toys-Games-Games-Accessories/zgbs/toys-and-games/166220011', 'Games & Accessories','Best Sellers'],
     ['/Best-Sellers-Toys-Games-Role-Playing-Dice/zgbs/toys-and-games/1265808011','RPG Dice',          'Best Sellers'],
-    // ── Movers & Shakers (trend velocity) ───────────────────────────────────
-    ['/gp/movers-and-shakers/books/16215',               'D&D Books',            'Movers & Shakers'],
-    ['/gp/movers-and-shakers/books/16211',               'All RPG Books',        'Movers & Shakers'],
-    ['/gp/movers-and-shakers/toys-and-games/166220011',  'Games & Accessories',  'Movers & Shakers'],
     // ── New Releases (launch momentum) ──────────────────────────────────────
     ['/gp/new-releases/books/16215',                     'D&D Books',            'New Releases'],
     ['/gp/new-releases/toys-and-games/166220011',        'Games & Accessories',  'New Releases'],
@@ -237,6 +233,7 @@
     }
   }
 
+  let ranksSkipped = false;
   for (let i = 0; i < rankRows.length; i += CHUNK) {
     const chunk = rankRows.slice(i, i + CHUNK);
     try {
@@ -246,6 +243,7 @@
         body: JSON.stringify(chunk),
       });
       const d = await r.json();
+      if (d.skipped) { ranksSkipped = true; break; }
       ranksOk += d.inserted || chunk.length;
     } catch (e) {
       console.error('[amz-bk] ranks chunk failed', e);
@@ -253,7 +251,9 @@
   }
 
   // ── Done ──────────────────────────────────────────────────────────────────
-  const summary = `✅ Done! ${catalogOk} catalog rows · ${ranksOk} rank rows`;
+  const summary = ranksSkipped
+    ? `✅ Catalog: ${catalogOk} rows · ⚠️ Ranks already ingested today — skipped`
+    : `✅ Done! ${catalogOk} catalog rows · ${ranksOk} rank rows`;
   log(summary);
   console.log('[amz-bk]', summary);
 
