@@ -19,7 +19,64 @@ def get_gemini_model():
         print(f"FAILED TO INITIALIZE VERTEX AI: {e}")
         return None
 
-from decimal import Decimal
+ENRICH_BATCH_SIZE = 25
+
+def _enrich_batch(rows, model):
+    """
+    Enriches a list of catalog_supply rows in batches using Gemini.
+    Mutates rows in-place with enrichment fields. Fails gracefully per batch.
+    Fields set: is_ttrpg, publisher, primary_category, setting,
+                system_tag, edition_tag, summary.
+    """
+    TTRPG_SOURCES = {'DMs Guild', 'DriveThruRPG', 'itch.io'}
+    TTRPG_AMAZON_TAGS = {'D&D Books', 'All RPG Books'}
+
+    for i in range(0, len(rows), ENRICH_BATCH_SIZE):
+        batch = rows[i:i + ENRICH_BATCH_SIZE]
+        items_payload = [
+            {"title": r.get("title", ""), "snippet": r.get("snippet", "")}
+            for r in batch
+        ]
+        prompt = f"""You are an expert TTRPG product analyst. Analyze each product listing and return a JSON array with one object per item in the SAME ORDER.
+
+For each item return ONLY these fields:
+- is_ttrpg: boolean (true = tabletop RPG product such as a rulebook, adventure, supplement, dice set, or miniature; false = board game, card game, video game, toy, or unrelated)
+- publisher: string (publishing company name, "Unknown" if unclear)
+- primary_category: string — one of: "Adventure", "Setting Book", "Sourcebook", "Rulebook", "Supplement", "Dice & Accessories", "Map & Terrain", "Miniatures", "Non-TTRPG", "Other"
+- setting: string — D&D/TTRPG setting if applicable, e.g. "Ravenloft", "Forgotten Realms", "Eberron", "Greyhawk", "Dragonlance", "Strixhaven", "Spelljammer", "Planescape", "Wildemount", "Exandria", "Generic", "N/A"
+- system_tag: string — game system, e.g. "D&D 5e", "D&D 2024", "OSR", "Pathfinder 2e", "System-Agnostic", "N/A"
+- edition_tag: string — if D&D: "2024" or "Legacy"; otherwise "N/A"
+- summary: string — one concise sentence describing the product
+
+Items:
+{json.dumps(items_payload)}
+
+Return ONLY a valid JSON array. No markdown. No explanation."""
+
+        try:
+            response = model.generate_content(prompt)
+            raw = response.text.replace("```json", "").replace("```", "").strip()
+            enriched = json.loads(raw)
+            if not isinstance(enriched, list) or len(enriched) != len(batch):
+                raise ValueError("Response length mismatch")
+            for row, fields in zip(batch, enriched):
+                # Only set is_ttrpg from Gemini if not already determined by rules
+                source = row.get("source", "")
+                tags = set(row.get("tags", []))
+                if source in TTRPG_SOURCES or (source == "Amazon" and tags & TTRPG_AMAZON_TAGS):
+                    row["is_ttrpg"] = True
+                else:
+                    row["is_ttrpg"] = fields.get("is_ttrpg")
+                row["publisher"] = row.get("publisher") or fields.get("publisher", "Unknown")
+                row["primary_category"] = fields.get("primary_category", "Other")
+                row["setting"] = fields.get("setting", "N/A")
+                row["system_tag"] = fields.get("system_tag", "N/A")
+                row["edition_tag"] = fields.get("edition_tag", "N/A")
+                row["summary"] = fields.get("summary", "")
+        except Exception as e:
+            print(f"[enrich_batch] batch {i//ENRICH_BATCH_SIZE} failed: {e}")
+            # Leave enrichment fields as-is for this batch (NULL/defaults)
+
 from decimal import Decimal
 
 class ArcaneEncoder(json.JSONEncoder):
@@ -921,42 +978,15 @@ def bouncer_api(request):
             req_data = request.get_json(silent=True)
             if not req_data or not isinstance(req_data, list):
                 return (json.dumps({"error": "Expected JSON array of items"}), 400, headers)
-                
+
             model = get_gemini_model()
             if not model:
                 return (json.dumps({"error": "AI Librarian offline"}), 503, headers)
-                
-            enriched_items = []
-            for item in req_data:
-                title = item.get("title", "")
-                snippet = item.get("snippet", "")
-                
-                if not title:
-                    enriched_items.append({"publisher": "Unknown", "primary_category": "Other", "summary": ""})
-                    continue
-                    
-                prompt = f"""
-                You are the Arcane Librarian, an expert in TTRPG publishing. Given the Title: '{title}' and Snippet: '{snippet}', return a JSON object with:
-                'publisher' (Who made it?),
-                'primary_category' (Choose: Adventure, Setting, Monsters, Player Options, Rules, or Accessory),
-                'summary' (1 sentence of what it's about).
-                If you are unsure, provide your best guess based on your training data. ONLY output valid JSON.
-                """
-                
-                try:
-                    response = model.generate_content(prompt)
-                    res_text = response.text.strip()
-                    if res_text.startswith("```json"): res_text = res_text[7:]
-                    if res_text.startswith("```"): res_text = res_text[3:]
-                    if res_text.endswith("```"): res_text = res_text[:-3]
-                    
-                    parsed_res = json.loads(res_text.strip())
-                    enriched_items.append(parsed_res)
-                except Exception as e:
-                    print(f"Gemini Inference Error for {title}: {e}")
-                    enriched_items.append({"publisher": "Unknown", "primary_category": "Other", "summary": ""})
-                    
-            return (json.dumps(enriched_items), 200, headers)
+
+            # Use shared _enrich_batch — mutates rows in-place
+            rows = [dict(item) for item in req_data]
+            _enrich_batch(rows, model)
+            return (json.dumps(rows), 200, headers)
         except Exception as e:
             return (json.dumps({"error": str(e)}), 500, headers)
 
@@ -1048,19 +1078,21 @@ def bouncer_api(request):
         rows = request.get_json()
         if not rows:
             return (json.dumps({"error": "No data"}), 400, headers)
-        # Classify is_ttrpg inline — avoids Gemini overhead for clear-cut cases
-        TTRPG_SOURCES = {'DMs Guild', 'DriveThruRPG', 'itch.io'}
-        TTRPG_AMAZON_TAGS = {'D&D Books', 'All RPG Books'}
-        for row in rows:
-            if 'is_ttrpg' not in row:
+        # Enrich rows with Gemini (is_ttrpg, publisher, category, setting, system_tag, etc.)
+        model = get_gemini_model()
+        if model:
+            _enrich_batch(rows, model)
+        else:
+            # Fallback: rule-based is_ttrpg only
+            TTRPG_SOURCES = {'DMs Guild', 'DriveThruRPG', 'itch.io'}
+            TTRPG_AMAZON_TAGS = {'D&D Books', 'All RPG Books'}
+            for row in rows:
                 source = row.get('source', '')
                 tags = set(row.get('tags', []))
-                if source in TTRPG_SOURCES:
+                if source in TTRPG_SOURCES or (source == 'Amazon' and tags & TTRPG_AMAZON_TAGS):
                     row['is_ttrpg'] = True
-                elif source == 'Amazon' and tags & TTRPG_AMAZON_TAGS:
-                    row['is_ttrpg'] = True
-                else:
-                    row['is_ttrpg'] = None  # uncertain — needs enrichment
+                elif 'is_ttrpg' not in row:
+                    row['is_ttrpg'] = None
         errors = client.insert_rows_json(
             'dnd-trends-index.dnd_trends_raw.catalog_supply',
             rows,
