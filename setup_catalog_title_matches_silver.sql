@@ -45,7 +45,7 @@ latest AS (
 -- ── Step 2: normalize titles ─────────────────────────────────────────────────
 -- Rules applied in order (each feeds the next):
 --   a) lower-case everything
---   b) strip subtitles  — everything after first :  —  –
+--   b) strip subtitles  — everything after first colon (:)
 --   c) strip parentheticals  e.g. (5e)  (D&D Core Rulebook)
 --   d) strip written-out edition tags  e.g. "Second Edition"
 --   e) strip shorthand edition tags  e.g. "5e"  "2e"
@@ -69,7 +69,7 @@ normalized AS (
               REGEXP_REPLACE(
                 REGEXP_REPLACE(
                   LOWER(title),
-                  r'\s*[:—–].*$', ''
+                  r'\s*:.*$', ''
                 ),
                 r'\s*\([^)]*\)', ''
               ),
