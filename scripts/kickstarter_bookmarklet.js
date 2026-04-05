@@ -1,39 +1,44 @@
 /**
- * Kickstarter TTRPG/D&D Bookmarklet
+ * Kickstarter TTRPG/D&D Bookmarklet — GraphQL edition
  *
- * Usage: Paste the minified version into a browser bookmark URL field.
- * Click the bookmark while on any Kickstarter page — it will fetch the
- * Tabletop Games category (live + recently launched projects) and send
- * data to the dnd-trends bouncer.
+ * Usage: Paste the minified version (kickstarter_bookmarklet.txt) into a
+ * browser bookmark URL field. Click the bookmark while on any Kickstarter
+ * page that you are logged into.
+ *
+ * Why GraphQL: Kickstarter pages are React-rendered. A fetch() of the HTML
+ * returns empty card containers (server-side shell only); project data is
+ * injected client-side after hydration. The public GraphQL endpoint at
+ * /graph bypasses this entirely and returns structured JSON directly.
  *
  * Sends to ONE endpoint per run:
- *   POST /system/kickstarter/ingest-projects → kickstarter_projects table
- *
- * Kickstarter uses Cloudflare on their API but the browse/search pages
- * are rendered server-side and accessible from a real browser session.
- * The bookmarklet fetches pages with credentials:include so Cloudflare
- * sees a legitimate logged-in browser request.
+ *   POST /system/kickstarter/ingest-projects → commercial_data.kickstarter_projects
  *
  * Fields collected per project:
  *   project_id, name, creator, backers_count, pledged_usd, goal_usd,
  *   percent_funded, category, status, end_date, is_dnd_centric, blurb, url
+ *
+ * Pagination: cursor-based (Relay-style) via pageInfo.endCursor
+ * Dedup:      seenIds Set prevents duplicates across sort orders
+ * Auth:       X-CSRF-Token from page meta tag (required by Kickstarter)
  */
 
 (async function () {
   // ── Config ────────────────────────────────────────────────────────────────
   const BOUNCER = 'https://us-central1-dnd-trends-index.cloudfunctions.net/bouncer-api';
   const KEY = 'ArcaneLibrarian2026';
-  const MAX_PAGES = 5; // ~20 items/page → up to 100 projects
+  const GQL = 'https://www.kickstarter.com/graph';
+  const CATEGORY_ID = '34'; // Tabletop Games
+  const PER_PAGE = 20;
+  const MAX_PAGES = 5; // 20 items/page → up to 100 per sort order
 
-  // Kickstarter category pages to scrape
-  // All verified as tabletop/RPG-relevant categories
-  const CATEGORIES = [
-    { url: 'https://www.kickstarter.com/discover/categories/tabletop%20games/tabletop%20games?sort=magic&seed=2694958', label: 'Tabletop Games (Popular)' },
-    { url: 'https://www.kickstarter.com/discover/categories/tabletop%20games/tabletop%20games?sort=newest', label: 'Tabletop Games (New)' },
-    { url: 'https://www.kickstarter.com/discover/categories/tabletop%20games/tabletop%20games?sort=end_date', label: 'Tabletop Games (Ending Soon)' },
+  // Three sort orders to maximise coverage; duplicates filtered by seenIds
+  const SORTS = [
+    { sort: 'MAGIC',    label: 'Popular' },
+    { sort: 'NEWEST',   label: 'Newest' },
+    { sort: 'END_DATE', label: 'Ending Soon' },
   ];
 
-  // Keywords that indicate a D&D / TTRPG project
+  // Keywords that mark a project as D&D / TTRPG-centric
   const DND_KEYWORDS = [
     'd&d', 'dungeons', 'dragons', 'ttrpg', 'tabletop rpg', 'roleplaying',
     'role-playing', 'role playing', 'dnd', 'pathfinder', 'starfinder',
@@ -53,195 +58,173 @@
     maxWidth: '360px', boxShadow: '0 4px 24px rgba(0,0,0,0.7)',
     lineHeight: '1.5',
   });
-  const title = document.createElement('div');
-  title.style.cssText = 'font-weight:bold;font-size:14px;margin-bottom:6px;color:#f97316';
-  title.textContent = '🎲 Kickstarter D&D Harvest';
-  const status = document.createElement('div');
-  status.textContent = 'Initialising...';
-  ui.appendChild(title);
-  ui.appendChild(status);
+  const titleEl = document.createElement('div');
+  titleEl.style.cssText = 'font-weight:bold;font-size:14px;margin-bottom:6px;color:#f97316';
+  titleEl.textContent = '🎲 Kickstarter D&D Harvest';
+  const statusEl = document.createElement('div');
+  statusEl.textContent = 'Initialising...';
+  ui.appendChild(titleEl);
+  ui.appendChild(statusEl);
   document.body.appendChild(ui);
 
-  const log = (msg) => { status.textContent = msg; console.log('[ks-bk]', msg); };
+  const log = (msg) => { statusEl.textContent = msg; console.log('[ks-bk]', msg); };
 
   // ── Helpers ───────────────────────────────────────────────────────────────
+
+  // Kickstarter GraphQL IDs are base64-encoded strings like "Project-339473088"
+  // Decode to extract the numeric ID stored in the database
+  function decodeProjectId(b64) {
+    try {
+      const decoded = atob(b64); // e.g. "Project-339473088"
+      const m = decoded.match(/(\d+)$/);
+      return m ? parseInt(m[1], 10) : null;
+    } catch {
+      return null;
+    }
+  }
 
   function isDndCentric(name, blurb) {
     const text = ((name || '') + ' ' + (blurb || '')).toLowerCase();
     return DND_KEYWORDS.some(kw => text.includes(kw));
   }
 
-  // Extract project_id from Kickstarter URL
-  // e.g. /projects/creator/project-name → hash the path as a stable id
-  // Kickstarter uses numeric IDs internally — visible in og:url meta tags
-  function extractProjectId(doc) {
-    const ogUrl = doc.querySelector('meta[property="og:url"]');
-    if (ogUrl) {
-      const m = ogUrl.content.match(/\/projects\/(\d+)\//);
-      if (m) return parseInt(m[1], 10);
+  // ── GraphQL query ─────────────────────────────────────────────────────────
+  // Uses variables so terser doesn't mangle the query string.
+  // usdPledged is a convenience float field; pledged/goal are Money objects.
+  const GQL_QUERY = `
+    query FetchProjects($categoryId: String!, $sort: ProjectSort!, $first: Int!, $after: String) {
+      projects(categoryId: $categoryId, sort: $sort, first: $first, after: $after) {
+        pageInfo { hasNextPage endCursor }
+        edges {
+          node {
+            id
+            name
+            blurb
+            state
+            deadlineAt
+            backersCount
+            usdPledged
+            goal { amount currency }
+            pledged { amount currency }
+            creator { name }
+            url
+            category { name }
+          }
+        }
+      }
     }
-    return null;
-  }
+  `;
 
-  // Parse a single project card from the discover/category listing page
-  function parseProjectCard(card) {
+  // CSRF token is required — Kickstarter rejects unauthenticated GQL POSTs
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+  // ── Fetch one page of results ─────────────────────────────────────────────
+  async function fetchPage(sort, cursor) {
     try {
-      // Project link and ID
-      const linkEl = card.querySelector('a[href*="/projects/"]');
-      if (!linkEl) return null;
-      const href = linkEl.getAttribute('href');
-      const url = href.startsWith('http') ? href : 'https://www.kickstarter.com' + href;
-
-      // Extract numeric project ID from URL if present
-      // e.g. https://www.kickstarter.com/projects/creator/slug
-      // Kickstarter's discovery page encodes data in data-* attributes or JSON
-      const idMatch = url.match(/kickstarter\.com\/projects\/([^/]+)\/([^/?]+)/);
-      // Use a hash of creator/slug as stable integer ID when numeric ID unavailable
-      const creatorSlug = idMatch ? (idMatch[1] + '/' + idMatch[2]) : url;
-      const project_id = Math.abs(
-        creatorSlug.split('').reduce((h, c) => ((h << 5) - h + c.charCodeAt(0)) | 0, 0)
-      );
-
-      // Title
-      const nameEl = card.querySelector('h2, h3, [data-test-id="project-name"], .project-name');
-      const name = nameEl ? nameEl.textContent.trim() : '';
-      if (!name) return null;
-
-      // Creator
-      const creatorEl = card.querySelector(
-        '[data-test-id="project-creator"], .creator-name, a[href*="/profile/"]'
-      );
-      const creator = creatorEl ? creatorEl.textContent.trim().replace(/^by\s+/i, '') : '';
-
-      // Blurb / description
-      const blurbEl = card.querySelector(
-        'p.project-description, [data-test-id="project-blurb"], .short-blurb, p'
-      );
-      const blurb = blurbEl ? blurbEl.textContent.trim().slice(0, 300) : '';
-
-      // Funding progress — Kickstarter exposes these in data attrs or text
-      const pledgedEl = card.querySelector(
-        '[data-test-id="pledged-amount"], .pledged .amount, .money.usd'
-      );
-      const pledgedStr = pledgedEl ? pledgedEl.textContent.replace(/[^0-9.]/g, '') : '0';
-      const pledged_usd = parseFloat(pledgedStr) || 0;
-
-      const goalEl = card.querySelector(
-        '[data-test-id="goal"], .goal .amount'
-      );
-      const goalStr = goalEl ? goalEl.textContent.replace(/[^0-9.]/g, '') : '0';
-      const goal_usd = parseFloat(goalStr) || 0;
-
-      const percent_funded = goal_usd > 0 ? Math.round((pledged_usd / goal_usd) * 100) : 0;
-
-      // Backers count
-      const backersEl = card.querySelector(
-        '[data-test-id="backers-count"], .backers-count .num, .num-backers'
-      );
-      const backers_count = backersEl
-        ? parseInt(backersEl.textContent.replace(/[^0-9]/g, ''), 10) || 0
-        : 0;
-
-      // End date
-      const endEl = card.querySelector(
-        '[data-test-id="deadline"], time[datetime], .deadline'
-      );
-      const end_date = endEl
-        ? (endEl.getAttribute('datetime') || endEl.textContent.trim())
-        : null;
-
-      // Status: live, ended, successful, etc.
-      const stateEl = card.querySelector('[data-test-id="project-state"], .state');
-      const status_text = stateEl ? stateEl.textContent.trim().toLowerCase() : 'live';
-
-      return {
-        project_id,
-        name,
-        creator,
-        backers_count,
-        pledged_usd,
-        goal_usd,
-        percent_funded,
-        category: 'Tabletop Games',
-        status: status_text || 'live',
-        end_date: end_date || null,
-        is_dnd_centric: isDndCentric(name, blurb),
-        blurb,
-        url,
-      };
-    } catch (e) {
-      console.warn('[ks-bk] card parse error', e);
-      return null;
-    }
-  }
-
-  // ── Fetch one page ────────────────────────────────────────────────────────
-  async function fetchPage(baseUrl, page) {
-    const sep = baseUrl.includes('?') ? '&' : '?';
-    const url = page > 1 ? `${baseUrl}${sep}page=${page}` : baseUrl;
-    try {
-      const resp = await fetch(url, {
+      const resp = await fetch(GQL, {
+        method: 'POST',
         credentials: 'include',
-        headers: { 'Accept': 'text/html', 'X-Requested-With': '' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken,
+        },
+        body: JSON.stringify({
+          query: GQL_QUERY,
+          variables: {
+            categoryId: CATEGORY_ID,
+            sort,
+            first: PER_PAGE,
+            after: cursor || null,
+          },
+        }),
       });
-      if (!resp.ok) { console.warn('[ks-bk] HTTP', resp.status, url); return null; }
-      const html = await resp.text();
-      return new DOMParser().parseFromString(html, 'text/html');
+      if (!resp.ok) { console.warn('[ks-bk] HTTP', resp.status); return null; }
+      const data = await resp.json();
+      if (data.errors) { console.warn('[ks-bk] GQL errors', data.errors); }
+      return data?.data?.projects || null;
     } catch (e) {
-      console.warn('[ks-bk] fetch error', url, e);
+      console.warn('[ks-bk] fetch error', e);
       return null;
     }
+  }
+
+  // ── Parse one GraphQL project node → row ─────────────────────────────────
+  function parseNode(node) {
+    const project_id = decodeProjectId(node.id);
+    if (!project_id) return null;
+
+    // usdPledged is a pre-converted float; fall back to pledged.amount for
+    // non-USD campaigns (amount strings may include decimals or commas)
+    const pledged_usd = parseFloat(node.usdPledged) ||
+      parseFloat((node.pledged?.amount || '0').replace(/[^0-9.]/g, '')) || 0;
+    const goal_usd =
+      parseFloat((node.goal?.amount || '0').replace(/[^0-9.]/g, '')) || 0;
+    const percent_funded = goal_usd > 0
+      ? Math.round((pledged_usd / goal_usd) * 100) : 0;
+
+    // deadlineAt is a Unix timestamp (seconds)
+    const end_date = node.deadlineAt
+      ? new Date(node.deadlineAt * 1000).toISOString()
+      : null;
+
+    return {
+      project_id,
+      name:          node.name || '',
+      creator:       node.creator?.name || '',
+      backers_count: node.backersCount || 0,
+      pledged_usd,
+      goal_usd,
+      percent_funded,
+      category:      node.category?.name || 'Tabletop Games',
+      status:        (node.state || 'live').toLowerCase(),
+      end_date,
+      is_dnd_centric: isDndCentric(node.name, node.blurb),
+      blurb:         (node.blurb || '').slice(0, 300),
+      url:           node.url || '',
+    };
   }
 
   // ── Main harvest loop ─────────────────────────────────────────────────────
   const allProjects = [];
   const seenIds = new Set();
 
-  for (const { url: catUrl, label } of CATEGORIES) {
+  for (const { sort, label } of SORTS) {
     log(`Fetching: ${label}...`);
-    let catCount = 0;
+    let cursor = null;
+    let sortCount = 0;
 
     for (let page = 1; page <= MAX_PAGES; page++) {
-      const doc = await fetchPage(catUrl, page);
-      if (!doc) break;
-
-      // Kickstarter renders project cards with various selectors across layouts
-      const cards = doc.querySelectorAll(
-        '[data-test-id="project-card"], ' +
-        '.js-react-proj-card, ' +
-        'article.project-card, ' +
-        '.project-thumbnail, ' +
-        'li[data-pid]'
-      );
-
-      if (cards.length === 0) {
-        log(`${label} — no cards on page ${page}, stopping`);
+      const result = await fetchPage(sort, cursor);
+      if (!result?.edges?.length) {
+        log(`${label} — no results on page ${page}, stopping`);
         break;
       }
 
       let pageCount = 0;
-      for (const card of cards) {
-        const project = parseProjectCard(card);
+      for (const { node } of result.edges) {
+        const project = parseNode(node);
         if (!project) continue;
         if (seenIds.has(project.project_id)) continue;
         seenIds.add(project.project_id);
         allProjects.push(project);
-        catCount++;
+        sortCount++;
         pageCount++;
       }
 
       log(`${label} p${page}: +${pageCount} (total: ${allProjects.length})`);
-      if (pageCount === 0) break;
+
+      if (!result.pageInfo?.hasNextPage) break;
+      cursor = result.pageInfo.endCursor;
 
       // Polite delay between pages
-      await new Promise(r => setTimeout(r, 600));
+      await new Promise(r => setTimeout(r, 400));
     }
 
-    log(`${label}: ${catCount} projects harvested`);
+    log(`${label}: ${sortCount} new projects`);
   }
 
   if (allProjects.length === 0) {
-    log('⚠️ No projects found. Kickstarter layout may have changed — check console.');
+    log('⚠️ No projects found — check console for API errors.');
     setTimeout(() => ui.remove(), 10000);
     return;
   }
