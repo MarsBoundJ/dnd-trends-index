@@ -90,7 +90,7 @@
 
   // ── GraphQL query ─────────────────────────────────────────────────────────
   // Uses variables so terser doesn't mangle the query string.
-  // usdPledged is a convenience float field; pledged/goal are Money objects.
+  // pledged/goal are Money objects with amount (string) and currency fields.
   const GQL_QUERY = `
     query FetchProjects($categoryId: String!, $sort: ProjectSort!, $first: Int!, $after: String) {
       projects(categoryId: $categoryId, sort: $sort, first: $first, after: $after) {
@@ -99,11 +99,10 @@
           node {
             id
             name
-            blurb
+            description
             state
             deadlineAt
             backersCount
-            usdPledged
             goal { amount currency }
             pledged { amount currency }
             creator { name }
@@ -153,9 +152,8 @@
     const project_id = decodeProjectId(node.id);
     if (!project_id) return null;
 
-    // usdPledged is a pre-converted float; fall back to pledged.amount for
-    // non-USD campaigns (amount strings may include decimals or commas)
-    const pledged_usd = parseFloat(node.usdPledged) ||
+    // pledged.amount is a string; strip any non-numeric chars before parsing
+    const pledged_usd =
       parseFloat((node.pledged?.amount || '0').replace(/[^0-9.]/g, '')) || 0;
     const goal_usd =
       parseFloat((node.goal?.amount || '0').replace(/[^0-9.]/g, '')) || 0;
@@ -178,8 +176,8 @@
       category:      node.category?.name || 'Tabletop Games',
       status:        (node.state || 'live').toLowerCase(),
       end_date,
-      is_dnd_centric: isDndCentric(node.name, node.blurb),
-      blurb:         (node.blurb || '').slice(0, 300),
+      is_dnd_centric: isDndCentric(node.name, node.description),
+      blurb:         (node.description || '').slice(0, 300),
       url:           node.url || '',
     };
   }
