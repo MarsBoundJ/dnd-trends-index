@@ -1129,6 +1129,33 @@ def bouncer_api(request):
             return (json.dumps({"error": str(errors)}), 500, headers)
         return (json.dumps({"inserted": len(rows)}), 200, headers)
 
+    elif path == 'system/kickstarter/ingest-projects':
+        if request.method != 'POST':
+            return (json.dumps({"error": "POST required"}), 405, headers)
+        ritual_key = request.headers.get('X-Ritual-Key', '')
+        if ritual_key != 'ArcaneLibrarian2026':
+            return (json.dumps({"error": "Unauthorized"}), 403, headers)
+        rows = request.get_json()
+        if not rows:
+            return (json.dumps({"error": "No data"}), 400, headers)
+        # Dedup guard: skip if we already have data from today
+        today = datetime.utcnow().date().isoformat()
+        check = list(client.query(
+            f"SELECT COUNT(*) as n FROM `dnd-trends-index.commercial_data.kickstarter_projects`"
+            f" WHERE DATE(discovered_at) = '{today}'"
+        ).result())
+        if check and check[0].n > 0:
+            return (json.dumps({"skipped": True, "reason": f"Kickstarter projects already ingested for {today}"}), 200, headers)
+        errors = client.insert_rows_json(
+            'dnd-trends-index.commercial_data.kickstarter_projects',
+            rows,
+            skip_invalid_rows=True,
+            ignore_unknown_values=True,
+        )
+        if errors:
+            return (json.dumps({"error": str(errors)}), 500, headers)
+        return (json.dumps({"inserted": len(rows)}), 200, headers)
+
     elif path == 'system/library/enrich':
         if request.method != 'POST':
             return (json.dumps({"error": "POST required"}), 405, headers)
