@@ -3,29 +3,45 @@
 -- into a common score_market (0–100) using PERCENT_RANK.
 --
 -- Join key:  title (fuzzy, best available until product IDs are backfilled)
--- Amazon:    lower rank = higher score  (rank 1 → ~100, rank 100 → ~0)
+-- Amazon:    lower rank = better  (rank 1 → score ~100, rank 100 → score ~0)
+--            Pre-deduped by (asin, date) keeping MIN(rank) so a product that
+--            appears in multiple category lists only counts once.
 -- DMs Guild / DriveThruRPG: tier mapped to 1–7 ordinal, then PERCENT_RANK
 
 CREATE OR REPLACE VIEW `dnd-trends-index.silver_data.norm_catalog_market` AS
 
-WITH amazon AS (
+WITH
+-- Step 1: collapse Amazon rows so each ASIN appears once per day,
+-- taking its best (lowest) rank across all category lists.
+amazon_deduped AS (
+    SELECT
+        asin,
+        title,
+        date,
+        MIN(rank) AS rank
+    FROM `dnd-trends-index.dnd_trends_raw.amazon_daily_stats`
+    WHERE rank > 0
+    GROUP BY asin, title, date
+),
+
+-- Step 2: compute PERCENT_RANK on the clean, deduplicated Amazon set.
+amazon AS (
     SELECT
         title,
         asin                        AS product_id,
         'Amazon'                    AS platform,
         date                        AS snapshot_date,
-        category                    AS list_name,
+        CAST(NULL AS STRING)        AS list_name,
         rank                        AS raw_rank,
         CAST(NULL AS STRING)        AS seller_tier,
-        -- Lower rank is better → invert with 1 - PERCENT_RANK
+        -- Lower rank is better → invert so rank 1 → 100
         ROUND(
             (1.0 - PERCENT_RANK() OVER (
                 PARTITION BY date
                 ORDER BY rank ASC
             )) * 100, 1
         )                           AS score_market
-    FROM `dnd-trends-index.dnd_trends_raw.amazon_daily_stats`
-    WHERE rank > 0
+    FROM amazon_deduped
 ),
 
 catalog AS (
@@ -57,8 +73,22 @@ catalog AS (
     WHERE source IN ('DMs Guild', 'DriveThruRPG')
       AND seller_tier IS NOT NULL
       AND seller_tier NOT IN ('Normal', '')
+),
+
+combined AS (
+    SELECT * FROM amazon
+    UNION ALL
+    SELECT * FROM catalog
 )
 
-SELECT * FROM amazon
-UNION ALL
-SELECT * FROM catalog;
+-- Dedup: one row per title+platform+date, keeping best rank and highest score
+SELECT
+    title,
+    ANY_VALUE(product_id)   AS product_id,
+    platform,
+    snapshot_date,
+    ANY_VALUE(seller_tier)  AS seller_tier,
+    MIN(raw_rank)           AS raw_rank,
+    MAX(score_market)       AS score_market
+FROM combined
+GROUP BY title, platform, snapshot_date;
