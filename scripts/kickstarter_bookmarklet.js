@@ -88,31 +88,21 @@
     return DND_KEYWORDS.some(kw => text.includes(kw));
   }
 
-  // ── GraphQL query ─────────────────────────────────────────────────────────
-  // Uses variables so terser doesn't mangle the query string.
+  // ── GraphQL query builder ──────────────────────────────────────────────────
+  // Inline query (no typed variables) to avoid needing the exact enum type
+  // name for sort — the working diagnostic confirmed this form works.
   // pledged/goal are Money objects with amount (string) and currency fields.
-  const GQL_QUERY = `
-    query FetchProjects($categoryId: String!, $sort: ProjectSort!, $first: Int!, $after: String) {
-      projects(categoryId: $categoryId, sort: $sort, first: $first, after: $after) {
-        pageInfo { hasNextPage endCursor }
-        edges {
-          node {
-            id
-            name
-            description
-            state
-            deadlineAt
-            backersCount
-            goal { amount currency }
-            pledged { amount currency }
-            creator { name }
-            url
-            category { name }
-          }
-        }
-      }
-    }
-  `;
+  function buildQuery(sort, cursor) {
+    const afterArg = cursor ? `, after: "${cursor}"` : '';
+    return `{ projects(categoryId: "${CATEGORY_ID}", sort: ${sort}, first: ${PER_PAGE}${afterArg}) {
+      pageInfo { hasNextPage endCursor }
+      edges { node {
+        id name description state deadlineAt backersCount
+        goal { amount currency } pledged { amount currency }
+        creator { name } url category { name }
+      } }
+    } }`;
+  }
 
   // CSRF token is required — Kickstarter rejects unauthenticated GQL POSTs
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
@@ -127,15 +117,7 @@
           'Content-Type': 'application/json',
           'X-CSRF-Token': csrfToken,
         },
-        body: JSON.stringify({
-          query: GQL_QUERY,
-          variables: {
-            categoryId: CATEGORY_ID,
-            sort,
-            first: PER_PAGE,
-            after: cursor || null,
-          },
-        }),
+        body: JSON.stringify({ query: buildQuery(sort, cursor) }),
       });
       if (!resp.ok) { console.warn('[ks-bk] HTTP', resp.status); return null; }
       const data = await resp.json();
