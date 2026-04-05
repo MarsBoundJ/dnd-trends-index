@@ -3,10 +3,17 @@
 -- using normalized title matching + Jaccard token similarity.
 --
 -- Matching pipeline:
---   1. Normalize  — strip subtitles, edition tags, parentheticals, punctuation
+--   1. Normalize  — strip parentheticals, edition tags, volume tags, punctuation
+--                   NOTE: colon-based subtitle stripping intentionally omitted —
+--                   "Magic: The Gathering" stripping to "magic" caused false positives.
+--                   Jaccard naturally penalises extra subtitle tokens instead.
 --   2. Tokenize   — split into words, remove stop words & single-char tokens
 --   3. Jaccard    — intersection / union of token sets
---   4. Confidence — high ≥ 0.8 | medium ≥ 0.65 | borderline ≥ 0.5
+--   4. Confidence — high ≥ 0.8 | medium ≥ 0.65 | borderline ≥ 0.4
+--
+-- Guards against trivially short matches:
+--   - Both titles must produce ≥ 2 tokens after normalization
+--   - Intersection must be ≥ 2 tokens
 --
 -- match_confidence values:
 --   'high'       → very likely the same product, safe to treat as a match
@@ -45,13 +52,12 @@ latest AS (
 -- ── Step 2: normalize titles ─────────────────────────────────────────────────
 -- Rules applied in order (each feeds the next):
 --   a) lower-case everything
---   b) strip subtitles  — everything after first colon (:)
---   c) strip parentheticals  e.g. (5e)  (D&D Core Rulebook)
---   d) strip written-out edition tags  e.g. "Second Edition"
---   e) strip shorthand edition tags  e.g. "5e"  "2e"
---   f) strip volume / book tags  e.g. "Vol. 2"  "Book 3"
---   g) strip all remaining non-alphanumeric characters
---   h) collapse runs of whitespace to a single space
+--   b) strip parentheticals  e.g. (5e)  (D&D Core Rulebook)
+--   c) strip written-out edition tags  e.g. "Second Edition"
+--   d) strip shorthand edition tags  e.g. "5e"  "2e"
+--   e) strip volume / book tags  e.g. "Vol. 2"  "Book 3"
+--   f) strip all remaining non-alphanumeric characters
+--   g) collapse runs of whitespace to a single space
 normalized AS (
   SELECT
     title             AS original_title,
@@ -67,10 +73,7 @@ normalized AS (
           REGEXP_REPLACE(
             REGEXP_REPLACE(
               REGEXP_REPLACE(
-                REGEXP_REPLACE(
-                  LOWER(title),
-                  r'\s*:.*$', ''
-                ),
+                LOWER(title),
                 r'\s*\([^)]*\)', ''
               ),
               r'\b(first|second|third|fourth|fifth|sixth|1st|2nd|3rd|4th|5th|6th)\s+edition\b', ''
@@ -144,12 +147,11 @@ pairs AS (
     )                  AS jaccard_score
   FROM amazon  a
   CROSS JOIN catalog c
-  -- Early filter: skip pairs with zero token overlap to avoid scanning
-  -- full cross-product in the outer query
-  WHERE EXISTS (
-    SELECT 1 FROM UNNEST(a.tokens) AS tok
-    WHERE tok IN UNNEST(c.tokens)
-  )
+  -- Guard 1: both sides must have at least 2 meaningful tokens
+  WHERE ARRAY_LENGTH(a.tokens) >= 2
+    AND ARRAY_LENGTH(c.tokens) >= 2
+  -- Guard 2: must share at least 2 tokens (prevents single-word 1.0 scores)
+    AND (SELECT COUNTIF(tok IN UNNEST(c.tokens)) FROM UNNEST(a.tokens) AS tok) >= 2
 )
 
 -- ── Final: filter to meaningful matches, attach confidence label ─────────────
@@ -163,7 +165,7 @@ SELECT
   CASE
     WHEN jaccard_score >= 0.8  THEN 'high'
     WHEN jaccard_score >= 0.65 THEN 'medium'
-    WHEN jaccard_score >= 0.5  THEN 'borderline'
+    WHEN jaccard_score >= 0.4  THEN 'borderline'
   END                                                  AS match_confidence,
   amazon_score,
   catalog_score,
@@ -173,5 +175,5 @@ SELECT
   amazon_date,
   catalog_date
 FROM pairs
-WHERE jaccard_score >= 0.5
+WHERE jaccard_score >= 0.4
 ORDER BY jaccard_score DESC, combined_score DESC;
