@@ -1138,8 +1138,12 @@ def bouncer_api(request):
         rows = request.get_json()
         if not rows:
             return (json.dumps({"error": "No data"}), 400, headers)
+        # Stamp discovered_at on every row (bookmarklet doesn't send it)
+        today = datetime.datetime.utcnow().date().isoformat()
+        now_ts = datetime.datetime.utcnow().isoformat() + 'Z'
+        for row in rows:
+            row['discovered_at'] = now_ts
         # Dedup guard: skip if we already have data from today
-        today = datetime.utcnow().date().isoformat()
         check = list(client.query(
             f"SELECT COUNT(*) as n FROM `dnd-trends-index.commercial_data.kickstarter_projects`"
             f" WHERE DATE(discovered_at) = '{today}'"

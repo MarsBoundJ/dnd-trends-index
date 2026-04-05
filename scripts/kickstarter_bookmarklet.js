@@ -88,32 +88,21 @@
     return DND_KEYWORDS.some(kw => text.includes(kw));
   }
 
-  // ── GraphQL query ─────────────────────────────────────────────────────────
-  // Uses variables so terser doesn't mangle the query string.
-  // usdPledged is a convenience float field; pledged/goal are Money objects.
-  const GQL_QUERY = `
-    query FetchProjects($categoryId: String!, $sort: ProjectSort!, $first: Int!, $after: String) {
-      projects(categoryId: $categoryId, sort: $sort, first: $first, after: $after) {
-        pageInfo { hasNextPage endCursor }
-        edges {
-          node {
-            id
-            name
-            blurb
-            state
-            deadlineAt
-            backersCount
-            usdPledged
-            goal { amount currency }
-            pledged { amount currency }
-            creator { name }
-            url
-            category { name }
-          }
-        }
-      }
-    }
-  `;
+  // ── GraphQL query builder ──────────────────────────────────────────────────
+  // Inline query (no typed variables) to avoid needing the exact enum type
+  // name for sort — the working diagnostic confirmed this form works.
+  // pledged/goal are Money objects with amount (string) and currency fields.
+  function buildQuery(sort, cursor) {
+    const afterArg = cursor ? `, after: "${cursor}"` : '';
+    return `{ projects(categoryId: "${CATEGORY_ID}", sort: ${sort}, first: ${PER_PAGE}${afterArg}) {
+      pageInfo { hasNextPage endCursor }
+      edges { node {
+        id name description state deadlineAt backersCount
+        goal { amount currency } pledged { amount currency }
+        creator { name } url category { name }
+      } }
+    } }`;
+  }
 
   // CSRF token is required — Kickstarter rejects unauthenticated GQL POSTs
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
@@ -128,15 +117,7 @@
           'Content-Type': 'application/json',
           'X-CSRF-Token': csrfToken,
         },
-        body: JSON.stringify({
-          query: GQL_QUERY,
-          variables: {
-            categoryId: CATEGORY_ID,
-            sort,
-            first: PER_PAGE,
-            after: cursor || null,
-          },
-        }),
+        body: JSON.stringify({ query: buildQuery(sort, cursor) }),
       });
       if (!resp.ok) { console.warn('[ks-bk] HTTP', resp.status); return null; }
       const data = await resp.json();
@@ -153,9 +134,8 @@
     const project_id = decodeProjectId(node.id);
     if (!project_id) return null;
 
-    // usdPledged is a pre-converted float; fall back to pledged.amount for
-    // non-USD campaigns (amount strings may include decimals or commas)
-    const pledged_usd = parseFloat(node.usdPledged) ||
+    // pledged.amount is a string; strip any non-numeric chars before parsing
+    const pledged_usd =
       parseFloat((node.pledged?.amount || '0').replace(/[^0-9.]/g, '')) || 0;
     const goal_usd =
       parseFloat((node.goal?.amount || '0').replace(/[^0-9.]/g, '')) || 0;
@@ -178,8 +158,8 @@
       category:      node.category?.name || 'Tabletop Games',
       status:        (node.state || 'live').toLowerCase(),
       end_date,
-      is_dnd_centric: isDndCentric(node.name, node.blurb),
-      blurb:         (node.blurb || '').slice(0, 300),
+      is_dnd_centric: isDndCentric(node.name, node.description),
+      blurb:         (node.description || '').slice(0, 300),
       url:           node.url || '',
     };
   }
