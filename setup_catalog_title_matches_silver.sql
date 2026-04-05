@@ -69,7 +69,7 @@ normalized AS (
               REGEXP_REPLACE(
                 REGEXP_REPLACE(
                   LOWER(title),
-                  r'\s*[:\u2014\u2013].*$', ''
+                  r'\s*[:—–].*$', ''
                 ),
                 r'\s*\([^)]*\)', ''
               ),
