@@ -165,6 +165,8 @@ def bouncer_api(request):
             path = 'system/seeds/list'
         elif 'amazon/ingest-ranks' in full_path:
             path = 'system/amazon/ingest-ranks'
+        elif 'kickstarter/ingest-projects' in full_path:
+            path = 'system/kickstarter/ingest-projects'
         else:
             path = 'leaderboards'
         
