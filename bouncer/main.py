@@ -1316,7 +1316,7 @@ def bouncer_api(request):
                         "canonical_parent":  None, "persona_target": None,
                         "publisher":         None,
                         "is_breakout":       item.get("is_breakout") or False,
-                        "seed_promoted":     False,
+                        "seed_promoted":     True,
                     }
                     errs = client.insert_rows_json('dnd-trends-index.dnd_trends_categorized.concept_library', [lib_row])
                     if errs: raise RuntimeError(f"concept_library insert error: {errs}")
