@@ -57,13 +57,13 @@ curl -s -X POST "${FUNCTION_URL}" \
     -d '{"dry_run": true}' | jq .
 
 echo ""
-echo "--- Creating Cloud Scheduler job (weekly, Monday 06:00 UTC) ---"
+echo "--- Creating Cloud Scheduler job (daily Mon–Fri + Sunday 06:00 UTC) ---"
 
 FUNCTION_URL=$(gcloud functions describe "${FUNCTION}" \
     --region="${REGION}" --project="${PROJECT}" \
     --format="value(serviceConfig.uri)")
 
-SCHEDULER_JOB="discover-related-queries-weekly"
+SCHEDULER_JOB="discover-related-queries-daily"
 
 # Create or update the scheduler job
 if gcloud scheduler jobs describe "${SCHEDULER_JOB}" --location="${REGION}" --project="${PROJECT}" &>/dev/null; then
@@ -71,10 +71,9 @@ if gcloud scheduler jobs describe "${SCHEDULER_JOB}" --location="${REGION}" --pr
     gcloud scheduler jobs update http "${SCHEDULER_JOB}" \
         --project="${PROJECT}" \
         --location="${REGION}" \
-        --schedule="0 6 * * 1" \
+        --schedule="0 6 * * 0-5" \
         --uri="${FUNCTION_URL}" \
         --http-method=POST \
-        --headers="Content-Type=application/json" \
         --message-body='{}' \
         --oidc-service-account-email="${SA}" \
         --oidc-token-audience="${FUNCTION_URL}" \
@@ -84,7 +83,7 @@ else
     gcloud scheduler jobs create http "${SCHEDULER_JOB}" \
         --project="${PROJECT}" \
         --location="${REGION}" \
-        --schedule="0 6 * * 1" \
+        --schedule="0 6 * * 0-5" \
         --uri="${FUNCTION_URL}" \
         --http-method=POST \
         --headers="Content-Type=application/json" \
@@ -94,4 +93,4 @@ else
         --time-zone="UTC"
 fi
 
-echo "✓ Scheduler job '${SCHEDULER_JOB}' set to run every Monday at 06:00 UTC"
+echo "✓ Scheduler job '${SCHEDULER_JOB}' set to run Mon–Fri + Sunday at 06:00 UTC (Shabbat skipped)"
