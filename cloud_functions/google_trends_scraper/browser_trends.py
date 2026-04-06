@@ -32,9 +32,12 @@ def fetch_terms_to_process(client, limit=100):
     """
     return list(client.query(query).result())
 
-# Phase 52d Hybrid Proxy Routing
+# Proxy routing — GOST bridge runs on localhost:3128 (see entrypoint.sh)
 PROXY_LOCAL = {"server": "http://localhost:3128"}
-PROXY_SOCKS = "socks5://lcbaurkt-US-rotate:q8aa993piq8h@p.webshare.io:9999"
+
+# Safety caps — prevent runaway proxy bandwidth burns
+MAX_CONSECUTIVE_FAILURES = 3   # Stop if this many terms in a row yield no data
+MAX_RUNTIME_MINUTES = 45       # Hard wall-clock cap per job execution
 
 async def human_mimicry(page):
     """Task 3: Implement 'Human-Like' Interaction."""
@@ -163,11 +166,25 @@ async def scrape_with_retry(term_info, retries=1):
             
     return []
 
-async def main(limit=100, keyword=None):
+async def check_proxy_health():
+    """Quick proxy health check before processing any terms. Fail fast if dead."""
+    import urllib.request
+    proxy_handler = urllib.request.ProxyHandler({"https": "http://localhost:3128"})
+    opener = urllib.request.build_opener(proxy_handler)
+    try:
+        opener.open("https://trends.google.com/trends/", timeout=15)
+        print("[*] Proxy health check passed.")
+        return True
+    except Exception as e:
+        print(f"[!] Proxy health check FAILED: {e}")
+        print("[!] Aborting — proxy is not available. No bandwidth will be wasted.")
+        return False
+
+async def main(limit=50, keyword=None):
     client = bigquery.Client(project=PROJECT_ID)
     batch_id = "GHOST_WALK_" + str(uuid.uuid4())[:8]
     fetched_at = datetime.datetime.now().isoformat()
-    
+
     if keyword:
         # Create a mock term_row-like structure for the manual override
         class MockTermRow:
@@ -177,14 +194,30 @@ async def main(limit=100, keyword=None):
         terms = [MockTermRow(keyword)]
         print(f"[*] Running targeted smoke test for: {keyword}")
     else:
+        # Proxy health check — abort immediately if proxy is dead
+        if not await check_proxy_health():
+            sys.exit(1)
+
         terms = fetch_terms_to_process(client, limit=limit)
         print(f"[*] Fetched {len(terms)} terms to process.")
-    
+
+    start_time = datetime.datetime.now()
+    consecutive_failures = 0
+    terms_processed = 0
+
     for term_row in terms:
+        # Hard runtime cap
+        elapsed_minutes = (datetime.datetime.now() - start_time).total_seconds() / 60
+        if elapsed_minutes > MAX_RUNTIME_MINUTES:
+            print(f"[!] Runtime cap reached ({MAX_RUNTIME_MINUTES}m after {terms_processed} terms). Stopping cleanly.")
+            break
+
         term_dict = {'term_id': term_row.term_id, 'search_term': term_row.search_term}
         data = await scrape_with_retry(term_dict)
-        
+        terms_processed += 1
+
         if data:
+            consecutive_failures = 0
             rows = []
             for d in data:
                 rows.append({
@@ -196,19 +229,27 @@ async def main(limit=100, keyword=None):
                     "fetched_at": fetched_at,
                     "batch_id": batch_id
                 })
-            
+
             errors = client.insert_rows_json(DEST_TABLE, rows)
             if not errors:
                 print(f"  [BQ] Inserted {len(rows)} rows for {term_row.search_term}.")
             else:
                 print(f"  [BQ] Errors inserting {term_row.search_term}: {errors}")
+        else:
+            consecutive_failures += 1
+            print(f"  [-] No data for {term_row.search_term}. Consecutive failures: {consecutive_failures}/{MAX_CONSECUTIVE_FAILURES}")
+            if consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
+                print(f"[!] {MAX_CONSECUTIVE_FAILURES} consecutive failures — proxy may be dead. Stopping to protect bandwidth.")
+                sys.exit(1)
 
         await asyncio.sleep(random.uniform(2, 5))
+
+    print(f"[*] Done. Processed {terms_processed} terms in {(datetime.datetime.now() - start_time).total_seconds() / 60:.1f}m.")
 
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--limit", type=int, default=100)
+    parser.add_argument("--limit", type=int, default=50)
     parser.add_argument("--keyword", type=str, default=None, help="Specific keyword to scry (e.g. 'Monk')")
     args = parser.parse_args()
     asyncio.run(main(limit=args.limit, keyword=args.keyword))

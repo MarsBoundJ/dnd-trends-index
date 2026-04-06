@@ -19,4 +19,4 @@ COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
 ENTRYPOINT ["./entrypoint.sh"]
-CMD ["python", "browser_trends.py", "--limit", "300"]
+CMD ["python", "browser_trends.py", "--limit", "50"]
