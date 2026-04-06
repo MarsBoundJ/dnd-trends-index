@@ -2,12 +2,12 @@
  * Kickstarter TTRPG/D&D Bookmarklet — Part 2: Send
  *
  * Run this on ANY page (e.g. google.com) AFTER running KS-Harvest on
- * kickstarter.com in the same tab. Reads the project data from window.name
- * and sends it to the bouncer for ingestion into BigQuery.
+ * kickstarter.com. Reads the project data from the clipboard and sends it
+ * to the bouncer for ingestion into BigQuery.
  *
  * Why a separate bookmarklet: Kickstarter's CSP blocks outbound fetch()
- * to external domains. window.name survives page navigation, so we harvest
- * on kickstarter.com and send from a neutral page.
+ * to external domains. KS-Harvest copies project data to the clipboard;
+ * this bookmarklet reads it from there on a neutral page.
  */
 
 (async function () {
@@ -33,19 +33,21 @@
 
   const log = (msg) => { statusEl.textContent = msg; console.log('[ks-send]', msg); };
 
-  // ── Read from window.name ─────────────────────────────────────────────────
+  // ── Read from clipboard ───────────────────────────────────────────────────
   let projects;
   try {
-    const parsed = JSON.parse(window.name || '{}');
+    const text = await navigator.clipboard.readText();
+    const parsed = JSON.parse(text || '{}');
     projects = parsed.ks_harvest;
   } catch (e) {
-    log('⚠️ Could not read harvest data. Did you run KS-Harvest first in this tab?');
+    log('⚠️ Could not read clipboard. Make sure KS-Harvest ran and your clipboard has the data.');
+    console.error('[ks-send] clipboard read error', e);
     setTimeout(() => ui.remove(), 10000);
     return;
   }
 
   if (!projects || projects.length === 0) {
-    log('⚠️ No harvest data found. Run KS-Harvest on kickstarter.com first.');
+    log('⚠️ No harvest data in clipboard. Run KS-Harvest on kickstarter.com first.');
     setTimeout(() => ui.remove(), 10000);
     return;
   }

@@ -143,9 +143,24 @@
     return;
   }
 
-  // ── Store in window.name for cross-page relay ─────────────────────────────
-  window.name = JSON.stringify({ ks_harvest: allProjects });
-  log(`✅ Stored ${allProjects.length} projects. Now go to google.com and click KS-Send.`);
-  console.log('[ks-bk] Stored', allProjects.length, 'projects in window.name');
+  // ── Copy to clipboard for cross-page relay ───────────────────────────────
+  // window.name is cleared by browsers on cross-origin navigation (privacy).
+  // Clipboard persists across origins and page loads.
+  const payload = JSON.stringify({ ks_harvest: allProjects });
+  try {
+    await navigator.clipboard.writeText(payload);
+    log(`✅ ${allProjects.length} projects copied to clipboard! Go to google.com and click KS-Send.`);
+    console.log('[ks-bk] Copied', allProjects.length, 'projects to clipboard');
+  } catch (e) {
+    // Fallback: write to a textarea so user can copy manually
+    console.warn('[ks-bk] Clipboard write failed, using textarea fallback', e);
+    const ta = document.createElement('textarea');
+    ta.value = payload;
+    Object.assign(ta.style, { position: 'fixed', top: '80px', right: '12px',
+      width: '340px', height: '80px', zIndex: 999999, fontSize: '10px' });
+    document.body.appendChild(ta);
+    ta.select();
+    log(`⚠️ Clipboard blocked. Select all text in the box below and copy it, then run KS-Send.`);
+  }
   // Keep UI visible so user can read the instruction
 })();
