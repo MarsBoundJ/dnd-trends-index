@@ -176,27 +176,23 @@ h3{color:#05ce78;margin:0 0 10px}</style></head>
   const projects = ${projectsJson};
   const BOUNCER = '${BOUNCER}';
   const KEY = '${KEY}';
-  const CHUNK = 100;
-  let inserted = 0;
-  for(let i = 0; i < projects.length; i += CHUNK){
-    const chunk = projects.slice(i, i + CHUNK);
-    try {
-      const r = await fetch(BOUNCER + '/system/kickstarter/ingest-projects', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json','X-Ritual-Key': KEY},
-        body: JSON.stringify(chunk)
-      });
-      const d = await r.json();
-      if(d.skipped){ log('Already ingested today — skipped.'); return; }
-      inserted += d.inserted || chunk.length;
-      log('Sent chunk ' + (Math.floor(i/CHUNK)+1) + ' — ' + inserted + ' inserted...');
-    } catch(e){
-      log('⚠️ Error: ' + e.message);
-      console.error('[ks-send]', e);
-      return;
-    }
+  try {
+    // Send all projects in one request — chunking causes dedup guard to
+    // fire after the first chunk, skipping the rest
+    const r = await fetch(BOUNCER + '/system/kickstarter/ingest-projects', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','X-Ritual-Key': KEY},
+      body: JSON.stringify(projects)
+    });
+    const d = await r.json();
+    if(d.skipped){ log('Already ingested today — skipped.'); return; }
+    const inserted = d.inserted || projects.length;
+    log('✅ Done! ' + inserted + ' projects ingested.');
+  } catch(e){
+    log('⚠️ Error: ' + e.message);
+    console.error('[ks-send]', e);
+    return;
   }
-  log('✅ Done! ' + inserted + ' projects ingested.');
   setTimeout(() => window.close(), 8000);
 })();
 <\/script></body></html>`);
