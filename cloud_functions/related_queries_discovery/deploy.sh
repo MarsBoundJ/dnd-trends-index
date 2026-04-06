@@ -57,19 +57,41 @@ curl -s -X POST "${FUNCTION_URL}" \
     -d '{"dry_run": true}' | jq .
 
 echo ""
-echo "--- Schedule (weekly, Monday 06:00 UTC via discover-and-resolve workflow) ---"
-echo "Run this once to create the Cloud Scheduler job (targets the chaining workflow):"
-echo ""
-echo "WORKFLOW_URL=\"https://workflowexecutions.googleapis.com/v1/projects/${PROJECT}/locations/${REGION}/workflows/discover-and-resolve/executions\""
-echo ""
-echo "gcloud scheduler jobs create http discover-and-resolve-weekly \\"
-echo "    --project=${PROJECT} \\"
-echo "    --location=${REGION} \\"
-echo "    --schedule='0 6 * * 1' \\"
-echo "    --uri=\${WORKFLOW_URL} \\"
-echo "    --http-method=POST \\"
-echo "    --headers='Content-Type=application/json' \\"
-echo "    --message-body='{\"argument\":\"{}\"}' \\"
-echo "    --oauth-service-account-email=${SA} \\"
-echo "    --oauth-token-scope='https://www.googleapis.com/auth/cloud-platform' \\"
-echo "    --time-zone='UTC'"
+echo "--- Creating Cloud Scheduler job (weekly, Monday 06:00 UTC) ---"
+
+FUNCTION_URL=$(gcloud functions describe "${FUNCTION}" \
+    --region="${REGION}" --project="${PROJECT}" \
+    --format="value(serviceConfig.uri)")
+
+SCHEDULER_JOB="discover-related-queries-weekly"
+
+# Create or update the scheduler job
+if gcloud scheduler jobs describe "${SCHEDULER_JOB}" --location="${REGION}" --project="${PROJECT}" &>/dev/null; then
+    echo "Scheduler job exists — updating..."
+    gcloud scheduler jobs update http "${SCHEDULER_JOB}" \
+        --project="${PROJECT}" \
+        --location="${REGION}" \
+        --schedule="0 6 * * 1" \
+        --uri="${FUNCTION_URL}" \
+        --http-method=POST \
+        --headers="Content-Type=application/json" \
+        --message-body='{}' \
+        --oidc-service-account-email="${SA}" \
+        --oidc-token-audience="${FUNCTION_URL}" \
+        --time-zone="UTC"
+else
+    echo "Creating scheduler job..."
+    gcloud scheduler jobs create http "${SCHEDULER_JOB}" \
+        --project="${PROJECT}" \
+        --location="${REGION}" \
+        --schedule="0 6 * * 1" \
+        --uri="${FUNCTION_URL}" \
+        --http-method=POST \
+        --headers="Content-Type=application/json" \
+        --message-body='{}' \
+        --oidc-service-account-email="${SA}" \
+        --oidc-token-audience="${FUNCTION_URL}" \
+        --time-zone="UTC"
+fi
+
+echo "✓ Scheduler job '${SCHEDULER_JOB}' set to run every Monday at 06:00 UTC"

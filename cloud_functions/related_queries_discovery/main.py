@@ -43,6 +43,7 @@ LIB_DATASET     = "dnd_trends_categorized"
 RESULTS_TABLE   = f"{PROJECT_ID}.{RAW_DATASET}.related_queries"
 EMERGING_TABLE  = f"{PROJECT_ID}.{RAW_DATASET}.emerging_terms"
 LIBRARY_TABLE   = f"{PROJECT_ID}.{LIB_DATASET}.concept_library"
+SEEDS_TABLE     = f"{PROJECT_ID}.{LIB_DATASET}.seeds"
 
 # Webshare residential proxy  (same env-var names as existing scraper)
 PROXY_HOST      = os.environ.get("WEBSHARE_PROXY_HOST", "p.webshare.io")
@@ -271,6 +272,52 @@ def _get_known_terms(client: bigquery.Client) -> set[str]:
 
 
 # ---------------------------------------------------------------------------
+# Seeds table helpers
+# ---------------------------------------------------------------------------
+
+def _fetch_active_seeds(bq: bigquery.Client) -> list[str]:
+    """
+    Load active seed keywords from dnd_trends_categorized.seeds.
+    Falls back to DEFAULT_SEEDS if the table is empty or unavailable.
+    """
+    query = f"""
+        SELECT term
+        FROM `{SEEDS_TABLE}`
+        WHERE is_active = TRUE
+        ORDER BY added_at ASC
+    """
+    try:
+        seeds = [row["term"] for row in bq.query(query).result()]
+        if seeds:
+            log.info("Loaded %d seeds from BQ seeds table", len(seeds))
+            return seeds
+        log.warning("Seeds table is empty — falling back to DEFAULT_SEEDS")
+    except Exception as exc:
+        log.warning("Could not fetch seeds table: %s — falling back to DEFAULT_SEEDS", exc)
+    return DEFAULT_SEEDS
+
+
+def _update_seed_last_used(bq: bigquery.Client, seeds: list[str]) -> None:
+    """
+    Write back last_used_at = NOW() for every seed that was processed.
+    BQ UPDATE via DML (streaming update not supported, DML is fine for ~10 rows).
+    """
+    if not seeds:
+        return
+    terms_csv = ", ".join(f"'{s.replace(chr(39), chr(39)*2)}'" for s in seeds)
+    dml = f"""
+        UPDATE `{SEEDS_TABLE}`
+        SET last_used_at = CURRENT_TIMESTAMP()
+        WHERE term IN ({terms_csv})
+    """
+    try:
+        bq.query(dml).result()
+        log.info("Updated last_used_at for %d seeds", len(seeds))
+    except Exception as exc:
+        log.warning("Could not update seed last_used_at: %s", exc)
+
+
+# ---------------------------------------------------------------------------
 # Core orchestration
 # ---------------------------------------------------------------------------
 
@@ -369,8 +416,13 @@ def discover_related_queries(request):
         except Exception:
             pass
 
-    seeds   = body.get("seeds", DEFAULT_SEEDS)
     dry_run = bool(body.get("dry_run", False))
+
+    # BigQuery client — uses Application Default Credentials (ADC)
+    bq = bigquery.Client(project=PROJECT_ID)
+
+    # Seeds: use request override if provided, otherwise load from BQ seeds table
+    seeds = body.get("seeds") or _fetch_active_seeds(bq)
 
     run_id = hashlib.md5(
         f"{datetime.datetime.utcnow().isoformat()}|{'|'.join(seeds)}".encode()
@@ -390,12 +442,10 @@ def discover_related_queries(request):
     proxy_url = _build_proxy_url()
     pytrends  = _build_pytrends_session(proxy_url)
 
-    # BigQuery client — uses Application Default Credentials (ADC)
-    bq = bigquery.Client(project=PROJECT_ID)
-
     try:
         _ensure_tables(bq)
         stats = _process_seeds(pytrends, seeds, bq, run_id)
+        _update_seed_last_used(bq, seeds)
     except Exception as exc:
         log.exception("Fatal error in run %s", run_id)
         return json.dumps({"status": "error", "run_id": run_id, "error": str(exc)}), 500, {
