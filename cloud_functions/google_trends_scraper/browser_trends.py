@@ -49,6 +49,9 @@ def _parse_proxy(url: str) -> dict:
 
 PROXY_LOCAL = _parse_proxy(_PROXY_URL_ENV)
 
+# Safety cap — prevent runaway runs from burning proxy bandwidth
+MAX_RUNTIME_MINUTES = 45
+
 async def human_mimicry(page):
     """Human-like interaction: random sleep, scroll, mouse jiggle."""
     print("  [*] Performing human mimicry (Jiggle & Scroll)...")
@@ -141,7 +144,21 @@ async def scrape_term(page, term_info):
         return None
 
 
-async def main(limit=100, keyword=None):
+async def check_proxy_health():
+    """Quick proxy health check before processing any terms. Fail fast if dead."""
+    import urllib.request
+    proxy_handler = urllib.request.ProxyHandler({"https": "http://localhost:3128"})
+    opener = urllib.request.build_opener(proxy_handler)
+    try:
+        opener.open("https://trends.google.com/trends/", timeout=15)
+        print("[*] Proxy health check passed.")
+        return True
+    except Exception as e:
+        print(f"[!] Proxy health check FAILED: {e}")
+        print("[!] Aborting — proxy is not available. No bandwidth will be wasted.")
+        return False
+
+async def main(limit=50, keyword=None):
     client = bigquery.Client(project=PROJECT_ID)
     batch_id = "GHOST_WALK_" + str(uuid.uuid4())[:8]
     fetched_at = datetime.datetime.now().isoformat()
@@ -154,6 +171,10 @@ async def main(limit=100, keyword=None):
         terms = [MockTermRow(keyword)]
         print(f"[*] Running targeted smoke test for: {keyword}")
     else:
+        # Proxy health check — abort immediately if proxy is dead
+        if not await check_proxy_health():
+            sys.exit(1)
+
         terms = fetch_terms_to_process(client, limit=limit)
         print(f"[*] Fetched {len(terms)} terms to process.")
 
@@ -163,6 +184,7 @@ async def main(limit=100, keyword=None):
 
     MAX_CONSECUTIVE_FAILURES = 3
     consecutive_failures = 0
+    start_time = datetime.datetime.now()
 
     print("[*] Starting browser session (single session for entire batch)...")
     async with async_playwright() as p:
@@ -185,6 +207,11 @@ async def main(limit=100, keyword=None):
         print("[*] Priming complete. Beginning term scrape...")
 
         for term_row in terms:
+            elapsed_minutes = (datetime.datetime.now() - start_time).total_seconds() / 60
+            if elapsed_minutes > MAX_RUNTIME_MINUTES:
+                print(f"[!] Runtime cap reached ({MAX_RUNTIME_MINUTES}m). Stopping cleanly.")
+                break
+
             term_dict = {'term_id': term_row.term_id, 'search_term': term_row.search_term}
             print(f"\n[SCAN] Scrying for: {term_row.search_term}")
             data = await scrape_term(page, term_dict)
@@ -236,10 +263,12 @@ async def main(limit=100, keyword=None):
         print(f"\n[*] Batch complete. Session closed.")
 
 
+    print(f"[*] Done. Processed {terms_processed} terms in {(datetime.datetime.now() - start_time).total_seconds() / 60:.1f}m.")
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--limit", type=int, default=100)
+    parser.add_argument("--limit", type=int, default=50)
     parser.add_argument("--keyword", type=str, default=None, help="Specific keyword to scry (e.g. 'Monk')")
     args = parser.parse_args()
     asyncio.run(main(limit=args.limit, keyword=args.keyword))
