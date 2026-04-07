@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 from datetime import date
 import time
 import logging
+import os
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -15,13 +16,19 @@ PROJECT_ID = "dnd-trends-index"
 MAP_TABLE = f"{PROJECT_ID}.dnd_trends_categorized.bgg_id_map"
 BGG_TOKEN = "ca8375ce-62f6-485a-8c54-ebf23209419f"
 
+PROXY_URL = os.getenv("PROXY_URL", "http://oxsjenoi-residential-US-rotate:yw72fdfu37vt@p.webshare.io:80")
+PROXIES = {"http": PROXY_URL, "https": PROXY_URL}
+HEADERS = {
+    "Authorization": f"Bearer {BGG_TOKEN}",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+}
+
 def fetch_bgg_stats(bgg_id, is_rpg, base_url):
     url = f"{base_url}?id={bgg_id}&stats=1"
     if is_rpg:
         url += "&type=rpgitem"
-    headers = {"Authorization": f"Bearer {BGG_TOKEN}"}
     try:
-        r = requests.get(url, headers=headers, timeout=30)
+        r = requests.get(url, headers=HEADERS, proxies=PROXIES, timeout=30)
         if r.status_code == 200: return r.text
         if r.status_code == 202:
             logger.info(f"API 202 for {bgg_id}. Sleeping 5s.")
@@ -72,12 +79,20 @@ def bgg_harvester_http(request):
         stats_table = f"{PROJECT_ID}.dnd_trends_raw.bgg_product_stats"
         base_url = "https://boardgamegeek.com/xmlapi2/thing"
 
+    # Dedup guard — skip if today's data already exists
+    run_date = str(date.today())
+    dedup_check = client.query(
+        f"SELECT COUNT(*) as cnt FROM `{stats_table}` WHERE date = '{run_date}'"
+    ).result()
+    if next(iter(dedup_check)).cnt > 0:
+        logger.info(f"Data already exists for {run_date} — skipping run.")
+        return json.dumps({"status": "skipped", "reason": "already ran today", "date": run_date}), 200
+
     query = f"SELECT concept_name, bgg_id FROM `{MAP_TABLE}`"
     rows = list(client.query(query).result())
     logger.info(f"Processing {len(rows)} IDs")
-    
+
     insert_rows = []
-    run_date = str(date.today())
     
     for row in rows:
         xml = fetch_bgg_stats(row.bgg_id, is_rpg, base_url)
