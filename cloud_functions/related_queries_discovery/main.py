@@ -120,7 +120,20 @@ def _safe_fetch(pytrends: TrendReq, kw_list: list[str], attempt: int = 1):
             gprop="",
         )
         queries = pytrends.related_queries()  # {kw: {"top": df, "rising": df}}
+
+        # Sleep between the two calls — Google rate-limits /relatedqueries and
+        # /relatedsearches independently; back-to-back calls cause the second
+        # to return None silently rather than raising a 429.
+        time.sleep(random.uniform(5, 10))
+
         topics  = pytrends.related_topics()   # {kw: {"top": df, "rising": df}}
+
+        # Warn explicitly if topics came back empty — makes silent failures visible in logs
+        kw = kw_list[0] if kw_list else "?"
+        topic_result = (topics or {}).get(kw, {})
+        if not topic_result or (topic_result.get("top") is None and topic_result.get("rising") is None):
+            log.warning("related_topics() returned no data for '%s' — possible rate-limit or no topic coverage", kw)
+
         return queries, topics
 
     except Exception as exc:

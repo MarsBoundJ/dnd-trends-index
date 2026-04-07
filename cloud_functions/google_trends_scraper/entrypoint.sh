@@ -1,13 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Starting Gost Local Stealth Bridge..."
-# Create an unauthenticated HTTP proxy on port 3128 that passes through to Webshare's rotating SOCKS5
-./gost -L=:3128 -F=http://oxsjenoi-residential-US-rotate:yw72fdfu37vt@p.webshare.io:80 &
-
-echo "⏳ Waiting for Ghost Bridge to initialize..."
-sleep 3
-
-echo "🚀 Launching Playwright Firefox Engine..."
-# Execute the python scraper command passed via CMD
+echo "🚀 Launching Playwright Firefox Engine (direct HTTP proxy via PROXY_URL env var)..."
+# GOST bridge removed — Playwright now uses the Webshare HTTP proxy directly.
+# Proxy credentials are injected via the PROXY_URL environment variable on the Cloud Run job.
 exec "$@"
