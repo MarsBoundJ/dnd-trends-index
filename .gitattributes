@@ -1,0 +1,4 @@
+# Force LF for files that run on Linux containers (prevents Windows CRLF from breaking bash shebangs)
+*.sh    text eol=lf
+*.py    text eol=lf
+Dockerfile* text eol=lf
