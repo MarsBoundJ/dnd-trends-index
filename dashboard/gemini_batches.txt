@@ -1,0 +1,926 @@
+1. Acererak
+2. Acid Seal
+3. Aida Reedmane
+4. Akaanvaerd
+5. Alderheart
+6. Alderheart’s Most Wanted
+7. Alion Malwyn
+8. Alistair Blackwood
+9. Alphonse Rubenes MD
+10. Alustriel Silverhand
+11. Alustriel's Sanctum
+12. Amble
+13. Amethyst Academy
+14. Amethyst Knife
+15. Amrik Vanthampur
+16. Amrisiol Touchfire
+17. Anaya
+18. Andir Valmakos
+19. Andrella
+20. Angajuk
+21. Angajuk's Bell
+22. Angmar
+23. Anthracia, Princess of Venom
+24. Antronec, the City of Artisans
+25. Apocalypse Domain
+26. Arachnoid Stalker
+27. Arcana Pansophical
+28. Arcane Brotherhood
+29. Arch Daemons
+30. Arch Seraphs
+31. Ardengloom
+32. Argan Rael
+33. Ari Strongbow
+34. Arkhan the Cruel
+35. Arkhan's Tower
+36. Arlowene Lum
+37. Aronar Valkys
+38. Arrevis “The Seahawk” Fleet
+39. Arthur Holrow
+40. Arveiaturace
+41. Ascendant Vladimir von Drakken
+42. Ashardalon
+43. Ashbarrow
+44. Ashes to Ashes
+45. Ashyra
+46. Ashyra, Keeper of the Crypt
+47. Aster “the Thorn” Amaryllis
+48. Astral Reavers
+49. Astramar
+50. Atagua
+51. Atash
+52. Athmia Valkys
+53. Atæshia
+54. Atæshia, Queen of Ash
+55. Augrael
+56. Auntie Greenbones
+57. Auril the Frostmaiden
+58. Auril's Abode
+59. Auroral Diamond
+60. Aurumvas
+61. Aurumvas of Meaningless Greed
+62. Avarice
+63. Avernus
+64. Awaken Portal
+65. Ayik Ur
+66. Baiaga
+67. Bak Mei
+68. Bakaris the Younger
+69. Baldur's Gate
+70. Bandit Lord
+71. Banrion
+72. Baphomet
+73. Barcumbuk
+74. Baron Brantifax
+75. Baron Uthrak
+76. Baroness Brantifax
+77. Bartho
+78. Bavlorna Blightstraw
+79. Bavlorna's Cottage
+80. Becklin Uth Viharin
+81. Bel
+82. Bel's Forge
+83. Belcorra Haruvex
+84. Belephaion
+85. Bernice Blatherwick
+86. Bernice’s Recruits
+87. Bervis
+88. Beth Smith
+89. Bethra
+90. Big Linda
+91. Bigger Linda
+92. Bindlemint Mincemower
+93. Birdfolk Dockmaster
+94. Birdfolk Farmer
+95. Birdfolk Guard
+96. Birdfolk Militia
+97. Birdfolk Sailor
+98. Birdfolk Skirmisher
+99. Birdfolk Thug
+100. Bita, the Council Speaker
+101. Black Knight Commander
+102. Blackjack Mel
+103. Blackmoor
+104. Blightshore
+105. Bloodlord Varrox
+106. Boatswain Tarto
+107. Bobby
+108. Bojack
+109. Boog
+110. Boughs of Eternity
+111. Brackenmill
+112. Breaking the Ice
+113. Bremen
+114. Brigands' Tollway
+115. Brimskarda
+116. Brother Trasig
+117. Brow
+118. Bubonia
+119. Bulette-Proof
+120. Bulwark Warrior
+121. Burlywhirl, Sergeant at Arms
+122. Cackle
+123. Cadwyll Piper
+124. Caer-Dineval
+125. Caer-Konig
+126. Caithas
+127. Calor
+128. Candlekeep
+129. Canon Athenodorus
+130. Captain Ansom Lang
+131. Cara Blaine
+132. Carman Rajani
+133. Cartographer’s Agent
+134. Carver Guild
+135. Catch the Couriers
+136. Cathartic
+137. Cathus Gright
+138. Cavalier
+139. Caves of Chaos
+140. Caves of Hunger
+141. Ceemal
+142. Celene
+143. Celestial Codex
+144. Cerberus Assembly
+145. Cervan Bandit General
+146. Cervan Priest
+147. Chafkhem
+148. Champion of Ravens
+149. Chandriu Invisar
+150. Chanelle Hallwinter
+151. Chaplain
+152. Chardansearavitriol
+153. Charmayne Daymore
+154. Chernabos
+155. Chitter
+156. Christophe Laszlo
+157. Chronurgy Magic
+158. Cinderhide
+159. City Watch Captain
+160. Clan Axebreaker
+161. Claret Orders
+162. Clasp Member
+163. Cloak
+164. Cloakwood
+165. Clockwork Horrors
+166. Clovis Concord
+167. Cluvus “The Godfeather” Lightbreeze
+168. Cold Seal
+169. Conch
+170. Connie
+171. Conyberry
+172. Cooperative Blade
+173. Corlie Halvachar
+174. Corremel, the City of Lanterns
+175. Corremel-in-Shadow
+176. Corvum Assassin
+177. Corvum Diviner
+178. Corvum Necromancer
+179. Corvum Songweaver
+180. Count Rhodar
+181. Count Rhodar von Glauer
+182. Court of Mice and Ravens
+183. Court of Night and Magic
+184. Court of Sparrows
+185. Court of Thieves
+186. Court of Winter’s Love
+187. Cragmaw Goblins
+188. Crags
+189. Crater's Rim
+190. Creatures of the Deep
+191. Crimson Countess
+192. Crimson Court
+193. Crypt of the Talhund
+194. Crypt-Starved Vladimir von Drakken
+195. Cudgel Ironsmile
+196. Cynidicea
+197. Daggerford
+198. Dagult Neverember
+199. Dalliance
+200. Damara
+201. Darrett Highwater
+202. Davokar
+203. Deep One Hybrid Priest
+204. Deep One Priest
+205. Delvin
+206. Demelza Tackwind
+207. Demogorgon
+208. Descent into the Dark
+209. Desert of Desolation
+210. Devourer Guild
+211. Diana
+212. Dinner and a Duel
+213. Dohma Raskovar
+214. Doty X
+215. Dougan's Hole
+216. Down at the Docks
+217. Downfall
+218. Dr. Cassee Dannell
+219. Dr. Everett Freed, Reanimator
+220. Dragon's Rest
+221. Dragotha
+222. Draven Malas
+223. Dread Morgan
+224. Dread and Breakfast
+225. Drella Swoop
+226. Drelnza
+227. Droop
+228. Dukha Batiyali
+229. Dumathoin's Gulch
+230. Dunal
+231. Dungeon Master
+232. Dungeon of Shadows
+233. Durixaviinox
+234. Durixaviinox’s Rest
+235. Dwendalian Empire
+236. Dwor
+237. Dzaan
+238. Easthaven
+239. Ebon Syndicate
+240. Ebondeath
+241. Ebondeath's Mausoleum
+242. Echo Knight
+243. Ectoplasmic Expulsion
+244. Eddie Munson
+245. Edwardia
+246. Eileanar
+247. Eiselcross
+248. Elandra
+249. Elder Child of Belcorra
+250. Elder Dragon Frog
+251. Elder Elemental Eye
+252. Elder Lava Wurm
+253. Elder Shadow Drake
+254. Elder Spirits
+255. Eldrick Runeweaver
+256. Eldritch Domain
+257. Elkhorn
+258. Elmandar
+259. Elora Quickwit
+260. Elro Aldataur
+261. Elturel
+262. Elucidarium
+263. Elva
+264. Elven Veteran Archer
+265. Elvish Veteran Archer
+266. Emad Farrock
+267. Endelyn Moongrave
+268. Enoch
+269. Entering the Wombweald
+270. Eriador
+271. Eric
+272. Erky Timbers
+273. Ethelred
+274. Evernight
+275. Evin Giltall
+276. Excess
+277. Eyes of the Mountain
+278. Fandeval, City of Goblins
+279. Faren’s Rest
+280. Ferol Sal
+281. Fheralai Stormsworn
+282. Field Commander
+283. Fields of the Crow
+284. Fight at the Museum
+285. Filonia
+286. Finn Dejarr
+287. Finneas “Bullybird” Klawk
+288. Fishery
+289. Fistandia's Mansion
+290. Flaming Fist
+291. Flauma
+292. Flee or Freeze
+293. Flemon
+294. Flizzlebin
+295. Flukespan Timbers
+296. Foes in the Foliage
+297. Folding Drums
+298. Fool's Gold
+299. Fool's Needle
+300. Fool’s Day
+301. Forest of Hands
+302. Forging a Future
+303. Forzaantilirys
+304. Forzaantirilys
+305. Frigid Woe
+306. Froghemoth Elder
+307. Frond Bellewether
+308. Fulcrum Lattice
+309. Galas Windrage
+310. Gallio Elibro
+311. Gallus Druid
+312. Gallus Monk
+313. Gallus Necromancer
+314. Games of the Gods
+315. Gar Shatterkeel
+316. Gargauth
+317. Garlo
+318. Gauntlgrym
+319. Gauntlight
+320. General Yael
+321. Gerta Downyruff
+322. Ghost Knight
+323. Gil Hopper
+324. Give it a Whirl
+325. Glaive
+326. Glasstaff
+327. Godsbreath
+328. Golden Grin
+329. Golden Vault
+330. Golden Vault Handler
+331. Goodlund
+332. Goxomoc
+333. Gragonis
+334. Grand Duke Ulder Ravengard
+335. Grand Secretary Wei
+336. Grave Order
+337. Graviturgy Magic
+338. Green as Copper
+339. Greenest
+340. Greyhawkins
+341. Grimskalle
+342. Grog Strongjaw
+343. Groves of the Wardens
+344. Grump
+345. Gundren Rockseeker
+346. Gurt Hallowfen
+347. Gwyn Oresong
+348. H'Catha
+349. Halia Thornton
+350. Hallowed Dark
+351. Halorin Yandres
+352. Hamlin Hurlwind
+353. Hank
+354. Hannity Lerune
+355. Hannu’s Provisions
+356. Harbin Wester
+357. Harlo Honeygrin
+358. Haruman
+359. Haruman's Hill
+360. Hatch and Release
+361. Havel of the Autumn Moon
+362. Hawk's End
+363. Haze Regent Lenore von Kessel
+364. He Who Laughs Last
+365. Head in the Clouds
+366. Heavensteppe
+367. Hedge Bard
+368. Hedge Mage
+369. Hedge Witch
+370. Hedy Crest
+371. Heir to the Lair
+372. Heldendrick
+373. Hell's Lash
+374. Hellfire Blade
+375. Hellvet Cloak
+376. Helmsdale
+377. Heluthe Brantifax
+378. Herald of Blood
+379. Herald of Darkness
+380. Herald of Fools
+381. Herdaenon Gup
+382. Hertilod
+383. Hezmin the Red
+384. High Flamekeeper Ophelia Reed
+385. High Mage Vairae
+386. High Roller
+387. Hither
+388. Hooded Lantern Veteran
+389. Hooded Lanterns
+390. Horns
+391. Hourglass Coven
+392. House of Convalescence
+393. House of Thalivar
+394. Hraesvelgr the Corpse Swallower
+395. Hrigg Roundhook
+396. Hulil Lutan
+397. Hunt for the Loper
+398. Iarno Albrek
+399. Icewind Dale
+400. Ichthyosis Mutagen
+401. Iggwilv
+402. Ignatius Inkbolt
+403. Ignis
+404. Illithinoch
+405. Ilvaash
+406. Infernal Chancellor Lazivos
+407. Inquisition Domain
+408. Invido
+409. Iriad
+410. Iron Shadow
+411. Irven Liel
+412. Ithu’rath
+413. Ithu’rath the All-Seeing
+414. Jabberwock
+415. Jakad’s Heart
+416. Jarazoun the Efreeti
+417. Jarlaxle Baenre
+418. Jarlmoot
+419. Jedar Pike
+420. Jerbeen Commoner
+421. Jerbeen Swashbuckler
+422. Jerbeen Thief
+423. Jerrin “Snapshadow” Hollowhome
+424. Jerry Smith
+425. Jeyev Veldrews
+426. Jigow
+427. Jonall Hannu
+428. Joster Mareet
+429. Jourrael, the Caedogeist
+430. Just the Tonic
+431. Jutkarr Flintfingers
+432. Kaga
+433. Kala Mabarin
+434. Kalaman
+435. Kalero
+436. Kansaldi Fire-Eyes
+437. Kapanuk Thuunlakalaga
+438. Karsus
+439. Karvosti
+440. Kas the Betrayer
+441. Kasem Aroon
+442. Keep on the Borderlands
+443. Keeper of Hounds
+444. Keeper of Ravens
+445. Keeper of the Blight
+446. Kelek
+447. Kender Stumblenoodles
+448. Ker-arach
+449. Keth Silverson
+450. Keyleth, Voice of the Tempest
+451. Kiir Bravarian
+452. Kiona
+453. Kiona the Dread Lord
+454. Kip Whistleslap
+455. Kishina Darrowind
+456. Klar
+457. Klarg
+458. Knight of Shadows
+459. Knight-Captain Theodore Marshal
+460. Knock
+461. Korda Glintstone
+462. Kostchtchie
+463. Kronen
+464. Kryn Dynasty
+465. Kwalish
+466. Labyrinth of Eyes
+467. Lady Applejack
+468. Lady Avalla Deseo
+469. Lady Dre
+470. Lady Emer
+471. Larswood
+472. Lathander's Shrine
+473. Law and Disorder
+474. Lazivos
+475. Leader of the Pack
+476. Leedara
+477. Leilon
+478. Lendarick Rootborn
+479. Lenny
+480. Lenore von Kessel
+481. Lestheris Soldrei
+482. Levna Drakehorn
+483. Lieutenant Petra Lang
+484. Light the Way
+485. Lightning Rods
+486. Lightning Seal
+487. Lightning Shield
+488. Lindon
+489. Little One
+490. Living Crucible
+491. Llyvessa
+492. Logger
+493. Lohezet
+494. Lonelywood
+495. Loomlurch
+496. Lord Bakaris
+497. Lord Commander Elias Drexel
+498. Lord Erasmus Deseo
+499. Lord Soth
+500. Lord Syuul
+501. Lord of the Bog
+502. Lord of the Feast
+503. Lorno and Lanelle Burrowbright
+504. Lucas Azira
+505. Lucretia Mathias
+506. Lulu
+507. Lum the Mad
+508. Luma Cleric of Ardea
+509. Luma Wizard
+510. Lupilisk Elder
+511. Lure of the Lamia
+512. Lyan Amaranthia
+513. Lyceum Scholar
+514. Lynx Creatlach
+515. Lyra
+516. Mad Maggie
+517. Mage Hunter Golem
+518. Mahadi
+519. Makalia Siannodel
+520. Making A Scene
+521. Malin
+522. Man in the Mirage
+523. Mapach Bandit
+524. Mapach Brute
+525. Mapach Thug
+526. Mapach Tinkerer
+527. Marauding Dragon
+528. Markos Delphi
+529. Marshview
+530. Mary Grimalkin
+531. Matreous
+532. Mayhem at the Crossroads
+533. Meadowfen
+534. Meatface
+535. Medi Tuck
+536. Meera Raheer
+537. Memory’s Rest
+538. Merchant Lord
+539. Mercion
+540. Merle and Morris Mossbow
+541. Merrymead, City of Revels
+542. Miirym
+543. Minarrh
+544. Mind Flayers
+545. Mirt the Merciless
+546. Misfortune Bringer
+547. Miska the Wolf-Spider
+548. Mister Light
+549. Mister Witch
+550. Moghadam
+551. Molliver
+552. Monster Hunter
+553. Moonflower Mosswell
+554. Morbus Doctore
+555. Mordenkainen
+556. Mortlock Vanthampur
+557. Morty Buckleberry
+558. Morty Smith
+559. Motherhorn
+560. Mournland
+561. Mr. Blip
+562. Murkmire Malevolence
+563. Muscle Wizard
+564. Mycete
+565. Myla
+566. Mythos Tomes
+567. Nafas
+568. Nass Lantomir
+569. Nathaniel Flint
+570. Neogi Hatchlings
+571. Nerukhet
+572. Nestra Vendri
+573. Netheril
+574. Neverwinter
+575. Nezznar the Spider
+576. Nib's Cave
+577. Nightbrook
+578. Niko
+579. Nimbral
+580. Nintra Siotta
+581. Nixylanna Vidorant
+582. Noble Houses
+583. Nog the Dwarf
+584. Nordmaar
+585. Occultist Guild
+586. Odaiova
+587. Off the Rails
+588. Ogolai Thuunlakalaga
+589. Olhydra
+590. Olhydra's Canal
+591. Ollin
+592. Olmarsh
+593. Oma Rattenfanger, Keeper of the Plain
+594. On the Menu
+595. Onyari
+596. Orcus
+597. Orn Proudbeak
+598. Orostead
+599. Orvo Mustave
+600. Otari
+601. Other Houses
+602. Palace of Exile
+603. Palace of Heart's Desire
+604. Pandemonium
+605. Peloo
+606. Percival de Rolo
+607. Petra Cloudburst
+608. Petra’s Crew
+609. Petty Officer Winston Ryeback
+610. Phaerimm
+611. Phandalin
+612. Pharaoh
+613. Pholsense
+614. Phorosfeather, Grand Inquisitor of Gesme
+615. Picco
+616. Pik Whistleslap
+617. Pike Trickfoot
+618. Pleasantpaw
+619. Plight of the Pegasus
+620. Podge
+621. Poison Seal
+622. Pral
+623. Presto
+624. Prince Ellan Farra
+625. Prismatic Circle
+626. Prismeer
+627. Prisoner 13
+628. Psychic Seal
+629. Qar, Master of Jackals
+630. Qazyldrath
+631. Quayside
+632. Queen Bargnot
+633. Queen Yolande
+634. Queen of Thieves
+635. Queen’s Park
+636. Qunbraxel
+637. Race to the Top
+638. Radlee “The Grim” Thugram
+639. Raegrin Mau
+640. Raptor Deckhand
+641. Raptor Explorer
+642. Raptor Freebooter
+643. Raptor Mercenary
+644. Raptor Ranger
+645. Ratling Burrow Warden
+646. Raven Uth Vogler
+647. Realmspace
+648. Reborn Vladimir von Drakken
+649. Reeves
+650. Reformed Cultist
+651. Reghed Tribes
+652. Reign of Iron
+653. Rerak
+654. Return the Favour
+655. Revel's End
+656. Rexxentrum
+657. Rey Mantlemorn
+658. Rick Sanchez
+659. Rilly June
+660. Ringlerun
+661. River, Amethyst Academy Liaison
+662. Rosohna
+663. Ruins of Thundertree
+664. Ruins of Wrathrock
+665. Runara
+666. Runic Colossus
+667. Russell
+668. Rust and Ruin
+669. Ruxithid the Chosen
+670. Sabrinda the White
+671. Saerthe Abizjn
+672. Safe in the Stillborn
+673. Sage, the Roostmother
+674. Sair
+675. Salsvault
+676. Saltar’s Port
+677. Saltfeather
+678. Sanguine Knight
+679. Save the Shelter
+680. Scanlan Shorthalt
+681. Scarlet Shadow
+682. Scoundrel
+683. Scython
+684. Sebastian
+685. Secret Agent
+686. Secret to Bear
+687. Serpent's Crown
+688. Shadow Fey Bandit
+689. Shadow of the Broodmother
+690. Shadowkeep
+691. Shadowsteel Ghoul
+692. Sharruth
+693. Shattered Obelisk
+694. Sheila
+695. Shemshime
+696. Shoppes and Stores
+697. Shrine of Morrigan
+698. Shrine to Olhydra
+699. Shtriga Nonna
+700. Siabsungkoh
+701. Sigil
+702. Sildar Hallwinter
+703. Silja Dejarr
+704. Silver Order Recruit
+705. Silver Order Squire
+706. Sinensa
+707. Sinensa's Sanctum
+708. Single Combat
+709. Sir Ursas
+710. Sister Garaele
+711. Skabatha Nightshade
+712. Skeleton Commander
+713. Skeleton Mage
+714. Skeleton Soldier
+715. Skopps the Beast-Breaker
+716. Skretch
+717. Skylla
+718. Slip Tideswell
+719. Smithy on the Scar
+720. Snap
+721. Sor'Kur
+722. Soriglass, City of Shades
+723. Soul Coin
+724. Sparkrender
+725. Spectral Warlord
+726. Spelljamming Helm
+727. Spiritfarer Erina
+728. Spleck Smandra
+729. Stahlmast’s Lair
+730. State of the Art
+731. Steel Hawk Captain
+732. Steel Hawk Soldier
+733. Stick’s Ferry
+734. Stoa Mossbow
+735. Strahd von Zarovich
+736. Strig Berserker
+737. Strig Knight
+738. Strig Tracker
+739. Strongheart
+740. Students of Snow
+741. Stygian Gambit
+742. Sublime Ravenfolk
+743. Summer Smith
+744. Sunblight
+745. Sundar the Bold
+746. Swamp of Fate
+747. Sword Wraith Commander
+748. Sylphise
+749. Sylvira Savikas
+750. Syndramas
+751. Szass Tam
+752. Takhisis
+753. Talhundereth
+754. Tarak
+755. Targos
+756. Tarnhem
+757. Tarrasque of Terror
+758. Taryon Darrington
+759. Tasha
+760. Tatina Rookledust
+761. Tayr the Paladin
+762. Teacher's Pet
+763. Tekeli-li
+764. Tem Temble
+765. Tempa Greenkeeper
+766. Temple of Bahamut
+767. Temple of Moloch
+768. Temple of Orcus
+769. Ten-Towns
+770. Teremini Nightsedge
+771. Termalaine
+772. Tev Sneviptrinket
+773. Tevor of the Spring Path
+774. Thaco
+775. Thalamra Vanthampur
+776. Thalivar's Beacon
+777. Than
+778. Tharbad
+779. Thavius Kreeg
+780. The Ashari
+781. The Avowed
+782. The Birdfolk
+783. The Buyer
+784. The Bürach Empire
+785. The Castellan
+786. The Clasp
+787. The Companion
+788. The Disembodied
+789. The Dohma
+790. The Downcast
+791. The Duchess
+792. The Family at the Jolly Dwarf
+793. The Horror
+794. The Humblefolk
+795. The H’rethi Desert
+796. The Kraken
+797. The Mossbows
+798. The Myriad
+799. The Parasite
+800. The Ragtaggers
+801. The Rat King
+802. The Remnants
+803. The Revelry
+804. The Rocborne
+805. The Thaumaturge
+806. The World Ender
+807. Theldin
+808. Thessalar
+809. Thither
+810. Thunder Seal
+811. Thurstwell Vanthampur
+812. Tiamat
+813. Tide's Up
+814. Tixie Tockworth
+815. Toadhop
+816. Tomb of Horrors
+817. Tomb of the Keeper
+818. Top of the World
+819. Torin
+820. Torver's Post
+821. Tower of Horn and Gold
+822. Trail Warden
+823. Trapper Guild
+824. Treasure Hunter
+825. Tree of Treasure
+826. Treyvan von Hirnschmann
+827. Trial and Error
+828. Trick Shot
+829. Trinket
+830. Truth or Scare
+831. Tuerny the Merciless
+832. Tulgi Lutan
+833. Tuval-Uthriar
+834. Ularan Mortus
+835. Ulsedra Vox
+836. Umberlee
+837. Umberlee's Maw
+838. Umbral Humans
+839. Unbound Satarre
+840. Undead Horde
+841. Uni
+842. Up in Smoke
+843. Urban Ranger
+844. Urgon Wenth
+845. Vagol Kuskolt
+846. Vairae
+847. Vale of Shadows
+848. Vali
+849. Valin Sarnaster
+850. Valor's Call
+851. Varrin Axebreaker
+852. Varrox
+853. Vecna
+854. Vellynne Harpell
+855. Velma Leicester
+856. Venger
+857. Verla Pelc
+858. Vex’ahlia de Rolo
+859. Victory “Vic” Graves
+860. Vidorant's Vault
+861. Vile Sazha
+862. Vinx
+863. Vivienn Dirroze
+864. Vladimir von Drakken
+865. Vogler
+866. Void Pirate Captain
+867. Void Pirate Herald
+868. Volstrucker Agent
+869. Vulpin Berserker
+870. Vulpin Buccaneer
+871. Vulpin Captain
+872. Vulpin Cult Fanatic
+873. Vulpin Gloomweaver
+874. Vulpin Noble
+875. Vulpin Priest of Kren
+876. Vulpin Spy
+877. Walk the Walk
+878. Warden's Office
+879. Warduke
+880. Warts and All
+881. Wastes of Xhorhas
+882. Waterdeep
+883. Wave of Destruction
+884. Wavechaser
+885. Way of the Lion
+886. Werewolf Knight
+887. Weslock
+888. Wicker’s Vigil
+889. Wildspace
+890. Will the Wise
+891. Willowbrush
+892. Win or Ooze
+893. Windbreak
+894. Windfall
+895. Winvarle
+896. Withered Eyeball
+897. Wretched Bloodline
+898. Wyrd Gnome
+899. Wytchway
+900. Xaantikorijek
+901. Xanthoria
+902. Xardorok Sunblight
+903. Xorannox
+904. Xorannox the Tyract
+905. Yalme
+906. Yeonido
+907. Yilsebek Dalambra
+908. Yndarien
+909. Yndaros
+910. Yon
+911. Yongjing
+912. Young-Gi
+913. Yselm Bloodfang
+914. Yserthrax
+915. Ythryn
+916. Yula Dargeria
+917. Zala Morphus
+918. Zalryr
+919. Zarak
+920. Zargash
+921. Zargon the Returner
+922. Zariel
+923. Zenith Aastrika
+924. Zephyr & Co.
+925. Zifa Freewind
+926. Zikran

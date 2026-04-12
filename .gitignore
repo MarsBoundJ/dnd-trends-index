@@ -24,3 +24,23 @@ node_modules/
 venv/
 .venv/
 dnd-key.json
+.claude/
+
+# Token / credential-adjacent scratch files
+token*.txt
+
+# Scratch output and audit artifacts
+audit_results*.txt
+audit_diversity_results.txt
+bq_tables*.txt
+clusters_data.txt
+diff_res.txt
+tagger_err.txt
+itch_output*.txt
+itchio_output.txt
+monster_sample.txt
+jams_html.txt
+my_fix.diff
+concept_library_*_output*.txt
+view_definitions*.txt
+wotc_market_analysis_report.md
