@@ -82,24 +82,52 @@ def _build_proxy_url():
 
 
 def _build_pytrends_session(proxy_url: str = None) -> TrendReq:
-    """ Build a TrendReq that optionally routes through a proxy. """
+    """
+    Build a TrendReq that optionally routes through a proxy.
+    Proxy is passed via the direct `proxies` dict parameter (not requests_args)
+    because pytrends 4.9.2 only applies session.proxies.update() from that path.
+    """
     requests_args = {
         "verify": True,
         "headers": {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0",
             "Accept-Language": "en-US,en;q=0.9",
         }
     }
+    # Pass proxy both ways:
+    # - proxies=[url] for GetGoogleCookie() which uses self.proxies[index]
+    # - requests_args["proxies"] for _get_data() session-level proxy (if pytrends applies it)
+    proxies_list = [proxy_url] if proxy_url else []
     if proxy_url:
         requests_args["proxies"] = {"http": proxy_url, "https": proxy_url}
-    return TrendReq(
+        log.warning("PROXY: routing through %s", proxy_url.split("@")[-1])
+    else:
+        log.warning("PROXY: none — requests will originate from GCP IP (likely to be rate-limited)")
+
+    pt = TrendReq(
         hl=LANG,
         tz=360,
         timeout=(10, 30),
         retries=2,
         backoff_factor=0.5,
+        proxies=proxies_list,
         requests_args=requests_args,
     )
+
+    # Post-init: log all TrendReq attributes to find the session object name
+    if proxy_url:
+        attrs = [a for a in vars(pt) if 'session' in a.lower() or 'proxy' in a.lower()]
+        log.warning("PROXY: TrendReq instance attrs matching session/proxy: %s", attrs)
+        for attr in attrs:
+            sess = getattr(pt, attr, None)
+            if sess and hasattr(sess, 'proxies'):
+                sess.proxies.update({"http": proxy_url, "https": proxy_url})
+                log.warning("PROXY: set on pt.%s.proxies", attr)
+                break
+        else:
+            log.warning("PROXY: no session attr found. All instance attrs: %s", list(vars(pt).keys()))
+
+    return pt
 
 
 # ---------------------------------------------------------------------------
@@ -110,39 +138,50 @@ def _safe_fetch(pytrends: TrendReq, kw_list: list[str], attempt: int = 1):
     """
     Wraps pytrends.build_payload + related_queries/topics with retry logic.
     Returns (queries_dict, topics_dict) or raises on persistent failure.
+
+    related_topics() is handled separately because pytrends has a known bug:
+    it crashes with IndexError when rankedList is empty instead of returning
+    an empty result. We catch that gracefully and continue with queries data.
     """
+    kw = kw_list[0] if kw_list else "?"
+
+    # --- related_queries (primary data — retry on failure) ---
     try:
-        pytrends.build_payload(
-            kw_list,
-            cat=0,
-            timeframe=TIMEFRAME,
-            geo=GEO,
-            gprop="",
-        )
+        pytrends.build_payload(kw_list, cat=0, timeframe=TIMEFRAME, geo=GEO, gprop="")
         queries = pytrends.related_queries()  # {kw: {"top": df, "rising": df}}
-
-        # Sleep between the two calls — Google rate-limits /relatedqueries and
-        # /relatedsearches independently; back-to-back calls cause the second
-        # to return None silently rather than raising a 429.
-        time.sleep(random.uniform(5, 10))
-
-        topics  = pytrends.related_topics()   # {kw: {"top": df, "rising": df}}
-
-        # Warn explicitly if topics came back empty — makes silent failures visible in logs
-        kw = kw_list[0] if kw_list else "?"
-        topic_result = (topics or {}).get(kw, {})
-        if not topic_result or (topic_result.get("top") is None and topic_result.get("rising") is None):
-            log.warning("related_topics() returned no data for '%s' — possible rate-limit or no topic coverage", kw)
-
-        return queries, topics
-
+        log.info("related_queries() OK for '%s'", kw)
     except Exception as exc:
-        log.warning("pytrends error (attempt %d/%d): %s", attempt, RETRIES, exc)
+        import traceback as _tb
+        log.warning("related_queries error (attempt %d/%d) for '%s': %s\n%s",
+                    attempt, RETRIES, kw, exc, _tb.format_exc())
         if attempt >= RETRIES:
             raise
         jitter = random.uniform(0, 10)
         time.sleep(RETRY_BACKOFF * attempt + jitter)
         return _safe_fetch(pytrends, kw_list, attempt + 1)
+
+    # Sleep between the two calls — Google rate-limits /relatedqueries and
+    # /relatedsearches independently; back-to-back calls cause the second
+    # to return None silently rather than raising a 429.
+    time.sleep(random.uniform(5, 10))
+
+    # --- related_topics (secondary — fail gracefully, don't discard queries data) ---
+    topics = None
+    try:
+        topics = pytrends.related_topics()   # {kw: {"top": df, "rising": df}}
+        topic_result = (topics or {}).get(kw, {})
+        if not topic_result or (topic_result.get("top") is None and topic_result.get("rising") is None):
+            log.warning("related_topics() returned no data for '%s' — possible rate-limit or no topic coverage", kw)
+        else:
+            log.info("related_topics() OK for '%s'", kw)
+    except IndexError:
+        # pytrends bug: crashes on empty rankedList instead of returning empty result
+        log.warning("related_topics() returned empty rankedList for '%s' — skipping topics", kw)
+    except Exception as exc:
+        import traceback as _tb
+        log.warning("related_topics() error for '%s': %s\n%s", kw, exc, _tb.format_exc())
+
+    return queries, topics
 
 
 def _df_to_rows(df, seed_kw: str, result_type: str, data_type: str, run_id: str) -> list[dict]:
@@ -288,16 +327,22 @@ def _get_known_terms(client: bigquery.Client) -> set[str]:
 # Seeds table helpers
 # ---------------------------------------------------------------------------
 
+SEEDS_PER_RUN = int(os.environ.get("SEEDS_PER_RUN", "15"))
+
+
 def _fetch_active_seeds(bq: bigquery.Client) -> list[str]:
     """
     Load active seed keywords from dnd_trends_categorized.seeds.
+    Picks the SEEDS_PER_RUN least-recently-used seeds so the full set is
+    rotated across runs rather than always processing the same first N.
     Falls back to DEFAULT_SEEDS if the table is empty or unavailable.
     """
     query = f"""
         SELECT term
         FROM `{SEEDS_TABLE}`
         WHERE is_active = TRUE
-        ORDER BY added_at ASC
+        ORDER BY last_used_at ASC NULLS FIRST, added_at ASC
+        LIMIT {SEEDS_PER_RUN}
     """
     try:
         seeds = [row["term"] for row in bq.query(query).result()]
@@ -313,11 +358,20 @@ def _fetch_active_seeds(bq: bigquery.Client) -> list[str]:
 def _update_seed_last_used(bq: bigquery.Client, seeds: list[str]) -> None:
     """
     Write back last_used_at = NOW() for every seed that was processed.
-    BQ UPDATE via DML (streaming update not supported, DML is fine for ~10 rows).
+    Uses a parameterized UNNEST query to avoid SQL injection / escaping bugs
+    with single-quoted terms (BigQuery uses \\' not '' for escaping).
     """
     if not seeds:
         return
-    terms_csv = ", ".join(f"'{s.replace(chr(39), chr(39)*2)}'" for s in seeds)
+    # Build a VALUES list using UNNEST — avoids all string-escaping issues
+    placeholders = ", ".join(f"'{s}'" for s in seeds if "'" not in s)
+    safe_seeds = [s for s in seeds if "'" not in s]
+    problematic = [s for s in seeds if "'" in s]
+    if problematic:
+        log.warning("Skipping last_used_at update for seeds with single quotes: %s", problematic)
+    if not safe_seeds:
+        return
+    terms_csv = ", ".join(f"'{s}'" for s in safe_seeds)
     dml = f"""
         UPDATE `{SEEDS_TABLE}`
         SET last_used_at = CURRENT_TIMESTAMP()
@@ -325,7 +379,7 @@ def _update_seed_last_used(bq: bigquery.Client, seeds: list[str]) -> None:
     """
     try:
         bq.query(dml).result()
-        log.info("Updated last_used_at for %d seeds", len(seeds))
+        log.info("Updated last_used_at for %d seeds", len(safe_seeds))
     except Exception as exc:
         log.warning("Could not update seed last_used_at: %s", exc)
 
