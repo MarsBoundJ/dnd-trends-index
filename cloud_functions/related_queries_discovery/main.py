@@ -56,7 +56,7 @@ GEO             = os.environ.get("TRENDS_GEO", "US")          # "" = worldwide
 TIMEFRAME       = os.environ.get("TRENDS_TIMEFRAME", "today 3-m")
 LANG            = os.environ.get("TRENDS_LANG", "en-US")
 RETRIES         = int(os.environ.get("TRENDS_RETRIES", "3"))
-RETRY_BACKOFF   = float(os.environ.get("TRENDS_RETRY_BACKOFF", "30"))  # seconds
+RETRY_BACKOFF   = float(os.environ.get("TRENDS_RETRY_BACKOFF", "15"))  # seconds
 
 # Default seed keywords (overridable via request body)
 DEFAULT_SEEDS = [
@@ -163,7 +163,7 @@ def _safe_fetch(pytrends: TrendReq, kw_list: list[str], attempt: int = 1):
     # Sleep between the two calls — Google rate-limits /relatedqueries and
     # /relatedsearches independently; back-to-back calls cause the second
     # to return None silently rather than raising a 429.
-    time.sleep(random.uniform(5, 10))
+    time.sleep(random.uniform(3, 6))
 
     # --- related_topics (secondary — fail gracefully, don't discard queries data) ---
     topics = None
@@ -327,7 +327,7 @@ def _get_known_terms(client: bigquery.Client) -> set[str]:
 # Seeds table helpers
 # ---------------------------------------------------------------------------
 
-SEEDS_PER_RUN = int(os.environ.get("SEEDS_PER_RUN", "15"))
+SEEDS_PER_RUN = int(os.environ.get("SEEDS_PER_RUN", "40"))
 
 
 def _fetch_active_seeds(bq: bigquery.Client) -> list[str]:
@@ -417,8 +417,8 @@ def _process_seeds(pytrends: TrendReq, seeds: list[str], bq: bigquery.Client, ru
             df = (topics_data or {}).get(seed, {}).get(rtype)
             all_raw_rows.extend(_df_to_rows(df, seed, rtype, "topic", run_id))
 
-        # Polite delay between seeds — mirrors existing scraper behaviour
-        time.sleep(random.uniform(8, 15))
+        # Polite delay between seeds
+        time.sleep(random.uniform(3, 6))
 
     # Write all raw rows to BQ
     _insert_rows(bq, RESULTS_TABLE, all_raw_rows)

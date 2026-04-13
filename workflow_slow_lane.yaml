@@ -45,9 +45,11 @@ main:
                   - call_rpggeek:
                       call: http.post
                       args:
-                        url: "https://us-central1-${project_id}.cloudfunctions.net/rpggeek_client"
+                        url: "https://bgg-harvester-187467566422.us-central1.run.app"
                         auth:
                           type: OIDC
+                        body:
+                          rpg: true
                       result: rpggeek_result
 
     - return_results:

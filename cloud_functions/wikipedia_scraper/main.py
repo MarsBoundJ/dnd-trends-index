@@ -41,6 +41,7 @@ def fetch_daily_views(article_title, start_date, end_date):
             r = requests.get(url, headers=headers)
         
         if r.status_code != 200:
+            print(f"  ⚠️ {article_title}: HTTP {r.status_code}")
             return []
             
         return r.json().get("items", [])
@@ -72,6 +73,10 @@ def wikipedia_scraper_http(request):
         # 1. Get List
         articles = list(get_tracked_articles(client))
         print(f"Found {len(articles)} tracked articles.")
+
+        if not articles:
+            print("❌ No tracked articles in registry. Aborting without updating watermark.")
+            return json.dumps({"status": "error", "message": "No tracked articles found"}), 200
         
         all_rows = []
         total_rows_inserted = 0
@@ -119,12 +124,15 @@ def wikipedia_scraper_http(request):
         result_stats = {
             "articles_scanned": len(articles),
             "rows_inserted": total_rows_inserted,
-            "status": "success"
+            "status": "success" if total_rows_inserted > 0 else "empty"
         }
-        
-        if result_stats['status'] == 'success':
+
+        if total_rows_inserted > 0:
             watermark.update_marker(end_time)
-            
+            print(f"✅ Inserted {total_rows_inserted} rows. Watermark updated.")
+        else:
+            print(f"⚠️ Zero rows inserted from {len(articles)} articles. Watermark NOT updated.")
+
         return json.dumps(result_stats), 200
 
     except Exception as e:
