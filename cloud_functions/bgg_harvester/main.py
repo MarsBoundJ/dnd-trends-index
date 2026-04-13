@@ -88,7 +88,8 @@ def bgg_harvester_http(request):
         logger.info(f"Data already exists for {run_date} — skipping run.")
         return json.dumps({"status": "skipped", "reason": "already ran today", "date": run_date}), 200
 
-    query = f"SELECT concept_name, bgg_id FROM `{MAP_TABLE}`"
+    platform = "rpggeek" if is_rpg else "bgg"
+    query = f"SELECT concept_name, bgg_id FROM `{MAP_TABLE}` WHERE IFNULL(platform, 'bgg') = '{platform}'"
     rows = list(client.query(query).result())
     logger.info(f"Processing {len(rows)} IDs")
 
