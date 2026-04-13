@@ -355,6 +355,9 @@ def _fetch_active_seeds(bq: bigquery.Client) -> list[str]:
     return DEFAULT_SEEDS
 
 
+ZERO_YIELD_STRIKE_LIMIT = int(os.environ.get("ZERO_YIELD_STRIKE_LIMIT", "3"))
+
+
 def _update_seed_last_used(bq: bigquery.Client, seeds: list[str]) -> None:
     """
     Write back last_used_at = NOW() for every seed that was processed.
@@ -384,6 +387,60 @@ def _update_seed_last_used(bq: bigquery.Client, seeds: list[str]) -> None:
         log.warning("Could not update seed last_used_at: %s", exc)
 
 
+def _update_seed_zero_counts(bq: bigquery.Client, yielded: list[str], barren: list[str]) -> None:
+    """
+    Track zero-result strikes per seed.
+    - Seeds that yielded results: reset zero_result_count to 0.
+    - Seeds that returned nothing: increment zero_result_count.
+    - Seeds that hit ZERO_YIELD_STRIKE_LIMIT: auto-archive (is_active = FALSE).
+    """
+    def _safe_csv(terms):
+        safe = [s for s in terms if "'" not in s]
+        return ", ".join(f"'{s}'" for s in safe) if safe else None
+
+    # Reset counter for seeds that produced results
+    if yielded:
+        csv = _safe_csv(yielded)
+        if csv:
+            try:
+                bq.query(f"""
+                    UPDATE `{SEEDS_TABLE}`
+                    SET zero_result_count = 0
+                    WHERE term IN ({csv})
+                """).result()
+            except Exception as exc:
+                log.warning("Could not reset zero_result_count: %s", exc)
+
+    # Increment counter for barren seeds
+    if barren:
+        csv = _safe_csv(barren)
+        if csv:
+            try:
+                bq.query(f"""
+                    UPDATE `{SEEDS_TABLE}`
+                    SET zero_result_count = IFNULL(zero_result_count, 0) + 1
+                    WHERE term IN ({csv})
+                """).result()
+            except Exception as exc:
+                log.warning("Could not increment zero_result_count: %s", exc)
+
+            # Auto-archive seeds that hit the strike limit
+            try:
+                result = bq.query(f"""
+                    UPDATE `{SEEDS_TABLE}`
+                    SET is_active = FALSE,
+                        notes = CONCAT(IFNULL(notes, ''), ' | Auto-archived: zero yield x{ZERO_YIELD_STRIKE_LIMIT}')
+                    WHERE term IN ({csv})
+                      AND zero_result_count >= {ZERO_YIELD_STRIKE_LIMIT}
+                      AND is_active = TRUE
+                """).result()
+                if result.num_dml_affected_rows:
+                    log.info("Auto-archived %d seeds after %d zero-yield strikes",
+                             result.num_dml_affected_rows, ZERO_YIELD_STRIKE_LIMIT)
+            except Exception as exc:
+                log.warning("Could not auto-archive seeds: %s", exc)
+
+
 # ---------------------------------------------------------------------------
 # Core orchestration
 # ---------------------------------------------------------------------------
@@ -397,6 +454,8 @@ def _process_seeds(pytrends: TrendReq, seeds: list[str], bq: bigquery.Client, ru
     Returns summary stats dict.
     """
     all_raw_rows: list[dict] = []
+    yielded_seeds: list[str] = []
+    barren_seeds: list[str] = []
 
     # Process one seed at a time to avoid Google throttling on bulk payloads
     for seed in seeds:
@@ -405,23 +464,36 @@ def _process_seeds(pytrends: TrendReq, seeds: list[str], bq: bigquery.Client, ru
             queries_data, topics_data = _safe_fetch(pytrends, [seed])
         except Exception as exc:
             log.error("Skipping seed '%s' after %d retries: %s", seed, RETRIES, exc)
+            barren_seeds.append(seed)
             continue
 
         # --- related_queries ---
+        seed_rows = []
         for rtype in ("top", "rising"):
             df = (queries_data or {}).get(seed, {}).get(rtype)
-            all_raw_rows.extend(_df_to_rows(df, seed, rtype, "query", run_id))
+            seed_rows.extend(_df_to_rows(df, seed, rtype, "query", run_id))
 
         # --- related_topics ---
         for rtype in ("top", "rising"):
             df = (topics_data or {}).get(seed, {}).get(rtype)
-            all_raw_rows.extend(_df_to_rows(df, seed, rtype, "topic", run_id))
+            seed_rows.extend(_df_to_rows(df, seed, rtype, "topic", run_id))
+
+        all_raw_rows.extend(seed_rows)
+        if seed_rows:
+            yielded_seeds.append(seed)
+        else:
+            barren_seeds.append(seed)
 
         # Polite delay between seeds
         time.sleep(random.uniform(3, 6))
 
     # Write all raw rows to BQ
     _insert_rows(bq, RESULTS_TABLE, all_raw_rows)
+
+    # Update zero-result strike counts and auto-archive chronic duds
+    if yielded_seeds or barren_seeds:
+        log.info("Seed yield: %d produced results, %d barren", len(yielded_seeds), len(barren_seeds))
+        _update_seed_zero_counts(bq, yielded_seeds, barren_seeds)
 
     # --- Novelty flagging: Rising terms not in concept_library ---
     known_terms = _get_known_terms(bq)
