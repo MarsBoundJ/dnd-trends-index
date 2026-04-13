@@ -48,6 +48,33 @@ CATEGORY_LIMITS = {
 
 DEFAULT_LIMIT = 250  # Total cap across all categories
 
+# Hand-crafted UA umbrella seeds — let Google Trends discovery find the
+# specific terms players actually search for (packet names, specific options,
+# mechanic changes). UA content goes through many revisions so guessing
+# exact search terms is unreliable; broad seeds + related_queries() is better.
+UA_MANUAL_SEEDS = [
+    "unearthed arcana",
+    "unearthed arcana 2024",
+    "unearthed arcana 2025",
+    "one dnd playtest",
+    "dnd playtest material",
+    "ua dnd",
+    "ua ranger dnd",
+    "ua monk dnd",
+    "ua warlock dnd",
+    "ua paladin dnd",
+    "ua druid dnd",
+    "ua sorcerer dnd",
+    "ua fighter dnd",
+    "weapon mastery 5e",
+    "new dnd rules 2024",
+    "dnd 2024 playtest",
+    "one dnd class changes",
+    "dnd 2024 subclass",
+    "ua feat dnd",
+    "bastion system dnd",
+]
+
 
 def get_existing_seeds(client):
     """Fetch all current seed terms to avoid duplicates."""
@@ -94,18 +121,20 @@ def get_candidate_concepts(client, existing_seeds, total_limit):
 def build_seed_rows(candidates):
     """Convert candidate concepts into seed table rows."""
     now = datetime.datetime.utcnow().isoformat()
-    return [
-        {
+    rows = []
+    for c in candidates:
+        is_manual = c["category"].startswith("UA (manual")
+        rows.append({
             "term": c["concept_name"],
-            "added_by": "auto",
-            "source_concept": c["concept_name"],
+            "added_by": "manual" if is_manual else "auto",
+            "source_concept": None if is_manual else c["concept_name"],
             "is_active": True,
             "added_at": now,
             "last_used_at": None,
-            "notes": f"Bulk seeded from concept_library ({c['category']})",
-        }
-        for c in candidates
-    ]
+            "notes": f"UA umbrella seed for discovery" if is_manual
+                     else f"Bulk seeded from concept_library ({c['category']})",
+        })
+    return rows
 
 
 def main():
@@ -120,12 +149,20 @@ def main():
     existing = get_existing_seeds(client)
     print(f"  {len(existing)} seeds already in table")
 
+    # --- UA manual seeds (injected separately from concept_library) ---
+    ua_new = [t for t in UA_MANUAL_SEEDS if t.lower().strip() not in existing]
+    print(f"  {len(ua_new)} new UA umbrella seeds (of {len(UA_MANUAL_SEEDS)} total)")
+
     print(f"Finding candidates from {len(HIGH_VALUE_CATEGORIES)} categories (limit: {args.limit})...")
     candidates = get_candidate_concepts(client, existing, args.limit)
-    print(f"  {len(candidates)} new candidates found")
+    print(f"  {len(candidates)} new concept_library candidates found")
+
+    # Merge UA seeds as candidates
+    for term in ua_new:
+        candidates.append({"concept_name": term, "category": "UA (manual seed)"})
 
     if not candidates:
-        print("Nothing to inject — all high-value concepts already seeded.")
+        print("Nothing to inject — all seeds already present.")
         return
 
     # Show category breakdown
