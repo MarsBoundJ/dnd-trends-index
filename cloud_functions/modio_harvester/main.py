@@ -148,6 +148,10 @@ class ModioHarvester:
 @functions_framework.http
 def modio_harvester_http(request):
     """HTTP entry point for mod.io Harvester."""
+    from shabbat_gate import is_shabbat, shabbat_skip_response
+    if is_shabbat():
+        return shabbat_skip_response()
+
     print("Starting mod.io Harvester...")
     try:
         body = {}

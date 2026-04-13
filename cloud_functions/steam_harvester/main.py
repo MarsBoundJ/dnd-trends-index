@@ -215,6 +215,10 @@ class SteamHarvester:
 @functions_framework.http
 def steam_harvester_http(request):
     """HTTP entry point for Steam Harvester."""
+    from shabbat_gate import is_shabbat, shabbat_skip_response
+    if is_shabbat():
+        return shabbat_skip_response()
+
     print("Starting Steam Harvester...")
     try:
         body = {}
