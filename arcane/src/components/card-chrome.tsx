@@ -1,6 +1,7 @@
 "use client"
 
 import React from "react"
+import { Bookmark } from "lucide-react"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {
@@ -69,7 +70,7 @@ export interface CardChromeProps {
   cardType?: string
   /**
    * Confidence score 0–100. Maps to a metal tier (§9.16) which drives:
-   * 1. The always-visible pip color (top-left header, both platforms).
+   * 1. The always-visible pip color (top-right header cluster, both platforms).
    * 2. The hover border-color on desktop (Step 13 upgrades this to an Aceternity halo).
    * Full methodology popover on pip tap is wired in Step 6.
    */
@@ -120,11 +121,27 @@ export function CardChrome({
         {/* ── Header bar ──────────────────────────────────────────────────── */}
         <CardHeader className="flex flex-row items-start gap-3 p-4 pb-3 space-y-0">
 
-          {/* Confidence pip — top-left, always visible on both platforms (§5.2, §9.17).
-              ~10px dot colored by metal tier. Tooltip shows raw % for now;
-              full methodology popover (Tap pip → "Data: X% · AI: Y% · Combined: Z%")
-              is wired in Step 6. */}
-          <div className="flex items-center mt-0.5 shrink-0">
+          {/* Title + subtitle — gets the full left side, unobstructed (§4.4) */}
+          <div className="flex-1 min-w-0">
+            <h3 className="font-display text-sm font-semibold text-parchment leading-tight truncate">
+              {title}
+            </h3>
+            {subtitle && (
+              <p className="text-xs text-ash mt-0.5 leading-tight">
+                {subtitle}
+              </p>
+            )}
+          </div>
+
+          {/* Metadata cluster — top-right (§4.5, §5.2, §9.17).
+              Pip + two icon slots live together, mirroring MtG card layout where
+              the tier/cost symbol sits top-right alongside type icons.
+              Pip = confidence tier (always visible, both platforms).
+              Slot 1 = card type icon. Slot 2 = lens tag icon.
+              Real heraldic SVGs arrive in Step 13. */}
+          <div className="flex items-center gap-1.5 mt-0.5 shrink-0">
+
+            {/* Confidence pip */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
@@ -137,36 +154,21 @@ export function CardChrome({
                 />
               </TooltipTrigger>
               <TooltipContent
-                side="right"
+                side="bottom"
                 className="bg-iron border border-bronze text-parchment text-xs py-1 px-2"
               >
                 <span className="font-mono font-semibold">{confidence}%</span>
                 <span className="text-ash ml-1.5">{tierLabel[tier]}</span>
               </TooltipContent>
             </Tooltip>
-          </div>
 
-          {/* Title + subtitle */}
-          <div className="flex-1 min-w-0">
-            <h3 className="font-display text-sm font-semibold text-parchment leading-tight truncate">
-              {title}
-            </h3>
-            {subtitle && (
-              <p className="text-xs text-ash mt-0.5 leading-tight">
-                {subtitle}
-              </p>
-            )}
-          </div>
-
-          {/* Icon slots — top-right (§4.5). Exactly two: Slot 1 = card type,
-              Slot 2 = lens tag. Empty bordered squares as placeholders now;
-              real heraldic guild-mark SVGs arrive in Step 13. */}
-          <div className="flex items-center gap-1 mt-0.5 shrink-0">
+            {/* Icon slot 1 — card type */}
             <span
               aria-label={cardType ? `Card type: ${cardType}` : "Card type (slot 1)"}
               title={cardType ?? "card type"}
               className="flex items-center justify-center w-4 h-4 rounded-sm border border-bronze/40"
             />
+            {/* Icon slot 2 — lens tag */}
             <span
               aria-label={lens ? `Lens: ${lens}` : "Lens (slot 2)"}
               title={lens ?? "lens"}
@@ -191,13 +193,18 @@ export function CardChrome({
           >
             Explain
           </Button>
+          {/* NOTE: "Stow" + Bookmark icon may need revisiting — users unfamiliar
+              with D&D lingo might not parse the verb immediately. The Bookmark
+              icon helps bridge the gap. Revisit in Step 5 when the Bag of
+              Holding is wired and we can user-test real reactions. */}
           <Button
             variant="outline"
             size="sm"
             onClick={onStow}
             aria-label="Stow in Bag of Holding"
-            className="h-7 px-3 text-xs border-bronze text-ash hover:border-ember hover:text-parchment hover:bg-iron"
+            className="h-7 px-3 text-xs border-bronze text-ash hover:border-ember hover:text-parchment hover:bg-iron gap-1.5"
           >
+            <Bookmark className="h-3 w-3 shrink-0" />
             Stow
           </Button>
         </CardFooter>
