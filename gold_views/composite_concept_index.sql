@@ -166,26 +166,31 @@ pivoted AS (
     MAX(CASE WHEN bucket = 'curiosity' THEN bucket_score END)       AS curiosity_score,
     MAX(CASE WHEN bucket = 'curiosity' THEN bucket_momentum END)    AS curiosity_momentum,
     MAX(CASE WHEN bucket = 'curiosity' THEN streams_in_bucket END)  AS curiosity_streams,
+    MAX(CASE WHEN bucket = 'curiosity' THEN avg_confidence END)     AS curiosity_avg_confidence,
 
     -- Community bucket
     MAX(CASE WHEN bucket = 'community' THEN bucket_score END)       AS community_score,
     MAX(CASE WHEN bucket = 'community' THEN bucket_momentum END)    AS community_momentum,
     MAX(CASE WHEN bucket = 'community' THEN streams_in_bucket END)  AS community_streams,
+    MAX(CASE WHEN bucket = 'community' THEN avg_confidence END)     AS community_avg_confidence,
 
     -- Creator bucket
     MAX(CASE WHEN bucket = 'creator' THEN bucket_score END)         AS creator_score,
     MAX(CASE WHEN bucket = 'creator' THEN bucket_momentum END)      AS creator_momentum,
     MAX(CASE WHEN bucket = 'creator' THEN streams_in_bucket END)    AS creator_streams,
+    MAX(CASE WHEN bucket = 'creator' THEN avg_confidence END)       AS creator_avg_confidence,
 
     -- Ownership bucket
     MAX(CASE WHEN bucket = 'ownership' THEN bucket_score END)       AS ownership_score,
     MAX(CASE WHEN bucket = 'ownership' THEN bucket_momentum END)    AS ownership_momentum,
     MAX(CASE WHEN bucket = 'ownership' THEN streams_in_bucket END)  AS ownership_streams,
+    MAX(CASE WHEN bucket = 'ownership' THEN avg_confidence END)     AS ownership_avg_confidence,
 
     -- Commerce bucket
     MAX(CASE WHEN bucket = 'commerce' THEN bucket_score END)        AS commerce_score,
     MAX(CASE WHEN bucket = 'commerce' THEN bucket_momentum END)     AS commerce_momentum,
-    MAX(CASE WHEN bucket = 'commerce' THEN streams_in_bucket END)   AS commerce_streams
+    MAX(CASE WHEN bucket = 'commerce' THEN streams_in_bucket END)   AS commerce_streams,
+    MAX(CASE WHEN bucket = 'commerce' THEN avg_confidence END)      AS commerce_avg_confidence
   FROM bucket_scores
   GROUP BY concept_name
 )
@@ -228,6 +233,18 @@ SELECT
   COALESCE(p.creator_streams, 0)    AS creator_streams,
   COALESCE(p.ownership_streams, 0)  AS ownership_streams,
   COALESCE(p.commerce_streams, 0)   AS commerce_streams,
+
+  -- ---------------------------------------------------------------
+  -- Per-bucket average stream confidence weight (HIGH=1.0/MED=0.7/LOW=0.4)
+  -- NULL when the bucket has no data. Added 2026-04-15 to power
+  -- the Step 6 concept_confidence view (§5.1 data layer of the
+  -- Arcane Analytics confidence formula).
+  -- ---------------------------------------------------------------
+  p.curiosity_avg_confidence,
+  p.community_avg_confidence,
+  p.creator_avg_confidence,
+  p.ownership_avg_confidence,
+  p.commerce_avg_confidence,
 
   -- Total distinct streams that have data for this concept
   COALESCE(p.curiosity_streams, 0) +
