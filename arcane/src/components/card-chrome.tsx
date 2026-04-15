@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 import { useSageOptional } from "@/components/sage-panel"
+import { useBagStore, useBagHasHydrated } from "@/lib/bag-store"
 
 // ─── Confidence tier system ──────────────────────────────────────────────────
 // Maps a 0–100 confidence score to a metal tier per §5.2 and §9.16.
@@ -76,7 +77,20 @@ export interface CardChromeProps {
    * Full methodology popover on pip tap is wired in Step 6.
    */
   confidence: number
-  /** Called when the user taps "Stow" — saves this card to the Bag of Holding. Wired in Step 5. */
+  /**
+   * Stable identifier for this card in the Bag of Holding. If provided,
+   * the Stow button auto-wires to the bag store: click = stow, click again
+   * = unstow, and the button flips to a "Stowed" state while the card is
+   * in the bag. Wired in Step 5.
+   *
+   * Should be stable across re-renders (e.g. `overview:top-classes`), not
+   * a random uuid. This is what `isStowed(id)` checks against.
+   */
+  cardId?: string
+  /**
+   * Explicit override for the Stow button. If provided, wins over the
+   * auto-wired `cardId` behavior. Mostly useful for the test harness.
+   */
   onStow?: () => void
   /** Called when the user taps "Explain" — opens Sage with this card as context. Wired in Step 4. */
   onExplain?: () => void
@@ -108,6 +122,7 @@ export function CardChrome({
   lens,
   cardType,
   confidence,
+  cardId,
   onStow,
   onExplain,
   sageContext,
@@ -122,6 +137,43 @@ export function CardChrome({
   const resolvedOnExplain =
     onExplain ??
     (sageContext && sage ? () => sage.openSage(sageContext) : undefined)
+
+  // ── Bag of Holding wiring (Step 5 §3.5) ─────────────────────────────────
+  // Subscribe to the `items` array (not `isStowed` directly) so this card
+  // re-renders when *its own* stow status changes. We derive the boolean
+  // locally from items to stay reactive.
+  const bagHydrated = useBagHasHydrated()
+  const isStowed = useBagStore((s) =>
+    cardId ? s.items.some((i) => i.id === cardId) : false
+  )
+  const stowCard = useBagStore((s) => s.stowCard)
+  const unstow = useBagStore((s) => s.unstow)
+
+  const resolvedOnStow =
+    onStow ??
+    (cardId
+      ? () => {
+          if (isStowed) {
+            unstow(cardId)
+          } else {
+            stowCard({
+              id: cardId,
+              title,
+              subtitle,
+              lens,
+              cardType,
+              confidence,
+              // Use the same plain-text snapshot we feed the Sage — it's
+              // the best record of what the card was showing at stow time.
+              snapshot: sageContext ?? "",
+            })
+          }
+        }
+      : undefined)
+
+  // Only show "Stowed" state after hydration finishes — otherwise SSR would
+  // render "Stow" and the client would flip to "Stowed" on first paint.
+  const showStowedState = bagHydrated && isStowed && !!cardId
 
   return (
     <TooltipProvider delayDuration={400}>
@@ -220,12 +272,28 @@ export function CardChrome({
           <Button
             variant="outline"
             size="sm"
-            onClick={onStow}
-            aria-label="Stow in Bag of Holding"
-            className="h-7 px-3 text-xs border-bronze text-ash hover:border-ember hover:text-parchment hover:bg-iron gap-1.5"
+            onClick={resolvedOnStow}
+            disabled={!resolvedOnStow}
+            aria-label={
+              showStowedState
+                ? "Remove from Bag of Holding"
+                : "Stow in Bag of Holding"
+            }
+            aria-pressed={showStowedState}
+            className={cn(
+              "h-7 px-3 text-xs gap-1.5 transition-colors",
+              showStowedState
+                ? "border-ember text-ember-bright hover:border-ember hover:text-parchment hover:bg-iron"
+                : "border-bronze text-ash hover:border-ember hover:text-parchment hover:bg-iron"
+            )}
           >
-            <Bookmark className="h-3 w-3 shrink-0" />
-            Stow
+            <Bookmark
+              className={cn(
+                "h-3 w-3 shrink-0",
+                showStowedState && "fill-current"
+              )}
+            />
+            {showStowedState ? "Stowed" : "Stow"}
           </Button>
         </CardFooter>
       </Card>

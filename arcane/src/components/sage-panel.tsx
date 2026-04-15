@@ -20,9 +20,10 @@
 import React from "react"
 import { useChat } from "@ai-sdk/react"
 import { DefaultChatTransport } from "ai"
-import { Sparkles, X } from "lucide-react"
+import { Sparkles, X, Bookmark } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { useBagStore, useBagHasHydrated } from "@/lib/bag-store"
 
 // ─── Sage context ────────────────────────────────────────────────────────────
 
@@ -94,6 +95,23 @@ function SagePanel() {
     transport,
   })
 
+  // ── Bag of Holding wiring (Step 5 §3.5) ─────────────────────────────────
+  // Sage answers and whole conversations are stowable alongside data cards.
+  // Subscribing to `items` keeps the Stow buttons reactive — clicking a
+  // button flips its label immediately without a re-fetch.
+  //
+  // NOTE: The selector must return a stable reference. `s.items.map(...)`
+  // would build a fresh array on every call and break Zustand v5's
+  // `useSyncExternalStore` snapshot check ("getServerSnapshot should be
+  // cached to avoid an infinite loop"). Select `items` itself — same
+  // identity unless the array actually changes — and derive downstream.
+  const bagHydrated = useBagHasHydrated()
+  const bagItems = useBagStore((s) => s.items)
+  const stowSageAnswer = useBagStore((s) => s.stowSageAnswer)
+  const stowSageThread = useBagStore((s) => s.stowSageThread)
+  const unstow = useBagStore((s) => s.unstow)
+  const isItemStowed = (id: string) => bagItems.some((i) => i.id === id)
+
   // Auto-scroll to the newest message as tokens stream in.
   React.useEffect(() => {
     if (!scrollRef.current) return
@@ -103,6 +121,61 @@ function SagePanel() {
   if (!isOpen) return null
 
   const isBusy = status === "submitted" || status === "streaming"
+
+  // ── Helpers ─────────────────────────────────────────────────────────────
+  // Flatten a UIMessage's parts array down to plain text for storage.
+  // Sage answers are text-only for now (no tools yet — Step 7), so we can
+  // safely concatenate all text parts and drop everything else.
+  const messageText = (m: (typeof messages)[number]): string =>
+    m.parts
+      .filter((p): p is Extract<typeof p, { type: "text" }> => p.type === "text")
+      .map((p) => p.text)
+      .join("")
+
+  // Given an assistant message id, find the most recent preceding user
+  // message — that's the Q in the Q+A pair we're about to stow.
+  const findPreviousUserMessage = (assistantId: string): string => {
+    const idx = messages.findIndex((m) => m.id === assistantId)
+    if (idx === -1) return ""
+    for (let i = idx - 1; i >= 0; i--) {
+      if (messages[i].role === "user") return messageText(messages[i])
+    }
+    return ""
+  }
+
+  const stowAnswerId = (assistantMessageId: string) =>
+    `sage:answer:${assistantMessageId}`
+
+  const handleStowAnswer = (assistantMessageId: string) => {
+    const id = stowAnswerId(assistantMessageId)
+    if (isItemStowed(id)) {
+      unstow(id)
+      return
+    }
+    const msg = messages.find((m) => m.id === assistantMessageId)
+    if (!msg) return
+    stowSageAnswer({
+      id,
+      pageContext,
+      question: findPreviousUserMessage(assistantMessageId),
+      answer: messageText(msg),
+    })
+  }
+
+  const handleStowThread = () => {
+    if (messages.length === 0) return
+    // Each stow of a thread gets a fresh id so users can stow progressive
+    // snapshots of the same conversation as it grows (e.g. "stow me at the
+    // halfway point, then again at the end").
+    stowSageThread({
+      id: `sage:thread:${Date.now()}`,
+      pageContext,
+      messages: messages.map((m) => ({
+        role: m.role === "user" ? "user" : "assistant",
+        text: messageText(m),
+      })),
+    })
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -141,15 +214,31 @@ function SagePanel() {
             </p>
           )}
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={closeSage}
-          aria-label="Close Sage"
-          className="h-7 w-7 p-0 text-ash hover:bg-iron hover:text-parchment"
-        >
-          <X className="h-4 w-4" />
-        </Button>
+        <div className="flex items-center gap-1">
+          {/* Stow the whole conversation as a read-only artifact. Disabled
+              until at least one assistant response has arrived and the bag
+              store has hydrated from localStorage. */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleStowThread}
+            disabled={!bagHydrated || messages.length === 0 || isBusy}
+            aria-label="Stow this conversation in the Bag of Holding"
+            title="Stow this conversation"
+            className="h-7 w-7 p-0 text-ash hover:bg-iron hover:text-ember-bright"
+          >
+            <Bookmark className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={closeSage}
+            aria-label="Close Sage"
+            className="h-7 w-7 p-0 text-ash hover:bg-iron hover:text-parchment"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
       </header>
 
       {/* Message list */}
@@ -164,33 +253,70 @@ function SagePanel() {
           </p>
         )}
 
-        {messages.map((m) => (
-          <div
-            key={m.id}
-            className={cn(
-              "flex flex-col gap-1",
-              m.role === "user" ? "items-end" : "items-start"
-            )}
-          >
-            <span className="font-mono text-[10px] uppercase tracking-widest text-ash/70">
-              {m.role === "user" ? "You" : "Sage"}
-            </span>
+        {messages.map((m) => {
+          const isAssistant = m.role === "assistant"
+          const answerId = stowAnswerId(m.id)
+          const isAnswerStowed = bagHydrated && isItemStowed(answerId)
+          // Don't let the user stow an assistant message while it's still
+          // streaming — the text isn't final yet.
+          const canStowAnswer =
+            isAssistant && !(isBusy && m.id === messages[messages.length - 1].id)
+
+          return (
             <div
+              key={m.id}
               className={cn(
-                "max-w-[90%] rounded-lg border px-3 py-2 font-sans text-sm leading-relaxed whitespace-pre-wrap",
-                m.role === "user"
-                  ? "border-bronze bg-iron text-parchment"
-                  : "border-ember/40 bg-onyx text-parchment"
+                "flex flex-col gap-1",
+                m.role === "user" ? "items-end" : "items-start"
               )}
             >
-              {m.parts.map((part, i) =>
-                part.type === "text" ? (
-                  <span key={i}>{part.text}</span>
-                ) : null
+              <span className="font-mono text-[10px] uppercase tracking-widest text-ash/70">
+                {m.role === "user" ? "You" : "Sage"}
+              </span>
+              <div
+                className={cn(
+                  "max-w-[90%] rounded-lg border px-3 py-2 font-sans text-sm leading-relaxed whitespace-pre-wrap",
+                  m.role === "user"
+                    ? "border-bronze bg-iron text-parchment"
+                    : "border-ember/40 bg-onyx text-parchment"
+                )}
+              >
+                {m.parts.map((part, i) =>
+                  part.type === "text" ? (
+                    <span key={i}>{part.text}</span>
+                  ) : null
+                )}
+              </div>
+              {isAssistant && canStowAnswer && (
+                <button
+                  type="button"
+                  onClick={() => handleStowAnswer(m.id)}
+                  aria-label={
+                    isAnswerStowed
+                      ? "Remove this answer from the Bag of Holding"
+                      : "Stow this answer in the Bag of Holding"
+                  }
+                  aria-pressed={isAnswerStowed}
+                  className={cn(
+                    "mt-0.5 flex items-center gap-1 font-mono text-[10px] uppercase tracking-widest transition-colors",
+                    "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ember focus-visible:ring-offset-1 focus-visible:ring-offset-onyx rounded-sm",
+                    isAnswerStowed
+                      ? "text-ember-bright"
+                      : "text-ash/60 hover:text-ember-bright"
+                  )}
+                >
+                  <Bookmark
+                    className={cn(
+                      "h-3 w-3",
+                      isAnswerStowed && "fill-current"
+                    )}
+                  />
+                  {isAnswerStowed ? "Stowed" : "Stow answer"}
+                </button>
               )}
             </div>
-          </div>
-        ))}
+          )
+        })}
 
         {status === "submitted" && (
           <p className="font-mono text-[10px] uppercase tracking-widest text-ash/70">
