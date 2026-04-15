@@ -126,8 +126,8 @@ export default function TestCardChromePage() {
         <p className="font-sans text-base text-ash max-w-2xl">
           The universal card container. Five content types × five confidence tiers.
           Hover over any card on desktop to see the border transition from bronze to
-          the card&rsquo;s metal tier. Hover over the pip (top-left dot) to see the
-          confidence tooltip.
+          the card&rsquo;s metal tier. Hover over the pip (top-right dot, in the
+          metadata cluster) to see the confidence tooltip.
         </p>
         <p className="font-sans text-sm text-ash">
           <span className="text-parchment font-medium">All content is dummy.</span>{" "}
@@ -217,7 +217,7 @@ export default function TestCardChromePage() {
             "Hover over each pip → tooltip shows confidence % and tier label",
             "All five content types render coherently inside the same chrome",
             "Stow and Explain buttons present and consistently positioned on every card",
-            "Two empty icon-slot placeholders top-right of every card header",
+            "Confidence pip + two empty icon-slot placeholders in top-right cluster",
           ].map((item) => (
             <li key={item} className="flex items-start gap-2">
               <span className="text-bronze mt-0.5 shrink-0">□</span>
