@@ -372,7 +372,7 @@ Alongside data cards and chat, the Sage produces **pre-written short articles** 
 
 ### 7.1 The Short Version
 
-**Next.js 15 (App Router) + TypeScript + Tailwind CSS + shadcn/ui + Tremor + Aceternity + Vercel AI SDK (Vertex AI) + Firestore + NextAuth + Cloud Run behind IAP.**
+**Next.js 16 (App Router) + TypeScript + Tailwind CSS v4 + shadcn/ui + Tremor + Aceternity + Vercel AI SDK (Vertex AI) + Firestore + NextAuth + Cloud Run behind IAP.**
 
 Everything stays in GCP. Nothing exotic. Each piece plays with the others.
 
@@ -380,9 +380,9 @@ Everything stays in GCP. Nothing exotic. Each piece plays with the others.
 
 | Layer | Choice | Why |
 |---|---|---|
-| Framework | **Next.js 15 App Router** | Tremor and Aceternity are React; Next is the React default; Server Components + streaming SSR are perfect for the Sage; built-in font optimization; middleware handles IAP |
+| Framework | **Next.js 16 App Router** | Tremor and Aceternity are React; Next is the React default; Server Components + streaming SSR are perfect for the Sage; built-in font optimization; `proxy` (formerly `middleware`) handles IAP. Turbopack is the default bundler in v16 — we use it. |
 | Language | **TypeScript** | Data-heavy app with large type surface (concept IDs, lenses, card types, tool schemas). Non-negotiable. |
-| Styling | **Tailwind CSS v4** | Required by Aceternity and shadcn; design tokens via `tailwind.config.ts` enforce palette discipline |
+| Styling | **Tailwind CSS v4** | Required by Aceternity and shadcn; design tokens live in `@theme` blocks inside `src/app/globals.css` (v4 moved theme config from JS to CSS); this is the single source of truth that enforces palette discipline |
 | UI primitives | **shadcn/ui** | Components copied into repo (not a library); built on Radix (accessible); fully themeable; owns the source |
 | Charts | **Tremor** | Dark-mode native, Tailwind-themable, dashboard-specific; Recharts under the hood for escape hatches |
 | Flourishes | **Aceternity UI** | Glowing borders, meteors, spotlight; used sparingly per glow budget |
@@ -529,6 +529,30 @@ This section captures non-obvious decisions and the reasoning, so future collabo
 **Decision:** Each card has exactly two icon slots (card type + lens tags).
 
 **Why:** Legibility discipline. Two slots = glance-readable. Three slots = squint-readable. Four slots = ignored. Confidence doesn't need an icon (it's the border glow). Date doesn't need an icon (newest-first is default). Source doesn't need an icon (card name says it).
+
+### 9.13 Why Next.js 16, not 15 (reconciled during Step 1)
+
+**Decision:** Scaffold on Next.js 16 — the current latest — rather than downgrading to Next.js 15 as the original §7 draft specified.
+
+**Why:** This spec was written on April 14, 2026. Next.js 16 landed within 24 hours and is now what `create-next-app@latest` installs. The *intent* of §7.2's framework row — "latest App Router with Server Components, built-in font optimization, and a middleware layer that can handle IAP" — is fully satisfied by v16. Downgrading to v15 would mean drifting from the ecosystem default on day 1 and paying an upgrade cost within months for zero design benefit.
+
+Net v16 changes relevant to our build order:
+
+- **Turbopack is the default** for both `next dev` and `next build`. We opt in by doing nothing. (If we ever need Webpack, `next build --webpack` is the escape hatch.)
+- **`middleware` → `proxy`.** The file and the export are renamed. Step 12 (Admin + IAP) uses `proxy.ts`, not `middleware.ts`.
+- **Async Request APIs are fully async** (`params`, `searchParams`, `headers()`, `cookies()`). Synchronous access is removed. Affects Steps 3+ when we fetch data.
+- **`next lint` is removed.** ESLint runs directly (already configured via `eslint.config.mjs`).
+- **Async `id`/`params` in `icon` and `open-graph` image generators** — affects Step 16 metadata polish at most.
+
+None of these affect Step 1 (skeleton). All are documented in `arcane/node_modules/next/dist/docs/01-app/02-guides/upgrading/version-16.md` if we need to reread them later.
+
+### 9.14 Why `@theme` in CSS, not `tailwind.config.ts` (reconciled during Step 1)
+
+**Decision:** Obsidian & Ember palette tokens live in `src/app/globals.css` under a `@theme inline { ... }` block, not in a `tailwind.config.ts` JS file.
+
+**Why:** Tailwind v4 deliberately removed `tailwind.config.ts` as the theme location and moved it into CSS via the `@theme` directive. Since the spec mandates Tailwind v4 (for Aceternity and shadcn compatibility), there is no `tailwind.config.ts` file in a v4 scaffold — the choice was already made upstream. The §7.2 row was edited to match.
+
+The discipline the spec cares about — "one source of truth for tokens that enforces palette discipline" — is unchanged. It just lives in CSS now, which is arguably *better* suited to design tokens (closer to the rendered output, no JS round-trip).
 
 ---
 
