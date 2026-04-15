@@ -99,11 +99,18 @@ function SagePanel() {
   // Sage answers and whole conversations are stowable alongside data cards.
   // Subscribing to `items` keeps the Stow buttons reactive — clicking a
   // button flips its label immediately without a re-fetch.
+  //
+  // NOTE: The selector must return a stable reference. `s.items.map(...)`
+  // would build a fresh array on every call and break Zustand v5's
+  // `useSyncExternalStore` snapshot check ("getServerSnapshot should be
+  // cached to avoid an infinite loop"). Select `items` itself — same
+  // identity unless the array actually changes — and derive downstream.
   const bagHydrated = useBagHasHydrated()
-  const stowedIds = useBagStore((s) => s.items.map((i) => i.id))
+  const bagItems = useBagStore((s) => s.items)
   const stowSageAnswer = useBagStore((s) => s.stowSageAnswer)
   const stowSageThread = useBagStore((s) => s.stowSageThread)
   const unstow = useBagStore((s) => s.unstow)
+  const isItemStowed = (id: string) => bagItems.some((i) => i.id === id)
 
   // Auto-scroll to the newest message as tokens stream in.
   React.useEffect(() => {
@@ -141,7 +148,7 @@ function SagePanel() {
 
   const handleStowAnswer = (assistantMessageId: string) => {
     const id = stowAnswerId(assistantMessageId)
-    if (stowedIds.includes(id)) {
+    if (isItemStowed(id)) {
       unstow(id)
       return
     }
@@ -249,7 +256,7 @@ function SagePanel() {
         {messages.map((m) => {
           const isAssistant = m.role === "assistant"
           const answerId = stowAnswerId(m.id)
-          const isAnswerStowed = bagHydrated && stowedIds.includes(answerId)
+          const isAnswerStowed = bagHydrated && isItemStowed(answerId)
           // Don't let the user stow an assistant message while it's still
           // streaming — the text isn't final yet.
           const canStowAnswer =
