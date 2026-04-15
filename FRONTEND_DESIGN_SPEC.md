@@ -169,10 +169,11 @@ Dark theme as default. Light theme is a future toggle, not a launch requirement.
 | Data cold | Arcane cyan | `#5FC9E7` | Frost / divination |
 | Positive | Druid green | `#6BAA75` | Momentum up |
 | Negative | Void purple | `#8B5CF6` | Necromancy, momentum down |
-| Rarity: common | Muted grey | `#6B6B70` | Low confidence |
-| Rarity: uncommon | Druid green | `#6BAA75` | Medium confidence |
-| Rarity: rare | Arcane cyan | `#5FC9E7` | High confidence |
-| Rarity: mythic | Warm gold | `#D4A94A` | Exceptional confidence |
+| Rarity: copper | Dull tarnished copper | `#8C6239` | Exploratory (0–69%) — handle with care |
+| Rarity: silver | Muted grey | `#6B6B70` | Solid but cautious (70–79%) |
+| Rarity: gold | Warm gold | `#D4A94A` | Confident (80–89%) |
+| Rarity: platinum | Pale near-white | `#D1D5DB` | High confidence (90–94%) |
+| Rarity: mithral | Saturated arcane-blue | `#7AB8E0` | Exceptional (95–99%) |
 
 Warmth comes from ember, bronze, parchment, and gold — not from flames or textures.
 
@@ -194,7 +195,7 @@ Three fonts, each doing exactly one job:
 - **Hover state:** Subtle ember glow pulse. Inviting.
 - **Active / expanded card:** Stronger amber torchlight ring.
 - **"Hot" cards** (big momentum in last 24h): Very slow, subtle pulse — the card is "alive."
-- **Rare/Mythic confidence tiers:** Use rarity color in the border glow.
+- **Confidence tier glow:** Use the card's metal-tier color (copper / silver / gold / platinum / mithral — see §5.2 and §9.16) in the border on hover, in place of the generic ember pulse.
 - **Everything else:** Stays still.
 
 Glow is signal, not decoration.
@@ -209,7 +210,8 @@ The biggest design risk: cards contain wildly different content (bar charts, sca
 - One color palette
 - One type scale (4-5 sizes max)
 - One accent color for interactive elements
-- One confidence meter, one Stow button, one Explain button — identical position on every card
+- One confidence pip (always visible, top-left of header) and one hover-state border glow (desktop only) — both keyed off the same metal tier, see §5.2 and §9.17
+- One Stow button, one Explain button — identical position on every card
 
 **Loose (content within the container):**
 
@@ -243,6 +245,8 @@ Every card has **exactly two icon slots** in the top-right of the header. Non-ne
 If a card belongs to multiple lenses, Slot 2 holds up to two icons or a `+N` indicator. **Tapping a lens icon on any card jumps to that lens.** Icons double as navigation.
 
 **Icon style:** Heraldic guild marks. Small (~16px), bronze at rest, ember on hover. Custom SVG, not emoji. Think MTG set symbols on the bottom-right of a card — present, tasteful, ignorable when you're focused.
+
+**Not an icon slot — the confidence pip:** The top-*left* of the card header holds the confidence pip (see §5.2 and §9.17). It is **not** a third icon slot. The "exactly two icon slots" rule above refers only to the card-type and lens-tag slots in the top-right. The pip is a separate header element — a small colored dot, not an icon — and does not count toward the two-slot budget. It also doubles as the tap/click target for the methodology popover §5.2 describes. Future sessions must not add a third icon slot on the grounds that "the header already has three things in it."
 
 ### 4.6 Tone of Voice
 
@@ -288,9 +292,11 @@ Stakeholders must always know how sure the system is of any statement. This is a
 
 ### 5.2 Display
 
-- **One unified percentage** on each card, displayed via **rarity-tier border glow** (common / uncommon / rare / mythic)
-- Percentage number is secondary — hidden behind a tap on the glow
-- Tap the glow → methodology popover: "Data: 85% · AI Grounding: 92% · Combined: 88%"
+- **Confidence is displayed in two complementary places** on every card, both keyed off the same metal tier (copper 0–69% / silver 70–79% / gold 80–89% / platinum 90–94% / mithral 95–99%, see §9.16):
+  - **(1) A confidence pip** — a small (~6–8px) colored dot in the top-left of the card header, **always visible on both mobile and desktop**. This is the primary confidence signal. It carries the tier color at all times, is the tap/click target for the methodology popover below, and is deliberately compact so it doesn't fight §4.3's "calm bronze at rest" aesthetic. Not an icon slot — see the note at the end of §4.5.
+  - **(2) A hover-state border glow (desktop only)** — on desktop, moving the cursor over the card transitions the resting bronze border to the same tier color. Acts as a *reward* for user attention, not the primary signal. Mobile has no equivalent because (a) there is no hover on touch and (b) the always-visible pip already carries the signal — mobile cards' borders stay bronze at all times. See §9.17 for the full pip-vs-border reasoning.
+- Exact percentage number is secondary — hidden behind a tap/click on the pip
+- Tap the pip → methodology popover: "Data: 85% · AI Grounding: 92% · Combined: 88%"
 - Dedicated **Methodology page** in the Atlas explains the whole system
 
 ### 5.3 Discipline
@@ -567,6 +573,56 @@ The discipline the spec cares about — "one source of truth for tokens that enf
 **Why "Stow":** Matches the metaphor (you *stow* gear in a bag of holding; you don't *clip* things into it), one syllable, unambiguous verb, no namespace collision with other UI actions.
 
 **Scope of the rename:** Every UI surface, copy string, component name, state slice, and spec reference. Internal enum values and URL slugs use `collection`, not `bag`. Done as a standalone PR stacked on top of Step 1's skeleton PR, before Step 2 (CardChrome) begins, so no Step 2 code is ever written under the old vocabulary.
+
+### 9.16 Why metals, not MtG rarity (reconciled at start of Step 2)
+
+**Decision:** The confidence tier ladder uses a **metal hierarchy** — **copper** (exploratory floor) / **silver** / **gold** / **platinum** / **mithral** — and **not** the MtG common / uncommon / rare / mythic labels the original §4.1 draft specified. Ranges: copper `0–69%`, silver `70–79%`, gold `80–89%`, platinum `90–94%`, mithral `95–99%`. The bottom four tiers (copper through platinum) are the canonical D&D currency ladder (cp < sp < gp < pp); mithral sits above platinum as the top rung, preserving the D&D-native vocabulary at both ends of the scale.
+
+**Why not MtG rarity:** MtG rarity is a *scarcity* metaphor — it describes how often you pull a card from a booster pack. Our confidence score is a *trust* metaphor — it describes how much a stakeholder should rely on the claim. Forcing a scarcity ladder onto a trust axis breaks both sides: a "common" card reads as worthless both to the exec ("only 45% sure? no thanks") and to the D&D player ("oh, junk from the bulk box"). The metaphor ends up fighting itself — precisely the kind of metaphor cosplay §9.3 warns against.
+
+**Why metals work:** Metals describe *material value*, which *is* a trust axis — everyone intuits gold > silver at a glance, no lore required. And the specific metal choices lean on two different canons at once: the top four tiers (silver / gold / platinum / mithral) preserve the arcane-soul half of the chrome/soul split the same way "Bag of Holding" does in §9.15 — "mithral chain shirt" is D&D vocabulary, not a Monopoly top rung — while the bottom four tiers (copper / silver / gold / platinum) *are* the standard D&D currency ladder, which is the kind of detail every player who has ever counted out loot after a dungeon run will recognize instantly. The ladder works at both ends: Hasbro execs see a gold / platinum hierarchy they already understand, D&D players see a copper / silver / gold / platinum coin purse they already understand, and mithral is the shared bonus that rewards attention without punishing the absence of it.
+
+**Why the ranges start at 70, not 50:** The scoring formula (a blend of data-reliability and AI-grounding confidence — methodology TBD) is expected to cluster in the 80–89 band, with 70–79 as the soft floor for "published" cards. Anything below 70 is unusual enough to deserve a distinct visual treatment (copper), not a subdivision of "acceptable." Stakeholders at Hasbro / WotC are unlikely to act on anything below ~85% in practice, so the ladder is tuned to the top half of the range where the real decisions get made.
+
+**Why a floor tier at all, not just four metals:** Occasionally a low-signal claim is still worth surfacing because the reward justifies the risk. Those cards need somewhere to go that isn't "round them up to silver" (that would be the exact kind of confidence theater §5.3 warns against) and isn't "hide them" (dishonest). Copper is the explicit exploratory floor: visually warmer and duller than silver, with tooltip copy that flags it as low-signal. Five tiers in the vocabulary, only four in the normal distribution.
+
+**On the floor tier name — copper, not lead, not iron:** Three names got considered. *Iron* is ruled out permanently because `--color-iron` is already the elevated-surface token (`#1C2230` — hover states and modals). Reusing "iron" for a rarity tier would create a token-vocabulary collision — `border-iron` cannot mean two things. *Lead* was the first proposed alternative (D&D-adjacent via spell components, with a natural "handle with care" subtext from literal toxicity), but it leaned darker in tone than the site's voice calls for and broke the symmetry with the top rungs of the ladder. *Copper* won because it completes the D&D currency ladder at the bottom end — cp is the lowest coin, sp / gp / pp are the next three rungs, mithral is the one that goes above the standard ladder. That's a single coherent metaphor end-to-end instead of "D&D spell components on the bottom, D&D currency in the middle, D&D material lore at the top."
+
+**The ladder is NOT architected around a predicted distribution.** Yorri's intuition is that the bell curve will sit in gold (80–89%). That's plausible, but it's a guess until the scoring formula exists. If the formula turns out harsher than expected and the bulk lands in silver instead of gold, the fix is to the formula, not the ladder. The ladder must survive whatever the formula produces.
+
+**Palette implications** (applied to §4.1):
+
+- **Copper** `#8C6239` — new. Dull tarnished copper penny, deliberately brown-leaning and mid-luminance. *Not* a bright copper-pipe orange (which would collide with `ember` `#B8692A` — the active-hover glow — and make the exploratory floor read like an active-state card, which is semantically backwards). *Not* a very dark brown (which would collide with `bronze` `#3A2E1F` — the resting border). The dull-tarnished read threads both needles. If it lands wrong in the `/test-card-chrome` harness, the fix is to the hex, not the name.
+- **Silver** `#6B6B70` — inherits the old `rarity-common` hex. Name changed, hex unchanged.
+- **Gold** `#D4A94A` — inherits the old `rarity-mythic` hex. Name changed, hex unchanged.
+- **Platinum** `#D1D5DB` — new. Pale cool near-white.
+- **Mithral** `#7AB8E0` — new. Saturated arcane-blue with a silver undertone, deliberately distinct from both platinum above it and the `arcane` data-accent (`#5FC9E7`) which keeps its data-hot/cold role unchanged. If mithral and silver read too similarly in the `/test-card-chrome` harness, mithral shifts bluer (not silver shifts — silver's muted grey is correct).
+
+**Freed-up palette slots:** The old `rarity-uncommon` (druid green) and `rarity-rare` (arcane cyan) double-duty is retired. Druid green stays in the palette as the `druid` data-accent (positive momentum); arcane cyan stays as the `arcane` data-accent (cold data). The double-duty was cute but confusing — "is this card uncommon or is it showing positive momentum?" Decoupling them clarifies the palette.
+
+**A note on feasibility as a third confidence axis:** During this decision Yorri flagged that AI recommendations carry a *feasibility* dimension ("can Hasbro actually act on this in the real world without blowing up their roadmap?") that is genuinely different from §5.1's two layers (data confidence + AI grounding). Feasibility is about the *recommendation*, not the *claim*. This is **not** in v1 — §5 stays at two layers for now — but is banked for a later conversation once the scoring formula is designed. Storage location TBD (either §11 open questions or `project_analytics_future_ideas.md`).
+
+### 9.17 Why a confidence pip alongside the hover border glow (reconciled at start of Step 2)
+
+**Decision:** Every card displays its confidence tier in two complementary places: an always-visible **confidence pip** in the top-left of the card header, and a **desktop-only hover-state border glow** that transitions the resting bronze border to the card's tier color. The pip is always on both platforms; the border glow is desktop-only. The pip also serves as the tap/click target for the methodology popover §5.2 describes. §4.5's "exactly two icon slots" rule is unchanged — the pip is a separate header element in the opposite corner, not a third icon slot.
+
+**Why not a border glow alone:** Hover is a desktop-only concept. On mobile there is no cursor, so a hover-only confidence glow means mobile users never see the confidence signal at all. That breaks §5's core rule — "stakeholders must always know how sure the system is of any statement" — on the platform that will serve most casual viewers. Any confidence-display scheme that hides the signal on mobile is dead on arrival.
+
+**Why not an always-on colored border on both platforms** *(Option Y in the Step-2 discussion)***:** Considered and rejected. It would fight §4.3's "calm bronze at rest" aesthetic on desktop — every card would be visibly colored at all times, turning the page into a loud color grid where nothing stands out. §4.3 explicitly says "if everything glows, nothing glows," and an always-on tier-colored border is effectively always-on glow. It also wastes the glow budget on basic legibility instead of reserving it for signal.
+
+**Why not a platform-split border — mobile always-colored, desktop hover-revealed** *(Option X in the Step-2 discussion)***:** Also considered and rejected. It makes the site's behavior visibly different on different devices, which creates muscle-memory inconsistency for users who move between phone and laptop — the same card looks like a different thing depending on which device you picked it up on. The pip-based solution behaves the same way on both platforms, which matters more than cleverness about hover affordances.
+
+**Why the pip wins** *(Option Z)***:** It is always visible on both platforms (mobile gets the confidence signal for free), small enough not to fight §4.3's calm aesthetic (it's a dot, not a border), doubles as the tap/click target that §5.2 already needed somewhere for the methodology popover, and leaves the desktop hover glow free to be a *reward* for attention rather than a *requirement* for basic legibility. Desktop users still get a hover effect — bronze-to-tier border transition — but it's an "I'm engaging with this card" moment, not the primary confidence signal. Mobile users never feel shortchanged because they already have the signal.
+
+**Positioning:** Top-left of the card header, mirroring the two icon slots in the top-right. Creates a clean header symmetry: `[pip] [title / subtitle] [icon slot 1 · icon slot 2]`. Approximate size 6–8px; exact pixel locked during the CardChrome build in `/test-card-chrome`.
+
+**Step-by-step implementation split:** Three build steps touch the confidence visuals, each with a distinct responsibility.
+
+- **Step 2 (CardChrome) — visual contract.** The pip renders in its correct slot, colored by the card's metal tier, positioned consistently, wrapped in a shadcn `Tooltip` primitive that shows the raw confidence percentage on hover (desktop) or long-press (mobile). The hover-state border glow is a simple `border-color` transition from `bronze` to `rarity-{tier}` — no halo, no `box-shadow` spread, no animation beyond Tailwind's default transition. Dummy confidence values drive the tier calculation (no real scoring formula yet).
+- **Step 6 (Confidence scoring + rarity glows) — semantic wiring.** Real confidence values flow from the backend, the full methodology popover replaces the tooltip, and `confidenceToTier()` becomes the single source of truth used everywhere. Border glow and pip still render as they did in Step 2 — this step is about *what's behind* the visuals, not the visuals themselves.
+- **Step 13 (Aceternity flourishes) — visual flourish upgrade.** The simple border-color transition from Step 2 is replaced with a real Aceternity glowing-halo effect (colored `box-shadow` spread, possibly animated). The pip's visual stays as-is. This is the one place the glow budget §4.3 describes actually becomes visible.
+
+Step 2 locks the contract. Step 6 delivers the interaction and real data. Step 13 delivers the flourish. None of the three steps can rip out work from the others.
 
 ---
 
