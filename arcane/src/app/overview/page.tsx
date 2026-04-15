@@ -43,6 +43,36 @@ export default async function OverviewPage() {
   // ── Card 3: Top Opportunities ───────────────────────────────────────────
   const opportunities = topOpportunities(data, 5)
 
+  // ── Sage context snapshots ──────────────────────────────────────────────
+  // Plain-text summaries of each card, handed to the Sage route handler on
+  // Explain-click so the model can ground its answer in the numbers the user
+  // is actually looking at. Kept terse — these go into the system prompt.
+  const topClassesContext =
+    `Card: "Top Classes" (Overview lens)\n` +
+    `Source: Google Trends (7-day), vs. "Dungeons & Dragons" control.\n` +
+    `Top 5:\n` +
+    topClasses
+      .map((c, i) => `  ${i + 1}. ${c.name} — score ${Math.round(c.score)}`)
+      .join("\n")
+
+  const heatContext =
+    `Card: "Category Heat" (Overview lens)\n` +
+    `Source: Google Trends, average heat per category (top 10).\n` +
+    heatData
+      .map((c, i) => `  ${i + 1}. ${c.name} — heat ${c.heat}`)
+      .join("\n")
+
+  const opportunitiesContext =
+    `Card: "Top Opportunities" (Overview lens)\n` +
+    `Source: opportunity_index (demand vs. supply gap; higher = bigger opening).\n` +
+    `Top 5:\n` +
+    opportunities
+      .map(
+        (o, i) =>
+          `  ${i + 1}. ${o.name} — index ${o.opportunity_index.toFixed(0)}`
+      )
+      .join("\n")
+
   return (
     <main className="mx-auto max-w-6xl px-6 py-12 space-y-10">
 
@@ -74,6 +104,7 @@ export default async function OverviewPage() {
           lens="overview"
           cardType="leaderboard"
           confidence={STUB_CONFIDENCE}
+          sageContext={topClassesContext}
         >
           <ol className="space-y-2 py-1">
             {topClasses.map((item, i) => (
@@ -103,6 +134,7 @@ export default async function OverviewPage() {
             lens="overview"
             cardType="chart"
             confidence={STUB_CONFIDENCE}
+            sageContext={heatContext}
           >
             <OverviewBarChart data={heatData} />
             <p className="font-mono text-[10px] text-ash/70 uppercase tracking-widest mt-1">
@@ -118,6 +150,7 @@ export default async function OverviewPage() {
           lens="overview"
           cardType="leaderboard"
           confidence={STUB_CONFIDENCE}
+          sageContext={opportunitiesContext}
         >
           <ol className="space-y-2 py-1">
             {opportunities.length === 0 ? (

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Spectral, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { SageProvider } from "@/components/sage-panel";
 
 /*
  * Font loading per FRONTEND_DESIGN_SPEC.md §4.2.
@@ -51,7 +52,12 @@ export default function RootLayout({
       className={`${spectral.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body className="min-h-screen bg-obsidian text-parchment antialiased">
-        {children}
+        {/*
+         * SageProvider is the root-level chat context so any CardChrome on
+         * any page can pop the Sage panel open via its `sageContext` prop.
+         * It's a "use client" boundary — children below can still be RSCs.
+         */}
+        <SageProvider>{children}</SageProvider>
       </body>
     </html>
   );
