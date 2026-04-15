@@ -1,8 +1,8 @@
 # Frontend Build Status
 
 **Last updated:** 2026-04-15
-**Current phase:** Step 1 complete — skeleton scaffolded and verified
-**Next step:** Step 2 of 16 — CardChrome (universal card container)
+**Current phase:** Step 2 complete — CardChrome built and verified
+**Next step:** Step 3 of 16 — One lens end-to-end (Overview, real Bouncer data)
 
 ---
 
@@ -10,7 +10,9 @@
 
 Design phase is **complete**. See `FRONTEND_DESIGN_SPEC.md` for the full spec.
 
-Step 1 (Skeleton) is **complete** as of 2026-04-15. The Next.js 16 app lives at `arcane/` in the repo root. The Obsidian & Ember palette and the three fonts (Spectral / Inter / JetBrains Mono) are wired into `src/app/globals.css` via Tailwind v4's `@theme` directive and `next/font/google` respectively. The default home page has been replaced by a token-verification harness at `/` that renders all 15 palette swatches, a sample paragraph in each font, and a preview of the card uniform that Step 2 will formalize.
+Step 1 (Skeleton) is **complete** as of 2026-04-15. The Next.js 16 app lives at `arcane/` in the repo root. The Obsidian & Ember palette and the three fonts (Spectral / Inter / JetBrains Mono) are wired into `src/app/globals.css` via Tailwind v4's `@theme` directive and `next/font/google` respectively. The token-verification harness now lives permanently at `/swatch` (moved in Step 2).
+
+Step 2 (CardChrome) is **complete** as of 2026-04-15. shadcn/ui initialized, Card + Button + Tooltip primitives added, `src/components/card-chrome.tsx` built, and `/test-card-chrome` verification harness verified in browser. The confidence tier system was redesigned from MtG rarity to a D&D metal ladder (see §9.16–9.17 in FRONTEND_DESIGN_SPEC.md). The palette token count grew from 15 to 16 — the new copper/silver/gold/platinum/mithral tiers no longer double-duty with druid/arcane, so all 16 tokens are now unique hex values.
 
 Environment:
 
@@ -31,8 +33,8 @@ Backend is **live** (no frontend changes needed):
 
 ## Build Order (16 Steps)
 
-- [x] **1. Skeleton** — Next.js 16 App Router + TypeScript + Tailwind v4 + Obsidian & Ember palette as design tokens in `@theme` + Spectral/Inter/JetBrains Mono loaded via `next/font/google`. Verified with a dev-server render of a swatch/font harness page. **shadcn/ui init was deferred to Step 2** — there are no shadcn components on the page yet, so initialising the library now would add config without consumers. We'll run `pnpm dlx shadcn@latest init` at the top of Step 2 when CardChrome needs its first primitives.
-- [ ] **2. CardChrome** — Universal card container component. One file. Every card type will import this. Sets the visual contract: border, padding, corner radius, shadow, header bar, two icon slots, confidence glow ring, Stow button, Explain button. **Starts with** `pnpm dlx shadcn@latest init` and adding the first shadcn primitives CardChrome needs (likely Card, Button, Tooltip).
+- [x] **1. Skeleton** — Next.js 16 App Router + TypeScript + Tailwind v4 + Obsidian & Ember palette as design tokens in `@theme` + Spectral/Inter/JetBrains Mono loaded via `next/font/google`. Token harness lives at `/swatch`. shadcn/ui deferred to Step 2 as planned.
+- [x] **2. CardChrome** — Universal card container (`src/components/card-chrome.tsx`). shadcn Card + Button + Tooltip primitives. Bronze resting border → confidence-tier hover border. Always-on confidence pip with tooltip (`{confidence}% · {tier}`). Two empty icon-slot placeholders (Step 13 gets heraldic SVGs). Stow + Explain buttons. Confidence tier system redesigned to D&D metal ladder: copper (0–69%) / silver (70–79%) / gold (80–89%) / platinum (90–94%) / mithral (95–99%). Verification harness at `/test-card-chrome` — all 7 visual checklist items confirmed in browser.
 - [ ] **3. One lens end-to-end** — Overview lens pulling real data from Bouncer, rendering as Tremor charts inside CardChrome. No Sage, no Bag of Holding, no animations yet. Data flowing from BigQuery → screen.
 - [ ] **4. Sage MVP** — Single chat interface (Vercel AI SDK `useChat` hook), contextual to current page, streaming from Vertex AI Gemini 1.5, no tools yet.
 - [ ] **5. Bag of Holding MVP** — localStorage only (no Firestore yet), stow-and-view, no export yet.
@@ -66,19 +68,36 @@ Neither changes any design decision — only two version-reconciliation notes.
 - `HTTP 200` on `http://localhost:3000/`
 - `<title>Arcane Analytics</title>` in rendered HTML
 - `<html class="...spectral_variable inter_variable jetbrains_mono_variable">` — all three `next/font/google` variables attached
-- All 13 unique Obsidian & Ember hex values present in the compiled Tailwind CSS bundle (13 uniques for 15 tokens because `rarity-uncommon` shares `#6baa75` with `druid`, and `rarity-rare` shares `#5fc9e7` with `arcane` — intentional per §4.1)
+- All 13 unique Obsidian & Ember hex values present in the compiled Tailwind CSS bundle at Step 1 verification (the original 15 tokens had 2 shared hex values — `rarity-uncommon` = `druid`, `rarity-rare` = `arcane`). Step 2 replaced those 4 rarity tokens with 5 distinct metal-tier tokens (copper/silver/gold/platinum/mithral), bringing the total to 16 tokens / 16 unique hex values.
 - Turbopack dev server ready in 3.4s, cold page compile 6.9s
 
 ---
 
-## Notes For Next Session (Starting Step 2)
+## Notes For Next Session (Starting Step 3)
 
-1. `cd arcane/` and run `pnpm dlx shadcn@latest init`. Default styling = "Default", base color = "Slate" (the component primitives will inherit our `@theme` tokens, so shadcn's base color only controls the initial CSS variables shadcn ships — we override them via globals.css).
-2. Add the first shadcn primitives CardChrome needs: `pnpm dlx shadcn@latest add card button tooltip`.
-3. Build `src/components/card-chrome.tsx` as the universal card container. Props: `children`, `title`, `subtitle`, `lens`, `cardType`, `confidence` (0-100 → rarity tier), `onStow`, `onExplain`. Render: bronze resting border, two icon slots top-right (empty placeholders for now — real icons wait for Step 13), confidence → `border-rarity-{tier}` on hover, Stow and Explain buttons at bottom.
-4. Replace the current swatch harness at `/` with a `/test-card-chrome` page that shows CardChrome with ~5 different dummy content types to prove the container is truly universal.
-5. Do not wire any real data (that's Step 3). Do not add Aceternity glowing-border effects (that's Step 13). CardChrome should look calm and correct in its default state.
-6. When Step 2 is done, update this file and the memory index again.
+Goal: Overview lens pulling real data from Bouncer, rendered as Tremor charts inside CardChrome. No Sage, no Bag of Holding, no animations. Data flowing BigQuery → Bouncer → screen.
+
+1. **Wire `.env.local`** — Create `arcane/.env.local` with:
+   ```
+   NEXT_PUBLIC_BOUNCER_API_URL=https://us-central1-dnd-trends-index.cloudfunctions.net/bouncer-api
+   ```
+   This was verified `HTTP 200` on 2026-04-15. Check the Bouncer route list before building fetch calls.
+
+2. **Install Tremor** — Check the current Tremor docs before installing; the package name changed between v2 and v3 (`@tremor/react` was deprecated, replaced by `tremor` or similar). Read `node_modules/next/dist/docs/` for any relevant Next 16 chart-library guidance too.
+
+3. **Build the Overview lens** — A `src/app/overview/page.tsx` that:
+   - Fetches the top ~10 concepts from Bouncer's relevant endpoint
+   - Renders each as a `<CardChrome>` with either a Tremor chart or a stat block inside
+   - Uses the `confidence` field from Bouncer data to drive the pip/hover tier
+   - No loading shimmer yet (that's a polish step) — a simple `loading.tsx` skeleton is fine
+
+4. **Update `src/app/page.tsx`** — Add a link to `/overview` from the landing stub, or redirect there directly.
+
+5. **Do not add** Sage, Bag of Holding, Concept Detail Drawer, animations, or auth. Step 3 is purely data → screen.
+
+6. **Deployment option** — Cloud Run service `arcane-analytics` hasn't been created yet. Step 3 is the first meaningful page to deploy, but deployment can be deferred to Step 4+ if the lens isn't production-worthy yet. Yorri decides.
+
+7. **shadcn/ui workaround note** — `pnpm dlx shadcn@latest` fails on Windows/pnpm 10.33 (`ERR_PNPM_NO_IMPORTER_MANIFEST_FOUND`). Also `npx shadcn@latest init` non-interactive mode is broken in shadcn 4.2.0 (Nova/Vega prompt system). Workaround: add components manually via `npx shadcn@latest add <name> --yes` — this works fine. `components.json` and `src/lib/utils.ts` already exist from Step 2.
 
 ---
 
@@ -90,4 +109,4 @@ Neither changes any design decision — only two version-reconciliation notes.
 
 ---
 
-**Step 1 complete. Waiting on confirmation to proceed to Step 2.**
+**Step 2 complete. Waiting on confirmation to proceed to Step 3.**
