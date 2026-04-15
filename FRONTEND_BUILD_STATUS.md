@@ -35,7 +35,7 @@ Backend is **live** (no frontend changes needed):
 
 - [x] **1. Skeleton** — Next.js 16 App Router + TypeScript + Tailwind v4 + Obsidian & Ember palette as design tokens in `@theme` + Spectral/Inter/JetBrains Mono loaded via `next/font/google`. Token harness lives at `/swatch`. shadcn/ui deferred to Step 2 as planned.
 - [x] **2. CardChrome** — Universal card container (`src/components/card-chrome.tsx`). shadcn Card + Button + Tooltip primitives. Bronze resting border → confidence-tier hover border. Always-on confidence pip with tooltip (`{confidence}% · {tier}`). Two empty icon-slot placeholders (Step 13 gets heraldic SVGs). Stow + Explain buttons. Confidence tier system redesigned to D&D metal ladder: copper (0–69%) / silver (70–79%) / gold (80–89%) / platinum (90–94%) / mithral (95–99%). Verification harness at `/test-card-chrome` — all 7 visual checklist items confirmed in browser.
-- [ ] **3. One lens end-to-end** — Overview lens pulling real data from Bouncer, rendering as Tremor charts inside CardChrome. No Sage, no Bag of Holding, no animations yet. Data flowing from BigQuery → screen.
+- [x] **3. One lens end-to-end** — Overview lens at `/overview` with real Bouncer data. Three CardChrome cards: Top Classes leaderboard, Category Heat Recharts bar chart, Top Opportunities leaderboard. Server Component with 1-hr ISR revalidation. All confidence props stubbed at 75 (silver) with STUB comment — real formula is Step 6. Recharts used instead of Tremor (Tremor v3 conflicts with Tailwind v4; Tremor v4 is early beta). Verified in browser: data flowing, chart labels correct, responsive layout.
 - [ ] **4. Sage MVP** — Single chat interface (Vercel AI SDK `useChat` hook), contextual to current page, streaming from Vertex AI Gemini 1.5, no tools yet.
 - [ ] **5. Bag of Holding MVP** — localStorage only (no Firestore yet), stow-and-view, no export yet.
 - [ ] **6. Confidence scoring + rarity glows** — First time it feels like the real product.
@@ -113,4 +113,4 @@ Goal: Overview lens pulling real data from Bouncer, rendered as Recharts charts 
 
 ---
 
-**Step 3 in progress.**
+**Step 3 complete. Waiting on confirmation to proceed to Step 4.**
