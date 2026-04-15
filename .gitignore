@@ -19,6 +19,10 @@ antigravity-browser-profile/
 !sage_sample.json
 !tavern_sample.json
 !treantmonk_videos.json
+# Next.js app JSON configs — must be tracked
+!arcane/package.json
+!arcane/tsconfig.json
+!arcane/components.json
 !.devcontainer/
 node_modules/
 venv/

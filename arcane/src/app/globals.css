@@ -49,6 +49,35 @@
   --font-mono: var(--font-jetbrains-mono);
 }
 
+/*
+ * shadcn/ui semantic CSS variables — Slate base, dark-only (no .dark toggle in v1).
+ * These are separate from the @theme block above; they drive shadcn primitives
+ * (Button, Card, Tooltip, etc.) and must not overwrite our @theme tokens.
+ * Mapped to the Obsidian & Ember palette where possible.
+ */
+:root {
+  --background: 222 26% 7%;          /* obsidian #0b0d12 */
+  --foreground: 40 19% 87%;          /* parchment #e8e3d5 */
+  --card: 222 25% 11%;               /* onyx #141821 */
+  --card-foreground: 40 19% 87%;     /* parchment */
+  --popover: 222 26% 14%;            /* iron #1c2230 */
+  --popover-foreground: 40 19% 87%;  /* parchment */
+  --primary: 24 62% 44%;             /* ember #b8692a */
+  --primary-foreground: 40 19% 87%;  /* parchment */
+  --secondary: 222 26% 14%;          /* iron #1c2230 */
+  --secondary-foreground: 40 19% 87%;
+  --muted: 222 26% 14%;              /* iron */
+  --muted-foreground: 40 6% 52%;     /* ash #8a8578 */
+  --accent: 222 26% 14%;             /* iron */
+  --accent-foreground: 40 19% 87%;
+  --destructive: 0 62% 50%;
+  --destructive-foreground: 40 19% 87%;
+  --border: 30 32% 17%;              /* bronze #3a2e1f */
+  --input: 30 32% 17%;               /* bronze */
+  --ring: 24 62% 44%;                /* ember #b8692a */
+  --radius: 0.5rem;
+}
+
 html {
   color-scheme: dark;
 }
