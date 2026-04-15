@@ -2,7 +2,7 @@
  * Arcane Analytics — root landing stub.
  *
  * Placeholder until the real landing page ("State of the D&D Multiverse", §3.1)
- * is built in a later step. Points to the active verification harness.
+ * is built in a later step. The Overview lens is now live with real data.
  */
 
 export default function RootPage() {
@@ -13,20 +13,26 @@ export default function RootPage() {
           Arcane Analytics · build in progress
         </p>
         <h1 className="font-display text-4xl font-semibold text-parchment">
-          Step 2 — CardChrome
+          Step 3 — Overview Lens
         </h1>
         <p className="font-sans text-base text-ash max-w-sm">
-          The universal card container is ready. The real landing page arrives
-          after Step 3 (first lens end-to-end).
+          Real trend data is flowing from Bouncer into CardChrome. The full
+          landing page arrives in Step 3+ polish.
         </p>
       </div>
 
       <nav className="flex flex-col sm:flex-row gap-3">
         <a
-          href="/test-card-chrome"
+          href="/overview"
           className="inline-flex items-center justify-center rounded-lg border border-ember bg-onyx px-5 py-2.5 font-sans text-sm font-medium text-parchment transition-colors hover:bg-iron"
         >
-          CardChrome harness →
+          Overview lens →
+        </a>
+        <a
+          href="/test-card-chrome"
+          className="inline-flex items-center justify-center rounded-lg border border-bronze bg-onyx px-5 py-2.5 font-sans text-sm font-medium text-ash transition-colors hover:bg-iron hover:text-parchment"
+        >
+          CardChrome harness
         </a>
         <a
           href="/swatch"

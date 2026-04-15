@@ -75,21 +75,25 @@ Neither changes any design decision — only two version-reconciliation notes.
 
 ## Notes For Next Session (Starting Step 3)
 
-Goal: Overview lens pulling real data from Bouncer, rendered as Tremor charts inside CardChrome. No Sage, no Bag of Holding, no animations. Data flowing BigQuery → Bouncer → screen.
+Goal: Overview lens pulling real data from Bouncer, rendered as Recharts charts inside CardChrome. No Sage, no Bag of Holding, no animations. Data flowing Bouncer → screen.
+
+**Chart library decision (Step 3):** Using **Recharts directly** instead of Tremor. Tremor v3 (`@tremor/react`) was built for Tailwind CSS v3 and conflicts with our v4 `@theme` setup. Tremor v4 exists but is early beta. Recharts is what Tremor wraps anyway; the spec explicitly calls it the escape hatch.
+
+**Confidence stub decision (Step 3):** Bouncer API `score` field (Google Trends 0–100) is NOT our confidence score — they measure different things (popularity vs. trust). All Step 3 cards are hardcoded to `confidence={75}` (silver) with a `// STUB` comment. Real confidence formula (data reliability + AI grounding per §5.1) lands in Step 6.
 
 1. **Wire `.env.local`** — Create `arcane/.env.local` with:
    ```
    NEXT_PUBLIC_BOUNCER_API_URL=https://us-central1-dnd-trends-index.cloudfunctions.net/bouncer-api
    ```
-   This was verified `HTTP 200` on 2026-04-15. Check the Bouncer route list before building fetch calls.
+   Verified `HTTP 200`. The Bouncer root endpoint returns 18 categories; all paths (`/`, `/categories`, `/composite`, `/trend-score`) return the same dataset. No separate composite endpoint exposed.
 
-2. **Install Tremor** — Check the current Tremor docs before installing; the package name changed between v2 and v3 (`@tremor/react` was deprecated, replaced by `tremor` or similar). Read `node_modules/next/dist/docs/` for any relevant Next 16 chart-library guidance too.
+2. **Install Recharts** — `pnpm --prefix arcane add recharts`. Ships its own TypeScript types.
 
 3. **Build the Overview lens** — A `src/app/overview/page.tsx` that:
-   - Fetches the top ~10 concepts from Bouncer's relevant endpoint
-   - Renders each as a `<CardChrome>` with either a Tremor chart or a stat block inside
-   - Uses the `confidence` field from Bouncer data to drive the pip/hover tier
-   - No loading shimmer yet (that's a polish step) — a simple `loading.tsx` skeleton is fine
+   - Fetches from Bouncer with `{ next: { revalidate: 3600 } }` (Next 16 does NOT cache fetch by default — must opt in)
+   - Renders 3 CardChrome cards: top classes leaderboard, category heat bar chart, top opportunities
+   - All `confidence={75}` (silver stub)
+   - A simple `loading.tsx` skeleton is fine
 
 4. **Update `src/app/page.tsx`** — Add a link to `/overview` from the landing stub, or redirect there directly.
 
@@ -109,4 +113,4 @@ Goal: Overview lens pulling real data from Bouncer, rendered as Tremor charts in
 
 ---
 
-**Step 2 complete. Waiting on confirmation to proceed to Step 3.**
+**Step 3 in progress.**
