@@ -15,14 +15,24 @@
 --   platinum  90-94   highly trusted
 --   mithral   95-99   gold-standard consensus
 --
--- Formula (v1.0.0):
---   base = 30
---        + 25 * avg_stream_confidence_label        (HIGH=1.0, MED=0.7, LOW=0.4)
+-- Formula (v1.0.1 — tuned 2026-04-15 after first calibration pass):
+--   base = 45
+--        + 10 * avg_stream_confidence_label        (HIGH=1.0, MED=0.7, LOW=0.4)
 --        + 15 * streams_present / (streams_present + 2)
 --        + 20 * families_hit / 5                   (curiosity/community/creator/ownership/commerce)
 --        + 10 * agreement_factor                   (majority fraction of bucket momenta)
 --   raw  = base * velocity_factor                  (stale-consensus penalty)
 --   data_confidence = LEAST(raw, 79 if streams_present <= 1 else 99)
+--
+-- v1.0.0 → v1.0.1 rationale: the first pass landed 73% of concepts in copper
+-- because it over-weighted per-stream HIGH/MED/LOW labels. Each stream picks
+-- its own arbitrary thresholds for those labels (e.g. Google Trends: "10+ data
+-- points in 14 days = HIGH"), so avg_stream_confidence is closer to a coverage
+-- proxy than a trust signal. v1.0.1 drops its weight from 25 to 10 and raises
+-- the base from 30 to 45. Structural factors (streams, families, agreement)
+-- now do most of the work. Net effect on the sanity-check table: single-stream
+-- concepts move from ~64 (copper) to ~70 (silver); 3-family cross-validated
+-- concepts move from ~86 to ~86 (no change); single-LOW concepts stay copper.
 --
 -- The single-stream hard cap (79 = silver ceiling) is the §5.3 anti-theater
 -- rule expressed as a gate: a genuinely emerging concept surfaces honestly
@@ -99,9 +109,13 @@ WITH factors AS (
 
     -- Stale-consensus velocity penalty: high absolute signal,
     -- low directional movement → evergreen giant, trim the score.
+    -- Gate tightened 2026-04-15 (v1.0.1): original gate fired for
+    -- trend_level >= 0.7 which was too broad — it hit any moderately
+    -- popular concept with mixed momentum. Now only truly-maxed-volume
+    -- evergreens (trend_level >= 0.9 and genuinely flat) get trimmed.
     CASE
-      WHEN trend_level >= 0.7 AND trend_momentum < 0.4 THEN 0.90
-      WHEN trend_level >= 0.5 AND trend_momentum < 0.3 THEN 0.95
+      WHEN trend_level >= 0.90 AND trend_momentum < 0.30 THEN 0.90
+      WHEN trend_level >= 0.80 AND trend_momentum < 0.25 THEN 0.95
       ELSE 1.0
     END AS velocity_factor,
 
@@ -119,8 +133,9 @@ scored AS (
   SELECT
     *,
     -- Base score assembly (each term caps at the constant shown)
-    30.0
-      + 25.0 * COALESCE(concept_avg_confidence, 0.4)
+    -- v1.0.1: see header for rationale on the weight tuning.
+    45.0
+      + 10.0 * COALESCE(concept_avg_confidence, 0.4)
       + 15.0 * SAFE_DIVIDE(streams_present, streams_present + 2)
       + 20.0 * SAFE_DIVIDE(families_hit, 5)
       + 10.0 * COALESCE(agreement_factor, 0.5)
@@ -218,7 +233,7 @@ SELECT
     data_confidence                         AS data,
     100                                     AS ai_grounding,  -- overridden at card-assembly time for AI cards
     data_confidence                         AS displayed,
-    'v1.0.0'                                AS algo_version,
+    'v1.0.1'                                AS algo_version,
     streams_present                         AS streams_present,
     families_hit                            AS families_hit,
     ROUND(COALESCE(concept_avg_confidence, 0.4), 3) AS avg_stream_confidence,
@@ -236,7 +251,7 @@ SELECT
     END AS binding_constraint
   )) AS explanation_json,
 
-  'v1.0.0'       AS algo_version,
+  'v1.0.1'       AS algo_version,
   snapshot_date
 FROM capped
 WHERE data_confidence IS NOT NULL;
