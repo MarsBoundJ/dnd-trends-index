@@ -14,6 +14,7 @@
 
 import { CardChrome } from "@/components/card-chrome"
 import { OverviewBarChart } from "@/components/overview-bar-chart"
+import { BagLink } from "@/components/bag-link"
 import {
   fetchBouncerData,
   findCategory,
@@ -104,6 +105,7 @@ export default async function OverviewPage() {
           lens="overview"
           cardType="leaderboard"
           confidence={STUB_CONFIDENCE}
+          cardId="overview:top-classes"
           sageContext={topClassesContext}
         >
           <ol className="space-y-2 py-1">
@@ -134,6 +136,7 @@ export default async function OverviewPage() {
             lens="overview"
             cardType="chart"
             confidence={STUB_CONFIDENCE}
+            cardId="overview:category-heat"
             sageContext={heatContext}
           >
             <OverviewBarChart data={heatData} />
@@ -150,6 +153,7 @@ export default async function OverviewPage() {
           lens="overview"
           cardType="leaderboard"
           confidence={STUB_CONFIDENCE}
+          cardId="overview:top-opportunities"
           sageContext={opportunitiesContext}
         >
           <ol className="space-y-2 py-1">
@@ -182,7 +186,8 @@ export default async function OverviewPage() {
         <p className="font-mono text-xs text-ash">
           FRONTEND_DESIGN_SPEC.md · §3.2 Overview lens · Step 3 of 16
         </p>
-        <div className="flex gap-4">
+        <div className="flex items-center gap-4">
+          <BagLink />
           <a
             href="/test-card-chrome"
             className="font-mono text-xs text-ash hover:text-ember transition-colors"
