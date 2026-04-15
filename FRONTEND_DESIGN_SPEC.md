@@ -34,13 +34,13 @@ It must feel **premium and modern** (to satisfy Hasbro's corporate instincts) *a
 | Card art | Chart or visualization |
 | Rules text | Data / leaderboard content |
 | Flavor text | AI summary / Sage commentary |
-| Collected in a deck | **Clipped to the Briefcase** |
-| Hand of cards | **Current lens** |
+| Hand of cards you're browsing | **Current lens** |
+| Stowed in a Bag of Holding | **Saved clippings (cards + Sage answers)** |
 | Collection binder | **Atlas** (site map) |
 
-The Briefcase is a hand. The Lens is a deck you're browsing. The Atlas is your collection binder. The site is no longer a data dashboard with a fantasy skin — it's a fantasy object that happens to contain data.
+The Lens is a hand of cards you're currently browsing. The Bag of Holding is where you stow the cards you want to keep — a persistent stash that travels with you across sessions. The Atlas is your collection binder: a map of everything available, not what you've kept. The site is no longer a data dashboard with a fantasy skin — it's a fantasy object that happens to contain data.
 
-**This metaphor informs every subsequent decision.** Confidence tiers map to rarity glows. Aceternity's glowing borders are "rare card shine." Bronze card borders mimic MTG frames. The "Clip to Briefcase" action is "add to deck." Copy leans into it subtly: "You've added Paladin to your hand."
+**This metaphor informs every subsequent decision.** Confidence tiers map to rarity glows. Aceternity's glowing borders are "rare card shine." Bronze card borders mimic MTG frames. The "Stow in Bag of Holding" action is "save it for the road." Copy leans into it subtly: "Stowed — Paladin is in your bag."
 
 ---
 
@@ -56,7 +56,7 @@ The landing page is a daily pulse, not a navigation menu. Users should get value
 2. **The Sage entry point** — prominent button invoking the AI guide. Offers text input, voice input, checklist flow, or "Surprise me."
 3. **Lens chip row** — six filters that reshape the card grid (not separate pages).
 4. **Atlas icon** — opens the site map.
-5. **Briefcase icon** — persistent, badge count, bottom nav.
+5. **Bag of Holding icon** — persistent, badge count, bottom nav.
 6. **Hero card** — top card from the active lens.
 7. **Scrollable card column** — the rest of the active lens's cards.
 
@@ -97,30 +97,32 @@ Every concept name on the site is tappable. Tapping opens a drawer (bottom sheet
 - Per-stream sparklines (Google Trends, Reddit, YouTube, Fandom, BGG, Roll20, etc.)
 - Related cards from every lens
 - Sage chat pre-loaded with the concept as context
-- "Clip Concept to Briefcase" button (saves the entire concept as a composite item)
+- "Stow Concept in Bag of Holding" button (saves the entire concept as a composite item)
 
 This is the "evidence view" that lets a skeptical exec verify claims. It was the single most important addition from Perplexity's proposal — we had composite-level cards but no clean drill-down path, and this fills that gap.
 
-### 3.5 Briefcase
+### 3.5 Bag of Holding
 
-A persistent, session-spanning collection tool. Every card, every Sage answer, every concept drawer can be **clipped** to the briefcase via a button in the card's bottom-right.
+A persistent, session-spanning collection tool. Every card, every Sage answer, every concept drawer can be **stowed** in the Bag of Holding via a button in the card's bottom-right. The name is a deliberate callout to the iconic D&D item that famously holds more than its apparent volume — which is the literal behavior of a digital clip-collection that grows without capacity. The verb "Stow" replaces "Clip" throughout the copy.
+
+**URL slug:** Shareable link URLs use `/collection/{id}`, not `/bag/{id}` — the URL stays semantic and neutral because shareable links land in exec emails. "Bag of Holding" is the product-chrome name; `/collection/` is the URL name. (Similar to how Apple Music uses `/library/` in URLs while the UI says "Library.")
 
 **Mechanics:**
 
-- Briefcase icon in bottom nav shows a badge count
-- Anonymous users clip to `localStorage`; signed-in users clip to Firestore
-- Inside the briefcase: clipped items in order, drag to reorder (dnd-kit)
+- Bag of Holding icon in bottom nav shows a badge count
+- Anonymous users stow to `localStorage`; signed-in users stow to Firestore
+- Inside the bag: stowed items in order, drag to reorder (dnd-kit)
 - "Ask AI to organize this" button → the Sage groups items logically, adds transitions/headers
 - Export: PDF (@react-pdf/renderer), shareable link, email, copy-to-clipboard
-- **Confidence scores travel with clipped items** — the final export shows "Confidence: 88%" next to every claim, making briefs auditable
-- Saved briefcases as history (reusable artifacts, not one-shot)
-- Exit guard: "You have 6 items in your briefcase. Save before leaving?"
+- **Confidence scores travel with stowed items** — the final export shows "Confidence: 88%" next to every claim, making briefs auditable
+- Saved bags as history (named, reusable artifacts, not one-shot)
+- Exit guard: "You have 6 items in your Bag of Holding. Save before leaving?"
 
 **Three levels of persistence:**
 
 1. **Lenses** — saved ways of viewing the site
-2. **Briefcases** — saved collections of cards + AI insights
-3. **Reports** — finalized, shareable artifacts from briefcases
+2. **Bags of Holding** — saved collections of cards + AI insights
+3. **Reports** — finalized, shareable artifacts exported from a Bag of Holding
 
 ### 3.6 The Atlas (Navigation Card)
 
@@ -207,7 +209,7 @@ The biggest design risk: cards contain wildly different content (bar charts, sca
 - One color palette
 - One type scale (4-5 sizes max)
 - One accent color for interactive elements
-- One confidence meter, one Clip button, one Explain button — identical position on every card
+- One confidence meter, one Stow button, one Explain button — identical position on every card
 
 **Loose (content within the container):**
 
@@ -247,7 +249,7 @@ If a card belongs to multiple lenses, Slot 2 holds up to two icons or a `+N` ind
 Premium dark fantasy risks going full *Doom* and losing warmth. The "childlike fun" ingredient lives in:
 
 - **Copywriting** — The Sage has personality. Loading states say "Consulting the scrolls…" not "Loading." Errors say "The divination failed" not "Error 500."
-- **Micro-animations** — The D20 loader. Cards lift on hover. Briefcase badge bounces when you clip something.
+- **Micro-animations** — The D20 loader. Cards lift on hover. Bag of Holding badge bounces when you stow something.
 - **Easter eggs** — `/roll` in the Sage actually rolls a die. A tiny d6 in the corner cycles faces.
 
 **Triangle: Premium chrome. Arcane soul. Warm voice.**
@@ -262,7 +264,7 @@ All from Aceternity UI unless noted:
 - **Spotlight** — "State of the D&D Multiverse" header glow
 - **D20 spinning loader** — custom SVG, replaces all default spinners
 - **Card expansion** — Framer Motion (under Aceternity)
-- **Briefcase clip micro-animation** — Framer Motion
+- **Bag of Holding stow micro-animation** — Framer Motion
 
 **Rule: no effect appears on more than 20% of screen surface area on any page.**
 
@@ -295,7 +297,7 @@ Stakeholders must always know how sure the system is of any statement. This is a
 
 **Don't let confidence become theater.** If every card shows 85-95%, the metric is meaningless. Low-signal concepts should genuinely score low and users should *see* them score low. That builds trust in the high scores.
 
-Confidence scores **travel with clipped items** into reports. When a WotC exec hands a brief to their boss, every claim has its confidence attached.
+Confidence scores **travel with stowed items** into reports. When a WotC exec hands a brief to their boss, every claim has its confidence attached.
 
 ---
 
@@ -319,7 +321,7 @@ Every Sage invocation receives structured page context:
 
 ```
 {
-  page_type: 'home' | 'lens' | 'concept' | 'briefcase' | 'admin',
+  page_type: 'home' | 'lens' | 'concept' | 'collection' | 'admin',
   current_lens: LensId,
   selected_concept: ConceptId | null,
   time_range: { start, end },
@@ -348,7 +350,7 @@ When a user asks "how has Astarion trended this month," the Sage **does not gues
 
 1. **"Explain this"** button on every card — AI gets the card's JSON as context
 2. **Free chat** — bottom-sheet Sage opens, knows current page
-3. **"Quick Brief"** shortcut — user describes what they need, Sage assembles a briefcase automatically
+3. **"Quick Brief"** shortcut — user describes what they need, Sage assembles a Bag of Holding automatically
 
 ### 6.6 Q&A Logging
 
@@ -363,8 +365,8 @@ Alongside data cards and chat, the Sage produces **pre-written short articles** 
 
 - Scheduled Cloud Function runs daily, picks top-moving concepts, generates articles in three voices
 - Stored in `gold_articles` BigQuery table
-- **Because articles are cards, clipping them to the briefcase produces instant publishable report content**
-- This is the feature that makes the Swiss Army Knife actually cut: login → clip → export shareable brief in 2 minutes
+- **Because articles are cards, stowing them in the Bag of Holding produces instant publishable report content**
+- This is the feature that makes the Swiss Army Knife actually cut: login → stow → export shareable brief in 2 minutes
 
 ---
 
@@ -386,16 +388,16 @@ Everything stays in GCP. Nothing exotic. Each piece plays with the others.
 | UI primitives | **shadcn/ui** | Components copied into repo (not a library); built on Radix (accessible); fully themeable; owns the source |
 | Charts | **Tremor** | Dark-mode native, Tailwind-themable, dashboard-specific; Recharts under the hood for escape hatches |
 | Flourishes | **Aceternity UI** | Glowing borders, meteors, spotlight; used sparingly per glow budget |
-| Animations | **Framer Motion** | Already in tree (Aceternity depends on it); card expansion, briefcase bounce |
+| Animations | **Framer Motion** | Already in tree (Aceternity depends on it); card expansion, Bag of Holding bounce |
 | Server state | **TanStack Query v5** | Caching, deduplication, stale-while-revalidate for all Bouncer + BigQuery reads |
-| Client state | **Zustand** | Briefcase, active lens, UI state. ~1kb. Persists to localStorage. |
+| Client state | **Zustand** | Bag of Holding, active lens, UI state. ~1kb. Persists to localStorage. |
 | AI integration | **Vercel AI SDK + `@ai-sdk/google-vertex`** | `useChat` hook, streaming primitives, tool calling with Zod schemas, framework-agnostic |
 | App database | **Firestore** | GCP-native; real-time listeners (critical for admin→public shimmer); generous free tier; schema-flexible |
 | Auth (public) | **NextAuth.js v5 (Auth.js)** | Google sign-in + magic link; anonymous browsing allowed |
 | Auth (admin) | **Google Cloud IAP** | Hard gate on `/admin/*` at Cloud Run level; free for <100 users |
 | Hosting | **Cloud Run** | Same GCP project; scales to zero; IAP native; internal networking to BigQuery/Firestore |
 | CI/CD | **Cloud Build → Artifact Registry → Cloud Run** | GCP standard pattern |
-| Drag-and-drop | **dnd-kit** | Briefcase reordering; accessible, touch-friendly |
+| Drag-and-drop | **dnd-kit** | Bag of Holding reordering; accessible, touch-friendly |
 | PDF export | **@react-pdf/renderer** | Client-side PDF from React components; full control over styling |
 | Markdown | **react-markdown + remark-gfm** | Sage responses + articles |
 | Voice input | **Web Speech API** | Built into browsers, no deps |
@@ -435,15 +437,15 @@ Each step is a visible, demo-able product increment. No "dead month" of invisibl
 
 1. **Skeleton** — Next.js + Tailwind + shadcn + Obsidian & Ember theme + three fonts loaded
 2. **CardChrome** — the universal card container, before anything goes inside cards
-3. **One lens end-to-end** — Overview lens pulling real Bouncer data, rendering as Tremor charts inside CardChrome. No Sage, no briefcase, no animations.
+3. **One lens end-to-end** — Overview lens pulling real Bouncer data, rendering as Tremor charts inside CardChrome. No Sage, no Bag of Holding, no animations.
 4. **Sage MVP** — one chat interface, contextual to current page, streaming from Vertex, no tools yet
-5. **Briefcase MVP** — localStorage only, clip-and-view
+5. **Bag of Holding MVP** — localStorage only, stow-and-view
 6. **Confidence scoring + rarity glows** — first time it feels like the real product
 7. **Sage tool calling** — Sage can query live data
 8. **Concept drawer** — drill-down pattern
 9. **Articles** — generator + display
 10. **Atlas navigation**
-11. **Auth + Firestore persistence** — briefcases survive sessions
+11. **Auth + Firestore persistence** — Bags of Holding survive sessions
 12. **Admin + IAP + Harvest Console**
 13. **Aceternity flourishes** — glow, meteors, spotlight
 14. **D20 loader + micro-interactions**
@@ -472,13 +474,13 @@ This section captures non-obvious decisions and the reasoning, so future collabo
 
 **Decision:** Cards are the core mental model, not just a UI pattern.
 
-**Why:** Yorri made the observation mid-session that D&D / MTG players already understand "cards" — they collect them, sort them, build decks, read rarity symbols. Every piece of UI maps cleanly onto this: briefcase = hand, lens = deck, atlas = binder, confidence = rarity. This is the kind of metaphor that unifies a design. Never dilute it.
+**Why:** Yorri made the observation mid-session that D&D / MTG players already understand "cards" — they collect them, sort them, build decks, read rarity symbols. Every piece of UI maps cleanly onto this: lens = hand you're currently browsing, Bag of Holding = stowed keepsakes, atlas = collection binder, confidence = rarity. This is the kind of metaphor that unifies a design. Never dilute it.
 
 ### 9.4 Why confidence scores are structural, not decorative
 
 **Decision:** Confidence is a first-class feature with its own methodology page.
 
-**Why:** AI products routinely ship with confident-sounding outputs that hallucinate. WotC stakeholders making real decisions need to know what's solid. Confidence travels with clipped items into exported briefs, so the analyst handing a report to their boss doesn't have to worry about defending fabricated claims.
+**Why:** AI products routinely ship with confident-sounding outputs that hallucinate. WotC stakeholders making real decisions need to know what's solid. Confidence travels with stowed items into exported briefs, so the analyst handing a report to their boss doesn't have to worry about defending fabricated claims.
 
 **Discipline:** Don't let confidence become theater. If everything shows 85-95%, the metric is meaningless. Low-signal concepts must genuinely score low.
 
@@ -496,7 +498,7 @@ This section captures non-obvious decisions and the reasoning, so future collabo
 
 ### 9.7 Why Firestore, not Cloud SQL
 
-**Decision:** App state (briefcases, Q&A logs, saved lenses) lives in Firestore.
+**Decision:** App state (Bags of Holding, Q&A logs, saved lenses) lives in Firestore.
 
 **Why:** Real-time listeners are critical for the "admin harvest → public shimmer" feature. Schema flexibility helps during build. Generous free tier. Zero auth setup in GCP. Migration to Cloud SQL later is possible via the thin data layer if relational queries ever become necessary.
 
@@ -554,6 +556,18 @@ None of these affect Step 1 (skeleton). All are documented in `arcane/node_modul
 
 The discipline the spec cares about — "one source of truth for tokens that enforces palette discipline" — is unchanged. It just lives in CSS now, which is arguably *better* suited to design tokens (closer to the rendered output, no JS round-trip).
 
+### 9.15 Why "Bag of Holding," not "Briefcase" (renamed between Step 1 and Step 2)
+
+**Decision:** The persistent clippings feature is named the **Bag of Holding**, the action verb is **Stow**, and the URL slug is `/collection/{id}`.
+
+**Why:** The original name "Briefcase" was a holdover from the Bloomberg Terminal half of the chrome/soul split. It worked as corporate chrome but contradicted the fantasy-soul half and fought the card metaphor — a briefcase holds papers, not cards. "Bag of Holding" is an iconic D&D item that famously holds more than its apparent volume, which is the literal behavior of a digital clip-collection with no capacity. It makes the persistent stash feel native to the world the rest of the site lives in, and it makes Yorri smile — which is a decent proxy for whether it'll make exec users smile too.
+
+**Why the URL stays `/collection/`:** Shareable link URLs land in executive emails and get pasted into Slack. A URL like `/bag/abc123` reads as cute-for-cute's-sake out of context; `/collection/abc123` reads as neutral and professional. "Bag of Holding" is the product-chrome name inside the app; `/collection/` is the URL name. (Apple Music does the same thing: UI says "Library," URL says `/library/`.) This also means the `page_type` enum value in Sage context is `'collection'`, not `'bag'` — the internal data model matches the URL, not the chrome.
+
+**Why "Stow":** Matches the metaphor (you *stow* gear in a bag of holding; you don't *clip* things into it), one syllable, unambiguous verb, no namespace collision with other UI actions.
+
+**Scope of the rename:** Every UI surface, copy string, component name, state slice, and spec reference. Internal enum values and URL slugs use `collection`, not `bag`. Done as a standalone PR stacked on top of Step 1's skeleton PR, before Step 2 (CardChrome) begins, so no Step 2 code is ever written under the old vocabulary.
+
 ---
 
 ## 10. What's Archived for Later (Not Dead)
@@ -566,7 +580,7 @@ These are documented in `project_analytics_future_ideas.md` and elsewhere:
 - Dedicated "Library Health" sub-view (blocked by concept-name matching gap)
 - Correlation clusters, 18-month leading indicator (from Perplexity's analytics ideas)
 - Light-theme toggle (v2)
-- Collaborative briefcases (multi-user editing)
+- Collaborative Bags of Holding (multi-user editing)
 - Mobile app (PWA is enough for v1)
 
 ---
@@ -587,7 +601,7 @@ This spec is the output of a long design session on April 14, 2026 between Yorri
 - Yorri's card-as-gaming-accessory insight (session-defining reframe)
 - Yorri's Digital/BG3 strategic emphasis
 - Yorri's confidence-score requirement (hallucination defense)
-- Yorri's briefcase workflow vision (the Swiss Army Knife that actually cuts)
+- Yorri's Bag of Holding workflow vision (the Swiss Army Knife that actually cuts)
 
 ---
 
