@@ -25,27 +25,29 @@ interface OverviewBarChartProps {
 
 export function OverviewBarChart({ data }: OverviewBarChartProps) {
   return (
-    <ResponsiveContainer width="100%" height={180}>
+    <ResponsiveContainer width="100%" height={200}>
       <BarChart
         data={data}
-        margin={{ top: 4, right: 4, left: -16, bottom: 48 }}
+        margin={{ top: 4, right: 4, left: 4, bottom: 64 }}
         barCategoryGap="22%"
       >
         <XAxis
           dataKey="name"
           tick={{ fill: "#8A8578", fontSize: 10, fontFamily: "var(--font-jetbrains-mono)" }}
-          angle={-40}
+          angle={-45}
           textAnchor="end"
           interval={0}
           tickLine={false}
           axisLine={{ stroke: "#3A2E1F" }}
+          height={72}
         />
         <YAxis
           domain={[0, 100]}
+          ticks={[0, 25, 50, 75, 100]}
           tick={{ fill: "#8A8578", fontSize: 10, fontFamily: "var(--font-jetbrains-mono)" }}
           tickLine={false}
           axisLine={false}
-          width={28}
+          width={36}
         />
         <Bar dataKey="heat" radius={[3, 3, 0, 0]} maxBarSize={32}>
           {data.map((_, i) => (
