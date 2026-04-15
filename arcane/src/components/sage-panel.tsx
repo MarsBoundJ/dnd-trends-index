@@ -1,0 +1,260 @@
+"use client"
+
+/*
+ * Arcane Analytics — Sage panel (Step 4 MVP).
+ *
+ * Floating right-side chat panel. Talks to /api/sage via the Vercel AI SDK
+ * `useChat` hook. Page context (a plain-text snapshot of the current page or
+ * card) is passed on every send as an extra body field and injected into the
+ * system prompt by the route handler.
+ *
+ * Step 4 scope: visual panel + streaming chat only. No Firestore logging,
+ * no tool calling, no voice selection, no Framer Motion. Click-outside dims
+ * but does not close (users may want to read context while composing).
+ *
+ * The panel is driven by a <SageProvider> higher in the tree that exposes
+ * `openSage(ctx)` / `closeSage()` via React context, so any CardChrome's
+ * onExplain handler can pop it open with that card's data as context.
+ */
+
+import React from "react"
+import { useChat } from "@ai-sdk/react"
+import { DefaultChatTransport } from "ai"
+import { Sparkles, X } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+
+// ─── Sage context ────────────────────────────────────────────────────────────
+
+interface SageContextValue {
+  isOpen: boolean
+  pageContext: string
+  openSage: (pageContext: string) => void
+  closeSage: () => void
+}
+
+const SageContext = React.createContext<SageContextValue | null>(null)
+
+export function useSage() {
+  const ctx = React.useContext(SageContext)
+  if (!ctx) throw new Error("useSage must be used inside <SageProvider>")
+  return ctx
+}
+
+/**
+ * Like `useSage`, but returns `null` when no `<SageProvider>` is mounted.
+ * Useful for components that live in multiple contexts (harness pages,
+ * tests) and should gracefully no-op when Sage isn't available.
+ */
+export function useSageOptional() {
+  return React.useContext(SageContext)
+}
+
+export function SageProvider({ children }: { children: React.ReactNode }) {
+  const [isOpen, setIsOpen] = React.useState(false)
+  const [pageContext, setPageContext] = React.useState("")
+
+  const openSage = React.useCallback((ctx: string) => {
+    setPageContext(ctx)
+    setIsOpen(true)
+  }, [])
+
+  const closeSage = React.useCallback(() => setIsOpen(false), [])
+
+  const value = React.useMemo(
+    () => ({ isOpen, pageContext, openSage, closeSage }),
+    [isOpen, pageContext, openSage, closeSage]
+  )
+
+  return (
+    <SageContext.Provider value={value}>
+      {children}
+      <SagePanel />
+    </SageContext.Provider>
+  )
+}
+
+// ─── Sage panel ──────────────────────────────────────────────────────────────
+
+function SagePanel() {
+  const { isOpen, pageContext, closeSage } = useSage()
+  const [input, setInput] = React.useState("")
+  const scrollRef = React.useRef<HTMLDivElement>(null)
+
+  // Transport is constant across renders — any per-request data (like the
+  // current pageContext) is attached at sendMessage time via request-level
+  // body options. The useChat docs flag request-level options as the
+  // recommended pattern over hook-level dynamic config.
+  const transport = React.useMemo(
+    () => new DefaultChatTransport({ api: "/api/sage" }),
+    []
+  )
+
+  const { messages, sendMessage, status, stop, error } = useChat({
+    transport,
+  })
+
+  // Auto-scroll to the newest message as tokens stream in.
+  React.useEffect(() => {
+    if (!scrollRef.current) return
+    scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+  }, [messages, status])
+
+  if (!isOpen) return null
+
+  const isBusy = status === "submitted" || status === "streaming"
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!input.trim() || isBusy) return
+    // Attach the current pageContext at send time so the route handler can
+    // inject it into the system prompt. Latest value always wins even if
+    // the user opens Sage from a different card mid-conversation.
+    sendMessage({ text: input }, { body: { pageContext } })
+    setInput("")
+  }
+
+  return (
+    <aside
+      role="dialog"
+      aria-label="Sage — D&D trend oracle"
+      className={cn(
+        "fixed right-0 top-0 z-50 flex h-screen w-full max-w-md flex-col",
+        "border-l border-bronze bg-onyx text-parchment shadow-2xl"
+      )}
+    >
+      {/* Header */}
+      <header className="flex items-start gap-3 border-b border-bronze px-5 py-4">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-ember/60 bg-iron">
+          <Sparkles className="h-4 w-4 text-ember-bright" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-ember-bright">
+            The Sage · Strategist
+          </p>
+          <h2 className="font-display text-base font-semibold leading-tight text-parchment">
+            Ask about what you see
+          </h2>
+          {pageContext && (
+            <p className="mt-1 truncate font-mono text-[10px] text-ash/70">
+              context: {pageContext.split("\n")[0]}
+            </p>
+          )}
+        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={closeSage}
+          aria-label="Close Sage"
+          className="h-7 w-7 p-0 text-ash hover:bg-iron hover:text-parchment"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </header>
+
+      {/* Message list */}
+      <div
+        ref={scrollRef}
+        className="flex-1 space-y-4 overflow-y-auto px-5 py-5"
+      >
+        {messages.length === 0 && (
+          <p className="font-sans text-sm text-ash">
+            The Sage is watching the same page you are. Ask what&rsquo;s moving,
+            why, or what to do about it.
+          </p>
+        )}
+
+        {messages.map((m) => (
+          <div
+            key={m.id}
+            className={cn(
+              "flex flex-col gap-1",
+              m.role === "user" ? "items-end" : "items-start"
+            )}
+          >
+            <span className="font-mono text-[10px] uppercase tracking-widest text-ash/70">
+              {m.role === "user" ? "You" : "Sage"}
+            </span>
+            <div
+              className={cn(
+                "max-w-[90%] rounded-lg border px-3 py-2 font-sans text-sm leading-relaxed whitespace-pre-wrap",
+                m.role === "user"
+                  ? "border-bronze bg-iron text-parchment"
+                  : "border-ember/40 bg-onyx text-parchment"
+              )}
+            >
+              {m.parts.map((part, i) =>
+                part.type === "text" ? (
+                  <span key={i}>{part.text}</span>
+                ) : null
+              )}
+            </div>
+          </div>
+        ))}
+
+        {status === "submitted" && (
+          <p className="font-mono text-[10px] uppercase tracking-widest text-ash/70">
+            Sage is thinking…
+          </p>
+        )}
+
+        {error && (
+          <p className="font-mono text-xs text-rarity-copper">
+            Sage failed to respond. Check Vertex AI credentials and try again.
+          </p>
+        )}
+      </div>
+
+      {/* Composer */}
+      <form
+        onSubmit={handleSubmit}
+        className="border-t border-bronze px-5 py-4"
+      >
+        <div className="flex items-end gap-2">
+          <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault()
+                handleSubmit(e)
+              }
+            }}
+            rows={2}
+            placeholder="Ask the Sage…"
+            disabled={isBusy}
+            className={cn(
+              "flex-1 resize-none rounded-md border border-bronze bg-iron px-3 py-2",
+              "font-sans text-sm text-parchment placeholder:text-ash/50",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember focus-visible:ring-offset-1 focus-visible:ring-offset-onyx",
+              "disabled:opacity-60"
+            )}
+          />
+          {isBusy ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => stop()}
+              className="border-bronze text-ash hover:border-ember hover:text-parchment hover:bg-iron"
+            >
+              Stop
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              size="sm"
+              disabled={!input.trim()}
+              className="bg-ember text-onyx hover:bg-ember-bright disabled:opacity-40"
+            >
+              Send
+            </Button>
+          )}
+        </div>
+        <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-ash/50">
+          Enter to send · Shift+Enter for newline
+        </p>
+      </form>
+    </aside>
+  )
+}

@@ -11,6 +11,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
+import { useSageOptional } from "@/components/sage-panel"
 
 // ─── Confidence tier system ──────────────────────────────────────────────────
 // Maps a 0–100 confidence score to a metal tier per §5.2 and §9.16.
@@ -79,6 +80,14 @@ export interface CardChromeProps {
   onStow?: () => void
   /** Called when the user taps "Explain" — opens Sage with this card as context. Wired in Step 4. */
   onExplain?: () => void
+  /**
+   * Plain-text snapshot of this card's data — fed to the Sage as page context
+   * when the user taps "Explain". If both `sageContext` and `onExplain` are
+   * provided, `onExplain` wins. If a `<SageProvider>` is not mounted above
+   * this card (e.g. the harness page), `sageContext` silently no-ops.
+   * Wired in Step 4.
+   */
+  sageContext?: string
 }
 
 // ─── CardChrome ──────────────────────────────────────────────────────────────
@@ -101,8 +110,18 @@ export function CardChrome({
   confidence,
   onStow,
   onExplain,
+  sageContext,
 }: CardChromeProps) {
   const tier = confidenceToTier(confidence)
+
+  // If the caller provided a `sageContext` snapshot and a SageProvider is
+  // mounted above us, auto-wire the Explain button to open the Sage panel
+  // with this card's context. Explicit `onExplain` always wins — this is
+  // the fallback used by the live /overview page (Step 4 §6).
+  const sage = useSageOptional()
+  const resolvedOnExplain =
+    onExplain ??
+    (sageContext && sage ? () => sage.openSage(sageContext) : undefined)
 
   return (
     <TooltipProvider delayDuration={400}>
@@ -187,7 +206,8 @@ export function CardChrome({
           <Button
             variant="ghost"
             size="sm"
-            onClick={onExplain}
+            onClick={resolvedOnExplain}
+            disabled={!resolvedOnExplain}
             aria-label="Explain this card"
             className="h-7 px-3 text-xs text-ash hover:text-parchment hover:bg-iron"
           >
