@@ -32,20 +32,20 @@ Backend is **live** (no frontend changes needed):
 ## Build Order (16 Steps)
 
 - [x] **1. Skeleton** — Next.js 16 App Router + TypeScript + Tailwind v4 + Obsidian & Ember palette as design tokens in `@theme` + Spectral/Inter/JetBrains Mono loaded via `next/font/google`. Verified with a dev-server render of a swatch/font harness page. **shadcn/ui init was deferred to Step 2** — there are no shadcn components on the page yet, so initialising the library now would add config without consumers. We'll run `pnpm dlx shadcn@latest init` at the top of Step 2 when CardChrome needs its first primitives.
-- [ ] **2. CardChrome** — Universal card container component. One file. Every card type will import this. Sets the visual contract: border, padding, corner radius, shadow, header bar, two icon slots, confidence glow ring, Clip button, Explain button. **Starts with** `pnpm dlx shadcn@latest init` and adding the first shadcn primitives CardChrome needs (likely Card, Button, Tooltip).
-- [ ] **3. One lens end-to-end** — Overview lens pulling real data from Bouncer, rendering as Tremor charts inside CardChrome. No Sage, no briefcase, no animations yet. Data flowing from BigQuery → screen.
+- [ ] **2. CardChrome** — Universal card container component. One file. Every card type will import this. Sets the visual contract: border, padding, corner radius, shadow, header bar, two icon slots, confidence glow ring, Stow button, Explain button. **Starts with** `pnpm dlx shadcn@latest init` and adding the first shadcn primitives CardChrome needs (likely Card, Button, Tooltip).
+- [ ] **3. One lens end-to-end** — Overview lens pulling real data from Bouncer, rendering as Tremor charts inside CardChrome. No Sage, no Bag of Holding, no animations yet. Data flowing from BigQuery → screen.
 - [ ] **4. Sage MVP** — Single chat interface (Vercel AI SDK `useChat` hook), contextual to current page, streaming from Vertex AI Gemini 1.5, no tools yet.
-- [ ] **5. Briefcase MVP** — localStorage only (no Firestore yet), clip-and-view, no export yet.
+- [ ] **5. Bag of Holding MVP** — localStorage only (no Firestore yet), stow-and-view, no export yet.
 - [ ] **6. Confidence scoring + rarity glows** — First time it feels like the real product.
 - [ ] **7. Sage tool calling** — Define ~10 tools as TypeScript functions with Zod schemas. Sage can query live BigQuery data without hallucinating numbers.
 - [ ] **8. Concept detail drawer** — Tap any concept name → drawer opens with per-stream sparklines, bucket scores, related cards, Sage pre-loaded.
 - [ ] **9. Articles** — Scheduled Cloud Function generates articles in three voices, stored in `gold_articles`, displayed as card type.
 - [ ] **10. Atlas navigation** — Full site map card, glassmorphic, expands to full screen on mobile / sidebar on desktop.
-- [ ] **11. Auth + Firestore persistence** — NextAuth with Google + magic link. Briefcases migrate from localStorage to Firestore on sign-in. Saved lenses persist.
+- [ ] **11. Auth + Firestore persistence** — NextAuth with Google + magic link. Bags of Holding migrate from localStorage to Firestore on sign-in. Saved lenses persist.
 - [ ] **12. Admin + IAP + Harvest Console** — `/admin/*` gated by Google Cloud IAP via a Next 16 `proxy.ts` (formerly `middleware.ts`). Harvesting Cockpit with bookmarklet launchers + BackerKit Harvest Console (styled terminal card with Run button).
 - [ ] **13. Aceternity flourishes** — Glowing borders on hover, Meteors on Daily Brief hero, Spotlight on main header.
 - [ ] **14. D20 spinning loader** — Custom SVG, replaces all default spinners.
-- [ ] **15. Report export (PDF)** — `@react-pdf/renderer` export of briefcases with confidence scores baked in.
+- [ ] **15. Report export (PDF)** — `@react-pdf/renderer` export of Bags of Holding with confidence scores baked in.
 - [ ] **16. Polish pass** — Copy (Sage voice across loading/error/empty states), mobile QA, accessibility audit.
 
 ---
@@ -75,7 +75,7 @@ Neither changes any design decision — only two version-reconciliation notes.
 
 1. `cd arcane/` and run `pnpm dlx shadcn@latest init`. Default styling = "Default", base color = "Slate" (the component primitives will inherit our `@theme` tokens, so shadcn's base color only controls the initial CSS variables shadcn ships — we override them via globals.css).
 2. Add the first shadcn primitives CardChrome needs: `pnpm dlx shadcn@latest add card button tooltip`.
-3. Build `src/components/card-chrome.tsx` as the universal card container. Props: `children`, `title`, `subtitle`, `lens`, `cardType`, `confidence` (0-100 → rarity tier), `onClip`, `onExplain`. Render: bronze resting border, two icon slots top-right (empty placeholders for now — real icons wait for Step 13), confidence → `border-rarity-{tier}` on hover, Clip and Explain buttons at bottom.
+3. Build `src/components/card-chrome.tsx` as the universal card container. Props: `children`, `title`, `subtitle`, `lens`, `cardType`, `confidence` (0-100 → rarity tier), `onStow`, `onExplain`. Render: bronze resting border, two icon slots top-right (empty placeholders for now — real icons wait for Step 13), confidence → `border-rarity-{tier}` on hover, Stow and Explain buttons at bottom.
 4. Replace the current swatch harness at `/` with a `/test-card-chrome` page that shows CardChrome with ~5 different dummy content types to prove the container is truly universal.
 5. Do not wire any real data (that's Step 3). Do not add Aceternity glowing-border effects (that's Step 13). CardChrome should look calm and correct in its default state.
 6. When Step 2 is done, update this file and the memory index again.
