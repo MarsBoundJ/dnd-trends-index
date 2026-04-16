@@ -1,8 +1,8 @@
 # Frontend Build Status
 
 **Last updated:** 2026-04-15
-**Current phase:** Step 2 complete — CardChrome built and verified
-**Next step:** Step 3 of 16 — One lens end-to-end (Overview, real Bouncer data)
+**Current phase:** Step 6 complete (data layer) — Confidence scoring live, Popover wired
+**Next step:** Step 6.5 — AI grounding confidence (two-pass check at generation time)
 
 ---
 
@@ -36,9 +36,10 @@ Backend is **live** (no frontend changes needed):
 - [x] **1. Skeleton** — Next.js 16 App Router + TypeScript + Tailwind v4 + Obsidian & Ember palette as design tokens in `@theme` + Spectral/Inter/JetBrains Mono loaded via `next/font/google`. Token harness lives at `/swatch`. shadcn/ui deferred to Step 2 as planned.
 - [x] **2. CardChrome** — Universal card container (`src/components/card-chrome.tsx`). shadcn Card + Button + Tooltip primitives. Bronze resting border → confidence-tier hover border. Always-on confidence pip with tooltip (`{confidence}% · {tier}`). Two empty icon-slot placeholders (Step 13 gets heraldic SVGs). Stow + Explain buttons. Confidence tier system redesigned to D&D metal ladder: copper (0–69%) / silver (70–79%) / gold (80–89%) / platinum (90–94%) / mithral (95–99%). Verification harness at `/test-card-chrome` — all 7 visual checklist items confirmed in browser.
 - [x] **3. One lens end-to-end** — Overview lens at `/overview` with real Bouncer data. Three CardChrome cards: Top Classes leaderboard, Category Heat Recharts bar chart, Top Opportunities leaderboard. Server Component with 1-hr ISR revalidation. All confidence props stubbed at 75 (silver) with STUB comment — real formula is Step 6. Recharts used instead of Tremor (Tremor v3 conflicts with Tailwind v4; Tremor v4 is early beta). Verified in browser: data flowing, chart labels correct, responsive layout.
-- [ ] **4. Sage MVP** — Single chat interface (Vercel AI SDK `useChat` hook), contextual to current page, streaming from Vertex AI Gemini 1.5, no tools yet.
-- [ ] **5. Bag of Holding MVP** — localStorage only (no Firestore yet), stow-and-view, no export yet.
-- [ ] **6. Confidence scoring + rarity glows** — First time it feels like the real product.
+- [x] **4. Sage MVP** — Streaming Gemini chat panel with page context, `useChat` hook, contextual Explain button wiring on every CardChrome.
+- [x] **5. Bag of Holding MVP** — localStorage-backed bag store (Zustand), stow/unstow from any card, `/collection` page, stable selector for SSR hydration.
+- [x] **6. Confidence scoring + rarity glows** (data layer) — `concept_confidence` BigQuery view (v1.0.1 formula), Bouncer `/confidence` endpoint (Option B wiring), `fetchConfidence()` + `cardConfidence()` helpers, Overview cards wired with real scores, methodology Popover replaces Tooltip on pip. See `CONFIDENCE_METHODOLOGY.md` for full formula rationale. AI grounding layer deferred to Step 6.5.
+- [ ] **6.5. AI grounding confidence** — Two-pass grounding check at article/Sage generation time. Produces `ai_grounding_confidence`. Displayed confidence for AI cards = `min(data_confidence, ai_grounding_confidence)`. Data cards unaffected.
 - [ ] **7. Sage tool calling** — Define ~10 tools as TypeScript functions with Zod schemas. Sage can query live BigQuery data without hallucinating numbers.
 - [ ] **8. Concept detail drawer** — Tap any concept name → drawer opens with per-stream sparklines, bucket scores, related cards, Sage pre-loaded.
 - [ ] **9. Articles** — Scheduled Cloud Function generates articles in three voices, stored in `gold_articles`, displayed as card type.
@@ -113,4 +114,30 @@ Goal: Overview lens pulling real data from Bouncer, rendered as Recharts charts 
 
 ---
 
-**Step 3 complete. Waiting on confirmation to proceed to Step 4.**
+**Step 6 (data layer) complete. Step 6.5 (AI grounding) is next.**
+
+---
+
+## Step 6 Verification Evidence
+
+- `concept_confidence` view deployed to `gold_data.concept_confidence` (v1.0.1)
+- Bouncer `/confidence?names=Paladin,Wizard,Sorcerer` returns correct JSON with `data_confidence`, `tier`, `explanation` payload
+- Overview page at `/overview` shows per-card confidence (78% Silver for Top Classes, 68% Copper for Category Heat/Top Opportunities)
+- Clicking the confidence pip opens a methodology Popover showing: score/tier headline, weakest-link concept name, binding constraint explanation, factor breakdown (streams, families, agreement, velocity), aggregate disclosure, and algo version
+- TypeScript type-checks clean (`pnpm exec tsc --noEmit` — zero errors)
+- ESLint clean (`pnpm lint` — zero errors)
+- Distribution: 48% copper, 52% silver, 10 gold, 0 platinum, 0 mithral (see `CONFIDENCE_METHODOLOGY.md` section 5 for calibration rationale)
+
+## Step 6 Files Changed
+
+| File | Change |
+|---|---|
+| `gold_views/concept_confidence.sql` | NEW — the confidence formula, tier assignment, explanation payload |
+| `gold_views/composite_concept_index.sql` | EDITED — added `*_avg_confidence` columns to feed the formula |
+| `bouncer/main.py` | EDITED — added `/confidence` endpoint + router branch |
+| `deploy_bouncer.py` | EDITED — fixed stale entry point (`get_daily_trends` -> `bouncer_api`) |
+| `arcane/src/lib/bouncer.ts` | EDITED — `ConfidenceEntry`, `ConfidenceMap`, `fetchConfidence()`, `cardConfidence()` |
+| `arcane/src/components/card-chrome.tsx` | EDITED — Popover replaces Tooltip, new explanation props, `bindingCopy` map |
+| `arcane/src/components/ui/popover.tsx` | NEW — shadcn Popover primitive |
+| `arcane/src/app/overview/page.tsx` | EDITED — batch-fetch confidence, per-card min aggregation, removed STUB_CONFIDENCE |
+| `CONFIDENCE_METHODOLOGY.md` | NEW — full formula design rationale (you are here) |

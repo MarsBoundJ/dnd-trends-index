@@ -167,6 +167,8 @@ def bouncer_api(request):
             path = 'system/amazon/ingest-ranks'
         elif 'kickstarter/ingest-projects' in full_path:
             path = 'system/kickstarter/ingest-projects'
+        elif 'confidence' in full_path:
+            path = 'confidence'
         else:
             path = 'leaderboards'
         
@@ -231,6 +233,71 @@ def bouncer_api(request):
         except Exception as e:
             return (json.dumps({"error": str(e)}, cls=ArcaneEncoder), 500, headers)
             
+    elif path == 'confidence':
+        # Step 6 — data confidence lookup for card enrichment.
+        # Accepts ?names=Paladin,Wizard,... and returns
+        #   { "paladin": { data_confidence, tier, explanation_json }, ... }
+        # keyed by LOWER(concept_name). Missing names are simply absent
+        # from the response — frontend falls back to the silver stub.
+        # This is the lightweight "Option B" wiring; long-term goal is
+        # to LEFT JOIN concept_confidence inside each leaderboard
+        # assembly (Option A) once the concept-name matching gap closes.
+        names_arg = request.args.get('names', '').strip()
+        if not names_arg:
+            return (json.dumps({}, cls=ArcaneEncoder), 200, headers)
+        raw_names = [n.strip() for n in names_arg.split(',') if n.strip()]
+        # Cap to prevent pathological queries
+        raw_names = raw_names[:200]
+        # GROUP BY + ANY_VALUE guards against the known multi-category
+        # duplicate-rows issue (same concept name under multiple categories
+        # → duplicate rows in composite_concept_index → duplicate rows here).
+        # Can't use SELECT DISTINCT because explanation_json is BigQuery
+        # JSON type, which DISTINCT rejects. Tracked in
+        # project_data_quality_backlog.
+        query = """
+            SELECT
+              LOWER(concept_name) AS key,
+              ANY_VALUE(concept_name) AS concept_name,
+              ANY_VALUE(data_confidence) AS data_confidence,
+              ANY_VALUE(tier) AS tier,
+              ANY_VALUE(explanation_json) AS explanation_json
+            FROM `dnd-trends-index.gold_data.concept_confidence`
+            WHERE LOWER(concept_name) IN UNNEST(@names)
+            GROUP BY key
+        """
+        try:
+            job_config = bigquery.QueryJobConfig(
+                query_parameters=[
+                    bigquery.ArrayQueryParameter(
+                        'names', 'STRING', [n.lower() for n in raw_names]
+                    )
+                ]
+            )
+            result = {}
+            for row in client.query(query, job_config=job_config):
+                # explanation_json is a BigQuery JSON type column.
+                # The BQ client may return it as a dict directly or as a
+                # JSON string depending on client version — handle both.
+                raw_expl = row['explanation_json']
+                if raw_expl is None:
+                    explanation = None
+                elif isinstance(raw_expl, (dict, list)):
+                    explanation = raw_expl
+                else:
+                    try:
+                        explanation = json.loads(raw_expl)
+                    except (TypeError, ValueError):
+                        explanation = None
+                result[row['key']] = {
+                    'concept_name': row['concept_name'],
+                    'data_confidence': row['data_confidence'],
+                    'tier': row['tier'],
+                    'explanation': explanation,
+                }
+            return (json.dumps(result, cls=ArcaneEncoder), 200, headers)
+        except Exception as e:
+            return (json.dumps({"error": str(e)}, cls=ArcaneEncoder), 500, headers)
+
     elif path == 'leaderboards':
         source = request.args.get('source', 'google')
         
