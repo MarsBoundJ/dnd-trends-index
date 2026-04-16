@@ -406,24 +406,25 @@ function SagePanel() {
                     : "border-ember/40 bg-onyx text-parchment"
                 )}
               >
+                {/* Tool invocation chips — always rendered above text */}
+                {isAssistant &&
+                  m.parts
+                    .filter(
+                      (p) =>
+                        p.type === "dynamic-tool" ||
+                        p.type.startsWith("tool-")
+                    )
+                    .map((part, i) => (
+                      <ToolInvocationChip key={`tool-${i}`} part={part} />
+                    ))}
                 {/* Render text with inline footnote markers if grounded */}
                 {isAssistant && positioned.length > 0
                   ? renderAnnotatedText(text, positioned)
-                  : m.parts.map((part, i) => {
-                      if (part.type === "text") {
-                        return <span key={i}>{part.text}</span>
-                      }
-                      // Tool invocations — show a compact indicator
-                      if (
-                        part.type === "dynamic-tool" ||
-                        part.type.startsWith("tool-")
-                      ) {
-                        return (
-                          <ToolInvocationChip key={i} part={part} />
-                        )
-                      }
-                      return null
-                    })}
+                  : m.parts.map((part, i) =>
+                      part.type === "text" ? (
+                        <span key={i}>{part.text}</span>
+                      ) : null
+                    )}
               </div>
 
               {/* Grounding byline — shows after grounding check completes */}
