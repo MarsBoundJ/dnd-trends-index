@@ -1,8 +1,8 @@
 # Frontend Build Status
 
 **Last updated:** 2026-04-16
-**Current phase:** Step 6.5 complete — AI grounding confidence live in Sage chat
-**Next step:** Step 7 — Sage tool calling (live BQ queries)
+**Current phase:** Step 7 complete — Sage tool calling live (8 Bouncer API tools)
+**Next step:** Step 8 — Concept detail drawer
 
 ---
 
@@ -40,7 +40,7 @@ Backend is **live** (no frontend changes needed):
 - [x] **5. Bag of Holding MVP** — localStorage-backed bag store (Zustand), stow/unstow from any card, `/collection` page, stable selector for SSR hydration.
 - [x] **6. Confidence scoring + rarity glows** (data layer) — `concept_confidence` BigQuery view (v1.0.1 formula), Bouncer `/confidence` endpoint (Option B wiring), `fetchConfidence()` + `cardConfidence()` helpers, Overview cards wired with real scores, methodology Popover replaces Tooltip on pip. See `CONFIDENCE_METHODOLOGY.md` for full formula rationale. AI grounding layer deferred to Step 6.5.
 - [x] **6.5. AI grounding confidence** — Post-stream grounding check on Sage responses. Gemini fact-checks claims against pageContext, produces inline `(confidence%)[n]` footnote markers (max 5), footnotes section with per-claim source + explanation, and `ai_grounding_confidence` byline. Graceful fallback on error. See `CONFIDENCE_METHODOLOGY.md` §6.3.
-- [ ] **7. Sage tool calling** — Define ~10 tools as TypeScript functions with Zod schemas. Sage can query live BigQuery data without hallucinating numbers.
+- [x] **7. Sage tool calling** — 8 tools with Zod v4 schemas calling Bouncer API: getLeaderboard (10 sources), searchConcepts, getConceptConfidence, getMarketSummary, getTopMovers, getDmShortageIndex, getEditionMigration, getSystemHealth. Multi-step enabled (`stopWhen: stepCountIs(5)`). Compact ToolInvocationChip shows tool state in chat. Tool results fed to grounding check for accurate scoring.
 - [ ] **8. Concept detail drawer** — Tap any concept name → drawer opens with per-stream sparklines, bucket scores, related cards, Sage pre-loaded.
 - [ ] **9. Articles** — Scheduled Cloud Function generates articles in three voices, stored in `gold_articles`, displayed as card type.
 - [ ] **10. Atlas navigation** — Full site map card, glassmorphic, expands to full screen on mobile / sidebar on desktop.
@@ -114,7 +114,7 @@ Goal: Overview lens pulling real data from Bouncer, rendered as Recharts charts 
 
 ---
 
-**Step 6.5 (AI grounding) complete. Step 7 (Sage tool calling) is next.**
+**Step 7 (Sage tool calling) complete. Step 8 (Concept detail drawer) is next.**
 
 ---
 
@@ -163,3 +163,24 @@ Goal: Overview lens pulling real data from Bouncer, rendered as Recharts charts 
 | `arcane/src/components/sage-panel.tsx` | EDITED — post-stream grounding trigger (useEffect), renderAnnotatedText(), GroundingByline, GroundingFootnotes, "Verifying claims..." indicator |
 | `CONFIDENCE_METHODOLOGY.md` | EDITED — replaced §6.3 placeholder with full AI grounding implementation docs |
 | `FRONTEND_BUILD_STATUS.md` | EDITED — Step 6.5 marked complete, verification evidence added |
+
+## Step 7 Verification Evidence
+
+- Asked "What are the top monsters on Fandom right now?" → Sage called `getLeaderboard("fandom", "Monster")`, returned real data (Space Clown: 99, Tiefling: 95, Couatl: 92, etc.)
+- Tool invocation chip renders: "LOADED LEADERBOARD DATA" with Database icon in compact format
+- Asked "What are the top movers right now? Is our data fresh?" → Sage called BOTH `getTopMovers` AND `getSystemHealth` (multi-tool, two chips visible)
+- Multi-step enabled: `stopWhen: stepCountIs(5)` allows up to 5 LLM round-trips
+- Tool results fed to grounding check: claims from tool data score 100% grounding (not flagged as hallucinated)
+- Grounding footnotes correctly cite tool results as source: `[1] 100% · getTopMovers tool result — "..."`
+- Tool chips render independently from grounding annotations (fix applied for rendering path split)
+- Graceful fallback: if a Bouncer endpoint fails, the tool returns an error object and the Sage tells the user plainly
+- TypeScript type-checks clean (`pnpm exec tsc --noEmit` — zero errors)
+- System prompt updated to instruct tool usage: "USE THE TOOLS to get real data — do not guess or make up numbers"
+
+## Step 7 Files Changed
+
+| File | Change |
+|---|---|
+| `arcane/src/lib/sage-tools.ts` | NEW — 8 tool definitions with Zod v4 schemas + Bouncer API execute functions |
+| `arcane/src/app/api/sage/route.ts` | EDITED — added `tools: sageTools` + `stopWhen: stepCountIs(5)`, updated system prompt, increased maxDuration to 60s |
+| `arcane/src/components/sage-panel.tsx` | EDITED — ToolInvocationChip component, extractToolContext() for grounding, tool part rendering split from text rendering |
