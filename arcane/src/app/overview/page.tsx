@@ -18,6 +18,7 @@
 import { CardChrome } from "@/components/card-chrome"
 import { OverviewBarChart } from "@/components/overview-bar-chart"
 import { BagLink } from "@/components/bag-link"
+import { ConceptLink } from "@/components/concept-drawer"
 import {
   fetchBouncerData,
   fetchConfidence,
@@ -146,7 +147,7 @@ export default async function OverviewPage() {
                   {i + 1}
                 </span>
                 <span className="font-sans text-sm text-parchment flex-1">
-                  {item.name}
+                  <ConceptLink name={item.name} />
                 </span>
                 <span className="font-mono text-xs text-ember-bright tabular-nums">
                   {Math.round(item.score)}
@@ -205,7 +206,7 @@ export default async function OverviewPage() {
                     {i + 1}
                   </span>
                   <span className="font-sans text-sm text-parchment flex-1">
-                    {item.name}
+                    <ConceptLink name={item.name} />
                   </span>
                   <span className="font-mono text-xs text-druid tabular-nums">
                     {item.opportunity_index.toFixed(0)}
