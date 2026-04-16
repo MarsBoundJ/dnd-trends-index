@@ -1,8 +1,8 @@
 # Frontend Build Status
 
-**Last updated:** 2026-04-15
-**Current phase:** Step 6 complete (data layer) — Confidence scoring live, Popover wired
-**Next step:** Step 6.5 — AI grounding confidence (two-pass check at generation time)
+**Last updated:** 2026-04-16
+**Current phase:** Step 6.5 complete — AI grounding confidence live in Sage chat
+**Next step:** Step 7 — Sage tool calling (live BQ queries)
 
 ---
 
@@ -39,7 +39,7 @@ Backend is **live** (no frontend changes needed):
 - [x] **4. Sage MVP** — Streaming Gemini chat panel with page context, `useChat` hook, contextual Explain button wiring on every CardChrome.
 - [x] **5. Bag of Holding MVP** — localStorage-backed bag store (Zustand), stow/unstow from any card, `/collection` page, stable selector for SSR hydration.
 - [x] **6. Confidence scoring + rarity glows** (data layer) — `concept_confidence` BigQuery view (v1.0.1 formula), Bouncer `/confidence` endpoint (Option B wiring), `fetchConfidence()` + `cardConfidence()` helpers, Overview cards wired with real scores, methodology Popover replaces Tooltip on pip. See `CONFIDENCE_METHODOLOGY.md` for full formula rationale. AI grounding layer deferred to Step 6.5.
-- [ ] **6.5. AI grounding confidence** — Two-pass grounding check at article/Sage generation time. Produces `ai_grounding_confidence`. Displayed confidence for AI cards = `min(data_confidence, ai_grounding_confidence)`. Data cards unaffected.
+- [x] **6.5. AI grounding confidence** — Post-stream grounding check on Sage responses. Gemini fact-checks claims against pageContext, produces inline `(confidence%)[n]` footnote markers (max 5), footnotes section with per-claim source + explanation, and `ai_grounding_confidence` byline. Graceful fallback on error. See `CONFIDENCE_METHODOLOGY.md` §6.3.
 - [ ] **7. Sage tool calling** — Define ~10 tools as TypeScript functions with Zod schemas. Sage can query live BigQuery data without hallucinating numbers.
 - [ ] **8. Concept detail drawer** — Tap any concept name → drawer opens with per-stream sparklines, bucket scores, related cards, Sage pre-loaded.
 - [ ] **9. Articles** — Scheduled Cloud Function generates articles in three voices, stored in `gold_articles`, displayed as card type.
@@ -114,7 +114,7 @@ Goal: Overview lens pulling real data from Bouncer, rendered as Recharts charts 
 
 ---
 
-**Step 6 (data layer) complete. Step 6.5 (AI grounding) is next.**
+**Step 6.5 (AI grounding) complete. Step 7 (Sage tool calling) is next.**
 
 ---
 
@@ -141,3 +141,25 @@ Goal: Overview lens pulling real data from Bouncer, rendered as Recharts charts 
 | `arcane/src/components/ui/popover.tsx` | NEW — shadcn Popover primitive |
 | `arcane/src/app/overview/page.tsx` | EDITED — batch-fetch confidence, per-card min aggregation, removed STUB_CONFIDENCE |
 | `CONFIDENCE_METHODOLOGY.md` | NEW — full formula design rationale (you are here) |
+
+## Step 6.5 Verification Evidence
+
+- Sage panel streams response, shows "VERIFYING CLAIMS..." with pulsing Shield icon during grounding check
+- Post-stream grounding check fires automatically via POST to `/api/sage/ground`
+- Inline `(confidence%)[n]` superscript markers appear on factual claims (up to 5 per response)
+- Footnotes section renders with per-claim: footnote number, confidence %, source name, and claim text or explanation
+- GroundingByline shows below message: shield icon + headline score + data sources + algo version
+- All 100% confidence on direct data matches (e.g. "Fighter (98)" when source data shows Fighter: 98)
+- Graceful degradation: if grounding check fails, returns 75% silver fallback with `-fallback` algo version tag
+- Robust Gemini parsing: handles `citations` vs `fact_checks` field name variance, nested `sources_available`, missing `explanation`
+- TypeScript type-checks clean (`pnpm exec tsc --noEmit` — zero errors)
+
+## Step 6.5 Files Changed
+
+| File | Change |
+|---|---|
+| `arcane/src/lib/grounding.ts` | NEW — GroundingCitation/GroundingResult types, GROUNDING_SYSTEM_PROMPT, GROUNDING_RESPONSE_SCHEMA, findClaimPosition(), positionedCitations(), groundingTier() |
+| `arcane/src/app/api/sage/ground/route.ts` | NEW — POST endpoint for async grounding check, robust Gemini response normalization, graceful fallback |
+| `arcane/src/components/sage-panel.tsx` | EDITED — post-stream grounding trigger (useEffect), renderAnnotatedText(), GroundingByline, GroundingFootnotes, "Verifying claims..." indicator |
+| `CONFIDENCE_METHODOLOGY.md` | EDITED — replaced §6.3 placeholder with full AI grounding implementation docs |
+| `FRONTEND_BUILD_STATUS.md` | EDITED — Step 6.5 marked complete, verification evidence added |

@@ -27,7 +27,8 @@ The system has two layers:
 For pure data cards (leaderboards, charts), the displayed confidence *is*
 `data_confidence` directly. For AI cards (articles, Sage summaries), the
 displayed confidence is `min(data_confidence, ai_grounding_confidence)` per
-FRONTEND_DESIGN_SPEC 5.1. This document covers the data_confidence layer.
+FRONTEND_DESIGN_SPEC 5.1. This document covers both layers: data_confidence
+(§2-6.2) and ai_grounding_confidence (§6.3, implemented in Step 6.5).
 
 ---
 
@@ -323,16 +324,135 @@ whose data is stale (e.g., last snapshot was 3 months ago), but
 max(snapshot_date). When it does, multiply freshness_factor into raw without
 changing other weights.
 
-### 6.3 AI Grounding Confidence (Step 6.5)
+### 6.3 AI Grounding Confidence (Step 6.5) — IMPLEMENTED
 
-This layer is not yet implemented. It will:
-- Run at article/Sage text generation time (not at composite refresh time)
-- Score how well the generated text is grounded in cited data
-- Produce `ai_grounding_confidence` (0-100)
-- The displayed confidence for AI cards becomes `min(data_confidence, ai_grounding_confidence)`
+The AI grounding layer is a **post-generation fact-checking pass** that scores
+how well AI-generated text is supported by the source data it was given.
 
-This ensures an AI-generated article about a gold-tier concept still shows
-copper confidence if the text makes poorly-grounded claims.
+#### Architecture: Two-Call Design
+
+The grounding check is deliberately a **separate LLM call**, not a modification
+of the original Sage streaming call. This is a key design choice:
+
+1. **Sage streams its response** using `streamText` with pageContext as system
+   prompt context. The user sees tokens appearing in real-time. Fast UX.
+2. **After streaming completes**, the client fires a POST to `/api/sage/ground`
+   with the full generated text + the same pageContext.
+3. **A second Gemini call** (non-streaming, `generateText`) runs the grounding
+   check and returns structured JSON with per-claim scores.
+4. **The UI annotates** the already-visible response with inline footnote
+   markers and a footnotes section at the bottom.
+
+Why not do it in one call? Because streaming UX matters. The user shouldn't
+wait 8-15 seconds for grounding before seeing any response. The two-call
+design lets them read the response immediately while a "Verifying claims..."
+indicator signals the grounding check is running asynchronously.
+
+#### Scoring Rubric
+
+The grounding prompt instructs the model to score each factual claim:
+
+| Score Range | Meaning | Example |
+|---|---|---|
+| 90-100 | Claim directly matches a number/fact in the source data | "Fighter has a score of 98" when source shows Fighter: 98 |
+| 70-89 | Reasonable interpretation of the source data | "Fighter dominates" when Fighter leads by 3 points |
+| 40-69 | Partial support, extrapolates beyond the data | "Fighter has been trending up" when only current snapshot provided |
+| 0-39 | No support in the source data (likely hallucinated) | "Fighter was buffed in the latest update" with no such data |
+
+#### Headline Score: Weakest Link
+
+`ai_grounding_confidence` is the **minimum** of all per-claim confidence
+scores. This follows the same "chain = weakest link" philosophy used in
+`data_confidence`. One badly-grounded claim drags the whole score down.
+
+If the response contains no factual/numeric claims (pure opinion, framing,
+or general D&D knowledge), the headline score defaults to 95 — the text is
+grounded by virtue of making no checkable claims.
+
+#### Citation Limits
+
+The prompt caps at **5 citations** per response. This is a UX decision per
+Yorri's direction: "too many confidence footnotes would be annoying." The
+model is instructed to pick the most important factual claims if more than
+5 exist.
+
+#### Inline Footnote UX
+
+Each citation appears as an inline superscript marker at the point where
+the claim occurs in the text: `(82%)[1]`. The percentage is color-coded
+by the metal tier ladder (gold for grounded, copper for ungrounded). At
+the bottom of the message, a footnotes section shows:
+
+```
+[1] 100% · Google Trends (7-day) — "Fighter (98)"
+[2] 85% · Google Trends (7-day) — "Fighter dominates the class landscape"
+```
+
+A byline below the message shows the headline score and data sources:
+`⊘ AI grounding 100% · Google Trends · grounding-v1.0.0`
+
+#### Claim Position Matching
+
+The grounding prompt asks for exact substrings from the generated text as
+the `claim` field. `findClaimPosition()` uses a three-strategy fallback:
+
+1. Exact string match
+2. Case-insensitive match
+3. Trimmed match (strips trailing punctuation, min 10 chars)
+
+If no match is found (position = -1), the citation still appears in the
+footnotes section but doesn't get an inline marker. This is graceful
+degradation — the user still sees the claim's confidence in the footnotes.
+
+#### Gemini Response Normalization
+
+Gemini's structured output is surprisingly inconsistent across calls. The
+route handles several observed variations:
+
+- **Field name variance**: `citations` vs `fact_checks` vs `claims`. The
+  parser searches a priority list of candidate keys, with a last-resort
+  heuristic that finds the first array of objects containing a `claim` field.
+- **Nested sources**: Gemini sometimes puts `sources_available` inside each
+  citation instead of at the top level. The parser collects and deduplicates.
+- **Missing explanation**: When Gemini omits the `explanation` field, the
+  footnote UI falls back to showing the claim text in italics.
+- **Missing headline score**: When `ai_grounding_confidence` is absent, the
+  parser computes it as `min(per-claim scores)` per the prompt instructions.
+
+#### Graceful Degradation
+
+If the grounding check fails entirely (network error, Gemini outage, parse
+failure), the route returns a fallback result:
+
+```json
+{
+  "ai_grounding_confidence": 75,
+  "citations": [],
+  "sources_available": [],
+  "algo_version": "grounding-v1.0.0-fallback"
+}
+```
+
+The user still sees the Sage response — they just don't get grounding
+annotations. The `-fallback` suffix in `algo_version` makes it clear in
+the byline that this is a degraded result, not a real score.
+
+#### File Index
+
+| File | Purpose |
+|---|---|
+| `arcane/src/lib/grounding.ts` | Types, system prompt, citation positioning helpers, tier mapping |
+| `arcane/src/app/api/sage/ground/route.ts` | POST endpoint: Gemini grounding call + response normalization |
+| `arcane/src/components/sage-panel.tsx` | Post-stream trigger, inline markers, byline, footnotes rendering |
+
+#### Future: min(data, ai_grounding) for AI Cards
+
+For AI-generated cards (articles, trend summaries), the displayed confidence
+will be `min(data_confidence, ai_grounding_confidence)`. This ensures an
+AI-generated article about a gold-tier concept still shows copper confidence
+if the text makes poorly-grounded claims. This two-layer minimum is not yet
+wired because AI cards don't exist yet (Step 7+), but the infrastructure is
+in place.
 
 ### 6.4 48% Copper Is Not a Bug
 
