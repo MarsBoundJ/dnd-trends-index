@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Overview lens (Step 3).
+ * Arcane Analytics — Overview lens (Step 3 + Step 6 confidence wiring).
  *
  * Server Component. Fetches from the Bouncer API (1-hr revalidation) and
  * renders three CardChrome cards with real D&D trend data:
@@ -8,8 +8,11 @@
  *   2. Category Heat — bar chart across all 18 categories
  *   3. Top Opportunities — leaderboard by opportunity_index
  *
- * STUB: All cards use confidence={75} (silver tier) until the real
- * data-reliability + AI-grounding formula is implemented in Step 6. See §5.1.
+ * Step 6 (§5.1): per-card confidence is now the MIN data_confidence
+ * across the card's rendered concepts, looked up via the Bouncer
+ * /confidence endpoint. Cards whose items aren't in the concept library
+ * (e.g. Category Heat — rows are categories, not concepts) fall back to
+ * the silver stub. AI grounding is not applied here (pure data cards).
  */
 
 import { CardChrome } from "@/components/card-chrome"
@@ -17,15 +20,13 @@ import { OverviewBarChart } from "@/components/overview-bar-chart"
 import { BagLink } from "@/components/bag-link"
 import {
   fetchBouncerData,
+  fetchConfidence,
+  cardConfidence,
   findCategory,
   deduplicateItems,
   topOpportunities,
   topCategoriesByHeat,
 } from "@/lib/bouncer"
-
-// STUB — real confidence scoring is Step 6 per §5.1.
-// Confidence ≠ Google Trends score. Do not map Bouncer fields here.
-const STUB_CONFIDENCE = 75
 
 export default async function OverviewPage() {
   const data = await fetchBouncerData()
@@ -43,6 +44,31 @@ export default async function OverviewPage() {
 
   // ── Card 3: Top Opportunities ───────────────────────────────────────────
   const opportunities = topOpportunities(data, 5)
+
+  // ── Step 6: batch-fetch data confidence for every concept we're about
+  // to render, then compute one aggregate score per card (min across
+  // looked-up concepts). Category Heat's "items" are category names, not
+  // concepts, so they won't resolve and the card falls back to silver 75
+  // — honest treatment until category-level confidence lands. ──────────
+  const allNames = [
+    ...topClasses.map((c) => c.name),
+    ...opportunities.map((o) => o.name),
+    ...heatData.map((h) => h.name), // probably no hits; fallback path
+  ]
+  const confidenceMap = await fetchConfidence(allNames)
+
+  const topClassesConfidence = cardConfidence(
+    topClasses.map((c) => c.name),
+    confidenceMap,
+  )
+  const heatConfidence = cardConfidence(
+    heatData.map((h) => h.name),
+    confidenceMap,
+  )
+  const opportunitiesConfidence = cardConfidence(
+    opportunities.map((o) => o.name),
+    confidenceMap,
+  )
 
   // ── Sage context snapshots ──────────────────────────────────────────────
   // Plain-text summaries of each card, handed to the Sage route handler on
@@ -88,9 +114,10 @@ export default async function OverviewPage() {
         <p className="font-sans text-sm text-ash max-w-2xl">
           Real-time trend data from across the D&amp;D ecosystem.{" "}
           <span className="text-parchment/60">
-            Confidence scoring in development (
-            <span className="font-mono text-xs text-ember">§5.1</span>
-            ) — all cards show silver stub until Step 6.
+            Each card&rsquo;s confidence pip (top-right) is the min{" "}
+            <span className="font-mono text-xs text-ember">data_confidence</span>{" "}
+            across its rendered concepts — tap for methodology (
+            <span className="font-mono text-xs text-ember">§5.1</span>).
           </span>
         </p>
       </header>
@@ -104,7 +131,7 @@ export default async function OverviewPage() {
           subtitle="overview · google trends · 7-day"
           lens="overview"
           cardType="leaderboard"
-          confidence={STUB_CONFIDENCE}
+          confidence={topClassesConfidence}
           cardId="overview:top-classes"
           sageContext={topClassesContext}
         >
@@ -135,7 +162,7 @@ export default async function OverviewPage() {
             subtitle="overview · google trends · all categories"
             lens="overview"
             cardType="chart"
-            confidence={STUB_CONFIDENCE}
+            confidence={heatConfidence}
             cardId="overview:category-heat"
             sageContext={heatContext}
           >
@@ -152,7 +179,7 @@ export default async function OverviewPage() {
           subtitle="overview · opportunity index · all categories"
           lens="overview"
           cardType="leaderboard"
-          confidence={STUB_CONFIDENCE}
+          confidence={opportunitiesConfidence}
           cardId="overview:top-opportunities"
           sageContext={opportunitiesContext}
         >
