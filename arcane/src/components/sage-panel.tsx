@@ -20,10 +20,16 @@
 import React from "react"
 import { useChat } from "@ai-sdk/react"
 import { DefaultChatTransport } from "ai"
-import { Sparkles, X, Bookmark } from "lucide-react"
+import { Sparkles, X, Bookmark, Shield, ShieldCheck, ShieldAlert } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { useBagStore, useBagHasHydrated } from "@/lib/bag-store"
+import {
+  type GroundingResult,
+  type GroundingCitation,
+  positionedCitations,
+  groundingTier,
+} from "@/lib/grounding"
 
 // ─── Sage context ────────────────────────────────────────────────────────────
 
@@ -112,11 +118,71 @@ function SagePanel() {
   const unstow = useBagStore((s) => s.unstow)
   const isItemStowed = (id: string) => bagItems.some((i) => i.id === id)
 
+  // ── Grounding check state (Step 6.5) ─────────────────────────────────────
+  // Maps assistant message IDs to their grounding results. The check fires
+  // once per message after streaming finishes; results persist for the
+  // lifetime of the panel.
+  const [groundingResults, setGroundingResults] = React.useState<
+    Record<string, GroundingResult>
+  >({})
+  const [groundingInProgress, setGroundingInProgress] = React.useState<
+    Set<string>
+  >(new Set())
+  // Track which message ID was the last one we checked, so we don't re-fire
+  const lastGroundedRef = React.useRef<string | null>(null)
+
+  // Trigger grounding check when the latest assistant message finishes streaming.
+  React.useEffect(() => {
+    // Only trigger when status transitions to ready (not streaming, not submitted)
+    if (status !== "ready") return
+    if (messages.length === 0) return
+
+    const lastMsg = messages[messages.length - 1]
+    if (lastMsg.role !== "assistant") return
+    if (lastMsg.id === lastGroundedRef.current) return
+    if (groundingResults[lastMsg.id]) return
+    if (groundingInProgress.has(lastMsg.id)) return
+
+    const text = messageText(lastMsg)
+    if (!text.trim()) return
+
+    // Mark as in-progress and fire the check
+    lastGroundedRef.current = lastMsg.id
+    setGroundingInProgress((prev) => new Set(prev).add(lastMsg.id))
+
+    fetch("/api/sage/ground", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        generatedText: text,
+        pageContext,
+      }),
+    })
+      .then((res) => res.json())
+      .then((result: GroundingResult) => {
+        setGroundingResults((prev) => ({ ...prev, [lastMsg.id]: result }))
+        setGroundingInProgress((prev) => {
+          const next = new Set(prev)
+          next.delete(lastMsg.id)
+          return next
+        })
+      })
+      .catch((err) => {
+        console.error("[sage-panel] Grounding check failed:", err)
+        setGroundingInProgress((prev) => {
+          const next = new Set(prev)
+          next.delete(lastMsg.id)
+          return next
+        })
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, messages])
+
   // Auto-scroll to the newest message as tokens stream in.
   React.useEffect(() => {
     if (!scrollRef.current) return
     scrollRef.current.scrollTop = scrollRef.current.scrollHeight
-  }, [messages, status])
+  }, [messages, status, groundingResults])
 
   if (!isOpen) return null
 
@@ -262,6 +328,14 @@ function SagePanel() {
           const canStowAnswer =
             isAssistant && !(isBusy && m.id === messages[messages.length - 1].id)
 
+          // Grounding results for this assistant message (Step 6.5)
+          const grounding = isAssistant ? groundingResults[m.id] : undefined
+          const isGrounding = isAssistant && groundingInProgress.has(m.id)
+          const text = messageText(m)
+          const positioned = grounding
+            ? positionedCitations(text, grounding)
+            : []
+
           return (
             <div
               key={m.id}
@@ -281,12 +355,34 @@ function SagePanel() {
                     : "border-ember/40 bg-onyx text-parchment"
                 )}
               >
-                {m.parts.map((part, i) =>
-                  part.type === "text" ? (
-                    <span key={i}>{part.text}</span>
-                  ) : null
-                )}
+                {/* Render text with inline footnote markers if grounded */}
+                {isAssistant && positioned.length > 0
+                  ? renderAnnotatedText(text, positioned)
+                  : m.parts.map((part, i) =>
+                      part.type === "text" ? (
+                        <span key={i}>{part.text}</span>
+                      ) : null
+                    )}
               </div>
+
+              {/* Grounding byline — shows after grounding check completes */}
+              {isAssistant && grounding && (
+                <GroundingByline grounding={grounding} />
+              )}
+
+              {/* Grounding footnotes — the detailed breakdown */}
+              {isAssistant && positioned.length > 0 && grounding && (
+                <GroundingFootnotes citations={positioned} />
+              )}
+
+              {/* "Verifying claims..." indicator while grounding runs */}
+              {isGrounding && (
+                <span className="flex items-center gap-1.5 mt-0.5 font-mono text-[10px] uppercase tracking-widest text-ash/50">
+                  <Shield className="h-3 w-3 animate-pulse" />
+                  Verifying claims…
+                </span>
+              )}
+
               {isAssistant && canStowAnswer && (
                 <button
                   type="button"
@@ -382,5 +478,156 @@ function SagePanel() {
         </p>
       </form>
     </aside>
+  )
+}
+
+// ─── Grounding sub-components (Step 6.5) ────────────────────────────────────
+
+type PositionedCitation = GroundingCitation & {
+  position: number
+  footnoteIndex: number
+}
+
+/**
+ * Renders the Sage's response text with inline footnote markers inserted
+ * at the positions where cited claims appear.
+ *
+ * The markers look like: "Fighter has a score of 98 (92%)[1]"
+ * They're styled as superscript links that visually connect to the
+ * footnotes section below.
+ */
+function renderAnnotatedText(
+  fullText: string,
+  citations: PositionedCitation[],
+): React.ReactNode {
+  if (citations.length === 0) return <span>{fullText}</span>
+
+  const parts: React.ReactNode[] = []
+  let cursor = 0
+
+  for (const cite of citations) {
+    const claimEnd = cite.position + cite.claim.length
+
+    // Text before this claim
+    if (cite.position > cursor) {
+      parts.push(
+        <span key={`pre-${cite.footnoteIndex}`}>
+          {fullText.slice(cursor, cite.position)}
+        </span>,
+      )
+    }
+
+    // The claim text itself
+    parts.push(
+      <span key={`claim-${cite.footnoteIndex}`}>
+        {fullText.slice(cite.position, claimEnd)}
+      </span>,
+    )
+
+    // Inline footnote marker
+    parts.push(
+      <sup
+        key={`fn-${cite.footnoteIndex}`}
+        className={cn(
+          "ml-0.5 font-mono text-[9px] cursor-default",
+          cite.grounded
+            ? "text-rarity-gold"
+            : "text-rarity-copper"
+        )}
+        title={`${cite.confidence}% — ${cite.explanation}`}
+      >
+        ({cite.confidence}%)
+        <span className="text-ash/70">[{cite.footnoteIndex}]</span>
+      </sup>,
+    )
+
+    cursor = claimEnd
+  }
+
+  // Remaining text after last citation
+  if (cursor < fullText.length) {
+    parts.push(<span key="tail">{fullText.slice(cursor)}</span>)
+  }
+
+  return <>{parts}</>
+}
+
+/**
+ * Compact byline showing the headline AI grounding score + data sources.
+ * Appears directly below the Sage message bubble.
+ */
+function GroundingByline({ grounding }: { grounding: GroundingResult }) {
+  const tier = groundingTier(grounding.ai_grounding_confidence)
+  const tierColorClass: Record<string, string> = {
+    copper: "text-rarity-copper",
+    silver: "text-rarity-silver",
+    gold: "text-rarity-gold",
+    platinum: "text-rarity-platinum",
+    mithral: "text-rarity-mithral",
+  }
+
+  const Icon = grounding.ai_grounding_confidence >= 70 ? ShieldCheck : ShieldAlert
+
+  return (
+    <div className="flex items-center gap-1.5 mt-0.5 max-w-[90%]">
+      <Icon
+        className={cn("h-3 w-3 shrink-0", tierColorClass[tier])}
+      />
+      <span className="font-mono text-[10px] text-ash/70 truncate">
+        <span className={cn("font-semibold", tierColorClass[tier])}>
+          AI grounding {grounding.ai_grounding_confidence}%
+        </span>
+        {grounding.sources_available.length > 0 && (
+          <span className="ml-1.5">
+            · {grounding.sources_available.join(", ")}
+          </span>
+        )}
+        <span className="ml-1.5 text-ash/50">
+          · {grounding.algo_version}
+        </span>
+      </span>
+    </div>
+  )
+}
+
+/**
+ * Footnotes section — renders below the byline. Each footnote shows
+ * the claim text, its confidence score, the source, and a one-line
+ * explanation. Styled like academic footnotes in a smaller font.
+ */
+function GroundingFootnotes({
+  citations,
+}: {
+  citations: PositionedCitation[]
+}) {
+  if (citations.length === 0) return null
+
+  return (
+    <div className="max-w-[90%] mt-1 space-y-1.5 border-t border-bronze/30 pt-1.5">
+      {citations.map((cite) => (
+        <div
+          key={cite.footnoteIndex}
+          className="flex gap-1.5 font-mono text-[10px] leading-relaxed"
+        >
+          <span className="text-ash/50 shrink-0">
+            [{cite.footnoteIndex}]
+          </span>
+          <div className="text-ash/70">
+            <span
+              className={cn(
+                "font-semibold",
+                cite.grounded ? "text-rarity-gold" : "text-rarity-copper"
+              )}
+            >
+              {cite.confidence}%
+            </span>
+            <span className="mx-1">·</span>
+            <span className="text-ash/50">{cite.source}</span>
+            <span className="mx-1">—</span>
+            <span>{cite.explanation}</span>
+          </div>
+        </div>
+      ))}
+    </div>
   )
 }
