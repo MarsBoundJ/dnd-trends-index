@@ -1,23 +1,28 @@
 /*
- * Arcane Analytics — Sage route handler (Step 4 MVP).
+ * Arcane Analytics — Sage route handler (Steps 4 + 7).
  *
  * Streams a Vertex AI Gemini response for the Sage chat panel. Page context
  * is passed from the client on every request and injected as a system message
  * so the model knows which lens/card the user is currently looking at.
  *
- * Step 4 scope: no tool calling (Step 7), no Firestore logging, no voice
- * selection (defaults to "Strategist" tone in the system prompt).
+ * Step 7 adds tool calling: 8 tools that query live BigQuery data via the
+ * Bouncer API. The model can call tools, receive real data, and then
+ * summarize it — preventing numerical hallucination. Multi-step is enabled
+ * (up to 5 LLM round-trips) so the model can chain multiple tool calls.
  *
  * Auth: @ai-sdk/google-vertex uses Application Default Credentials. On local
  * dev, run `gcloud auth application-default login` or set
  * GOOGLE_APPLICATION_CREDENTIALS to a service-account key path.
  */
 
-import { convertToModelMessages, streamText, type UIMessage } from "ai"
+import { convertToModelMessages, streamText, stepCountIs, type UIMessage } from "ai"
 import { createVertex } from "@ai-sdk/google-vertex"
+import { sageTools } from "@/lib/sage-tools"
 
-// Allow streaming responses up to 30 seconds.
-export const maxDuration = 30
+// Allow streaming responses up to 60 seconds (increased from 30 because
+// multi-step tool calls can take longer — each tool call adds ~2-4s of
+// Bouncer API latency on top of the LLM round-trip).
+export const maxDuration = 60
 
 // Route handlers are not cached by default in Next 16, but streaming responses
 // must never be statically cached. Be explicit.
@@ -46,9 +51,29 @@ below as "Page context". Use it to ground your answers. If the user's
 question is not about the visible data, answer from your own knowledge of
 tabletop D&D, content creators, and the hobby's trend landscape.
 
+TOOLS: You have access to tools that query live data from the Bouncer API.
+When a user asks about rankings, scores, trends, or specific concepts,
+USE THE TOOLS to get real data — do not guess or make up numbers. You may
+call multiple tools if needed to fully answer a question. After receiving
+tool results, summarize the data concisely for the user.
+
+Available tool categories:
+- getLeaderboard: ranked concepts from any of 10 data sources
+- searchConcepts: keyword search across the concept library
+- getConceptConfidence: data reliability scores
+- getMarketSummary: executive market indicators
+- getTopMovers: fastest-moving concepts (7-day velocity)
+- getDmShortageIndex: player vs DM interest gap
+- getEditionMigration: 2024 vs legacy edition trends
+- getSystemHealth: data freshness status
+
+If you already have relevant data in the page context, you may use that
+instead of calling a tool — but if the user asks for data beyond what's
+visible, call the appropriate tool.
+
 Keep answers under ~150 words unless the user explicitly asks for depth.
-Never invent numbers. If the context is missing a stat the user asks about,
-say so plainly.`
+Never invent numbers. If a tool call fails or returns no data, tell the
+user plainly rather than guessing.`
 
 interface SageRequestBody {
   messages: UIMessage[]
@@ -69,12 +94,16 @@ export async function POST(req: Request) {
     model: vertex("gemini-2.5-flash"),
     system,
     messages: await convertToModelMessages(messages),
+    tools: sageTools,
+    // Allow up to 5 LLM round-trips for multi-step tool calling. The default
+    // is stepCountIs(1) which only allows a single step (no tool execution).
+    // With 5 steps, the model can call a tool, see the result, call another
+    // tool, etc. In practice most queries need 1-2 tool calls.
+    stopWhen: stepCountIs(5),
   })
 
   return result.toUIMessageStreamResponse({
     onError: (error) => {
-      // Surface enough of the failure for dev-time debugging. Step 6+ will
-      // replace this with a user-safe generic message.
       if (error instanceof Error) return error.message
       return "Sage failed to respond."
     },
