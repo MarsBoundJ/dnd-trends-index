@@ -248,19 +248,22 @@ def bouncer_api(request):
         raw_names = [n.strip() for n in names_arg.split(',') if n.strip()]
         # Cap to prevent pathological queries
         raw_names = raw_names[:200]
-        # DISTINCT guards against the known multi-category duplicate-rows
-        # issue (same concept name under multiple categories → duplicate
-        # rows in composite_concept_index → duplicate rows here). Tracked
-        # in project_data_quality_backlog.
+        # GROUP BY + ANY_VALUE guards against the known multi-category
+        # duplicate-rows issue (same concept name under multiple categories
+        # → duplicate rows in composite_concept_index → duplicate rows here).
+        # Can't use SELECT DISTINCT because explanation_json is BigQuery
+        # JSON type, which DISTINCT rejects. Tracked in
+        # project_data_quality_backlog.
         query = """
-            SELECT DISTINCT
+            SELECT
               LOWER(concept_name) AS key,
-              concept_name,
-              data_confidence,
-              tier,
-              explanation_json
+              ANY_VALUE(concept_name) AS concept_name,
+              ANY_VALUE(data_confidence) AS data_confidence,
+              ANY_VALUE(tier) AS tier,
+              ANY_VALUE(explanation_json) AS explanation_json
             FROM `dnd-trends-index.gold_data.concept_confidence`
             WHERE LOWER(concept_name) IN UNNEST(@names)
+            GROUP BY key
         """
         try:
             job_config = bigquery.QueryJobConfig(
@@ -272,11 +275,19 @@ def bouncer_api(request):
             )
             result = {}
             for row in client.query(query, job_config=job_config):
-                # explanation_json is already a JSON string from TO_JSON()
-                try:
-                    explanation = json.loads(row['explanation_json']) if row['explanation_json'] else None
-                except (TypeError, ValueError):
+                # explanation_json is a BigQuery JSON type column.
+                # The BQ client may return it as a dict directly or as a
+                # JSON string depending on client version — handle both.
+                raw_expl = row['explanation_json']
+                if raw_expl is None:
                     explanation = None
+                elif isinstance(raw_expl, (dict, list)):
+                    explanation = raw_expl
+                else:
+                    try:
+                        explanation = json.loads(raw_expl)
+                    except (TypeError, ValueError):
+                        explanation = None
                 result[row['key']] = {
                     'concept_name': row['concept_name'],
                     'data_confidence': row['data_confidence'],
