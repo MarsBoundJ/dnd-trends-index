@@ -1,16 +1,19 @@
 "use client"
 
 /*
- * Arcane Analytics — Sage panel (Step 4 MVP).
+ * Arcane Analytics — Sage panel (Steps 4 + 6.5 + 7).
  *
  * Floating right-side chat panel. Talks to /api/sage via the Vercel AI SDK
  * `useChat` hook. Page context (a plain-text snapshot of the current page or
  * card) is passed on every send as an extra body field and injected into the
  * system prompt by the route handler.
  *
- * Step 4 scope: visual panel + streaming chat only. No Firestore logging,
- * no tool calling, no voice selection, no Framer Motion. Click-outside dims
- * but does not close (users may want to read context while composing).
+ * Step 4: Visual panel + streaming chat.
+ * Step 6.5: Post-stream grounding check with inline footnotes.
+ * Step 7: Tool invocation rendering — compact chips show which tools
+ *         the Sage calls (getLeaderboard, searchConcepts, etc.) and their
+ *         state (loading/done/error). Tool results are included in the
+ *         grounding context so tool-sourced claims are properly scored.
  *
  * The panel is driven by a <SageProvider> higher in the tree that exposes
  * `openSage(ctx)` / `closeSage()` via React context, so any CardChrome's
@@ -20,7 +23,7 @@
 import React from "react"
 import { useChat } from "@ai-sdk/react"
 import { DefaultChatTransport } from "ai"
-import { Sparkles, X, Bookmark, Shield, ShieldCheck, ShieldAlert } from "lucide-react"
+import { Sparkles, X, Bookmark, Shield, ShieldCheck, ShieldAlert, Database } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { useBagStore, useBagHasHydrated } from "@/lib/bag-store"
@@ -30,6 +33,21 @@ import {
   positionedCitations,
   groundingTier,
 } from "@/lib/grounding"
+
+// ─── Tool display names ──────────────────────────────────────────────────────
+// Human-readable labels for each tool. Shown in the chat when the Sage
+// calls a tool so the user knows what's happening behind the scenes.
+
+const TOOL_LABELS: Record<string, string> = {
+  getLeaderboard: "Leaderboard data",
+  searchConcepts: "Concept library",
+  getConceptConfidence: "Confidence scores",
+  getMarketSummary: "Market summary",
+  getTopMovers: "Top movers",
+  getDmShortageIndex: "DM shortage data",
+  getEditionMigration: "Edition migration",
+  getSystemHealth: "System health",
+}
 
 // ─── Sage context ────────────────────────────────────────────────────────────
 
@@ -150,12 +168,18 @@ function SagePanel() {
     lastGroundedRef.current = lastMsg.id
     setGroundingInProgress((prev) => new Set(prev).add(lastMsg.id))
 
+    // Include tool results in the grounding context so tool-sourced claims
+    // aren't flagged as ungrounded. The grounding model sees both the passive
+    // pageContext AND the active tool results as "source data."
+    const toolContext = extractToolContext(lastMsg)
+    const fullContext = pageContext + toolContext
+
     fetch("/api/sage/ground", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         generatedText: text,
-        pageContext,
+        pageContext: fullContext,
       }),
     })
       .then((res) => res.json())
@@ -190,13 +214,40 @@ function SagePanel() {
 
   // ── Helpers ─────────────────────────────────────────────────────────────
   // Flatten a UIMessage's parts array down to plain text for storage.
-  // Sage answers are text-only for now (no tools yet — Step 7), so we can
-  // safely concatenate all text parts and drop everything else.
+  // Tool invocation parts are skipped — only the model's text summary
+  // of tool results is captured. This is intentional: stowed text should
+  // be the human-readable narrative, not raw JSON tool outputs.
   const messageText = (m: (typeof messages)[number]): string =>
     m.parts
       .filter((p): p is Extract<typeof p, { type: "text" }> => p.type === "text")
       .map((p) => p.text)
       .join("")
+
+  // Extract tool result data from a message for grounding context.
+  // When the Sage calls tools, the grounding check needs to know what
+  // data was available — otherwise it flags tool-sourced claims as
+  // ungrounded because they're not in pageContext.
+  const extractToolContext = (m: (typeof messages)[number]): string => {
+    const toolParts = m.parts.filter(
+      (p) => p.type === "dynamic-tool" || p.type.startsWith("tool-")
+    )
+    if (toolParts.length === 0) return ""
+
+    const summaries = toolParts
+      .map((p) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const part = p as any
+        const name = part.toolName ?? part.type.replace("tool-", "")
+        if (part.state !== "output-available" || !part.output) return null
+        return `Tool "${name}" returned:\n${JSON.stringify(part.output, null, 2)}`
+      })
+      .filter(Boolean)
+
+    return summaries.length > 0
+      ? "\n\n## Tool results (data the AI retrieved via live queries):\n\n" +
+          summaries.join("\n\n")
+      : ""
+  }
 
   // Given an assistant message id, find the most recent preceding user
   // message — that's the Q in the Q+A pair we're about to stow.
@@ -355,6 +406,17 @@ function SagePanel() {
                     : "border-ember/40 bg-onyx text-parchment"
                 )}
               >
+                {/* Tool invocation chips — always rendered above text */}
+                {isAssistant &&
+                  m.parts
+                    .filter(
+                      (p) =>
+                        p.type === "dynamic-tool" ||
+                        p.type.startsWith("tool-")
+                    )
+                    .map((part, i) => (
+                      <ToolInvocationChip key={`tool-${i}`} part={part} />
+                    ))}
                 {/* Render text with inline footnote markers if grounded */}
                 {isAssistant && positioned.length > 0
                   ? renderAnnotatedText(text, positioned)
@@ -478,6 +540,50 @@ function SagePanel() {
         </p>
       </form>
     </aside>
+  )
+}
+
+// ─── Tool invocation sub-component (Step 7) ─────────────────────────────────
+
+/**
+ * Compact indicator for a tool invocation in the chat stream.
+ * Shows a Database icon + tool name + state (loading/done/error).
+ * Keeps the chat clean — the raw tool output is never shown; the model's
+ * text summary is what the user reads.
+ */
+function ToolInvocationChip({
+  part,
+}: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  part: any
+}) {
+  const toolName: string =
+    part.toolName ?? part.type?.replace("tool-", "") ?? "unknown"
+  const label = TOOL_LABELS[toolName] ?? toolName
+  const state: string = part.state ?? "input-available"
+
+  const isLoading =
+    state === "input-streaming" || state === "input-available"
+  const isError = state === "output-error"
+  const isDone = state === "output-available"
+
+  return (
+    <div
+      className={cn(
+        "my-1 flex items-center gap-1.5 rounded border px-2 py-1",
+        "font-mono text-[10px] uppercase tracking-widest",
+        isLoading && "border-ember/30 text-ember-bright animate-pulse",
+        isDone && "border-bronze/40 text-ash/60",
+        isError && "border-rarity-copper/40 text-rarity-copper"
+      )}
+    >
+      <Database className="h-3 w-3 shrink-0" />
+      <span>
+        {isLoading && `Querying ${label}…`}
+        {isDone && `Loaded ${label}`}
+        {isError && `Failed: ${label}`}
+      </span>
+    </div>
   )
 }
 
