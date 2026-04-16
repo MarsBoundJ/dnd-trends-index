@@ -167,6 +167,8 @@ def bouncer_api(request):
             path = 'system/amazon/ingest-ranks'
         elif 'kickstarter/ingest-projects' in full_path:
             path = 'system/kickstarter/ingest-projects'
+        elif 'confidence' in full_path:
+            path = 'confidence'
         else:
             path = 'leaderboards'
         
