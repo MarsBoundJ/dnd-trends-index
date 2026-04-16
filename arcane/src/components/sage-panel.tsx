@@ -623,8 +623,14 @@ function GroundingFootnotes({
             </span>
             <span className="mx-1">·</span>
             <span className="text-ash/50">{cite.source}</span>
-            <span className="mx-1">—</span>
-            <span>{cite.explanation}</span>
+            {(cite.explanation || cite.claim) && (
+              <>
+                <span className="mx-1">—</span>
+                <span className="italic">
+                  {cite.explanation || `"${cite.claim}"`}
+                </span>
+              </>
+            )}
           </div>
         </div>
       ))}

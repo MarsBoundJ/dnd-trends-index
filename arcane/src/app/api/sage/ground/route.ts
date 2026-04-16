@@ -70,8 +70,81 @@ Identify the key factual claims in the AI-generated text and score how well each
         .replace(/\s*```$/, "")
     }
 
+    const raw = JSON.parse(jsonText)
+
+    // Gemini is inconsistent with field names. It may use "citations",
+    // "fact_checks", "claims", or other variations. Find the first
+    // array-valued property that looks like a citations list.
+    const CITATION_KEYS = ["citations", "fact_checks", "claims", "results", "checks"]
+    let rawCitations: Record<string, unknown>[] = []
+    for (const key of CITATION_KEYS) {
+      if (Array.isArray(raw[key]) && raw[key].length > 0) {
+        rawCitations = raw[key]
+        break
+      }
+    }
+    // Last resort: find the first array property with objects that have a "claim" field
+    if (rawCitations.length === 0) {
+      for (const val of Object.values(raw)) {
+        if (
+          Array.isArray(val) &&
+          val.length > 0 &&
+          typeof val[0] === "object" &&
+          val[0] !== null &&
+          "claim" in val[0]
+        ) {
+          rawCitations = val as Record<string, unknown>[]
+          break
+        }
+      }
+    }
+
+    // Normalize citations — Gemini sometimes nests sources_available
+    // inside each citation or omits explanation. Ensure consistent shape.
+    const citations = rawCitations.map((c: Record<string, unknown>) => ({
+      claim: typeof c.claim === "string" ? c.claim : "",
+      confidence: typeof c.confidence === "number" ? c.confidence : 0,
+      source: typeof c.source === "string" ? c.source : "Unknown",
+      explanation: typeof c.explanation === "string"
+        ? c.explanation
+        : "",
+      grounded: typeof c.grounded === "boolean" ? c.grounded : false,
+    }))
+
+    // Extract sources_available — check top-level first, then collect
+    // from per-citation sources (Gemini sometimes nests them).
+    let sourcesAvailable: string[] = []
+    if (Array.isArray(raw.sources_available) && raw.sources_available.length > 0) {
+      sourcesAvailable = raw.sources_available
+    } else {
+      // Collect unique source names from citations
+      const sourceSet = new Set<string>()
+      for (const c of rawCitations) {
+        if (typeof c.source === "string") sourceSet.add(c.source)
+        if (Array.isArray(c.sources_available)) {
+          for (const s of c.sources_available) {
+            if (typeof s === "string") sourceSet.add(s)
+          }
+        }
+      }
+      sourcesAvailable = [...sourceSet]
+    }
+
+    // Compute headline score — use Gemini's if provided, otherwise
+    // compute as min of per-claim scores per our prompt instructions.
+    let headlineScore: number
+    if (typeof raw.ai_grounding_confidence === "number") {
+      headlineScore = raw.ai_grounding_confidence
+    } else if (citations.length > 0) {
+      headlineScore = Math.min(...citations.map((c: { confidence: number }) => c.confidence))
+    } else {
+      headlineScore = 95 // No factual claims = conversational/opinion
+    }
+
     const parsed: GroundingResult = {
-      ...JSON.parse(jsonText),
+      ai_grounding_confidence: headlineScore,
+      citations,
+      sources_available: sourcesAvailable,
       algo_version: "grounding-v1.0.0",
     }
 
