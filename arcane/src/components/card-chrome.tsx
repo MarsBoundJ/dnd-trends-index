@@ -5,12 +5,12 @@ import { Bookmark } from "lucide-react"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
+import type { ConfidenceEntry } from "@/lib/bouncer"
 import { useSageOptional } from "@/components/sage-panel"
 import { useBagStore, useBagHasHydrated } from "@/lib/bag-store"
 
@@ -57,6 +57,27 @@ const tierLabel: Record<RarityTier, string> = {
   mithral:  "Mithral",
 }
 
+// Human-readable one-liners for each binding_constraint enum value.
+// Mirrors the `why_not_higher` CASE statement in
+// gold_views/concept_confidence.sql but lives in TS so we can
+// adjust the copy without touching BigQuery.
+const bindingCopy: Record<
+  NonNullable<ConfidenceEntry["explanation"]>["binding_constraint"],
+  string
+> = {
+  single_source:
+    "Only one data stream tracks this concept. Cross-stream corroboration would lift the score.",
+  limited_diversity:
+    "Signal is present but concentrated in few evidence families. Broader coverage would lift the score.",
+  conflicting_signals:
+    "Different data families point in different directions. Agreement across families would lift the score.",
+  stale_consensus:
+    "High absolute volume with little recent movement — evergreen signal, not active momentum.",
+  thin_stream_data:
+    "Data is present across streams but the underlying data points are thin.",
+  strong: "Strong cross-validated evidence across families.",
+}
+
 // ─── Props ───────────────────────────────────────────────────────────────────
 
 export interface CardChromeProps {
@@ -74,9 +95,26 @@ export interface CardChromeProps {
    * Confidence score 0–100. Maps to a metal tier (§9.16) which drives:
    * 1. The always-visible pip color (top-right header cluster, both platforms).
    * 2. The hover border-color on desktop (Step 13 upgrades this to an Aceternity halo).
-   * Full methodology popover on pip tap is wired in Step 6.
+   * Tapping the pip opens the methodology Popover (Step 6).
    */
   confidence: number
+  /**
+   * Full explanation payload from `gold_data.concept_confidence` for
+   * the concept that set this card's score (i.e. the aggregate's
+   * binding/weakest-link concept). Drives the methodology Popover.
+   * Null = no lookup resolved; the popover shows a fallback message.
+   */
+  confidenceExplanation?: ConfidenceEntry["explanation"]
+  /**
+   * Display name of the binding concept (e.g. "Paladin"). Used in the
+   * popover header to clarify which concept the breakdown applies to
+   * when the card aggregates multiple concepts.
+   */
+  confidenceBindingName?: string
+  /** How many of the card's rendered concepts resolved in the confidence map. */
+  confidenceHitCount?: number
+  /** Total number of concepts the card attempted to look up. */
+  confidenceTotalCount?: number
   /**
    * Stable identifier for this card in the Bag of Holding. If provided,
    * the Stow button auto-wires to the bag store: click = stow, click again
@@ -122,6 +160,10 @@ export function CardChrome({
   lens,
   cardType,
   confidence,
+  confidenceExplanation,
+  confidenceBindingName,
+  confidenceHitCount,
+  confidenceTotalCount,
   cardId,
   onStow,
   onExplain,
@@ -176,7 +218,7 @@ export function CardChrome({
   const showStowedState = bagHydrated && isStowed && !!cardId
 
   return (
-    <TooltipProvider delayDuration={400}>
+    <>
       <Card
         className={cn(
           // Surface & shape — the "strict chrome" from §4.4
@@ -212,9 +254,9 @@ export function CardChrome({
               Real heraldic SVGs arrive in Step 13. */}
           <div className="flex items-center gap-1.5 mt-0.5 shrink-0">
 
-            {/* Confidence pip */}
-            <Tooltip>
-              <TooltipTrigger asChild>
+            {/* Confidence pip — tap opens the methodology Popover (§5.2, §9.17) */}
+            <Popover>
+              <PopoverTrigger asChild>
                 <button
                   aria-label={`Confidence: ${confidence}% (${tierLabel[tier]}). Tap for methodology.`}
                   className={cn(
@@ -223,15 +265,98 @@ export function CardChrome({
                     tierBgClass[tier]
                   )}
                 />
-              </TooltipTrigger>
-              <TooltipContent
+              </PopoverTrigger>
+              <PopoverContent
                 side="bottom"
-                className="bg-iron border border-bronze text-parchment text-xs py-1 px-2"
+                align="end"
+                className="w-80 bg-iron border border-bronze text-parchment p-4 space-y-3"
               >
-                <span className="font-mono font-semibold">{confidence}%</span>
-                <span className="text-ash ml-1.5">{tierLabel[tier]}</span>
-              </TooltipContent>
-            </Tooltip>
+                {/* Headline: score + tier */}
+                <div className="flex items-baseline justify-between gap-3">
+                  <div>
+                    <div className="font-mono text-xl font-semibold text-parchment leading-none">
+                      {confidence}
+                      <span className="text-sm text-ash ml-1">/ 100</span>
+                    </div>
+                    <div className="text-xs text-ash mt-1">
+                      {tierLabel[tier]}
+                    </div>
+                  </div>
+                  <div className={cn("w-4 h-4 rounded-full", tierBgClass[tier])} />
+                </div>
+
+                {/* Binding concept label + why_not_higher copy */}
+                {confidenceExplanation ? (
+                  <>
+                    <div className="text-[11px] text-ash/80 border-t border-bronze/40 pt-2">
+                      {confidenceBindingName && (
+                        <p className="font-mono uppercase tracking-widest text-[10px] text-ember mb-1">
+                          Weakest link · {confidenceBindingName}
+                        </p>
+                      )}
+                      <p className="text-parchment/80 leading-relaxed">
+                        {bindingCopy[confidenceExplanation.binding_constraint]}
+                      </p>
+                    </div>
+
+                    {/* Factor breakdown */}
+                    <dl className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-[11px]">
+                      <dt className="text-ash">Streams present</dt>
+                      <dd className="font-mono text-parchment text-right">
+                        {confidenceExplanation.streams_present}
+                      </dd>
+                      <dt className="text-ash">Families hit</dt>
+                      <dd className="font-mono text-parchment text-right">
+                        {confidenceExplanation.families_hit} / 5
+                      </dd>
+                      <dt className="text-ash">Agreement</dt>
+                      <dd className="font-mono text-parchment text-right">
+                        {Math.round(confidenceExplanation.agreement * 100)}%
+                      </dd>
+                      <dt className="text-ash">Velocity</dt>
+                      <dd
+                        className={cn(
+                          "font-mono text-right",
+                          confidenceExplanation.velocity_factor < 1
+                            ? "text-ember-bright"
+                            : "text-parchment"
+                        )}
+                      >
+                        ×{confidenceExplanation.velocity_factor.toFixed(2)}
+                      </dd>
+                    </dl>
+
+                    {confidenceExplanation.sparsity_cap_applied && (
+                      <p className="text-[10px] text-ember-bright font-mono">
+                        ⚠ Single-source cap applied (ceiling 79)
+                      </p>
+                    )}
+
+                    {/* Aggregate disclosure */}
+                    {typeof confidenceHitCount === "number" &&
+                      typeof confidenceTotalCount === "number" &&
+                      confidenceTotalCount > 1 && (
+                        <p className="text-[10px] text-ash/70 font-mono border-t border-bronze/40 pt-2">
+                          Card score is the minimum across{" "}
+                          {confidenceHitCount} of {confidenceTotalCount}{" "}
+                          rendered concept
+                          {confidenceTotalCount === 1 ? "" : "s"}.
+                        </p>
+                      )}
+
+                    <p className="text-[10px] text-ash/60 font-mono">
+                      algo {confidenceExplanation.algo_version} · data layer
+                    </p>
+                  </>
+                ) : (
+                  <div className="text-[11px] text-ash/80 border-t border-bronze/40 pt-2 leading-relaxed">
+                    No confidence lookup resolved for this card&rsquo;s items.
+                    Showing the silver stub (75) until category-level confidence
+                    lands in a future step.
+                  </div>
+                )}
+              </PopoverContent>
+            </Popover>
 
             {/* Icon slot 1 — card type */}
             <span
@@ -297,6 +422,6 @@ export function CardChrome({
           </Button>
         </CardFooter>
       </Card>
-    </TooltipProvider>
+    </>
   )
 }

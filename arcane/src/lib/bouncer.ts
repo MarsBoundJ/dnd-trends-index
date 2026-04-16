@@ -121,26 +121,54 @@ export async function fetchConfidence(
 /**
  * Card-level confidence aggregation. Given a list of concept names
  * rendered inside one card and the confidence map from
- * `fetchConfidence()`, returns the minimum `data_confidence` across
- * the looked-up concepts — "the chain is as strong as its weakest link,"
- * which matches the `displayed = min(data, ai_grounding)` philosophy
- * from FRONTEND_DESIGN_SPEC §5.1.
+ * `fetchConfidence()`, returns both:
+ *   - `score`: the minimum `data_confidence` across looked-up concepts
+ *     ("chain is as strong as its weakest link," matching the
+ *     `displayed = min(data, ai_grounding)` philosophy from §5.1).
+ *   - `binding`: the full ConfidenceEntry for the concept that set
+ *     that minimum — fed into the methodology popover so users see
+ *     *which* concept is dragging the aggregate down and *why*.
+ *   - `hitCount`: how many names resolved. Drives the popover's
+ *     "3 of 5 rendered concepts scored" disclosure.
  *
- * Fallback: if no names resolve against the map, returns 75 (silver)
- * — the same stub the page used before Step 6. That preserves current
- * visual behavior for aggregate cards whose items aren't in the
- * concept library yet (e.g. category-name cards).
+ * Fallback: if no names resolve against the map, returns
+ * `{ score: 75, binding: null, hitCount: 0 }` so the card still
+ * renders a silver pip with a "no confidence data" popover. This
+ * preserves visual behavior for aggregate cards whose items aren't
+ * in the concept library yet (e.g. category-name cards).
  */
+export interface CardConfidenceResult {
+  score: number
+  binding: ConfidenceEntry | null
+  hitCount: number
+  totalCount: number
+}
+
 export function cardConfidence(
   names: string[],
   confidenceMap: ConfidenceMap,
   fallback = 75,
-): number {
+): CardConfidenceResult {
   const hits = names
     .map((n) => confidenceMap[n.toLowerCase()])
     .filter((e): e is ConfidenceEntry => e !== undefined)
-  if (hits.length === 0) return fallback
-  return Math.min(...hits.map((h) => h.data_confidence))
+  if (hits.length === 0) {
+    return {
+      score: fallback,
+      binding: null,
+      hitCount: 0,
+      totalCount: names.length,
+    }
+  }
+  const binding = hits.reduce((min, cur) =>
+    cur.data_confidence < min.data_confidence ? cur : min,
+  )
+  return {
+    score: binding.data_confidence,
+    binding,
+    hitCount: hits.length,
+    totalCount: names.length,
+  }
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

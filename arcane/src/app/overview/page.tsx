@@ -57,15 +57,15 @@ export default async function OverviewPage() {
   ]
   const confidenceMap = await fetchConfidence(allNames)
 
-  const topClassesConfidence = cardConfidence(
+  const topClassesConf = cardConfidence(
     topClasses.map((c) => c.name),
     confidenceMap,
   )
-  const heatConfidence = cardConfidence(
+  const heatConf = cardConfidence(
     heatData.map((h) => h.name),
     confidenceMap,
   )
-  const opportunitiesConfidence = cardConfidence(
+  const opportunitiesConf = cardConfidence(
     opportunities.map((o) => o.name),
     confidenceMap,
   )
@@ -131,7 +131,11 @@ export default async function OverviewPage() {
           subtitle="overview · google trends · 7-day"
           lens="overview"
           cardType="leaderboard"
-          confidence={topClassesConfidence}
+          confidence={topClassesConf.score}
+          confidenceExplanation={topClassesConf.binding?.explanation ?? null}
+          confidenceBindingName={topClassesConf.binding?.concept_name}
+          confidenceHitCount={topClassesConf.hitCount}
+          confidenceTotalCount={topClassesConf.totalCount}
           cardId="overview:top-classes"
           sageContext={topClassesContext}
         >
@@ -162,7 +166,11 @@ export default async function OverviewPage() {
             subtitle="overview · google trends · all categories"
             lens="overview"
             cardType="chart"
-            confidence={heatConfidence}
+            confidence={heatConf.score}
+            confidenceExplanation={heatConf.binding?.explanation ?? null}
+            confidenceBindingName={heatConf.binding?.concept_name}
+            confidenceHitCount={heatConf.hitCount}
+            confidenceTotalCount={heatConf.totalCount}
             cardId="overview:category-heat"
             sageContext={heatContext}
           >
@@ -179,7 +187,11 @@ export default async function OverviewPage() {
           subtitle="overview · opportunity index · all categories"
           lens="overview"
           cardType="leaderboard"
-          confidence={opportunitiesConfidence}
+          confidence={opportunitiesConf.score}
+          confidenceExplanation={opportunitiesConf.binding?.explanation ?? null}
+          confidenceBindingName={opportunitiesConf.binding?.concept_name}
+          confidenceHitCount={opportunitiesConf.hitCount}
+          confidenceTotalCount={opportunitiesConf.totalCount}
           cardId="overview:top-opportunities"
           sageContext={opportunitiesContext}
         >
