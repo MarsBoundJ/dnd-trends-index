@@ -6,7 +6,7 @@ PROJECT_ID = "dnd-trends-index"
 REGION = "us-central1"
 FUNCTION_NAME = "get_trend_data"
 SOURCE_DIR = "./bouncer"
-ENTRY_POINT = "get_daily_trends"
+ENTRY_POINT = "bouncer_api"
 
 def deploy():
     print(f"Deploying Cloud Function: {FUNCTION_NAME}...")
