@@ -1,8 +1,8 @@
 # Frontend Build Status
 
 **Last updated:** 2026-04-16
-**Current phase:** Step 7 complete — Sage tool calling live (8 Bouncer API tools)
-**Next step:** Step 8 — Concept detail drawer
+**Current phase:** Step 8 complete — Concept detail drawer live
+**Next step:** Step 9 — Articles
 
 ---
 
@@ -41,7 +41,7 @@ Backend is **live** (no frontend changes needed):
 - [x] **6. Confidence scoring + rarity glows** (data layer) — `concept_confidence` BigQuery view (v1.0.1 formula), Bouncer `/confidence` endpoint (Option B wiring), `fetchConfidence()` + `cardConfidence()` helpers, Overview cards wired with real scores, methodology Popover replaces Tooltip on pip. See `CONFIDENCE_METHODOLOGY.md` for full formula rationale. AI grounding layer deferred to Step 6.5.
 - [x] **6.5. AI grounding confidence** — Post-stream grounding check on Sage responses. Gemini fact-checks claims against pageContext, produces inline `(confidence%)[n]` footnote markers (max 5), footnotes section with per-claim source + explanation, and `ai_grounding_confidence` byline. Graceful fallback on error. See `CONFIDENCE_METHODOLOGY.md` §6.3.
 - [x] **7. Sage tool calling** — 8 tools with Zod v4 schemas calling Bouncer API: getLeaderboard (10 sources), searchConcepts, getConceptConfidence, getMarketSummary, getTopMovers, getDmShortageIndex, getEditionMigration, getSystemHealth. Multi-step enabled (`stopWhen: stepCountIs(5)`). Compact ToolInvocationChip shows tool state in chat. Tool results fed to grounding check for accurate scoring.
-- [ ] **8. Concept detail drawer** — Tap any concept name → drawer opens with per-stream sparklines, bucket scores, related cards, Sage pre-loaded.
+- [x] **8. Concept detail drawer** — Tap any concept name → drawer slides in with cross-source rankings, confidence breakdown, Sage + Bag integration. Server-side aggregation via `/api/concept`. Responsive: bottom sheet on mobile, right panel on desktop. Three dismissal methods: backdrop click, X button, Escape key.
 - [ ] **9. Articles** — Scheduled Cloud Function generates articles in three voices, stored in `gold_articles`, displayed as card type.
 - [ ] **10. Atlas navigation** — Full site map card, glassmorphic, expands to full screen on mobile / sidebar on desktop.
 - [ ] **11. Auth + Firestore persistence** — NextAuth with Google + magic link. Bags of Holding migrate from localStorage to Firestore on sign-in. Saved lenses persist.
@@ -114,7 +114,7 @@ Goal: Overview lens pulling real data from Bouncer, rendered as Recharts charts 
 
 ---
 
-**Step 7 (Sage tool calling) complete. Step 8 (Concept detail drawer) is next.**
+**Step 8 (Concept detail drawer) complete. Step 9 (Articles) is next.**
 
 ---
 
@@ -184,3 +184,30 @@ Goal: Overview lens pulling real data from Bouncer, rendered as Recharts charts 
 | `arcane/src/lib/sage-tools.ts` | NEW — 8 tool definitions with Zod v4 schemas + Bouncer API execute functions |
 | `arcane/src/app/api/sage/route.ts` | EDITED — added `tools: sageTools` + `stopWhen: stepCountIs(5)`, updated system prompt, increased maxDuration to 60s |
 | `arcane/src/components/sage-panel.tsx` | EDITED — ToolInvocationChip component, extractToolContext() for grounding, tool part rendering split from text rendering |
+
+## Step 8 Verification Evidence
+
+- ConceptLink components render on Overview page (Top Classes + Top Opportunities leaderboards)
+- Clicking a concept name opens the Concept Detail Drawer via `/api/concept?name=X` server-side aggregation
+- Drawer direction is responsive: `side="bottom"` on mobile (`< 768px`), `side="right"` on desktop
+- Mobile drawer: 85vh height, rounded top corners, drag-handle bar visual affordance
+- Desktop drawer: full-height, max-width 512px, slides from right
+- Three dismissal methods: click overlay backdrop, X button (top-right), Escape key (all via Radix Dialog)
+- Confidence section shows score/tier with metal-tier color, methodology breakdown (streams, families, agreement, velocity, binding constraint)
+- Cross-source appearances table shows per-source score + rank with trend indicators (TrendingUp/Minus/TrendingDown)
+- "Ask the Sage" button builds rich context (concept name, category, confidence, source list) and opens Sage panel
+- "Stow" button saves concept summary to Bag of Holding with toggle behavior
+- Server-side aggregation route fires 10 parallel requests via `Promise.allSettled` (confidence + search + 8 leaderboard sources)
+- Absent sources listed at bottom of appearances section
+- TypeScript type-checks clean (`pnpm exec tsc --noEmit` — zero errors)
+
+## Step 8 Files Changed
+
+| File | Change |
+|---|---|
+| `arcane/src/components/concept-drawer.tsx` | NEW — ConceptDrawerProvider (context + Sheet), ConceptLink (tappable wrapper), ConfidenceSection, AppearancesSection, ActionsSection |
+| `arcane/src/components/ui/sheet.tsx` | NEW — shadcn Sheet primitive (Radix Dialog-based, side variants) |
+| `arcane/src/app/api/concept/route.ts` | NEW — Server-side aggregation endpoint, 10 parallel Bouncer API calls |
+| `arcane/src/app/layout.tsx` | EDITED — wrapped children in ConceptDrawerProvider |
+| `arcane/src/app/overview/page.tsx` | EDITED — wrapped concept names in ConceptLink |
+| `FRONTEND_BUILD_STATUS.md` | EDITED — Step 8 marked complete |
