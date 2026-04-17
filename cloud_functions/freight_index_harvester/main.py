@@ -21,10 +21,10 @@ https://fbx.freightos.com and update SELECTORS.
 import datetime
 import json
 import logging
+import re
 
 import functions_framework
 import requests
-from bs4 import BeautifulSoup
 from google.cloud import bigquery
 
 logging.basicConfig(level=logging.INFO)
@@ -45,12 +45,16 @@ HEADERS = {
 }
 
 # Lane codes we care about. The Quartermaster cites these when writing about
-# fulfillment margin pressure — China → N. America is where most TTRPG
-# hardcovers are printed and shipped.
+# fulfillment margin pressure — China -> N. America is where most TTRPG
+# hardcovers are printed and shipped. Per Freightos public labeling (verified
+# against window.frProductIntroTickerData on fbx.freightos.com):
+#   FBX    = Freightos Baltic Global Container Index (composite)
+#   FBX01  = China / East Asia -> North America West Coast
+#   FBX03  = China / East Asia -> North America East Coast
 LANE_CODES = {
-    "FBX01": "Global Container Index (composite)",
-    "FBX11": "China / East Asia to North America West Coast",
-    "FBX13": "China / East Asia to North America East Coast",
+    "FBX": "Global Container Index (composite)",
+    "FBX01": "China / East Asia to North America West Coast",
+    "FBX03": "China / East Asia to North America East Coast",
 }
 
 
@@ -65,39 +69,53 @@ def fetch_freightos_html() -> str:
 
 
 def parse_freightos_values(html: str) -> list[dict]:
-    """Parse the Freightos FBX index page.
+    """Parse lane values out of the Freightos FBX page.
 
+    The public page renders lane tiles client-side; the source-of-truth values
+    live in an embedded JS assignment of the form:
+
+        window.frProductIntroTickerData['fr-product-intro-XXXX'] = [
+            {"label":"FBX","value":"$1,877","change":"+3.32%","positive":true},
+            {"label":"FBX01","value":"$2,488","change":"+2.79%","positive":true},
+            ...
+        ];
+
+    We extract that JSON array via regex and filter to the lanes in LANE_CODES.
     Returns a list of dicts: {lane_code, lane_name, index_value, wow_delta_pct}.
-
-    The Freightos public page renders lane tiles with the index value and a
-    week-over-week delta. DOM is not versioned on their side, so this parse is
-    best-effort; missing lanes return an empty list rather than raising.
+    Missing lanes are skipped (logged), not raised.
     """
-    soup = BeautifulSoup(html, "html.parser")
     rows: list[dict] = []
 
-    # Best-effort selector: Freightos uses a table/tile layout where each lane
-    # is identifiable by its lane code text (e.g. "FBX01"). We look for the
-    # lane code anchor and walk to the nearest numeric index value + delta.
+    # Match the first JS array assigned to frProductIntroTickerData[...].
+    # Non-greedy to stop at the first closing bracket+semicolon.
+    m = re.search(
+        r"frProductIntroTickerData\[[^\]]+\]\s*=\s*(\[.*?\]);",
+        html,
+        flags=re.DOTALL,
+    )
+    if not m:
+        logger.warning("frProductIntroTickerData assignment not found in FBX page")
+        return rows
+
+    try:
+        ticker = json.loads(m.group(1))
+    except json.JSONDecodeError as e:
+        logger.error(f"Failed to parse ticker JSON: {e}")
+        return rows
+
+    by_label = {entry.get("label"): entry for entry in ticker if isinstance(entry, dict)}
+
     for lane_code, lane_name in LANE_CODES.items():
-        tile = soup.find(string=lambda s: s and lane_code in s)
-        if not tile:
-            logger.warning(f"Lane {lane_code} not found in FBX page")
+        entry = by_label.get(lane_code)
+        if not entry:
+            logger.warning(f"Lane {lane_code} missing from ticker payload")
             continue
 
-        container = tile.find_parent()
-        if container is None:
-            continue
-
-        # Pull text from the tile's enclosing element; the index value is the
-        # first $-prefixed number, the WoW delta is the first %-suffixed number.
-        text = container.get_text(" ", strip=True) if container else ""
-
-        index_value = _first_dollar_number(text)
-        wow_delta = _first_percent_number(text)
+        index_value = _parse_dollar(entry.get("value"))
+        wow_delta = _parse_percent(entry.get("change"))
 
         if index_value is None:
-            logger.warning(f"No $ value parsed for {lane_code} in: {text[:120]!r}")
+            logger.warning(f"No index value parsed for {lane_code}: {entry!r}")
             continue
 
         rows.append({
@@ -110,9 +128,10 @@ def parse_freightos_values(html: str) -> list[dict]:
     return rows
 
 
-def _first_dollar_number(text: str) -> float | None:
-    import re
-    m = re.search(r"\$\s*([0-9,]+(?:\.[0-9]+)?)", text)
+def _parse_dollar(raw) -> float | None:
+    if not isinstance(raw, str):
+        return None
+    m = re.search(r"\$\s*([0-9,]+(?:\.[0-9]+)?)", raw)
     if not m:
         return None
     try:
@@ -121,9 +140,10 @@ def _first_dollar_number(text: str) -> float | None:
         return None
 
 
-def _first_percent_number(text: str) -> float | None:
-    import re
-    m = re.search(r"(-?\d+(?:\.\d+)?)\s*%", text)
+def _parse_percent(raw) -> float | None:
+    if not isinstance(raw, str):
+        return None
+    m = re.search(r"(-?\d+(?:\.\d+)?)\s*%", raw)
     if not m:
         return None
     try:
