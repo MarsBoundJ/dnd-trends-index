@@ -169,6 +169,8 @@ def bouncer_api(request):
             path = 'system/kickstarter/ingest-projects'
         elif 'confidence' in full_path:
             path = 'confidence'
+        elif 'articles' in full_path:
+            path = 'articles'
         else:
             path = 'leaderboards'
         
@@ -295,6 +297,42 @@ def bouncer_api(request):
                     'explanation': explanation,
                 }
             return (json.dumps(result, cls=ArcaneEncoder), 200, headers)
+        except Exception as e:
+            return (json.dumps({"error": str(e)}, cls=ArcaneEncoder), 500, headers)
+
+    elif path == 'articles':
+        # Step 9b — Council article feed.
+        # Returns the latest N Council articles ordered by date desc.
+        # Legacy 3-persona articles (NULL council_version) are excluded.
+        try:
+            limit = int(request.args.get('limit', '20'))
+        except ValueError:
+            limit = 20
+        limit = max(1, min(limit, 100))
+        query = """
+            SELECT
+              date,
+              author_name,
+              author_beat,
+              author_bio,
+              council_version,
+              headline,
+              hook,
+              body_markdown,
+              key_stat
+            FROM `dnd-trends-index.gold_data.daily_articles`
+            WHERE council_version = 'v1'
+            ORDER BY date DESC, author_name ASC
+            LIMIT @limit
+        """
+        try:
+            job_config = bigquery.QueryJobConfig(
+                query_parameters=[
+                    bigquery.ScalarQueryParameter('limit', 'INT64', limit)
+                ]
+            )
+            results = [dict(row) for row in client.query(query, job_config=job_config)]
+            return (json.dumps(results, cls=ArcaneEncoder), 200, headers)
         except Exception as e:
             return (json.dumps({"error": str(e)}, cls=ArcaneEncoder), 500, headers)
 
