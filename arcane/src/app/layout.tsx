@@ -3,6 +3,8 @@ import { Spectral, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SageProvider } from "@/components/sage-panel";
 import { ConceptDrawerProvider } from "@/components/concept-drawer";
+import { AtlasProvider } from "@/components/atlas";
+import { SiteHeader } from "@/components/site-header";
 
 /*
  * Font loading per FRONTEND_DESIGN_SPEC.md §4.2.
@@ -59,7 +61,12 @@ export default function RootLayout({
          * It's a "use client" boundary — children below can still be RSCs.
          */}
         <SageProvider>
-          <ConceptDrawerProvider>{children}</ConceptDrawerProvider>
+          <ConceptDrawerProvider>
+            <AtlasProvider>
+              <SiteHeader />
+              {children}
+            </AtlasProvider>
+          </ConceptDrawerProvider>
         </SageProvider>
       </body>
     </html>
