@@ -1,8 +1,8 @@
 # Frontend Build Status
 
 **Last updated:** 2026-04-18
-**Current phase:** Step 10 complete — Atlas navigation + site-wide header live
-**Next step:** Step 11 — Auth + Firestore persistence
+**Current phase:** Step 11 complete — Google sign-in + Bag of Holding Firestore persistence live
+**Next step:** Step 11.5 (magic-link email provider) then Step 12 — Admin + IAP + Harvest Console
 
 ---
 
@@ -44,7 +44,7 @@ Backend is **live** (no frontend changes needed):
 - [x] **8. Concept detail drawer** — Tap any concept name → drawer slides in with cross-source rankings, confidence breakdown, Sage + Bag integration. Server-side aggregation via `/api/concept`. Responsive: bottom sheet on mobile, right panel on desktop. Three dismissal methods: backdrop click, X button, Escape key.
 - [x] **9. Articles** — Scheduled Cloud Function generates articles from a 5-member Council of bylined writers (The Loremaster, The Bursar, The Quartermaster, The Weaver, The Architect), stored in `gold_data.daily_articles`, displayed as bylined card type. Split: **9a backend** (Council refactor + Freightos harvester + schema migration) and **9b frontend** (article cards + Sage Council-Chair framing). See `project_step_9_council.md` memory file and `docs/step-9-persona-study.md`.
 - [x] **10. Atlas navigation** — Full site-map sheet, glassmorphic (`bg-iron/80 backdrop-blur-xl`), bottom-sheet on mobile / right sidebar on desktop. Site-wide `<SiteHeader />` lands as the host for the Atlas Compass trigger + wordmark. Eight tiles split into Available (Home, Trends, Articles, Bag of Holding) and Planned (Products & Opportunities, Digital & BG3, Deep Dives, Methodology); planned tiles render disabled with a tooltip. Bag of Holding uses a composite `BagOfHoldingSigil` (PackageOpen + Infinity charm). Onboarding auto-open deferred.
-- [ ] **11. Auth + Firestore persistence** — NextAuth with Google + magic link. Bags of Holding migrate from localStorage to Firestore on sign-in. Saved lenses persist.
+- [x] **11. Auth + Firestore persistence** — Auth.js v5 (NextAuth) with Google OAuth. Sign-in menu in SiteHeader (avatar + popover). JWT session strategy. Bag of Holding migrates localStorage → Firestore on sign-in via silent union-dedupe at `users/{uid}/bag/{itemId}`; subsequent stow/unstow mirror to Firestore through a module-scoped `BagSyncer`. Sign-out clears local cache to prevent cross-user leaks on shared browsers. **Deferred to Step 11.5:** magic-link email provider. **Deferred:** saved-lenses persistence — revisit once the lens filter mechanic is formalized (tracked in `project_saved_lenses_backlog.md` memory).
 - [ ] **12. Admin + IAP + Harvest Console** — `/admin/*` gated by Google Cloud IAP via a Next 16 `proxy.ts` (formerly `middleware.ts`). Harvesting Cockpit with bookmarklet launchers + BackerKit Harvest Console (styled terminal card with Run button).
 - [ ] **13. Aceternity flourishes** — Glowing borders on hover, Meteors on Daily Brief hero, Spotlight on main header.
 - [ ] **14. D20 spinning loader** — Custom SVG, replaces all default spinners.
@@ -114,7 +114,54 @@ Goal: Overview lens pulling real data from Bouncer, rendered as Recharts charts 
 
 ---
 
-**Step 8 (Concept detail drawer) complete. Step 9a (Council backend) verified live on 2026-04-17. Step 9b (Article cards) complete on 2026-04-17. Step 10 (Atlas navigation) complete on 2026-04-18 — see verification evidence below.**
+**Step 8 (Concept detail drawer) complete. Step 9a (Council backend) verified live on 2026-04-17. Step 9b (Article cards) complete on 2026-04-17. Step 10 (Atlas navigation) complete on 2026-04-18. Step 11 (Auth + Firestore persistence) complete on 2026-04-18 — see verification evidence below.**
+
+---
+
+## Step 11 Verification Evidence
+
+- **GCP setup (one-time, user-performed):** Enabled Firestore API in `dnd-trends-index`; created Firestore `(default)` database in Native mode, Standard edition, `us-central1`, restrictive security rules, real-time disabled. Created OAuth 2.0 Web application client with `http://localhost:3000` JS origin + `http://localhost:3000/api/auth/callback/google` redirect URI. Ran `gcloud auth application-default login` so the Firebase Admin SDK picks up user credentials via ADC.
+- **Auth.js v5 wired.** `arcane/auth.ts` + `arcane/auth.d.ts` hold the NextAuth config (Google provider, JWT session, `session.user.id` set from the Google `sub` claim via `jwt`/`session` callbacks). `/api/auth/[...nextauth]/route.ts` re-exports the handlers. Smoke test: `curl http://localhost:3000/api/auth/providers` returned HTTP 200 with `{"google":{"id":"google","callbackUrl":"http://localhost:3000/api/auth/callback/google"}}`.
+- **Sign-in UI.** `SignInMenu` client component lives in `SiteHeader`. Unauthenticated → "Sign in" pill that calls `signIn("google", { callbackUrl: location.href })`. Authenticated → Google avatar + first-name (hidden on narrow screens) opening a Popover with full name + email + Sign out button. `next.config.ts` allows `lh3.googleusercontent.com` under `images.remotePatterns` so `next/image` renders the Google avatar.
+- **Firebase Admin client** (`src/lib/firebase-admin.ts`) — lazy singleton, `applicationDefault()` credential source, ADC-driven. `"server-only"` import guard prevents accidental client-bundle inclusion.
+- **Bag of Holding API** (`src/app/api/bag/`):
+  - `GET /api/bag` → lists the signed-in user's items.
+  - `POST /api/bag` → upserts one item; uses its `id` as the Firestore doc id.
+  - `DELETE /api/bag?id=...` → removes one item.
+  - `POST /api/bag/merge` → silent union-dedupe of localStorage items vs. cloud items (cloud entry wins on id collision), batch-writes new ones, returns full merged set.
+  - All handlers call `auth()` and return 401 if unauthenticated.
+- **Client sync glue.** `BagSync` component (headless, mounted in `RootLayout` inside `AuthSessionProvider`) watches `useSession()` and the Zustand hydration gate. On sign-in: POSTs local items to `/api/bag/merge`, calls `setItems()` with the merged result, flips `syncStatus` to `"synced"`, and registers a module-scoped `BagSyncer` that mirrors subsequent stow/unstow to `POST /api/bag` and `DELETE /api/bag?id=`. On sign-out: clears local items, deregisters the syncer, resets `syncStatus` to `"anon"`.
+- **bag-store.ts changes.** Added `syncStatus: "anon" | "syncing" | "synced"`, `setSyncStatus`, `setItems`, `registerBagSyncer`, and mirrored the three stow actions + `unstow` to the active syncer. `syncStatus` is omitted from persist's `partialize` so it re-derives from session state on every reload.
+- **End-to-end verification (Yorri, in browser):**
+  1. Signed in with Google while anonymous localStorage items were present → items mirrored to `users/{uid}/bag/*` in Firestore (console visible).
+  2. Signed out → local bag cleared automatically.
+  3. Signed back in → items restored via `/api/bag/merge` (cloudCount = N, localNewCount = 0).
+- TypeScript type-checks clean (`pnpm exec tsc --noEmit` — exit 0).
+- ESLint clean (pre-existing `concept-drawer.tsx` unused-import warning unchanged).
+- **Deferred:**
+  - **Step 11.5 — magic-link email provider.** Requires picking an email provider (Resend / SendGrid / SMTP) and wiring NextAuth's EmailProvider.
+  - **Saved lenses persistence.** Tracked in `project_saved_lenses_backlog.md` — revisit once the lens filter mechanic is formalized, fallback to Step 16 polish pass.
+  - **Production deploy.** Cloud Run service `arcane-analytics` still not created. When it is, the Google OAuth client will need a second redirect URI (`https://<cloud-run-host>/api/auth/callback/google`) and the app will need to be moved from Testing → In production (Google verification) for non-test-user sign-ins.
+
+## Step 11 Files Changed
+
+| File | Change |
+|---|---|
+| `arcane/auth.ts` | NEW — Auth.js v5 top-level config |
+| `arcane/auth.d.ts` | NEW — module augmentation for session.user.id / JWT.uid |
+| `arcane/src/app/api/auth/[...nextauth]/route.ts` | NEW — re-exports GET/POST from auth.ts |
+| `arcane/src/components/session-provider.tsx` | NEW — "use client" wrapper around Auth.js SessionProvider |
+| `arcane/src/components/sign-in-menu.tsx` | NEW — sign-in pill / authenticated account popover |
+| `arcane/src/components/site-header.tsx` | EDITED — slots SignInMenu left of the Atlas trigger |
+| `arcane/next.config.ts` | EDITED — allow lh3.googleusercontent.com remote images |
+| `arcane/src/lib/firebase-admin.ts` | NEW — lazy Firestore admin singleton |
+| `arcane/src/app/api/bag/route.ts` | NEW — GET/POST/DELETE for signed-in user's bag |
+| `arcane/src/app/api/bag/merge/route.ts` | NEW — POST union-dedupe merge endpoint |
+| `arcane/src/lib/bag-store.ts` | EDITED — syncStatus, setItems, BagSyncer, mirrored stow/unstow |
+| `arcane/src/components/bag-sync.tsx` | NEW — headless effect component orchestrating the sync lifecycle |
+| `arcane/src/app/layout.tsx` | EDITED — AuthSessionProvider + BagSync mounted above existing providers |
+| `arcane/package.json` + `pnpm-lock.yaml` | EDITED — add next-auth@5.0.0-beta.31, firebase-admin |
+| `FRONTEND_BUILD_STATUS.md` | EDITED — Step 11 marked complete (this block) |
 
 ---
 
