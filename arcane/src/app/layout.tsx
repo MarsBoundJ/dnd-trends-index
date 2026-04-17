@@ -6,6 +6,7 @@ import { ConceptDrawerProvider } from "@/components/concept-drawer";
 import { AtlasProvider } from "@/components/atlas";
 import { SiteHeader } from "@/components/site-header";
 import { AuthSessionProvider } from "@/components/session-provider";
+import { BagSync } from "@/components/bag-sync";
 
 /*
  * Font loading per FRONTEND_DESIGN_SPEC.md §4.2.
@@ -69,6 +70,9 @@ export default function RootLayout({
          * cleanly.
          */}
         <AuthSessionProvider>
+          {/* BagSync is headless — watches useSession() and orchestrates the
+              localStorage ↔ Firestore bridge for the Bag of Holding. */}
+          <BagSync />
           <SageProvider>
             <ConceptDrawerProvider>
               <AtlasProvider>
