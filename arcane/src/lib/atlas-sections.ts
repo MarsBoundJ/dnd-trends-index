@@ -15,17 +15,17 @@
  * public roadmap without forcing us to stand up placeholder routes.
  */
 
+import type { ComponentType } from "react"
 import {
   Home,
   TrendingUp,
   Newspaper,
-  Backpack,
   Gem,
   Gamepad2,
   Microscope,
   BookOpen,
-  type LucideIcon,
 } from "lucide-react"
+import { BagOfHoldingSigil } from "@/components/bag-of-holding-sigil"
 
 export type AtlasSectionStatus = "active" | "planned"
 
@@ -34,7 +34,12 @@ export interface AtlasSection {
   title: string
   /** One-line Sage-voiced blurb — analytical, no marketing-speak. */
   description: string
-  icon: LucideIcon
+  /**
+   * Icon component rendered inside the tile. Accepts a `className` prop.
+   * Lucide icons satisfy this shape; composite sigils (e.g. the Bag of
+   * Holding's PackageOpen + Infinity charm) do too.
+   */
+  icon: ComponentType<{ className?: string }>
   /** Next.js route. Omit for planned sections. */
   route?: string
   status: AtlasSectionStatus
@@ -72,7 +77,7 @@ export const ATLAS_SECTIONS: AtlasSection[] = [
     id: "bag",
     title: "Bag of Holding",
     description: "Cards and summaries you've stowed for later.",
-    icon: Backpack,
+    icon: BagOfHoldingSigil,
     route: "/collection",
     status: "active",
   },
