@@ -74,6 +74,7 @@ export function ArticleCard({ article }: { article: Article }) {
     <CardChrome
       title={article.headline}
       subtitle={formatDate(article.date)}
+      titleVariant="prominent"
       cardType="article"
       confidence={STUB_CONFIDENCE}
       cardId={`article:${article.date}:${article.author_name}`}

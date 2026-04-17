@@ -140,6 +140,14 @@ export interface CardChromeProps {
    * Wired in Step 4.
    */
   sageContext?: string
+  /**
+   * Title styling. Defaults to `"compact"` (single-line, truncates with
+   * ellipsis) — the right fit for leaderboard/chart cards whose titles
+   * are short labels. `"prominent"` scales the title up ~50% and allows
+   * it to wrap across lines — used by ArticleCard (Step 9b) where the
+   * headline is the main attraction.
+   */
+  titleVariant?: "compact" | "prominent"
 }
 
 // ─── CardChrome ──────────────────────────────────────────────────────────────
@@ -168,6 +176,7 @@ export function CardChrome({
   onStow,
   onExplain,
   sageContext,
+  titleVariant = "compact",
 }: CardChromeProps) {
   const tier = confidenceToTier(confidence)
 
@@ -236,7 +245,14 @@ export function CardChrome({
 
           {/* Title + subtitle — gets the full left side, unobstructed (§4.4) */}
           <div className="flex-1 min-w-0">
-            <h3 className="font-display text-sm font-semibold text-parchment leading-tight truncate">
+            <h3
+              className={cn(
+                "font-display font-semibold text-parchment",
+                titleVariant === "prominent"
+                  ? "text-xl leading-snug"
+                  : "text-sm leading-tight truncate",
+              )}
+            >
               {title}
             </h3>
             {subtitle && (
