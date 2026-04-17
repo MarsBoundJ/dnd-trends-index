@@ -31,7 +31,7 @@ def deploy() -> None:
         f"--entry-point={ENTRY_POINT} "
         f"--trigger-http "
         f"--allow-unauthenticated "
-        f"--memory=512Mi "
+        f"--memory=1Gi "
         f"--timeout=540s "
         f"--project={PROJECT_ID}"
     )

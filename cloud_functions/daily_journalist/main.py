@@ -32,7 +32,7 @@ LOCATION = "us-central1"
 DATASET_ID = "gold_data"
 TABLE_ID = "daily_articles"
 
-MODEL_NAME = "gemini-2.0-flash-001"
+MODEL_NAME = "gemini-2.5-flash"
 
 bq_client = bigquery.Client(project=PROJECT_ID)
 vertexai.init(project=PROJECT_ID, location=LOCATION)
@@ -63,28 +63,31 @@ LEGACY_PERSONAS = {
 # BigQuery I/O
 # ---------------------------------------------------------------------------
 
+def _rows_to_dicts(query: str) -> list[dict]:
+    """Run a BQ query and return rows as plain dicts. Tolerates table-missing
+    errors by returning []. Avoids pandas to keep the container slim."""
+    try:
+        rows = bq_client.query(query).result()
+        return [dict(row.items()) for row in rows]
+    except Exception as e:
+        import logging
+        logging.warning(f"query failed ({query[:80]}...): {e}")
+        return []
+
+
 def fetch_context() -> dict:
-    """Pull the top anomaly signals from BigQuery."""
-    spikes = list(
-        bq_client.query(
-            f"SELECT * FROM `{PROJECT_ID}.{DATASET_ID}.view_trend_spikes` LIMIT 5"
-        ).to_dataframe().to_dict(orient="records")
-    )
-    gaps = list(
-        bq_client.query(
-            f"SELECT * FROM `{PROJECT_ID}.{DATASET_ID}.view_platform_gaps` LIMIT 5"
-        ).to_dataframe().to_dict(orient="records")
-    )
-    sentiment = list(
-        bq_client.query(
-            f"SELECT * FROM `{PROJECT_ID}.social_data.youtube_videos` "
-            f"WHERE velocity_24h > 1000 LIMIT 5"
-        ).to_dataframe().to_dict(orient="records")
-    )
+    """Pull the top anomaly signals from BigQuery. Tolerates missing tables."""
     return {
-        "spikes": spikes,
-        "platform_gaps": gaps,
-        "sentiment_anomalies": sentiment,
+        "spikes": _rows_to_dicts(
+            f"SELECT * FROM `{PROJECT_ID}.{DATASET_ID}.view_trend_spikes` LIMIT 5"
+        ),
+        "platform_gaps": _rows_to_dicts(
+            f"SELECT * FROM `{PROJECT_ID}.{DATASET_ID}.view_platform_gaps` LIMIT 5"
+        ),
+        "sentiment_anomalies": _rows_to_dicts(
+            f"SELECT * FROM `{PROJECT_ID}.dnd_trends_raw.youtube_videos` "
+            f"WHERE velocity_24h > 1000 LIMIT 5"
+        ),
     }
 
 
