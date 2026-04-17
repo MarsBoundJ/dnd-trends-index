@@ -1,8 +1,8 @@
 # Frontend Build Status
 
 **Last updated:** 2026-04-17
-**Current phase:** Step 9a in progress — Council backend refactor
-**Next step:** Step 9b — Article cards frontend
+**Current phase:** Step 9b complete — Council article cards live
+**Next step:** Step 10 — Atlas navigation
 
 ---
 
@@ -42,7 +42,7 @@ Backend is **live** (no frontend changes needed):
 - [x] **6.5. AI grounding confidence** — Post-stream grounding check on Sage responses. Gemini fact-checks claims against pageContext, produces inline `(confidence%)[n]` footnote markers (max 5), footnotes section with per-claim source + explanation, and `ai_grounding_confidence` byline. Graceful fallback on error. See `CONFIDENCE_METHODOLOGY.md` §6.3.
 - [x] **7. Sage tool calling** — 8 tools with Zod v4 schemas calling Bouncer API: getLeaderboard (10 sources), searchConcepts, getConceptConfidence, getMarketSummary, getTopMovers, getDmShortageIndex, getEditionMigration, getSystemHealth. Multi-step enabled (`stopWhen: stepCountIs(5)`). Compact ToolInvocationChip shows tool state in chat. Tool results fed to grounding check for accurate scoring.
 - [x] **8. Concept detail drawer** — Tap any concept name → drawer slides in with cross-source rankings, confidence breakdown, Sage + Bag integration. Server-side aggregation via `/api/concept`. Responsive: bottom sheet on mobile, right panel on desktop. Three dismissal methods: backdrop click, X button, Escape key.
-- [~] **9. Articles** — Scheduled Cloud Function generates articles from a 5-member Council of bylined writers (The Loremaster, The Bursar, The Quartermaster, The Weaver, The Architect), stored in `gold_data.daily_articles`, displayed as bylined card type. Split: **9a backend** (Council refactor + Freightos harvester + schema migration) and **9b frontend** (article cards + Sage Council-Chair framing). See `project_step_9_council.md` memory file and `docs/step-9-persona-study.md`.
+- [x] **9. Articles** — Scheduled Cloud Function generates articles from a 5-member Council of bylined writers (The Loremaster, The Bursar, The Quartermaster, The Weaver, The Architect), stored in `gold_data.daily_articles`, displayed as bylined card type. Split: **9a backend** (Council refactor + Freightos harvester + schema migration) and **9b frontend** (article cards + Sage Council-Chair framing). See `project_step_9_council.md` memory file and `docs/step-9-persona-study.md`.
 - [ ] **10. Atlas navigation** — Full site map card, glassmorphic, expands to full screen on mobile / sidebar on desktop.
 - [ ] **11. Auth + Firestore persistence** — NextAuth with Google + magic link. Bags of Holding migrate from localStorage to Firestore on sign-in. Saved lenses persist.
 - [ ] **12. Admin + IAP + Harvest Console** — `/admin/*` gated by Google Cloud IAP via a Next 16 `proxy.ts` (formerly `middleware.ts`). Harvesting Cockpit with bookmarklet launchers + BackerKit Harvest Console (styled terminal card with Run button).
@@ -114,7 +114,40 @@ Goal: Overview lens pulling real data from Bouncer, rendered as Recharts charts 
 
 ---
 
-**Step 8 (Concept detail drawer) complete. Step 9a (Council backend) verified live on 2026-04-17. Step 9b (Article cards) next.**
+**Step 8 (Concept detail drawer) complete. Step 9a (Council backend) verified live on 2026-04-17. Step 9b (Article cards) complete on 2026-04-17 — see verification evidence below.**
+
+---
+
+## Step 9b Verification Evidence
+
+- `bouncer-api` Cloud Function redeployed with `/articles` route. Smoke test: `curl .../bouncer-api/articles?limit=3` returns both parallel-run rows (Bursar + Quartermaster) with full byline metadata (`author_name`, `author_beat`, `author_bio`, `council_version='v1'`). Legacy 3-persona rows excluded by the version filter.
+- `deploy_bouncer.py` corrected: `FUNCTION_NAME` was `get_trend_data` (a legacy twin Cloud Function serving the old HTML frontend); changed to `bouncer-api` so future Bouncer edits actually reach the Arcane frontend. `get_trend_data` left deployed — see `project_get_trend_data_orphan.md` memory.
+- `arcane/src/app/api/articles/route.ts` returns `{ articles, count }` wrapper at `http://localhost:3000/api/articles?limit=5` (HTTP 200, JSON verified).
+- `/articles` Server Component renders HTTP 200 with 1-hr ISR. Two Council articles appear as CardChrome-wrapped cards in a 2-col grid on desktop (1280×800), single-column on mobile (375×812). Verified in Claude Preview.
+- Article card byline row: Lucide sigil (Crown for Bursar, Anchor for Quartermaster) + author name (Spectral) + beat (Inter muted). Clicking the byline opens a shadcn Popover with the sigil, beat in ember mono-uppercase, and full bio — confirmed working on desktop click; same component also works on mobile tap.
+- Hook renders as italicized Spectral with left ember border. Body rendered via `react-markdown` with prose overrides (headings, lists, strong, em, inline code). Key-stat chip renders as mono ember-bright in iron-backed pill.
+- Confidence stubbed at 75 silver (metal-tier pip visible top-right) with `// STUB` comment — article-level confidence is a follow-up once we decide how to aggregate the Council member's cited sources.
+- Sage system prompt extended with a COUNCIL CHAIR FRAMING block: 5-member roster with beats + luminary lineages injected inline. Sage remains "Sage" (she/her, no article) and may cite Council members by name without role-playing as them.
+- Landing page (`/`) gains an "Articles →" nav link alongside "Overview lens →".
+- TypeScript type-checks clean (`pnpm exec tsc --noEmit` — zero errors).
+- ESLint clean (`pnpm lint` — zero errors; pre-existing unused-import warning in `concept-drawer.tsx` unchanged).
+- Zero console errors/warnings on `/articles` (verified via Claude Preview).
+- `react-markdown ^10.1.0` added; `@radix-ui/react-popover ^1.1.15` pinned (was referenced by `popover.tsx` since Step 6 but missing from `package.json`).
+
+## Step 9b Files Changed
+
+| File | Change |
+|---|---|
+| `bouncer/main.py` | EDITED — added `/articles` router branch + handler |
+| `deploy_bouncer.py` | EDITED — `FUNCTION_NAME` from `get_trend_data` to `bouncer-api` |
+| `arcane/src/lib/bouncer.ts` | EDITED — `Article` type, `CouncilAuthorName` union, `fetchArticles()` |
+| `arcane/src/app/api/articles/route.ts` | NEW — thin Next proxy over Bouncer `/articles` |
+| `arcane/src/components/article-card.tsx` | NEW — CardChrome-wrapped article card with sigil/byline/bio popover + markdown body |
+| `arcane/src/app/articles/page.tsx` | NEW — Server Component grid with 1-hr ISR + empty state |
+| `arcane/src/app/page.tsx` | EDITED — added `/articles` nav link |
+| `arcane/src/app/api/sage/route.ts` | EDITED — Council Chair framing + naming convention (she/her, "Sage" no article, Council = "The X") |
+| `arcane/package.json` + `pnpm-lock.yaml` | EDITED — added `react-markdown`, pinned `@radix-ui/react-popover` |
+| `FRONTEND_BUILD_STATUS.md` | EDITED — Step 9b marked complete (this block) |
 
 ---
 

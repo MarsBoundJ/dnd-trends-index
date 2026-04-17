@@ -4,7 +4,7 @@ import os
 
 PROJECT_ID = "dnd-trends-index"
 REGION = "us-central1"
-FUNCTION_NAME = "get_trend_data"
+FUNCTION_NAME = "bouncer-api"
 SOURCE_DIR = "./bouncer"
 ENTRY_POINT = "bouncer_api"
 

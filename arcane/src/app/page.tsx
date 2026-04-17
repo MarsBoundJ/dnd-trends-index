@@ -29,6 +29,12 @@ export default function RootPage() {
           Overview lens →
         </a>
         <a
+          href="/articles"
+          className="inline-flex items-center justify-center rounded-lg border border-ember bg-onyx px-5 py-2.5 font-sans text-sm font-medium text-parchment transition-colors hover:bg-iron"
+        >
+          Articles →
+        </a>
+        <a
           href="/test-card-chrome"
           className="inline-flex items-center justify-center rounded-lg border border-bronze bg-onyx px-5 py-2.5 font-sans text-sm font-medium text-ash transition-colors hover:bg-iron hover:text-parchment"
         >
