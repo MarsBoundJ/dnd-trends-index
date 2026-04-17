@@ -5,6 +5,8 @@ import { SageProvider } from "@/components/sage-panel";
 import { ConceptDrawerProvider } from "@/components/concept-drawer";
 import { AtlasProvider } from "@/components/atlas";
 import { SiteHeader } from "@/components/site-header";
+import { AuthSessionProvider } from "@/components/session-provider";
+import { BagSync } from "@/components/bag-sync";
 
 /*
  * Font loading per FRONTEND_DESIGN_SPEC.md §4.2.
@@ -60,14 +62,26 @@ export default function RootLayout({
          * any page can pop the Sage panel open via its `sageContext` prop.
          * It's a "use client" boundary — children below can still be RSCs.
          */}
-        <SageProvider>
-          <ConceptDrawerProvider>
-            <AtlasProvider>
-              <SiteHeader />
-              {children}
-            </AtlasProvider>
-          </ConceptDrawerProvider>
-        </SageProvider>
+        {/*
+         * AuthSessionProvider is the outermost provider so every other
+         * provider + component below can call `useSession()`. It's a
+         * "use client" boundary — the providers nested inside still stay
+         * in their own client boundaries and the RSCs below that compile
+         * cleanly.
+         */}
+        <AuthSessionProvider>
+          {/* BagSync is headless — watches useSession() and orchestrates the
+              localStorage ↔ Firestore bridge for the Bag of Holding. */}
+          <BagSync />
+          <SageProvider>
+            <ConceptDrawerProvider>
+              <AtlasProvider>
+                <SiteHeader />
+                {children}
+              </AtlasProvider>
+            </ConceptDrawerProvider>
+          </SageProvider>
+        </AuthSessionProvider>
       </body>
     </html>
   );
