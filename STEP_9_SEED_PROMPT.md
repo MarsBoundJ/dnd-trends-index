@@ -19,8 +19,10 @@ We're starting **Step 9** of the 16-step Arcane Analytics frontend build. Steps 
 
 **Architectural decisions already made (do not re-litigate):**
 
-- **5-member Council v1:** The Loremaster, The Bursar, The Quartermaster, The Artificer, The Architect. See memory file for luminary lineage per member.
-- **The Sage remains singular** — she does NOT write articles. She chairs the Council in the chatbot surface and can cite/quote Council articles by name.
+- **5-member Council v1:** The Loremaster, The Bursar, The Quartermaster, The Weaver, The Architect. See memory file for luminary lineage per member.
+- **Naming convention:** Every Council member is "The [Title]" (title/byline). The conversational chatbot is just "**Sage**" (no article) — **she/her**. This asymmetry is intentional: title vs. name = column vs. conversation.
+- **Sage remains singular** — she does NOT write articles. She chairs the Council in the chatbot surface and can cite/quote Council articles by name.
+- **Sage voice** — Perplexity's style guide (in `docs/step-9-persona-study.md`) is the base; the memory file's "Sage voice guide (v1)" section adds five subtle texture levers to land the female voice without tropes. Read both before writing any Sage prompt text.
 - **Bylines are real** — each article carries `author_name`, `author_beat`, `author_bio` in the schema and on the card.
 - **Rotation guard:** no writer publishes two days in a row.
 - **Legacy runs in parallel** for 3–5 days before we retire the old 3-persona prompts.
@@ -46,7 +48,7 @@ We're starting **Step 9** of the 16-step Arcane Analytics frontend build. Steps 
 1. Build `/articles` page at `arcane/src/app/articles/page.tsx`.
 2. Server-side data fetch via new `/api/articles` route (pattern: `/api/concept`).
 3. `ArticleCard` component inside `CardChrome` shell:
-   - Writer sigil (lucide icon per beat — e.g. Scroll for Loremaster, Crown for Bursar, Anchor for Quartermaster, Gear for Artificer, Compass for Architect — confirm choices with Yorri).
+   - Writer sigil (lucide icon per beat — e.g. Scroll for Loremaster, Crown for Bursar, Anchor for Quartermaster, Spline for Weaver, Compass for Architect — confirm choices with Yorri).
    - Byline row: `{author_name} · {author_beat}`.
    - Bio tooltip/expandable on hover (desktop) or tap (mobile).
    - Headline → hook → body_markdown (render via react-markdown, already installed).
@@ -71,7 +73,7 @@ We're starting **Step 9** of the 16-step Arcane Analytics frontend build. Steps 
 
 ## What to ask Yorri before touching code
 
-1. Lucide sigil choices per Council member — confirm Scroll/Crown/Anchor/Gear/Compass or propose alternatives.
+1. Lucide sigil choices per Council member — confirm Scroll/Crown/Anchor/Spline/Compass or propose alternatives.
 2. Freightos ingestion cadence — daily snapshot is the default; confirm that's fine vs. weekly.
 3. Schema migration style — add columns with NULL backfill, or write fresh rows only with a `council_version` flag.
 4. Parallel-run duration — default 3–5 days before legacy retirement; confirm or override.
