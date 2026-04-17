@@ -1,8 +1,8 @@
 # Frontend Build Status
 
-**Last updated:** 2026-04-17
-**Current phase:** Step 9b complete — Council article cards live
-**Next step:** Step 10 — Atlas navigation
+**Last updated:** 2026-04-18
+**Current phase:** Step 10 complete — Atlas navigation + site-wide header live
+**Next step:** Step 11 — Auth + Firestore persistence
 
 ---
 
@@ -43,7 +43,7 @@ Backend is **live** (no frontend changes needed):
 - [x] **7. Sage tool calling** — 8 tools with Zod v4 schemas calling Bouncer API: getLeaderboard (10 sources), searchConcepts, getConceptConfidence, getMarketSummary, getTopMovers, getDmShortageIndex, getEditionMigration, getSystemHealth. Multi-step enabled (`stopWhen: stepCountIs(5)`). Compact ToolInvocationChip shows tool state in chat. Tool results fed to grounding check for accurate scoring.
 - [x] **8. Concept detail drawer** — Tap any concept name → drawer slides in with cross-source rankings, confidence breakdown, Sage + Bag integration. Server-side aggregation via `/api/concept`. Responsive: bottom sheet on mobile, right panel on desktop. Three dismissal methods: backdrop click, X button, Escape key.
 - [x] **9. Articles** — Scheduled Cloud Function generates articles from a 5-member Council of bylined writers (The Loremaster, The Bursar, The Quartermaster, The Weaver, The Architect), stored in `gold_data.daily_articles`, displayed as bylined card type. Split: **9a backend** (Council refactor + Freightos harvester + schema migration) and **9b frontend** (article cards + Sage Council-Chair framing). See `project_step_9_council.md` memory file and `docs/step-9-persona-study.md`.
-- [ ] **10. Atlas navigation** — Full site map card, glassmorphic, expands to full screen on mobile / sidebar on desktop.
+- [x] **10. Atlas navigation** — Full site-map sheet, glassmorphic (`bg-iron/80 backdrop-blur-xl`), bottom-sheet on mobile / right sidebar on desktop. Site-wide `<SiteHeader />` lands as the host for the Atlas Compass trigger + wordmark. Eight tiles split into Available (Home, Trends, Articles, Bag of Holding) and Planned (Products & Opportunities, Digital & BG3, Deep Dives, Methodology); planned tiles render disabled with a tooltip. Bag of Holding uses a composite `BagOfHoldingSigil` (PackageOpen + Infinity charm). Onboarding auto-open deferred.
 - [ ] **11. Auth + Firestore persistence** — NextAuth with Google + magic link. Bags of Holding migrate from localStorage to Firestore on sign-in. Saved lenses persist.
 - [ ] **12. Admin + IAP + Harvest Console** — `/admin/*` gated by Google Cloud IAP via a Next 16 `proxy.ts` (formerly `middleware.ts`). Harvesting Cockpit with bookmarklet launchers + BackerKit Harvest Console (styled terminal card with Run button).
 - [ ] **13. Aceternity flourishes** — Glowing borders on hover, Meteors on Daily Brief hero, Spotlight on main header.
@@ -114,7 +114,35 @@ Goal: Overview lens pulling real data from Bouncer, rendered as Recharts charts 
 
 ---
 
-**Step 8 (Concept detail drawer) complete. Step 9a (Council backend) verified live on 2026-04-17. Step 9b (Article cards) complete on 2026-04-17 — see verification evidence below.**
+**Step 8 (Concept detail drawer) complete. Step 9a (Council backend) verified live on 2026-04-17. Step 9b (Article cards) complete on 2026-04-17. Step 10 (Atlas navigation) complete on 2026-04-18 — see verification evidence below.**
+
+---
+
+## Step 10 Verification Evidence
+
+- Site-wide `<SiteHeader />` mounted in `arcane/src/app/layout.tsx` inside `AtlasProvider`. Renders on all four live pages — `/`, `/overview`, `/articles`, `/collection` — each returning HTTP 200 with the Arcane Analytics wordmark and `aria-label="Open the Atlas site map"` trigger present in the SSR HTML (verified via `curl`).
+- `AtlasProvider` uses shadcn `Sheet` (same Radix-Dialog primitive as Step 8's concept drawer). Responsive via `window.innerWidth < 768` resize listener: `side="bottom"` on mobile (92vh, rounded top corners, drag-handle affordance) / `side="right"` on desktop (max-w-lg). Glassmorphic surface: `bg-iron/80 backdrop-blur-xl border-bronze/60`.
+- Eight tiles in `arcane/src/lib/atlas-sections.ts` split into two sections:
+  - **Available (4):** Home → `/`, Trends → `/overview`, Articles → `/articles`, Bag of Holding → `/collection`. Each tile is a `<Link>` that closes the Atlas on navigate.
+  - **Planned (4):** Products & Opportunities, Digital & BG3, Deep Dives, Methodology. Rendered as disabled `role="button"` with a shadcn Tooltip ("Not built yet — the Council hasn&rsquo;t filed this beat.") on focus/hover.
+- Landing page (`/`) pruned: the old 4-button nav row (`Overview lens →`, `Articles →`, `CardChrome harness`, `Palette & fonts`) was replaced with a short "Tap Atlas in the header for the full site map" nudge plus a muted dev-harness row keeping just `/test-card-chrome` and `/swatch`.
+- Bag of Holding sigil: composite `BagOfHoldingSigil` component (`arcane/src/components/bag-of-holding-sigil.tsx`) — `PackageOpen` base with a smaller `Infinity` charm tucked into the bottom-right (rounded onyx socket, bronze edge). Both glyphs inherit `currentColor` so the active/planned palette drives both. Replaces an initial `Package` / `Backpack` pass that read as kitchenware.
+- `atlas-sections.ts` icon field relaxed from `LucideIcon` to `ComponentType<{ className?: string }>` so composite sigils satisfy the contract alongside plain Lucide icons.
+- TypeScript type-checks clean (`pnpm exec tsc --noEmit` — exit 0, zero output).
+- ESLint clean (one pre-existing unused-import warning in `concept-drawer.tsx` unchanged).
+- Deferred from Step 10: first-visit auto-open behavior (spec §3.6 "doubles as onboarding"), Aceternity Spotlight flourish on the main header (Step 13), Bag-badge count in the header (Step 5 extension), auth avatar (Step 11). Header is a minimal MVP by design so these slots attach without a refactor.
+
+## Step 10 Files Changed
+
+| File | Change |
+|---|---|
+| `arcane/src/lib/atlas-sections.ts` | NEW — single source of truth for the tile registry (4 active + 4 planned) |
+| `arcane/src/components/atlas.tsx` | NEW — AtlasProvider context + responsive Sheet + grid of tiles |
+| `arcane/src/components/site-header.tsx` | NEW — sticky site-wide header (wordmark + Atlas trigger) |
+| `arcane/src/components/bag-of-holding-sigil.tsx` | NEW — composite PackageOpen + Infinity charm sigil |
+| `arcane/src/app/layout.tsx` | EDITED — wired AtlasProvider + SiteHeader into the provider stack |
+| `arcane/src/app/page.tsx` | EDITED — dropped redundant per-page nav; added Atlas nudge + muted dev-harness row |
+| `FRONTEND_BUILD_STATUS.md` | EDITED — Step 10 marked complete (this block) |
 
 ---
 
