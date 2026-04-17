@@ -70,6 +70,33 @@ export interface ConfidenceEntry {
  */
 export type ConfidenceMap = Record<string, ConfidenceEntry>
 
+/**
+ * A Council article row from `gold_data.daily_articles` filtered to
+ * `council_version='v1'`. Step 9b — rendered by `ArticleCard`.
+ *
+ * Legacy 3-persona articles (persona = "Tavern Keeper" etc.) are excluded
+ * by the Bouncer `/articles` endpoint. When the parallel-run window ends
+ * and the legacy journalist is retired, this type stays unchanged.
+ */
+export type CouncilAuthorName =
+  | "The Loremaster"
+  | "The Bursar"
+  | "The Quartermaster"
+  | "The Weaver"
+  | "The Architect"
+
+export interface Article {
+  date: string
+  author_name: CouncilAuthorName | string
+  author_beat: string
+  author_bio: string
+  council_version: string
+  headline: string
+  hook: string
+  body_markdown: string
+  key_stat: string
+}
+
 // ─── Fetch ────────────────────────────────────────────────────────────────────
 
 export async function fetchBouncerData(): Promise<BouncerCategory[]> {
@@ -80,6 +107,39 @@ export async function fetchBouncerData(): Promise<BouncerCategory[]> {
     throw new Error(`Bouncer API error: ${res.status} ${res.statusText}`)
   }
   return res.json() as Promise<BouncerCategory[]>
+}
+
+/**
+ * Fetch the latest N Council articles from Bouncer `/articles`. Step 9b.
+ *
+ * Server-side fetch, cached for 1 hour via Next 16 ISR (matches the rest
+ * of the Bouncer client). The Bouncer endpoint filters to
+ * `council_version='v1'`, so legacy 3-persona rows never appear here.
+ *
+ * Returns an empty array on any API error so the articles page still
+ * renders with its empty state — avoids hard-failing the whole route
+ * when the Cloud Function is cold or the table is empty.
+ */
+export async function fetchArticles(limit = 20): Promise<Article[]> {
+  const url = `${BOUNCER_URL}/articles?limit=${limit}`
+  try {
+    const res = await fetch(url, { next: { revalidate: 3600 } })
+    if (!res.ok) {
+      console.error(
+        `[bouncer] /articles returned ${res.status} ${res.statusText}`,
+      )
+      return []
+    }
+    const body = (await res.json()) as Article[] | { error: string }
+    if (!Array.isArray(body)) {
+      console.error("[bouncer] /articles error payload:", body)
+      return []
+    }
+    return body
+  } catch (err) {
+    console.error("[bouncer] /articles fetch failed:", err)
+    return []
+  }
 }
 
 /**
