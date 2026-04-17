@@ -21,28 +21,25 @@ export default function RootPage() {
         </p>
       </div>
 
-      <nav className="flex flex-col sm:flex-row gap-3">
-        <a
-          href="/overview"
-          className="inline-flex items-center justify-center rounded-lg border border-ember bg-onyx px-5 py-2.5 font-sans text-sm font-medium text-parchment transition-colors hover:bg-iron"
-        >
-          Overview lens →
-        </a>
-        <a
-          href="/articles"
-          className="inline-flex items-center justify-center rounded-lg border border-ember bg-onyx px-5 py-2.5 font-sans text-sm font-medium text-parchment transition-colors hover:bg-iron"
-        >
-          Articles →
-        </a>
+      <p className="font-sans text-sm text-ash/80 max-w-sm text-center">
+        Tap <span className="text-ember-bright">Atlas</span> in the header for
+        the full site map — Trends, Articles, your Bag of Holding, and what
+        the Council is still building.
+      </p>
+
+      <nav
+        aria-label="Developer harness"
+        className="flex flex-col sm:flex-row gap-3"
+      >
         <a
           href="/test-card-chrome"
-          className="inline-flex items-center justify-center rounded-lg border border-bronze bg-onyx px-5 py-2.5 font-sans text-sm font-medium text-ash transition-colors hover:bg-iron hover:text-parchment"
+          className="inline-flex items-center justify-center rounded-lg border border-bronze bg-onyx px-4 py-2 font-sans text-xs font-medium text-ash transition-colors hover:bg-iron hover:text-parchment"
         >
           CardChrome harness
         </a>
         <a
           href="/swatch"
-          className="inline-flex items-center justify-center rounded-lg border border-bronze bg-onyx px-5 py-2.5 font-sans text-sm font-medium text-ash transition-colors hover:bg-iron hover:text-parchment"
+          className="inline-flex items-center justify-center rounded-lg border border-bronze bg-onyx px-4 py-2 font-sans text-xs font-medium text-ash transition-colors hover:bg-iron hover:text-parchment"
         >
           Palette &amp; fonts
         </a>
