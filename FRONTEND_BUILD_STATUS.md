@@ -1,8 +1,8 @@
 # Frontend Build Status
 
-**Last updated:** 2026-04-16
-**Current phase:** Step 8 complete — Concept detail drawer live
-**Next step:** Step 9 — Articles
+**Last updated:** 2026-04-17
+**Current phase:** Step 9a in progress — Council backend refactor
+**Next step:** Step 9b — Article cards frontend
 
 ---
 
@@ -42,7 +42,7 @@ Backend is **live** (no frontend changes needed):
 - [x] **6.5. AI grounding confidence** — Post-stream grounding check on Sage responses. Gemini fact-checks claims against pageContext, produces inline `(confidence%)[n]` footnote markers (max 5), footnotes section with per-claim source + explanation, and `ai_grounding_confidence` byline. Graceful fallback on error. See `CONFIDENCE_METHODOLOGY.md` §6.3.
 - [x] **7. Sage tool calling** — 8 tools with Zod v4 schemas calling Bouncer API: getLeaderboard (10 sources), searchConcepts, getConceptConfidence, getMarketSummary, getTopMovers, getDmShortageIndex, getEditionMigration, getSystemHealth. Multi-step enabled (`stopWhen: stepCountIs(5)`). Compact ToolInvocationChip shows tool state in chat. Tool results fed to grounding check for accurate scoring.
 - [x] **8. Concept detail drawer** — Tap any concept name → drawer slides in with cross-source rankings, confidence breakdown, Sage + Bag integration. Server-side aggregation via `/api/concept`. Responsive: bottom sheet on mobile, right panel on desktop. Three dismissal methods: backdrop click, X button, Escape key.
-- [ ] **9. Articles** — Scheduled Cloud Function generates articles in three voices, stored in `gold_articles`, displayed as card type.
+- [~] **9. Articles** — Scheduled Cloud Function generates articles from a 5-member Council of bylined writers (The Loremaster, The Bursar, The Quartermaster, The Weaver, The Architect), stored in `gold_data.daily_articles`, displayed as bylined card type. Split: **9a backend** (Council refactor + Freightos harvester + schema migration) and **9b frontend** (article cards + Sage Council-Chair framing). See `project_step_9_council.md` memory file and `docs/step-9-persona-study.md`.
 - [ ] **10. Atlas navigation** — Full site map card, glassmorphic, expands to full screen on mobile / sidebar on desktop.
 - [ ] **11. Auth + Firestore persistence** — NextAuth with Google + magic link. Bags of Holding migrate from localStorage to Firestore on sign-in. Saved lenses persist.
 - [ ] **12. Admin + IAP + Harvest Console** — `/admin/*` gated by Google Cloud IAP via a Next 16 `proxy.ts` (formerly `middleware.ts`). Harvesting Cockpit with bookmarklet launchers + BackerKit Harvest Console (styled terminal card with Run button).
@@ -114,7 +114,34 @@ Goal: Overview lens pulling real data from Bouncer, rendered as Recharts charts 
 
 ---
 
-**Step 8 (Concept detail drawer) complete. Step 9 (Articles) is next.**
+**Step 8 (Concept detail drawer) complete. Step 9a (Council backend) verified live on 2026-04-17. Step 9b (Article cards) next.**
+
+---
+
+## Step 9a Verification Evidence
+
+- `gold_data.daily_articles` migrated: 4 new nullable columns (`author_name`, `author_beat`, `author_bio`, `council_version`) added via `setup_council_columns.py`. Legacy rows stay NULL.
+- `gold_data.freight_index_daily` created (partitioned by date, clustered by lane_code) via `setup_freight_index_daily.py`. Columns: date, lane_code, lane_name, index_value, wow_delta_pct, source, raw_json.
+- `dnd-daily-journalist` Cloud Function redeployed with Council refactor + `{"mode":"both"}` support for parallel-run. Memory bumped to 1 GiB, Vertex model = `gemini-2.5-flash`. Pandas removed from `fetch_context()` (OOM on cold start at 512 MiB).
+- `freight-index-harvester` Cloud Function deployed. Extracts lane values from the embedded `window.frProductIntroTickerData` JSON on `fbx.freightos.com` (DOM scrape was wrong — initial selector was walking up to a shared container). Live smoke test inserted 3 rows for 2026-04-17: FBX ($1,877 +3.32%), FBX01 China→NAWC ($2,488 +2.79%), FBX03 China→NAEC ($3,678 +9.79%).
+- Schedulers:
+  - `trigger-daily-journalist`: body flipped to `{"mode":"both"}`, fires daily 04:30 America/Chicago. Parallel-run window: 2026-04-17 → ~2026-04-22 (3–5 days per plan).
+  - `trigger-freight-index-harvester`: new job, `0 22 * * 6` America/Chicago (Sat 22:00 local, auto-DST).
+- Smoke test: forced-Bursar Council article via `{"mode":"council","writer":"bursar"}` returned HTTP 200, wrote to BQ with `council_version='v1'` and all author_* columns populated. Voice check: "portfolio," "strategic stasis" — matches brief.
+
+## Step 9a Files Changed
+
+| File | Change |
+|---|---|
+| `cloud_functions/daily_journalist/council.py` | NEW — roster (Loremaster/Bursar/Quartermaster/Weaver/Architect), anomaly→writer routing, rotation guard via `gold_data.daily_articles`, prompt assembly |
+| `cloud_functions/daily_journalist/main.py` | REWRITTEN — single-Council-article default, `?mode=legacy/both/council` paths, `?writer=<key>` override, no pandas, tolerant query helper |
+| `cloud_functions/freight_index_harvester/main.py` | NEW — ticker JSON regex, 3 lane codes, inserts one row per lane |
+| `cloud_functions/freight_index_harvester/requirements.txt` | NEW |
+| `setup_council_columns.py` | NEW — idempotent ALTER TABLE for Council columns (EXECUTED) |
+| `setup_freight_index_daily.py` | NEW — CREATE TABLE (EXECUTED) |
+| `deploy_daily_journalist.py` | NEW — gcloud functions deploy wrapper, 1 GiB memory |
+| `deploy_freight_index_harvester.py` | NEW |
+| `FRONTEND_BUILD_STATUS.md` | EDITED — Step 9a verification evidence (this block) |
 
 ---
 
