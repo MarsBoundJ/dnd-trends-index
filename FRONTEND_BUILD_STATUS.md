@@ -1,8 +1,8 @@
 # Frontend Build Status
 
 **Last updated:** 2026-04-19
-**Current phase:** Step 12 complete — Admin gate + Harvesting Cockpit + BackerKit Console live
-**Next step:** Step 11.5 (magic-link email provider), Step 12.5 (Library Clerk + Scrying Chamber port), then Step 13 — Aceternity flourishes
+**Current phase:** Step 11.5 complete — Resend magic-link + Firebase adapter live alongside Google OAuth
+**Next step:** Step 12.5 (Library Clerk + Scrying Chamber port), then Step 13 — Aceternity flourishes
 
 ---
 
@@ -44,7 +44,7 @@ Backend is **live** (no frontend changes needed):
 - [x] **8. Concept detail drawer** — Tap any concept name → drawer slides in with cross-source rankings, confidence breakdown, Sage + Bag integration. Server-side aggregation via `/api/concept`. Responsive: bottom sheet on mobile, right panel on desktop. Three dismissal methods: backdrop click, X button, Escape key.
 - [x] **9. Articles** — Scheduled Cloud Function generates articles from a 5-member Council of bylined writers (The Loremaster, The Bursar, The Quartermaster, The Weaver, The Architect), stored in `gold_data.daily_articles`, displayed as bylined card type. Split: **9a backend** (Council refactor + Freightos harvester + schema migration) and **9b frontend** (article cards + Sage Council-Chair framing). See `project_step_9_council.md` memory file and `docs/step-9-persona-study.md`.
 - [x] **10. Atlas navigation** — Full site-map sheet, glassmorphic (`bg-iron/80 backdrop-blur-xl`), bottom-sheet on mobile / right sidebar on desktop. Site-wide `<SiteHeader />` lands as the host for the Atlas Compass trigger + wordmark. Eight tiles split into Available (Home, Trends, Articles, Bag of Holding) and Planned (Products & Opportunities, Digital & BG3, Deep Dives, Methodology); planned tiles render disabled with a tooltip. Bag of Holding uses a composite `BagOfHoldingSigil` (PackageOpen + Infinity charm). Onboarding auto-open deferred.
-- [x] **11. Auth + Firestore persistence** — Auth.js v5 (NextAuth) with Google OAuth. Sign-in menu in SiteHeader (avatar + popover). JWT session strategy. Bag of Holding migrates localStorage → Firestore on sign-in via silent union-dedupe at `users/{uid}/bag/{itemId}`; subsequent stow/unstow mirror to Firestore through a module-scoped `BagSyncer`. Sign-out clears local cache to prevent cross-user leaks on shared browsers. **Deferred to Step 11.5:** magic-link email provider. **Deferred:** saved-lenses persistence — revisit once the lens filter mechanic is formalized (tracked in `project_saved_lenses_backlog.md` memory).
+- [x] **11. Auth + Firestore persistence** — Auth.js v5 (NextAuth) with Google OAuth. Sign-in menu in SiteHeader (avatar + popover). JWT session strategy. Bag of Holding migrates localStorage → Firestore on sign-in via silent union-dedupe at `users/{uid}/bag/{itemId}`; subsequent stow/unstow mirror to Firestore through a module-scoped `BagSyncer`. Sign-out clears local cache to prevent cross-user leaks on shared browsers. **Step 11.5 (complete):** Resend magic-link email provider landed alongside Google — requires `@auth/firebase-adapter` (namespaced to `authjs_*` collections so it doesn't collide with `users/{uid}/bag/*`); `allowDangerousEmailAccountLinking: true` on Google so magic-link users can later sign in via Google with the same email. Edge-safe split between `auth.config.ts` (used by proxy) and `auth.ts` (full; has adapter + Resend). **Deferred:** saved-lenses persistence — revisit once the lens filter mechanic is formalized (tracked in `project_saved_lenses_backlog.md` memory).
 - [x] **12. Admin + IAP + Harvest Console** — `/admin/*` gated by Next 16 `proxy.ts` (formerly `middleware.ts`) using Auth.js session email against an `ADMIN_EMAILS` allowlist; IAP deferred to the eventual Cloud Run deploy as a second layer in front of this gate. Harvesting Cockpit at `/admin/harvest` with three drag-install bookmarklets (Amazon, Kickstarter, shared DMsGuild/DTRPG). BackerKit Harvest Console at `/admin/backerkit` — fire-and-forget trigger, Firestore run log at `admin/runs/backerkit/{runId}`, terminal-styled card polls for status and surfaces the harvester's row count inline. Admin Atlas tile is conditional on `NEXT_PUBLIC_ADMIN_EMAILS`. **Deferred to Step 12.5:** legacy Library Clerk + Scrying Chamber feature port from the old HTML admin.
 - [ ] **13. Aceternity flourishes** — Glowing borders on hover, Meteors on Daily Brief hero, Spotlight on main header.
 - [ ] **14. D20 spinning loader** — Custom SVG, replaces all default spinners.
@@ -114,7 +114,39 @@ Goal: Overview lens pulling real data from Bouncer, rendered as Recharts charts 
 
 ---
 
-**Step 8 (Concept detail drawer) complete. Step 9a (Council backend) verified live on 2026-04-17. Step 9b (Article cards) complete on 2026-04-17. Step 10 (Atlas navigation) complete on 2026-04-18. Step 11 (Auth + Firestore persistence) complete on 2026-04-18. Step 12 (Admin + Harvesting Cockpit + BackerKit Console) complete on 2026-04-19 — see verification evidence below.**
+**Step 8 (Concept detail drawer) complete. Step 9a (Council backend) verified live on 2026-04-17. Step 9b (Article cards) complete on 2026-04-17. Step 10 (Atlas navigation) complete on 2026-04-18. Step 11 (Auth + Firestore persistence) complete on 2026-04-18. Step 12 (Admin + Harvesting Cockpit + BackerKit Console) complete on 2026-04-19. Step 11.5 (Resend magic-link) complete on 2026-04-19 — see verification evidence below.**
+
+---
+
+## Step 11.5 Verification Evidence
+
+- **Resend account + API key.** Yorri signed up at resend.com, API key `re_...` dropped into `arcane/.env.local` as `AUTH_RESEND_KEY`. Sandbox `from: "onboarding@resend.dev"` delivers only to the account owner's own verified email (`halftonejones@gmail.com`) — fine for dev, lifted by verifying a custom domain later.
+- **Split config.** `auth.config.ts` (new, edge-safe) holds only providers safe to instantiate without an adapter (Google) + session strategy + JWT/session callbacks. `auth.ts` (Node runtime) spreads `authConfig`, adds the Resend provider and `FirestoreAdapter`. `src/proxy.ts` re-runs `NextAuth(authConfig)` so the edge runtime doesn't pull in `firebase-admin` via the adapter. This pattern is the Auth.js v5 docs' recommended shape for "middleware + database adapter."
+- **Firebase adapter** (`@auth/firebase-adapter`) wired via our existing firebase-admin singleton (no second Firebase App). Collection names namespaced to `authjs_users`, `authjs_accounts`, `authjs_sessions`, `authjs_verification_tokens` so they don't collide with Step 11's Bag-of-Holding docs at `users/{uid}/bag/...`.
+- **`allowDangerousEmailAccountLinking: true`** on Google provider. Safe here: both Google and Resend independently verify email ownership (Google's OAuth profile + verified-email flag; Resend via the "click the link in your inbox" round-trip). Without it, a user who signed up via magic link couldn't later sign in with Google on the same email — Auth.js would treat them as distinct accounts.
+- **JWT callback now prefers OAuth profile over the stored user record** for `token.name / email / picture`. Resend-created user records only carry `email` (no name, no avatar). When Google later linked to the same email, the adapter linked accounts but didn't update the user record's fields — so falling back to `user.name` / `user.image` produced nameless, avatar-less sessions. Prefer-profile logic populates the JWT directly on every OAuth sign-in.
+- **Sign-in UI.** `SignInMenu` now calls `signIn()` without a provider argument, routing users to Auth.js's built-in `/api/auth/signin` page which renders both providers side-by-side (Google button + email input). Custom themed sign-in page is a Step 16 polish item.
+- **Smoke tests (Yorri, Apr 19):**
+  1. Signed out state → "Sign in" pill → Auth.js page → both providers visible. ✓
+  2. Email path: entered `halftonejones@gmail.com`, clicked Sign in with Resend → "Check your email" page → email arrived from `onboarding@resend.dev` → clicking link signed in, avatar fallback icon + email visible. ✓
+  3. Google path on the same account (post-11.5 `allowDangerousEmailAccountLinking: true` + prefer-profile callback): works, now with profile picture + first name visible in header. ✓
+- **Firestore state after first use:** new collections `authjs_users`, `authjs_accounts`, `authjs_verification_tokens`. One `authjs_users/<id>` doc for `halftonejones@gmail.com`; two `authjs_accounts` docs pointing at it (`provider: "resend"`, `provider: "google"`). Bag of Holding data at `users/{google-sub}/bag/...` unchanged.
+- TypeScript type-checks clean (`pnpm exec tsc --noEmit` — exit 0).
+- **Known intentional behavior:**
+  - Each re-sign-in via magic link generates a fresh email (one-time tokens — that's how passwordless works). A persistent session between sign-ins doesn't reduce the number of emails for new sign-ins.
+  - Resend-only users show a fallback User icon in the header, no name — Resend doesn't supply profile data. Fixed by the user later adding Google, at which point the session fills in.
+  - The stock Auth.js sign-in page isn't themed to Obsidian & Ember yet — Step 16 polish.
+
+## Step 11.5 Files Changed
+
+| File | Change |
+|---|---|
+| `arcane/auth.config.ts` | NEW — edge-safe base config (Google + session strategy + callbacks) |
+| `arcane/auth.ts` | EDITED — spreads authConfig, adds Resend + FirestoreAdapter |
+| `arcane/src/proxy.ts` | EDITED — re-runs `NextAuth(authConfig)` instead of importing `auth` from auth.ts (keeps adapter out of the edge runtime) |
+| `arcane/src/components/sign-in-menu.tsx` | EDITED — `signIn()` with no provider argument; routes through Auth.js's built-in multi-provider sign-in page |
+| `arcane/package.json` + `pnpm-lock.yaml` | EDITED — adds `@auth/firebase-adapter ^2.10.0`, `resend ^6.12.0` |
+| `FRONTEND_BUILD_STATUS.md` | EDITED — Step 11.5 marked complete (this block); Step 11 row updated to note 11.5 landing |
 
 ---
 
