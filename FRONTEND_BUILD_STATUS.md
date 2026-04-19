@@ -1,8 +1,8 @@
 # Frontend Build Status
 
 **Last updated:** 2026-04-19
-**Current phase:** Step 11.5 complete — Resend magic-link + Firebase adapter live alongside Google OAuth
-**Next step:** Step 12.5 (Library Clerk + Scrying Chamber port), then Step 13 — Aceternity flourishes
+**Current phase:** Step 9.5 complete — Frame abstraction plumbing (Firestore config, TS loader, admin panel, journalist prompt injection)
+**Next step:** Step 9.6 (The Chronicler + Track A + Flash length), then 9.7 (Gamer Gary + Player's-Eye), 9.8 (Hasbro-2026 frame + Track D), 9.9 (Universes Beyond Matrix), 9.10 (Industry Fundamentals + Track C), 9.11 (Reports format). Step 12.5 (legacy admin port) and Step 13 (Aceternity) land after the 9.x series.
 
 ---
 
@@ -114,7 +114,42 @@ Goal: Overview lens pulling real data from Bouncer, rendered as Recharts charts 
 
 ---
 
-**Step 8 (Concept detail drawer) complete. Step 9a (Council backend) verified live on 2026-04-17. Step 9b (Article cards) complete on 2026-04-17. Step 10 (Atlas navigation) complete on 2026-04-18. Step 11 (Auth + Firestore persistence) complete on 2026-04-18. Step 12 (Admin + Harvesting Cockpit + BackerKit Console) complete on 2026-04-19. Step 11.5 (Resend magic-link) complete on 2026-04-19 — see verification evidence below.**
+**Step 8 (Concept detail drawer) complete. Step 9a (Council backend) verified live on 2026-04-17. Step 9b (Article cards) complete on 2026-04-17. Step 10 (Atlas navigation) complete on 2026-04-18. Step 11 (Auth + Firestore persistence) complete on 2026-04-18. Step 12 (Admin + Harvesting Cockpit + BackerKit Console) complete on 2026-04-19. Step 11.5 (Resend magic-link) complete on 2026-04-19. Step 9.5 (Frame abstraction plumbing) complete on 2026-04-19 — see verification evidence below.**
+
+---
+
+## Step 9.5 Verification Evidence
+
+- **Architecture locked.** Frames live as Firestore docs at `frames/{frameId}` rather than in code. Updating Hasbro's FY27 strategy (or pitching a different buyer — Paizo, Free League, an indie, a VC) is a one-doc edit instead of a release. Commercial rationale in `project_hasbro_pitch_problems_solutions.md` memory; technical roadmap for Steps 9.5→9.11 in `project_tracks_frames_roadmap.md` memory.
+- **Active-frame pointer** uses a single `frames/_meta` doc (`{activeFrameId: "pure-data"}`) rather than a boolean on each frame. Single-writer semantics; atomic activation.
+- **`arcane/src/lib/frames.ts`** — server-only Frame types + Zod schema + loaders (`getActiveFrameId`, `setActiveFrameId`, `getFrameById`, `getActiveFrame`, `listFrames`). TypeScript types inferred from the Zod schema so drift between runtime validation and compile-time types is impossible.
+- **`setup_frames_collection.py`** — idempotent seed (`merge=True`) for the `pure-data` baseline frame. Only flips the `_meta` pointer if no active frame is already set. Windows cp1252 console can't render Unicode checkmarks, so output uses `[OK]` markers.
+- **Firestore writes executed** (pause-and-confirm given): two docs at `frames/pure-data` + `frames/_meta`. Verified with a one-off Python script: `activeFrameId=pure-data`, `label='Pure Data (no corporate-strategy frame)'`, `tone={'deck_ready': 6, 'sharp': 1}`.
+- **`gold_data.daily_articles` schema migrated** (pause-and-confirm given): `ALTER TABLE ... ADD COLUMN IF NOT EXISTS frame_id STRING`. Verified via `bq show --schema`. NULL for all historical rows; Step 9.8 populates on new Track D articles.
+- **`cloud_functions/daily_journalist/council.py`** — Python mirror of the TS loader. `load_active_frame(firestore_client)` returns the active frame dict or `None` on any error (article generation must never fail on a frame hiccup). `build_prompt(member, context, frame=None)` signature extended with optional `frame` kwarg; existing callers get identical output.
+- **Pure Data empty-worldview invariant verified.** Smoke-tested via `load_active_frame()` + `build_prompt(BURSAR, context, frame=pure_data_frame)`: no `INTERPRETIVE FRAME` section rendered. A synthetic Hasbro-shaped frame passed to the same call DOES render the `INTERPRETIVE FRAME` section with worldview summary, strategic priors, priority brands, and tariff risk-facts injected. Plumbing works end-to-end.
+- **`/admin/frames` admin panel live.** Gated by existing proxy.ts (`/admin/:path*` + ADMIN_EMAILS allowlist). Lists frames, shows active-frame pointer panel, one-click Activate button per inactive tile (server action flips `frames/_meta`). Frame editing stays out of the UI by design — edit via setup scripts or Firestore console.
+- **Admin landing** (`/admin`) adds a Frames tile alongside Harvesting Cockpit + BackerKit Console. Visible end-to-end on `http://localhost:3000/admin`.
+- TypeScript type-checks clean (`pnpm exec tsc --noEmit` — exit 0).
+- ESLint clean (pre-existing `concept-drawer.tsx` unused-import warning unchanged).
+- **Behavior invariant (9.5's "plumbing only, no behavior change" guarantee):** with `pure-data` as the active frame, the daily_journalist Cloud Function generates the same prompts it generated yesterday. Deployment of the updated `council.py` is NOT done in 9.5 — the code sits in the repo and ships when Step 9.8 ingests the `hasbro-2026` frame and actually needs it.
+
+## Step 9.5 Files Changed
+
+| File | Change |
+|---|---|
+| `arcane/src/lib/frames.ts` | NEW — server-only Frame types, Zod schema, Firestore loaders, active-frame pointer helpers |
+| `arcane/src/app/admin/frames/page.tsx` | NEW — read-only admin panel with one-click "Activate" server action |
+| `arcane/src/app/admin/page.tsx` | EDITED — added Frames tile to the admin landing grid |
+| `setup_frames_collection.py` | NEW — idempotent seed for the `pure-data` baseline frame + active pointer |
+| `cloud_functions/daily_journalist/council.py` | EDITED — added `load_active_frame()` + extended `build_prompt()` with optional `frame` kwarg + `_render_frame_section()` helper |
+| `FRONTEND_BUILD_STATUS.md` | EDITED — Step 9.5 marked complete (this block) |
+
+**GCP state changes (one-time):**
+- Firestore: seeded `frames/pure-data` + `frames/_meta` via `setup_frames_collection.py`
+- BigQuery: `ALTER TABLE gold_data.daily_articles ADD COLUMN IF NOT EXISTS frame_id STRING`
+
+---
 
 ---
 
