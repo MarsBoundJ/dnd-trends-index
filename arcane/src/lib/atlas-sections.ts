@@ -24,6 +24,7 @@ import {
   Gamepad2,
   Microscope,
   BookOpen,
+  KeyRound,
 } from "lucide-react"
 import { BagOfHoldingSigil } from "@/components/bag-of-holding-sigil"
 
@@ -45,6 +46,38 @@ export interface AtlasSection {
   status: AtlasSectionStatus
   /** Optional note shown under planned sections (e.g. "Post-launch"). */
   plannedNote?: string
+  /**
+   * Admin-only tile — hidden entirely unless the signed-in user's email is
+   * in NEXT_PUBLIC_ADMIN_EMAILS. The SERVER-side proxy.ts enforces the
+   * actual gate at /admin/*; this flag is purely for discoverability, so
+   * non-admins never see a tile they can't use.
+   */
+  adminOnly?: boolean
+}
+
+/**
+ * Comma-separated mirror of the server-only ADMIN_EMAILS. Keep in sync —
+ * the Atlas filter here and the proxy allowlist are two sides of the
+ * same check.
+ */
+const ADMIN_EMAILS = new Set(
+  (process.env.NEXT_PUBLIC_ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean),
+)
+
+/**
+ * Returns the Atlas sections visible to the given session. Non-admins
+ * get every non-adminOnly section; admins additionally get adminOnly
+ * tiles.
+ */
+export function visibleAtlasSections(
+  userEmail: string | null | undefined,
+): AtlasSection[] {
+  const isAdmin =
+    typeof userEmail === "string" && ADMIN_EMAILS.has(userEmail.toLowerCase())
+  return ATLAS_SECTIONS.filter((s) => !s.adminOnly || isAdmin)
 }
 
 export const ATLAS_SECTIONS: AtlasSection[] = [
@@ -80,6 +113,15 @@ export const ATLAS_SECTIONS: AtlasSection[] = [
     icon: BagOfHoldingSigil,
     route: "/collection",
     status: "active",
+  },
+  {
+    id: "admin",
+    title: "Admin",
+    description: "Back-office — harvests, data-quality monitors, run logs.",
+    icon: KeyRound,
+    route: "/admin",
+    status: "active",
+    adminOnly: true,
   },
   // ── Planned (spec §3.6 sections not yet built) ──────────────────────────
   {

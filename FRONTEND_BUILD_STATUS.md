@@ -1,8 +1,8 @@
 # Frontend Build Status
 
-**Last updated:** 2026-04-18
-**Current phase:** Step 11 complete — Google sign-in + Bag of Holding Firestore persistence live
-**Next step:** Step 11.5 (magic-link email provider) then Step 12 — Admin + IAP + Harvest Console
+**Last updated:** 2026-04-19
+**Current phase:** Step 12 complete — Admin gate + Harvesting Cockpit + BackerKit Console live
+**Next step:** Step 11.5 (magic-link email provider), Step 12.5 (Library Clerk + Scrying Chamber port), then Step 13 — Aceternity flourishes
 
 ---
 
@@ -45,7 +45,7 @@ Backend is **live** (no frontend changes needed):
 - [x] **9. Articles** — Scheduled Cloud Function generates articles from a 5-member Council of bylined writers (The Loremaster, The Bursar, The Quartermaster, The Weaver, The Architect), stored in `gold_data.daily_articles`, displayed as bylined card type. Split: **9a backend** (Council refactor + Freightos harvester + schema migration) and **9b frontend** (article cards + Sage Council-Chair framing). See `project_step_9_council.md` memory file and `docs/step-9-persona-study.md`.
 - [x] **10. Atlas navigation** — Full site-map sheet, glassmorphic (`bg-iron/80 backdrop-blur-xl`), bottom-sheet on mobile / right sidebar on desktop. Site-wide `<SiteHeader />` lands as the host for the Atlas Compass trigger + wordmark. Eight tiles split into Available (Home, Trends, Articles, Bag of Holding) and Planned (Products & Opportunities, Digital & BG3, Deep Dives, Methodology); planned tiles render disabled with a tooltip. Bag of Holding uses a composite `BagOfHoldingSigil` (PackageOpen + Infinity charm). Onboarding auto-open deferred.
 - [x] **11. Auth + Firestore persistence** — Auth.js v5 (NextAuth) with Google OAuth. Sign-in menu in SiteHeader (avatar + popover). JWT session strategy. Bag of Holding migrates localStorage → Firestore on sign-in via silent union-dedupe at `users/{uid}/bag/{itemId}`; subsequent stow/unstow mirror to Firestore through a module-scoped `BagSyncer`. Sign-out clears local cache to prevent cross-user leaks on shared browsers. **Deferred to Step 11.5:** magic-link email provider. **Deferred:** saved-lenses persistence — revisit once the lens filter mechanic is formalized (tracked in `project_saved_lenses_backlog.md` memory).
-- [ ] **12. Admin + IAP + Harvest Console** — `/admin/*` gated by Google Cloud IAP via a Next 16 `proxy.ts` (formerly `middleware.ts`). Harvesting Cockpit with bookmarklet launchers + BackerKit Harvest Console (styled terminal card with Run button).
+- [x] **12. Admin + IAP + Harvest Console** — `/admin/*` gated by Next 16 `proxy.ts` (formerly `middleware.ts`) using Auth.js session email against an `ADMIN_EMAILS` allowlist; IAP deferred to the eventual Cloud Run deploy as a second layer in front of this gate. Harvesting Cockpit at `/admin/harvest` with three drag-install bookmarklets (Amazon, Kickstarter, shared DMsGuild/DTRPG). BackerKit Harvest Console at `/admin/backerkit` — fire-and-forget trigger, Firestore run log at `admin/runs/backerkit/{runId}`, terminal-styled card polls for status and surfaces the harvester's row count inline. Admin Atlas tile is conditional on `NEXT_PUBLIC_ADMIN_EMAILS`. **Deferred to Step 12.5:** legacy Library Clerk + Scrying Chamber feature port from the old HTML admin.
 - [ ] **13. Aceternity flourishes** — Glowing borders on hover, Meteors on Daily Brief hero, Spotlight on main header.
 - [ ] **14. D20 spinning loader** — Custom SVG, replaces all default spinners.
 - [ ] **15. Report export (PDF)** — `@react-pdf/renderer` export of Bags of Holding with confidence scores baked in.
@@ -114,7 +114,62 @@ Goal: Overview lens pulling real data from Bouncer, rendered as Recharts charts 
 
 ---
 
-**Step 8 (Concept detail drawer) complete. Step 9a (Council backend) verified live on 2026-04-17. Step 9b (Article cards) complete on 2026-04-17. Step 10 (Atlas navigation) complete on 2026-04-18. Step 11 (Auth + Firestore persistence) complete on 2026-04-18 — see verification evidence below.**
+**Step 8 (Concept detail drawer) complete. Step 9a (Council backend) verified live on 2026-04-17. Step 9b (Article cards) complete on 2026-04-17. Step 10 (Atlas navigation) complete on 2026-04-18. Step 11 (Auth + Firestore persistence) complete on 2026-04-18. Step 12 (Admin + Harvesting Cockpit + BackerKit Console) complete on 2026-04-19 — see verification evidence below.**
+
+---
+
+## Step 12 Verification Evidence
+
+- **Admin gate.** `arcane/src/proxy.ts` (Next 16's renamed middleware, located at `src/` to sit next to `src/app/`) wraps Auth.js's `auth()` higher-order function. Matcher: `/admin/:path*`. Reads `ADMIN_EMAILS` env var (comma-separated, lowercased) and checks `req.auth.user.email` against the allowlist. Unauthenticated callers bounce to `/api/auth/signin?callbackUrl=<original>`; signed-in non-admins land on `/not-authorized` (friendly 403 page).
+- **Smoke test.** `curl -I http://localhost:3000/admin` as unauthenticated returned `HTTP 307` with `location: /api/auth/signin?callbackUrl=%2Fadmin` — proxy firing correctly. Admin-email browser session lands on `/admin` directly.
+- **Admin shell.** `arcane/src/components/admin/admin-shell.tsx` — bronze top band with `ADMIN · Arcane Analytics · <breadcrumbs>`, title, description, 6xl container. Used by `/admin`, `/admin/harvest`, `/admin/backerkit`.
+- **`/admin` landing.** Tile grid: two active tiles (Harvesting Cockpit, BackerKit Console), two planned tiles (Library Clerk, Scrying Chamber) marked "Step 12.5" so the roadmap is visible to the operator.
+- **Harvesting Cockpit (`/admin/harvest`).** Reads the bookmarklet registry from `scripts/*.txt` + `utils/dmsguild_incursion_mini.js` via a `"server-only"` lib. Three cards:
+  - **Amazon Harvester** (`scripts/amazon_bookmarklet.txt`, 14 KB).
+  - **Kickstarter Harvester** (`scripts/kickstarter_bookmarklet.txt`, 5 KB).
+  - **DMsGuild / DTRPG Incursion** (`utils/dmsguild_incursion_mini.js`, wrapped at load via `wrapBookmarkletFromJs()` — URL-encode + `javascript:` prefix). Legacy `prompt("Enter Ritual Key:")` removed; now hardcodes `KEY = 'ArcaneLibrarian2026'` matching Amazon/Kickstarter. Source file `utils/dmsguild_incursion.js` updated to stay in sync.
+  - React strips `href="javascript:..."` from JSX — `BookmarkletCard` sets the real href via a `useRef` + `useEffect` after mount. Click is intercepted (clicking in the admin page would run the script against the admin DOM).
+- **BackerKit Console (`/admin/backerkit`).** Terminal-styled card with Run button, polls `/api/admin/backerkit/status` every 2s while any run is active, idles otherwise.
+  - `POST /api/admin/backerkit/run` — `requireAdmin()` guard, writes `admin/runs/backerkit/{runId}` with `status: "running"`, fires `POST backerkit-harvester` with `body: "{}"` (Cloud Run rejects body-less POSTs with HTTP 411), updates the doc with `"completed"` / `"failed"` + summary when the fetch settles.
+  - `GET /api/admin/backerkit/status?limit=N` — returns the latest N runs with ISO timestamps.
+  - Completed rows show the harvester's `summary.message` inline (emoji stripped) — e.g. "Inserted 10 BackerKit projects." Failed rows show the error in red.
+- **Cloud Run IAM** — `backerkit-harvester` had no IAM bindings and 403'd every caller. Granted `allUsers: roles/run.invoker` matching `bouncer-api`'s public pattern (Yorri pre-authorized this in the Step 12 scoping discussion).
+- **Admin Atlas tile.** `atlas-sections.ts` gains `adminOnly?: boolean` and `visibleAtlasSections(email)` helper. The Atlas (`atlas.tsx`) now reads `useSession()` and filters admin-only sections against `NEXT_PUBLIC_ADMIN_EMAILS`. Signed-out + non-admin sessions never see the Admin (KeyRound) tile; admins see it as an active tile alongside Home/Trends/Articles/Bag.
+- **`admin-guard.ts`** — shared `requireAdmin()` helper so every `/api/admin/*` route re-checks the allowlist. Proxy.ts only covers page routes (API is outside the matcher by design).
+- **End-to-end user testing (Yorri, Apr 19):**
+  1. Admin tile appears in Atlas when signed in as allowlisted email; disappears on sign-out. ✓
+  2. Unauthenticated `/admin` redirects through the sign-in flow and lands back on `/admin` after success. ✓
+  3. Harvesting Cockpit renders 3 cards; Amazon + Kickstarter pills drag-install; DMsGuild/DTRPG pill drag-installs and runs without the ritual-key prompt on both hosts. ✓
+  4. BackerKit Run button fires the harvester; run row flips to "completed" with "Inserted 10 BackerKit projects." inline; Firestore `admin/runs/backerkit/<runId>` doc contains the full summary. ✓
+- TypeScript type-checks clean (`pnpm exec tsc --noEmit` — exit 0).
+- ESLint clean (pre-existing `concept-drawer.tsx` unused-import warning unchanged).
+- **Deferred:**
+  - **Step 12.5 — Library Clerk + Scrying Chamber port** from the legacy HTML admin (`frontend/old_admin_yorri.html`). Concept recategorize/approve/archive, CSV ingests for DMs Guild / DTRPG, and the data-stream health dashboard live there; placeholder tiles already render on `/admin`.
+  - **IAP** — will be layered in front of the Cloud Run service at deploy time (not yet created). Proxy.ts stays as the belt; IAP becomes the suspenders.
+
+## Step 12 Files Changed
+
+| File | Change |
+|---|---|
+| `arcane/src/proxy.ts` | NEW — admin allowlist proxy (Auth.js wrapped, matcher `/admin/:path*`) |
+| `arcane/src/app/not-authorized/page.tsx` | NEW — friendly 403 page |
+| `arcane/src/lib/admin-guard.ts` | NEW — `requireAdmin()` helper for API routes |
+| `arcane/src/lib/bookmarklets.ts` | NEW — server-only bookmarklet registry (`readBookmarklet`, `wrapBookmarkletFromJs`) |
+| `arcane/src/components/admin/admin-shell.tsx` | NEW — back-office page frame with breadcrumbs |
+| `arcane/src/components/admin/bookmarklet-card.tsx` | NEW — drag-install pill with `useRef` javascript: href |
+| `arcane/src/components/admin/harvest-console.tsx` | NEW — terminal-styled BackerKit runner with inline count readout |
+| `arcane/src/app/admin/page.tsx` | NEW — admin landing with active + planned tiles |
+| `arcane/src/app/admin/harvest/page.tsx` | NEW — Harvesting Cockpit |
+| `arcane/src/app/admin/backerkit/page.tsx` | NEW — BackerKit Console |
+| `arcane/src/app/api/admin/backerkit/run/route.ts` | NEW — fire-and-forget trigger + Firestore run log |
+| `arcane/src/app/api/admin/backerkit/status/route.ts` | NEW — list recent runs |
+| `arcane/src/lib/atlas-sections.ts` | EDITED — added `adminOnly` flag + Admin tile + `visibleAtlasSections()` |
+| `arcane/src/components/atlas.tsx` | EDITED — filters admin tile via `useSession()` |
+| `utils/dmsguild_incursion.js` | EDITED — removed ritual-key prompt, hardcoded `KEY` |
+| `utils/dmsguild_incursion_mini.js` | EDITED — same (the variant the Cockpit registry reads) |
+| `FRONTEND_BUILD_STATUS.md` | EDITED — Step 12 marked complete (this block) |
+
+**GCP state change (one-time):** `gcloud run services add-iam-policy-binding backerkit-harvester --member=allUsers --role=roles/run.invoker` — matches the bouncer-api public pattern.
 
 ---
 
