@@ -68,7 +68,16 @@ export async function POST() {
   void (async () => {
     const startedAtMs = Date.now()
     try {
-      const res = await fetch(BACKERKIT_URL, { method: "POST" })
+      // Use POST with an explicit empty-JSON body so Content-Length is set.
+      // Cloud Run's HTTP frontend rejects body-less POSTs with 411 Length
+      // Required — a `fetch(url, { method: "POST" })` with no body omits
+      // the header. The backerkit-harvester function reads no fields from
+      // the body, so the value is irrelevant — it just needs to be there.
+      const res = await fetch(BACKERKIT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}",
+      })
       const finishedAtMs = Date.now()
       const durationSec = Math.round((finishedAtMs - startedAtMs) / 1000)
 
