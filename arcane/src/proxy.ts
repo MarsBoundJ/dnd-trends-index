@@ -16,11 +16,20 @@
  * Auth.js + Next proxy.
  */
 
-// Note on path: proxy.ts lives at src/proxy.ts (Next 16 requires the
-// proxy file to sit next to `app/` — here, `src/app/`). auth.ts stays
-// at the arcane/ root per Auth.js v5's auto-discovery, hence the `..`.
-import { auth } from "../auth"
+// proxy.ts runs in the edge runtime, so it MUST NOT import the full
+// auth.ts — that file pulls in `@auth/firebase-adapter` and
+// `firebase-admin`, both Node-only. Instead we re-run NextAuth()
+// against the edge-safe base config, which gives us an auth() helper
+// with the same JWT-decoding capability but no adapter.
+//
+// Step 11 note preserved: proxy.ts lives at src/proxy.ts because
+// Next 16 requires the proxy file to sit next to `app/` (here,
+// `src/app/`).
+import NextAuth from "next-auth"
+import { authConfig } from "../auth.config"
 import { NextResponse } from "next/server"
+
+const { auth } = NextAuth(authConfig)
 
 /**
  * Comma-separated allowlist. Kept server-only. Mirrored to

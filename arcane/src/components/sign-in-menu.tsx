@@ -51,10 +51,13 @@ function SignedOutButton({ loading = false }: { loading?: boolean }) {
     <button
       type="button"
       disabled={loading}
-      // Trigger Google OAuth via Auth.js. `callbackUrl` lands the user
-      // back on the current page rather than the default /api/auth/signin.
-      onClick={() => signIn("google", { callbackUrl: window.location.href })}
-      aria-label="Sign in with Google"
+      // Route to Auth.js's built-in sign-in page, which lists every
+      // configured provider (Google + Resend magic link as of Step 11.5).
+      // Calling signIn() without a provider argument is the documented
+      // way to opt out of the default single-provider shortcut.
+      // `callbackUrl` lands them back on the page they came from.
+      onClick={() => signIn(undefined, { callbackUrl: window.location.href })}
+      aria-label="Sign in"
       className={cn(
         "inline-flex items-center gap-2 rounded-md px-3 py-1.5",
         "border border-bronze/60 bg-onyx/60",
