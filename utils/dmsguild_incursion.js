@@ -118,10 +118,14 @@
 
     document.body.appendChild(panel);
     document.getElementById('close-incursion').onclick = () => panel.remove();
-    document.getElementById('beam-btn').onclick = async () => {
-        const key = prompt("Enter Ritual Key:");
-        if (!key) return;
+    // Ritual key is shared across all Arcane bookmarklets (Amazon,
+    // Kickstarter, DMsGuild/DTRPG). Hardcoded to match — /admin/harvest
+    // is gated by the Auth.js email allowlist, so distribution of this
+    // bookmarklet is effectively private. Removed the per-run prompt
+    // that used to guard the public legacy admin page.
+    const KEY = 'ArcaneLibrarian2026';
 
+    document.getElementById('beam-btn').onclick = async () => {
         const btn = document.getElementById('beam-btn');
         const prog = document.getElementById('progress-container');
         const bar = document.getElementById('progress-bar');
@@ -142,7 +146,7 @@
 
             try {
                 const res = await fetch('https://us-central1-dnd-trends-index.cloudfunctions.net/bouncer-api/system/library/ingest-catalog', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Ritual-Key': key },
+                    method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Ritual-Key': KEY },
                     body: JSON.stringify(chunk)
                 });
                 if (res.ok) {

@@ -217,21 +217,44 @@ function RunRow({ run }: { run: BackerkitRun }) {
         ? "text-red-400"
         : "text-ember-bright animate-spin"
   const startedLabel = run.startedAt ? formatRelative(run.startedAt) : "…"
+  const message = summaryMessage(run.summary)
+  const detail =
+    run.status === "failed"
+      ? run.error ?? "failed"
+      : run.status === "completed"
+        ? message
+        : null
 
   return (
-    <li className="grid grid-cols-[auto_1fr_auto] items-center gap-3 text-xs">
-      <Icon className={cn("h-3.5 w-3.5", iconClass)} aria-hidden />
-      <div className="flex items-center gap-2 min-w-0">
-        <span className="font-sans text-parchment/90 truncate">
-          {run.status}
-        </span>
-        <span className="text-ash/40">·</span>
-        <span className="flex items-center gap-1 text-ash/70 truncate">
-          <User className="h-3 w-3 shrink-0" aria-hidden />
-          {run.triggeredBy}
-        </span>
+    <li className="grid grid-cols-[auto_1fr_auto] items-start gap-3 text-xs">
+      <Icon
+        className={cn("h-3.5 w-3.5 mt-[3px]", iconClass)}
+        aria-hidden
+      />
+      <div className="flex flex-col gap-0.5 min-w-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="font-sans text-parchment/90 truncate">
+            {run.status}
+          </span>
+          <span className="text-ash/40">·</span>
+          <span className="flex items-center gap-1 text-ash/70 truncate">
+            <User className="h-3 w-3 shrink-0" aria-hidden />
+            {run.triggeredBy}
+          </span>
+        </div>
+        {detail && (
+          <p
+            className={cn(
+              "font-sans text-[11px] leading-snug truncate",
+              run.status === "failed" ? "text-red-400/90" : "text-ember/80",
+            )}
+            title={detail}
+          >
+            {detail}
+          </p>
+        )}
       </div>
-      <div className="text-right text-ash/70">
+      <div className="text-right text-ash/70 shrink-0 mt-[2px]">
         {startedLabel}
         {run.durationSec != null && run.status !== "running" && (
           <span className="ml-2 text-ember/70">{run.durationSec}s</span>
@@ -239,6 +262,31 @@ function RunRow({ run }: { run: BackerkitRun }) {
       </div>
     </li>
   )
+}
+
+/**
+ * Pull a human-readable message from the run's summary field.
+ *
+ * The BackerKit harvester returns
+ *   { "status": "success", "message": "✅ Inserted 10 BackerKit projects." }
+ * — we just surface that message verbatim (minus a leading emoji if any)
+ * so operators see exactly how many rows landed. Falls through gracefully
+ * for other summary shapes future harvesters might emit (plain string,
+ * missing, or a structured object without `message`).
+ */
+function summaryMessage(summary: unknown): string | null {
+  if (!summary) return null
+  if (typeof summary === "string") return summary.trim() || null
+  if (typeof summary === "object" && summary !== null) {
+    const asRecord = summary as Record<string, unknown>
+    const msg = asRecord.message
+    if (typeof msg === "string" && msg.trim()) {
+      // Strip a leading emoji + whitespace for cleaner terminal rendering.
+      // e.g. "✅ Inserted 10 BackerKit projects." → "Inserted 10 BackerKit projects."
+      return msg.trim().replace(/^\p{Extended_Pictographic}+\s*/u, "")
+    }
+  }
+  return null
 }
 
 // Tiny "N seconds ago" / "N minutes ago" / "N hours ago" without a dep.
