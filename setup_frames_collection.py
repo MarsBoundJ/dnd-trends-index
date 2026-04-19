@@ -59,19 +59,19 @@ def main() -> None:
     frames_ref.document(PURE_DATA_FRAME["frame_id"]).set(
         PURE_DATA_FRAME, merge=True
     )
-    print(f"✓ Wrote frames/{PURE_DATA_FRAME['frame_id']}")
+    print(f"[OK] Wrote frames/{PURE_DATA_FRAME['frame_id']}")
 
     # Set pure-data as active ONLY if no active frame is already set.
     meta_ref = frames_ref.document(ACTIVE_META_DOC)
     meta_snap = meta_ref.get()
     if meta_snap.exists and (meta_snap.to_dict() or {}).get("activeFrameId"):
         print(
-            f"✓ frames/_meta already points at "
+            f"[OK] frames/_meta already points at "
             f"'{(meta_snap.to_dict() or {}).get('activeFrameId')}' — leaving as-is"
         )
     else:
         meta_ref.set({"activeFrameId": PURE_DATA_FRAME["frame_id"]})
-        print(f"✓ Set frames/_meta.activeFrameId = {PURE_DATA_FRAME['frame_id']}")
+        print(f"[OK] Set frames/_meta.activeFrameId = {PURE_DATA_FRAME['frame_id']}")
 
     print("Done.")
 
