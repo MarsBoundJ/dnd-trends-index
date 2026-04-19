@@ -1,53 +1,59 @@
 /*
- * Arcane Analytics — Auth.js v5 (NextAuth) config (Step 11).
+ * Arcane Analytics — Auth.js v5 full config (Steps 11 + 11.5).
  *
- * Lives at the project root because Auth.js v5 expects to find auth.ts
- * in either the project root or `src/auth.ts`. We pick root so the
- * Next.js App Router's path aliases (`@/...`) stay clean — auth.ts itself
- * is a plain TS config, no React, no aliases.
+ * Imports the shared edge-safe `authConfig` from auth.config.ts and
+ * layers in the Firebase adapter — a Node-only dependency that the
+ * proxy (which runs in the edge runtime) must never see. Auth.js v5
+ * documents this split as the canonical pattern for "middleware +
+ * database adapter."
  *
- * Step 11 scope: Google OAuth only. Magic link provider is deferred to
- * a Step 11.5 follow-up (project_frontend_build_status.md memory tracks
- * the decision). Session strategy is stateless JWT — no database
- * adapter is needed in v1. When we need persistent session rows (e.g.
- * for revocation at scale or long-lived sessions), we can swap in
- * @auth/firebase-adapter without changing the route handler.
+ * The adapter persists Users / Accounts / VerificationTokens to
+ * Firestore. Collection names are renamed from the default `users`
+ * etc. to the `authjs_*` namespace so they don't collide with our
+ * existing Bag-of-Holding user docs at `users/{uid}/bag/...`.
  *
  * Secrets in .env.local (gitignored):
  *   AUTH_SECRET          random 32+ bytes, base64. Signs JWTs.
  *   AUTH_GOOGLE_ID       OAuth client ID (GCP console).
  *   AUTH_GOOGLE_SECRET   OAuth client secret (GCP console).
+ *   AUTH_RESEND_KEY      Resend API key (resend.com dashboard).
  */
 
 import NextAuth from "next-auth"
-import Google from "next-auth/providers/google"
+import Resend from "next-auth/providers/resend"
+import { FirestoreAdapter } from "@auth/firebase-adapter"
+
+import { authConfig } from "./auth.config"
+import { getDb } from "@/lib/firebase-admin"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  ...authConfig,
+  // Add the Resend email provider here (NOT in auth.config.ts) —
+  // magic-link sign-in requires a database adapter, which would
+  // break proxy.ts's edge-runtime `NextAuth(authConfig)` if it were
+  // in the base config.
   providers: [
-    Google({
-      clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+    ...authConfig.providers,
+    Resend({
+      apiKey: process.env.AUTH_RESEND_KEY,
+      // Resend's sandbox-from-address. In sandbox mode Resend only
+      // delivers mail to the account owner's own verified email
+      // (halftonejones@gmail.com here). Good enough for Step 11.5 —
+      // once a custom sending domain is verified at resend.com,
+      // swap this for something like "sage@arcaneanalytics.com".
+      from: "onboarding@resend.dev",
     }),
   ],
-  // JWT session — stateless, no DB needed for Step 11.
-  session: { strategy: "jwt" },
-  callbacks: {
-    async jwt({ token, account, profile }) {
-      // On initial sign-in, stash Google's stable `sub` (user ID) on the
-      // token. We'll use it as the `users/{uid}/bag/...` Firestore path
-      // when Step 11 (d) lands.
-      if (account && profile?.sub) {
-        token.uid = profile.sub
-      }
-      return token
+  // Reuse our existing firebase-admin singleton rather than letting
+  // the adapter stand up a second Firebase App. Keeps initialization
+  // centralized in src/lib/firebase-admin.ts.
+  adapter: FirestoreAdapter({
+    firestore: getDb(),
+    collections: {
+      users: "authjs_users",
+      accounts: "authjs_accounts",
+      sessions: "authjs_sessions",
+      verificationTokens: "authjs_verification_tokens",
     },
-    async session({ session, token }) {
-      // Expose uid on the session object so client + server components can
-      // read it via `const { user } = await auth(); user.id`.
-      if (token.uid && session.user) {
-        session.user.id = token.uid as string
-      }
-      return session
-    },
-  },
+  }),
 })
