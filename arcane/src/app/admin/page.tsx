@@ -161,11 +161,6 @@ function AdminTileCard({ tile }: { tile: AdminTile }) {
   }
 
   return (
-    <li
-      aria-disabled="true"
-      title={tile.note ?? "Coming soon"}
-    >
-      {body}
-    </li>
+    <li title={tile.note ?? "Coming soon"}>{body}</li>
   )
 }

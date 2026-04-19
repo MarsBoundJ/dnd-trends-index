@@ -16,7 +16,10 @@
  * Auth.js + Next proxy.
  */
 
-import { auth } from "./auth"
+// Note on path: proxy.ts lives at src/proxy.ts (Next 16 requires the
+// proxy file to sit next to `app/` — here, `src/app/`). auth.ts stays
+// at the arcane/ root per Auth.js v5's auto-discovery, hence the `..`.
+import { auth } from "../auth"
 import { NextResponse } from "next/server"
 
 /**

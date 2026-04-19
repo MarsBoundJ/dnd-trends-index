@@ -25,8 +25,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { useSession } from "next-auth/react"
+
 import { cn } from "@/lib/utils"
-import { ATLAS_SECTIONS, type AtlasSection } from "@/lib/atlas-sections"
+import {
+  visibleAtlasSections,
+  type AtlasSection,
+} from "@/lib/atlas-sections"
 
 // ─── Context ────────────────────────────────────────────────────────────────
 
@@ -119,8 +124,13 @@ function AtlasHeader() {
 // ─── Grid + Tile ────────────────────────────────────────────────────────────
 
 function AtlasGrid({ onNavigate }: { onNavigate: () => void }) {
-  const active = ATLAS_SECTIONS.filter((s) => s.status === "active")
-  const planned = ATLAS_SECTIONS.filter((s) => s.status === "planned")
+  // Filter admin-only tiles out unless the signed-in user is on the
+  // NEXT_PUBLIC_ADMIN_EMAILS allowlist. The server-side proxy.ts is the
+  // real gate on /admin/*; this just hides a tile they couldn't use.
+  const { data: session } = useSession()
+  const sections = visibleAtlasSections(session?.user?.email ?? null)
+  const active = sections.filter((s) => s.status === "active")
+  const planned = sections.filter((s) => s.status === "planned")
 
   return (
     <TooltipProvider delayDuration={200}>
