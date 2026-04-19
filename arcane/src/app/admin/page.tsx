@@ -14,6 +14,7 @@ import {
   TerminalSquare,
   Library,
   Crosshair,
+  Frame as FrameIcon,
   type LucideIcon,
 } from "lucide-react"
 
@@ -45,6 +46,14 @@ const TILES: AdminTile[] = [
     description: "Fire the BackerKit scraper and watch recent runs.",
     icon: TerminalSquare,
     href: "/admin/backerkit",
+    status: "active",
+  },
+  {
+    id: "frames",
+    title: "Frames",
+    description: "Switch the active corporate-strategy frame (Pure Data, Hasbro-2026, …).",
+    icon: FrameIcon,
+    href: "/admin/frames",
     status: "active",
   },
   {

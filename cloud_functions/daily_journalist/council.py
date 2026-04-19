@@ -13,9 +13,32 @@ See project_step_9_council.md in user memory for the architectural plan.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Any, Optional
 
 COUNCIL_VERSION = "v1"
+
+# ---------------------------------------------------------------------------
+# Frame abstraction (Step 9.5)
+# ---------------------------------------------------------------------------
+# Frames are switchable interpretive priors stored in Firestore at
+# `frames/{frameId}`. When a frame is active (pointer at `frames/_meta`),
+# Track D-style article generation can inject the frame's worldview_summary
+# and strategic_building_blocks into the prompt so the Council writes
+# through that lens (e.g. Hasbro FY26's "Playing to Win").
+#
+# The Pure Data baseline seeded in 9.5 has empty worldview_summary +
+# empty strategic_building_blocks, so while it's the active frame
+# NOTHING changes about generated articles — exactly what "plumbing-only"
+# means for this step. Real Track D behavior lands in Step 9.8 when the
+# hasbro-2026 frame is ingested.
+#
+# TypeScript mirror lives at arcane/src/lib/frames.ts. The two must stay
+# in sync on field names and the `frames/_meta` → activeFrameId pointer
+# contract.
+
+FRAMES_COLLECTION = "frames"
+ACTIVE_META_DOC = "_meta"
+ACTIVE_META_FIELD = "activeFrameId"
 
 
 @dataclass(frozen=True)
@@ -351,12 +374,29 @@ def recent_author_keys(bq_client, project_id: str, dataset_id: str, table_id: st
 # Prompt assembly
 # ---------------------------------------------------------------------------
 
-def build_prompt(member: CouncilMember, context: dict) -> str:
-    """Assemble the full Gemini prompt for one Council member."""
+def build_prompt(
+    member: CouncilMember,
+    context: dict,
+    frame: Optional[dict] = None,
+) -> str:
+    """Assemble the full Gemini prompt for one Council member.
+
+    `frame` is the active frame doc (as loaded from Firestore via
+    `load_active_frame()`), or None for the Pure Data / no-frame path.
+    When present and non-empty, its worldview_summary +
+    strategic_building_blocks are injected ahead of the beat/bio block so
+    the Council member reads the signal through that interpretive prior.
+
+    Empty-worldview frames (Pure Data baseline) intentionally render the
+    same prompt as `frame=None` — a design invariant so "frame active but
+    empty" behaves identically to "no frame active."
+    """
     import json
 
-    return f"""You are {member.name}, a member of the Arcane Analytics Council.
+    frame_section = _render_frame_section(frame) if frame else ""
 
+    return f"""You are {member.name}, a member of the Arcane Analytics Council.
+{frame_section}
 BEAT: {member.beat}
 BIO: {member.bio}
 
@@ -383,3 +423,97 @@ OUTPUT SCHEMA (JSON only, no prose outside the JSON):
     "key_stat": "The single most important number from the piece, display-ready."
 }}
 """
+
+
+# ---------------------------------------------------------------------------
+# Frame loading + prompt injection (Step 9.5)
+# ---------------------------------------------------------------------------
+
+def _render_frame_section(frame: dict) -> str:
+    """Format the frame's worldview + strategic priors into a prompt block.
+
+    Returns an empty string for a "null" frame (missing/empty
+    worldview_summary AND empty strategic_building_blocks) so the Pure
+    Data baseline produces the same prompt shape as no-frame-at-all.
+    """
+    worldview = (frame.get("worldview_summary") or "").strip()
+    blocks = frame.get("strategic_building_blocks") or []
+
+    if not worldview and not blocks:
+        return ""
+
+    lines = [""]
+    lines.append(f"INTERPRETIVE FRAME: {frame.get('label') or frame.get('frame_id')}")
+
+    if worldview:
+        lines.append("")
+        lines.append("WORLDVIEW SUMMARY:")
+        lines.append(worldview)
+
+    if blocks:
+        lines.append("")
+        lines.append("STRATEGIC PRIORS (score the signal against each):")
+        for block in blocks:
+            block_id = block.get("id") or "?"
+            label = block.get("label") or block_id
+            rubric = block.get("rubric") or ""
+            lines.append(f"  - [{block_id}] {label} — {rubric}")
+
+    # Corpus-fact disclosures the frame wants the Council to have in
+    # working memory when writing. Kept concise; detailed corpus
+    # retrieval happens at prompt-assembly time in Step 9.8+.
+    for field, header in [
+        ("named_grow_brands", "PRIORITY BRANDS (frame-named)"),
+        ("risks_on_watch", "ACTIVE RISKS"),
+    ]:
+        items = frame.get(field) or []
+        if not items:
+            continue
+        lines.append("")
+        lines.append(f"{header}:")
+        if field == "risks_on_watch":
+            for risk in items:
+                lines.append(f"  - {risk.get('id')}: {risk.get('fact')}")
+        else:
+            lines.append(f"  {', '.join(items)}")
+
+    lines.append("")
+    return "\n".join(lines)
+
+
+def load_active_frame(firestore_client: Any) -> Optional[dict]:
+    """Return the currently active frame dict from Firestore, or None.
+
+    Reads `frames/_meta.activeFrameId` then `frames/{id}`. Returns None
+    if either doc is missing (caller treats that as "no frame active").
+    Any Firestore error is swallowed and returns None — the journalist
+    should never fail article generation because of a frame-loader hiccup.
+
+    `firestore_client` is an initialized google.cloud.firestore.Client.
+    Passed in rather than created here so the Cloud Function doesn't pay
+    the init cost twice.
+    """
+    try:
+        meta = (
+            firestore_client.collection(FRAMES_COLLECTION)
+            .document(ACTIVE_META_DOC)
+            .get()
+        )
+        if not meta.exists:
+            return None
+        active_id = (meta.to_dict() or {}).get(ACTIVE_META_FIELD)
+        if not active_id:
+            return None
+
+        frame_doc = (
+            firestore_client.collection(FRAMES_COLLECTION)
+            .document(active_id)
+            .get()
+        )
+        if not frame_doc.exists:
+            return None
+        return frame_doc.to_dict()
+    except Exception as err:
+        # Log-but-don't-fail. Article generation must still proceed.
+        print(f"[council] frame load failed, continuing without frame: {err}")
+        return None
