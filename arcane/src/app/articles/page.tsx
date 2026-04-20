@@ -54,8 +54,13 @@ export default async function ArticlesPage() {
             aria-label="Council articles"
           >
             {articles.map((a) => (
+              // Multiple articles from the same author on the same date are
+              // allowed (Gary alone wrote 3 in one day during Step 9.7 smoke
+              // tests). date+author_name alone collides; including the
+              // headline gives every card a distinct key. Headlines are
+              // effectively unique in practice.
               <ArticleCard
-                key={`${a.date}:${a.author_name}`}
+                key={`${a.date}:${a.author_name}:${a.headline}`}
                 article={a}
               />
             ))}
