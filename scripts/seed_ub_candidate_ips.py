@@ -67,7 +67,7 @@ VIDEO_GAMES: list[UBCandidateIP] = [
     UBCandidateIP("Cyberpunk 2077", "video_game", "winner"),
     UBCandidateIP("Baldur's Gate 3", "video_game", "winner", "disambiguate from BG1/2"),
     UBCandidateIP("Helldivers 2", "video_game", "winner"),
-    UBCandidateIP("Fallout", "video_game", "winner", "franchise — 3/NV/4/76/TV show"),
+    UBCandidateIP("Fallout", "video_game", "winner", "franchise (Bethesda games + Amazon TV) — one IP, games are canonical carrier"),
     UBCandidateIP("Final Fantasy XIV", "video_game", "winner"),
     UBCandidateIP("Final Fantasy XVI", "video_game", "winner"),
     UBCandidateIP("Persona 5 Royal", "video_game", "winner"),
@@ -151,7 +151,6 @@ TV_FILM: list[UBCandidateIP] = [
     UBCandidateIP("The Boys", "tv_film", "winner"),
     UBCandidateIP("Stranger Things", "tv_film", "winner"),
     UBCandidateIP("House of the Dragon", "tv_film", "winner", "GoT prequel"),
-    UBCandidateIP("Fallout", "tv_film", "winner", "Amazon TV — distinct from video game"),
     UBCandidateIP("Shogun", "tv_film", "winner", "FX 2024"),
     UBCandidateIP("Foundation", "tv_film", "winner", "Apple TV adaptation"),
     UBCandidateIP("The Witcher", "tv_film", "winner", "Netflix adaptation"),
@@ -159,6 +158,8 @@ TV_FILM: list[UBCandidateIP] = [
     UBCandidateIP("Andor", "tv_film", "winner", "Star Wars"),
     UBCandidateIP("Doctor Who", "tv_film", "winner"),
     UBCandidateIP("Invincible", "tv_film", "winner"),
+    # Fallout (Amazon TV) consolidated into the video_game "Fallout" entry above —
+    # one IP, games are the canonical licensing carrier. See assertion below.
 
     # Edge cases
     UBCandidateIP("Scavengers Reign", "tv_film", "edge", "HBO Max cult animated"),
@@ -331,6 +332,19 @@ def _enforce_distribution() -> None:
     assert 120 <= total <= 160, (
         f"Expected 120-160 total IPs, got {total}. "
         f"Rebalance or update this assertion deliberately."
+    )
+
+    # Name uniqueness. Learned 2026-04-20: "Fallout" accidentally landed
+    # in both video_game and tv_film with different disambiguations,
+    # which broke the BQ write into 143 rows for 142 unique IPs — the
+    # gold view would have double-counted that IP's signals. A cross-
+    # medium IP belongs to ONE row (usually the canonical licensing
+    # carrier). Caught at import time rather than at enrichment time.
+    names = [c.name for c in ALL_CANDIDATES]
+    assert len(names) == len(set(names)), (
+        f"Duplicate ip_name in seed list: "
+        f"{[n for n in names if names.count(n) > 1]}. "
+        f"Consolidate into a single entry (pick the canonical medium)."
     )
 
     # Video games: 30% ≤ frac ≤ 40%
