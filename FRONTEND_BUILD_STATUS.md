@@ -1,8 +1,8 @@
 # Frontend Build Status
 
 **Last updated:** 2026-04-20
-**Current phase:** Step 9.6 complete — The Chronicler + Track A Data Dispatches + Flash article length live
-**Next step:** Step 9.7 (Gamer Gary + Player's-Eye frame), then 9.8 (Hasbro-2026 frame + Track D), 9.9 (Universes Beyond Matrix), 9.10 (Industry Fundamentals + Track C), 9.11 (Reports format). Step 12.5 (legacy admin port) and Step 13 (Aceternity) land after the 9.x series.
+**Current phase:** Step 9.7 complete — Gamer Gary + Player's-Eye frame live
+**Next step:** Step 9.8 (Hasbro-2026 frame + Track D), 9.9 (Universes Beyond Matrix), 9.10 (Industry Fundamentals + Track C), 9.11 (Reports format). Step 12.5 (legacy admin port) and Step 13 (Aceternity) land after the 9.x series.
 
 ---
 
@@ -114,7 +114,40 @@ Goal: Overview lens pulling real data from Bouncer, rendered as Recharts charts 
 
 ---
 
-**Step 8 (Concept detail drawer) complete. Step 9a (Council backend) verified live on 2026-04-17. Step 9b (Article cards) complete on 2026-04-17. Step 10 (Atlas navigation) complete on 2026-04-18. Step 11 (Auth + Firestore persistence) complete on 2026-04-18. Step 12 (Admin + Harvesting Cockpit + BackerKit Console) complete on 2026-04-19. Step 11.5 (Resend magic-link) complete on 2026-04-19. Step 9.5 (Frame abstraction plumbing) complete on 2026-04-19. Step 9.6 (The Chronicler + Track A + Flash length) complete on 2026-04-20 — see verification evidence below.**
+**Step 8 (Concept detail drawer) complete. Step 9a (Council backend) verified live on 2026-04-17. Step 9b (Article cards) complete on 2026-04-17. Step 10 (Atlas navigation) complete on 2026-04-18. Step 11 (Auth + Firestore persistence) complete on 2026-04-18. Step 12 (Admin + Harvesting Cockpit + BackerKit Console) complete on 2026-04-19. Step 11.5 (Resend magic-link) complete on 2026-04-19. Step 9.5 (Frame abstraction plumbing) complete on 2026-04-19. Step 9.6 (The Chronicler + Track A + Flash length) complete on 2026-04-20. Step 9.7 (Gamer Gary + Player's-Eye frame) complete on 2026-04-20 — see verification evidence below.**
+
+---
+
+## Step 9.7 Verification Evidence
+
+- **Gamer Gary is the seventh Council voice.** First-name handle format (parallels Sage). Sigil: Lucide `Dices`. Bio, voice guide, and domain_prompt synthesized from two Gemini extractions (Ginny Di — empathy, social contract, emotional bleed; Mike Shea / Sly Flourish — Lazy DM pragmatism, "does this help me run a game on Friday night," anti-ecosystem-lock-in) plus the "r/DnDBehindtheScreen regular" archetype as third lineage (no named creator). See `project_council_voice_tuning.md` + Gary's voice block in `council.py`.
+- **`frames/players-eye` seeded to Firestore** via `setup_frames_collection.py` (idempotent; merge=True). Five strategic priors (actually_played, table_sentiment, watch_vs_play_split, optimization_patterns, community_health), tone distribution 4:3 deck-to-sharp (looser than Hasbro's 6:1 by design), three guardrails (table_grounded, emotion_from_data, constructive_not_adversarial). Frame is seeded INACTIVE — admin flips via `/admin/frames` when they want demand-side reads on Track D.
+- **Anomaly router extended** with `_has_demand_side_signal()` detector (recognizes sentiment / community / table / campaign / session / subreddit-fragment keywords). Routes to Gary ordered AFTER the Architect's mechanics branch so mechanics-with-player-reaction still reads through the design lens; pure sentiment stories get Gary's. Rotation pool restricted to the five beat-owning Council members — Gary + Chronicler fire on signal, not on weekday schedule.
+- **`insert_council_article()` now populates `track` + `length`** (default `"B"` + `"standard"`) + `frame_id`. All Council members' new articles inherit these. Historical rows stay NULL. Future Track C / Track D / Gary Flash paths override via kwargs.
+- **Cloud Function redeployed** (`dnd-daily-journalist` revision 00017-zaw after two deploys for voice-tuning).
+- **Two live smoke tests** fired via `{"mode":"council","writer":"gary"}`:
+  - **v1** landed correctly on first try, but the body leaked "Our BigQuery streams" into prose (Gary-is-a-person, not a service rule wasn't explicit) + track/length NULL (old insert path).
+  - **v2** after fixes: ~295-word body. No infrastructure jargon — Gary calls them "the wire," "Reddit, YouTube, and the campaign creation platforms." Closed with his signature self-aware tell *"But hey, you know me, I could talk about this stuff for hours. Back to your table — run a good session."* — fired organically at the right place. track="B", length="standard" populated correctly. One Player's-Eye prior (`actually_played`) surfaced inline ("Are players actually running this?...") despite the frame being inactive — priors steer the voice through Gary's own design.
+- **Voice tuning baked into prompt** (two discipline rules added to Gary's voice field):
+  - **Infrastructure invisibility.** Never reference internal data infrastructure. Say "what's showing up today," "the signals," "what the community is doing," "what I'm seeing around tables." "If the word 'BigQuery' appears in your draft, you've broken character."
+  - **Length behavior.** Target 220-380 words (modestly above Council's 200-300 average). When catching himself past ~350, fire the signature cutoff: *"But hey, you know me, I could talk about this stuff for hours. Back to your table — run a good session."* Use sparingly — schtick is worse than silence.
+- TypeScript type-checks clean (`pnpm exec tsc --noEmit` — exit 0). Python imports cleanly.
+- **Scheduled cron unchanged.** Current daily cron still fires `mode=both` (Council + legacy parallel run). Gary is eligible for routing on demand-side signals via the normal `mode=council` path when the cron fires. No scheduler edit needed for 9.7; Gary will surface organically whenever sentiment anomalies dominate the day.
+
+## Step 9.7 Files Changed
+
+| File | Change |
+|---|---|
+| `cloud_functions/daily_journalist/council.py` | EDITED — added `GARY` CouncilMember (7th entry); added `_has_demand_side_signal()` detector; extended `route_writer()` with Gary branch + restricted rotation pool |
+| `cloud_functions/daily_journalist/main.py` | EDITED — `insert_council_article()` now accepts `track`/`length`/`frame_id` kwargs with `"B"`/`"standard"`/`None` defaults |
+| `setup_frames_collection.py` | EDITED — added `PLAYERS_EYE_FRAME` config; writes both pure-data + players-eye (merge=True) |
+| `arcane/src/components/article-card.tsx` | EDITED — registered `Dices` sigil for "Gamer Gary" |
+| `arcane/src/lib/bouncer.ts` | EDITED — `CouncilAuthorName` union extended with `"Gamer Gary"` |
+| `FRONTEND_BUILD_STATUS.md` | EDITED — Step 9.7 marked complete (this block) |
+
+**GCP state changes (one-time):**
+- Firestore: seeded `frames/players-eye` (merge=True)
+- Cloud Functions: `dnd-daily-journalist` redeployed (two deploys — initial + voice-tuning)
 
 ---
 
