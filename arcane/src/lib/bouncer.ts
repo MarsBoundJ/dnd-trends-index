@@ -84,6 +84,17 @@ export type CouncilAuthorName =
   | "The Quartermaster"
   | "The Weaver"
   | "The Architect"
+  | "The Chronicler"
+
+/** Track A = Data Dispatches (The Chronicler); B = Council Takes; C =
+ *  Fundamentals Reads; D = Corporate Strategy Reads. NULL on legacy rows
+ *  that predate Step 9.5's schema migration. */
+export type ArticleTrack = "A" | "B" | "C" | "D"
+
+/** Flash = card-only (≤40 words headline+hook, empty body); Standard =
+ *  60-280 word body; Report = long-form with tl;dr card + PDF (Step 9.11).
+ *  NULL on legacy rows. */
+export type ArticleLength = "flash" | "standard" | "report"
 
 export interface Article {
   date: string
@@ -95,6 +106,12 @@ export interface Article {
   hook: string
   body_markdown: string
   key_stat: string
+  /** Added Step 9.5. NULL on articles written before the schema migration. */
+  track?: ArticleTrack | null
+  /** Added Step 9.6. NULL on articles written before the schema migration. */
+  length?: ArticleLength | null
+  /** Added Step 9.5. NULL when no active frame (or article predates the column). */
+  frame_id?: string | null
 }
 
 // ─── Fetch ────────────────────────────────────────────────────────────────────
