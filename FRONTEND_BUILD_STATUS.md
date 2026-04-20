@@ -1,8 +1,8 @@
 # Frontend Build Status
 
-**Last updated:** 2026-04-19
-**Current phase:** Step 9.5 complete — Frame abstraction plumbing (Firestore config, TS loader, admin panel, journalist prompt injection)
-**Next step:** Step 9.6 (The Chronicler + Track A + Flash length), then 9.7 (Gamer Gary + Player's-Eye), 9.8 (Hasbro-2026 frame + Track D), 9.9 (Universes Beyond Matrix), 9.10 (Industry Fundamentals + Track C), 9.11 (Reports format). Step 12.5 (legacy admin port) and Step 13 (Aceternity) land after the 9.x series.
+**Last updated:** 2026-04-20
+**Current phase:** Step 9.6 complete — The Chronicler + Track A Data Dispatches + Flash article length live
+**Next step:** Step 9.7 (Gamer Gary + Player's-Eye frame), then 9.8 (Hasbro-2026 frame + Track D), 9.9 (Universes Beyond Matrix), 9.10 (Industry Fundamentals + Track C), 9.11 (Reports format). Step 12.5 (legacy admin port) and Step 13 (Aceternity) land after the 9.x series.
 
 ---
 
@@ -114,7 +114,56 @@ Goal: Overview lens pulling real data from Bouncer, rendered as Recharts charts 
 
 ---
 
-**Step 8 (Concept detail drawer) complete. Step 9a (Council backend) verified live on 2026-04-17. Step 9b (Article cards) complete on 2026-04-17. Step 10 (Atlas navigation) complete on 2026-04-18. Step 11 (Auth + Firestore persistence) complete on 2026-04-18. Step 12 (Admin + Harvesting Cockpit + BackerKit Console) complete on 2026-04-19. Step 11.5 (Resend magic-link) complete on 2026-04-19. Step 9.5 (Frame abstraction plumbing) complete on 2026-04-19 — see verification evidence below.**
+**Step 8 (Concept detail drawer) complete. Step 9a (Council backend) verified live on 2026-04-17. Step 9b (Article cards) complete on 2026-04-17. Step 10 (Atlas navigation) complete on 2026-04-18. Step 11 (Auth + Firestore persistence) complete on 2026-04-18. Step 12 (Admin + Harvesting Cockpit + BackerKit Console) complete on 2026-04-19. Step 11.5 (Resend magic-link) complete on 2026-04-19. Step 9.5 (Frame abstraction plumbing) complete on 2026-04-19. Step 9.6 (The Chronicler + Track A + Flash length) complete on 2026-04-20 — see verification evidence below.**
+
+---
+
+## Step 9.6 Verification Evidence
+
+- **Taxonomy first.** Wrote `project_chronicler_story_archetypes.md` memory file cataloging 12 data-journalism archetypes (synthesized from Gemini + Perplexity input dumps). 5 shipping in 9.6 (Spike, Momentum, Divergence, Saturation, Leaderboard — all use existing gold_data views); 7 queued for a future step.
+- **Python-picks-the-archetype contract.** `cloud_functions/daily_journalist/chronicler_queries.py` runs five detectors against BigQuery, scores candidates by salience, returns top K filled templates. Hands templates + length variant to Gemini via `council.build_chronicler_prompt()`. Gemini never picks the story shape — only executes the chosen one.
+- **"Every word earned" discipline.** `council.py` now carries `EVERY_WORD_EARNED_RULES` + a `FORBIDDEN_FILLER_PHRASES` list (15 banned constructions: "it's worth noting", "that said", "in conclusion", etc.) + a post-generation `validate_chronicler_output()` that checks filler phrases, Flash 40-word cap, and Standard density ratio (>28 words/sentence flags padding). One retry permitted via `TIGHTENING_PROMPT`. Existing `COUNCIL_HOUSE_RULES` (200-300 word floor) unchanged — propagating to Tracks B/C/D queued for Step 9.10.
+- **BigQuery schema.** Added nullable `track STRING` + `length STRING` columns to `gold_data.daily_articles`. Historical rows stay NULL.
+- **Cloud Function redeployed** (`dnd-daily-journalist` revision `00015-zaw`). New `mode=chronicler` entry point accepts `length` + `count` params. First redeploy failed at runtime because `load_active_frame()` imports `google.cloud.firestore` — added `google-cloud-firestore>=2.16.0` to `requirements.txt`, redeployed clean.
+- **Live article generation verified.** Fired `{"mode":"chronicler","count":3}`; two archetypes passed MIN_SALIENCE today (3 others correctly skipped — empty days beat weak filler):
+  1. **Momentum Flash** — "Carouser (Background) Index Momentum Surges +100%" · 23 words total (headline + hook) · passed validator first pass
+  2. **Leaderboard Standard** — "Knight tops Hot Concepts leaderboard with 64.27 score" · ~75-word body · passed validator first pass
+  Both voices are on-tone (no luminary catchphrases, no takeaway sections, no interpretive overlay).
+- **Noise filter** in all five detectors: `category IS NOT NULL AND TRIM(category) != ''` excludes raw scraped keyword fragments (e.g. "CHRISTMAS BIG SET") that predate concept-library mapping and never produce coherent articles.
+- **Bouncer /articles endpoint extended** to return `track`, `length`, `frame_id`. Bouncer redeployed (`bouncer-api`). Verified via `curl` — Chronicler articles return `track="A"` + `length="flash"|"standard"`; historical Council articles correctly return `track=null / length=null`.
+- **Frontend Flash variant.** `ArticleCard` now branches on `article.length === "flash"`:
+  - Skips rendering `body_markdown` entirely (empty by design for Flash; no "Read more" affordance)
+  - Drops the "Key stat" label (entire card IS the stat — label is redundant throat-clearing)
+  - Tightens vertical gap `gap-3 → gap-2`
+  - Drops hook font-size from 15px to 14px
+  Standard and Report articles render unchanged. The Chronicler's `Telescope` sigil is registered in `sigilByAuthor`.
+- **Mixed-length grid verified on `/articles`.** Chronicler Flash renders as a visibly tighter card sitting next to Standard Council cards without layout issues.
+- **End-to-end smoke test (Yorri, Apr 20):** Flash card "tight and breathing." Standard card on-tone but dry — the Leaderboard Standard's template correctly skipped inventing an observation on a low-news day. **Chronicler v1.1 tuning backlog** written to `project_chronicler_story_archetypes.md` (historical-comparison context enrichment + cross-track explanatory-parenthetical glossary for proprietary vocabulary).
+- TypeScript type-checks clean (`pnpm exec tsc --noEmit` — exit 0). Python imports cleanly.
+- **Behavior invariants preserved:** existing `mode=council` and `mode=both` paths untouched. Pure-data frame still active; its empty worldview remains transparent to generation per Step 9.5's invariant.
+
+## Step 9.6 Files Changed
+
+| File | Change |
+|---|---|
+| `cloud_functions/daily_journalist/council.py` | EDITED — added The Chronicler as 6th CouncilMember, `EVERY_WORD_EARNED_RULES`, `FORBIDDEN_FILLER_PHRASES`, `build_chronicler_prompt()`, `validate_chronicler_output()`, `TIGHTENING_PROMPT` |
+| `cloud_functions/daily_journalist/chronicler_queries.py` | NEW — five archetype detectors + `pick_today()` salience-ranked router |
+| `cloud_functions/daily_journalist/main.py` | EDITED — `mode=chronicler` path, `insert_chronicler_article()`, `generate_chronicler_article()` with validate-and-retry, lazy firestore import |
+| `cloud_functions/daily_journalist/requirements.txt` | EDITED — added `google-cloud-firestore>=2.16.0` |
+| `bouncer/main.py` | EDITED — `/articles` SELECT extended with `track`, `length`, `frame_id` |
+| `arcane/src/lib/bouncer.ts` | EDITED — `CouncilAuthorName` adds "The Chronicler"; new `ArticleTrack` + `ArticleLength` unions; `Article` interface extended |
+| `arcane/src/components/article-card.tsx` | EDITED — Telescope sigil for The Chronicler; Flash-length conditional (no body, no key-stat label, tighter spacing, smaller hook) |
+| `FRONTEND_BUILD_STATUS.md` | EDITED — Step 9.6 marked complete (this block) |
+
+**GCP state changes (one-time):**
+- BigQuery: `ALTER TABLE gold_data.daily_articles ADD COLUMN IF NOT EXISTS track STRING, ADD COLUMN IF NOT EXISTS length STRING`
+- Cloud Functions: redeployed `dnd-daily-journalist` (rev 00015-zaw); redeployed `bouncer-api`
+
+**Memory files written / updated:**
+- NEW `project_chronicler_story_archetypes.md` — 12-archetype taxonomy, tuning backlog (historical-comparison enrichment, explanatory-parenthetical glossary)
+- MEMORY.md index refreshed
+
+---
 
 ---
 
