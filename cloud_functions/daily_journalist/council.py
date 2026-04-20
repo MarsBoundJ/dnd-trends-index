@@ -233,9 +233,42 @@ ARCHITECT = CouncilMember(
     ),
 )
 
+CHRONICLER = CouncilMember(
+    key="chronicler",
+    name="The Chronicler",
+    beat="Data-native dispatches. Observation without interpretation.",
+    bio=(
+        "Chronicler of the Archive. Reports what the streams say, not what "
+        "they mean. Operates on the premise that sometimes the signal is the "
+        "story — and a short, accurate sentence beats a long, clever one."
+    ),
+    voice=(
+        "Flat, factual, numbers-first. Nate Silver without the election-night "
+        "drama. Writes in the active voice. Leads with the number, follows "
+        "with one sentence of context, and stops. Never speculates about "
+        "strategy, never tells the reader what to do with the information. "
+        "Does not use luminary catchphrases — this is the one Council member "
+        "without a character register to perform. The data is the character."
+    ),
+    # The Chronicler's "domain" is not a subject area — it's a set of STORY
+    # SHAPES (archetypes). `chronicler_queries.py` picks today's archetype
+    # based on what's in the data and hands a filled template to the prompt
+    # assembler. This `domain_prompt` is the constant preamble; the archetype
+    # template is appended per-article.
+    domain_prompt=(
+        "You write Data Dispatches — Track A articles where the data IS the "
+        "story. Your archetype for this article has already been chosen and "
+        "is provided below. Fill the archetype template with the concrete "
+        "numbers and names supplied in the input data. Do not expand the "
+        "archetype's shape. Do not add a takeaway section. Do not tell the "
+        "reader what this means for anyone's business. Report only."
+    ),
+)
+
+
 COUNCIL: dict[str, CouncilMember] = {
     m.key: m
-    for m in (LOREMASTER, BURSAR, QUARTERMASTER, WEAVER, ARCHITECT)
+    for m in (LOREMASTER, BURSAR, QUARTERMASTER, WEAVER, ARCHITECT, CHRONICLER)
 }
 
 
@@ -255,6 +288,202 @@ HOUSE RULES (apply to every Council article):
 - Hook is one sentence, lead-grade, and says what the article is actually about.
 - key_stat is the single most important number in the piece, formatted for
   direct display (e.g. '+47% WoW', '$2.3M Q4 revenue', '0.42 hype-play gap').
+"""
+
+
+# ---------------------------------------------------------------------------
+# "Every word earned" discipline — used by the Chronicler, queued to
+# propagate to Tracks B/C/D in Step 9.10. Ban filler phrases and enforce
+# length-follows-signal (no floor). Tracked in
+# project_chronicler_story_archetypes.md memory.
+# ---------------------------------------------------------------------------
+
+# Case-insensitive exact phrase matches; post-generation validator rejects
+# drafts containing any of these.
+FORBIDDEN_FILLER_PHRASES = [
+    "it's worth noting",
+    "it is worth noting",
+    "that said",
+    "importantly",
+    "of course",
+    "in conclusion",
+    "ultimately",
+    "moving forward",
+    "as mentioned",
+    "the data shows",
+    "this suggests",
+    "it should be noted",
+    "overall",
+    "at the end of the day",
+    "it goes without saying",
+]
+
+# Words/sentence average above this threshold flags suspected padding
+# (news prose typically sits 15-22, corporate-memo territory starts at 28+).
+DENSITY_RATIO_THRESHOLD = 28.0
+
+EVERY_WORD_EARNED_RULES = f"""
+VOICE DISCIPLINE (every word must earn its place):
+- Length follows signal complexity. NO word floor. Flash = 40 words total
+  (headline + hook combined). Standard = 60-280 words; use only as many as
+  the signal warrants. If a signal can be told in 80 words, 81 is padding.
+- DO NOT use these filler phrases. If you catch yourself writing any of
+  them, the sentence they're in is almost certainly unnecessary:
+{chr(10).join(f"    {p!r}" for p in FORBIDDEN_FILLER_PHRASES)}
+- No takeaway section. No "what this means." No "moving forward."
+- One sentence = one fact. If a sentence does not carry a new number, a
+  new name, or a new observation, cut it.
+- Active voice. Present tense where possible.
+"""
+
+
+# ---------------------------------------------------------------------------
+# Chronicler prompt assembly (Track A — Step 9.6)
+# ---------------------------------------------------------------------------
+
+# JSON output schemas differ by length variant — Flash has empty body;
+# Standard has a tight prose body.
+
+CHRONICLER_FLASH_SCHEMA = """
+OUTPUT SCHEMA (JSON only, no prose outside the JSON):
+{
+    "headline": "Under 70 characters. The hook-est version of the signal.",
+    "hook": "One sentence. With headline combined, TOTAL WORDS <= 40.",
+    "body_markdown": "",
+    "key_stat": "The single most important number, display-ready."
+}
+"""
+
+CHRONICLER_STANDARD_SCHEMA = """
+OUTPUT SCHEMA (JSON only, no prose outside the JSON):
+{
+    "headline": "Under 70 characters.",
+    "hook": "One sentence lead. Says what the signal is.",
+    "body_markdown": "60-280 words. Length follows signal complexity.
+      Every sentence carries a new number/name/observation. No takeaway.",
+    "key_stat": "The single most important number, display-ready."
+}
+"""
+
+
+def build_chronicler_prompt(
+    archetype_template: str,
+    context: dict,
+    length: str,
+) -> str:
+    """Build The Chronicler's prompt for a chosen archetype + length.
+
+    `archetype_template` is a filled template produced by
+    `chronicler_queries.py` — contains the archetype's canonical shape
+    with concrete numbers/names already substituted. Gemini's job is to
+    execute the template in the Chronicler's voice, not to choose the
+    shape.
+
+    `length` is "flash" or "standard". Report length is deferred to
+    Step 9.11.
+    """
+    import json
+
+    if length == "flash":
+        schema = CHRONICLER_FLASH_SCHEMA
+        length_note = "FLASH article. TOTAL words in headline + hook must be <= 40."
+    else:
+        schema = CHRONICLER_STANDARD_SCHEMA
+        length_note = (
+            "STANDARD article. Body 60-280 words. Use only as many as the "
+            "signal warrants."
+        )
+
+    return f"""You are {CHRONICLER.name}.
+
+BEAT: {CHRONICLER.beat}
+BIO: {CHRONICLER.bio}
+
+VOICE GUIDELINES:
+{CHRONICLER.voice}
+
+{CHRONICLER.domain_prompt}
+
+{EVERY_WORD_EARNED_RULES}
+
+{length_note}
+
+ARCHETYPE TEMPLATE (write this archetype's shape, fill with the data below):
+{archetype_template}
+
+INPUT DATA (signals supporting this archetype):
+{json.dumps(context, indent=2, default=str)}
+
+{schema}
+"""
+
+
+def validate_chronicler_output(draft: dict, length: str) -> tuple[str, str]:
+    """Check a Chronicler draft against voice discipline rules.
+
+    Returns a tuple of (status, reason):
+      - ("pass", "") — draft is clean, ship it
+      - ("retry", <reason>) — caller should re-prompt with tightening guidance
+
+    Checks:
+      1. Forbidden filler phrases (case-insensitive).
+      2. Flash length cap (headline + hook combined <= 40 words).
+      3. Standard density ratio (words/sentence average).
+    """
+    headline = (draft.get("headline") or "").strip()
+    hook = (draft.get("hook") or "").strip()
+    body = (draft.get("body_markdown") or "").strip()
+
+    all_text = f"{headline} {hook} {body}".lower()
+    for phrase in FORBIDDEN_FILLER_PHRASES:
+        if phrase in all_text:
+            return ("retry", f"contains forbidden phrase: '{phrase}'")
+
+    if length == "flash":
+        combined = f"{headline} {hook}".split()
+        if len(combined) > 40:
+            return ("retry", f"flash exceeded 40-word cap ({len(combined)} words)")
+        if body:
+            return ("retry", "flash must have empty body_markdown")
+    else:
+        # Standard: check for padding. Two failure modes:
+        #   (a) a single run-on sentence over ~35 words (its own smell)
+        #   (b) overall density ratio above DENSITY_RATIO_THRESHOLD
+        # Both point at the same underlying problem — too many words per idea.
+        words = body.split()
+        if not words:
+            return ("retry", "standard body must not be empty")
+
+        # Crude sentence split — avoids adding an NLP dep for this check.
+        sentences = [s for s in body.replace("!", ".").replace("?", ".").split(".") if s.strip()]
+        sentence_count = max(len(sentences), 1)
+
+        if sentence_count == 1 and len(words) > 35:
+            return (
+                "retry",
+                f"body is a single {len(words)}-word sentence — break it up or trim",
+            )
+
+        if sentence_count >= 2:
+            ratio = len(words) / sentence_count
+            if ratio > DENSITY_RATIO_THRESHOLD:
+                return (
+                    "retry",
+                    f"density {ratio:.1f} words/sentence exceeds {DENSITY_RATIO_THRESHOLD} — trim filler",
+                )
+
+    return ("pass", "")
+
+
+TIGHTENING_PROMPT = """
+Your draft was rejected by the voice validator. Reason: {reason}
+
+Rewrite the draft below tighter. Cut every sentence that does not add a
+new number, a new name, or a new observation. Honor the original archetype
+shape and JSON schema. Do not add anything.
+
+DRAFT TO TIGHTEN:
+{draft}
 """
 
 
