@@ -85,6 +85,10 @@ export type CouncilAuthorName =
   | "The Weaver"
   | "The Architect"
   | "The Chronicler"
+  // Gamer Gary breaks the "The X" convention on purpose — first-name
+  // handle format parallels Sage, signaling the perspective-voice
+  // (vs. the Council's expertise-titled voices). Added Step 9.7.
+  | "Gamer Gary"
 
 /** Track A = Data Dispatches (The Chronicler); B = Council Takes; C =
  *  Fundamentals Reads; D = Corporate Strategy Reads. NULL on legacy rows

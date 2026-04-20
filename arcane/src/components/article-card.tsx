@@ -22,6 +22,7 @@ import {
   Spline,
   Compass,
   Telescope,
+  Dices,
   Quote,
   type LucideIcon,
 } from "lucide-react"
@@ -46,6 +47,13 @@ const sigilByAuthor: Record<string, LucideIcon> = {
   "The Weaver": Spline,
   "The Architect": Compass,
   "The Chronicler": Telescope,
+  // Gamer Gary breaks the "The X" convention on purpose — first-name
+  // handle format parallels Sage (also name-based) and signals the
+  // perspective-not-expertise distinction for our two demand-side
+  // voices. Voice character: Ginny Di (warmth, social contract) +
+  // Sly Flourish (pragmatic-protector Lazy DM) + the "r/DnDBehindthe
+  // Screen regular whose 8-paragraph post everyone upvotes."
+  "Gamer Gary": Dices,
 }
 
 // STUB — confidence scoring for articles lands in a follow-up.

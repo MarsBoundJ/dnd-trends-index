@@ -120,16 +120,37 @@ def ensure_table() -> str:
     return table_ref
 
 
-def insert_council_article(table_ref: str, member, article: dict, context: dict) -> None:
+def insert_council_article(
+    table_ref: str,
+    member,
+    article: dict,
+    context: dict,
+    track: str = "B",
+    length: str = "standard",
+    frame_id: str | None = None,
+) -> None:
+    """Insert a Council-authored article.
+
+    Defaults to Track B (Council Takes) + Standard length — the canonical
+    pairing for every Council member's own-expertise write-up. Overrides:
+      - Track C (Fundamentals Reads) when Step 9.10 formalizes the neutral-
+        consultant frame; pass `track="C"`.
+      - Track D (Corporate Strategy Reads) when Step 9.8 lands the Hasbro
+        frame; pass `track="D"` + `frame_id="hasbro-2026"`.
+      - Flash length for Gary's punchier beats in Step 9.7.5+; pass
+        `length="flash"`.
+    """
     insert_sql = f"""
         INSERT INTO `{table_ref}` (
             date, headline, hook, body_markdown, key_stat,
             persona, author_name, author_beat, author_bio, council_version,
+            track, length, frame_id,
             raw_context
         )
         VALUES (
             @date, @headline, @hook, @body_markdown, @key_stat,
             @persona, @author_name, @author_beat, @author_bio, @council_version,
+            @track, @length, @frame_id,
             PARSE_JSON(@raw_context)
         )
     """
@@ -145,6 +166,9 @@ def insert_council_article(table_ref: str, member, article: dict, context: dict)
             bigquery.ScalarQueryParameter("author_beat", "STRING", member.beat),
             bigquery.ScalarQueryParameter("author_bio", "STRING", member.bio),
             bigquery.ScalarQueryParameter("council_version", "STRING", COUNCIL_VERSION),
+            bigquery.ScalarQueryParameter("track", "STRING", track),
+            bigquery.ScalarQueryParameter("length", "STRING", length),
+            bigquery.ScalarQueryParameter("frame_id", "STRING", frame_id),
             bigquery.ScalarQueryParameter("raw_context", "STRING", json.dumps(context, default=str)),
         ]
     )
