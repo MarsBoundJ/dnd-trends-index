@@ -25,6 +25,45 @@ WIKI_REGISTRY = {
     "mystara": "Mystara (OSR/Retro)"
 }
 
+# Step 9.9 Chunk C — Universes Beyond candidate wikis. Mirrored from
+# scripts/seed_ub_candidate_ips.py::FANDOM_WIKI_SLUGS (canonical
+# source). Keep these two lists in sync; the seed list is the source
+# of truth because the gold view JOINs on fandom_wiki_slug. When
+# adding an IP to the seed list with a fandom_wiki_slug, add the
+# corresponding entry here too.
+#
+# Values are free-form labels for logs. Keys must exactly match the
+# slug used by the Fandom subdomain (e.g. "dungeon-meshi" not
+# "delicious-in-dungeon"; "tardis" not "doctorwho" — Fandom's slugs
+# are owner-chosen, not algorithmic).
+UB_CANDIDATE_WIKIS = {
+    "cyberpunk": "Cyberpunk 2077 (UB candidate)",
+    "eldenring": "Elden Ring (UB candidate)",
+    "witcher": "The Witcher (UB candidate)",
+    "warhammer40k": "Warhammer 40K (UB candidate)",
+    "dune": "Dune (UB candidate)",
+    "severance": "Severance (UB candidate)",
+    "arcane": "Arcane / League of Legends (UB candidate)",
+    "strangerthings": "Stranger Things (UB candidate)",
+    "gameofthrones": "GoT / House of the Dragon (UB candidate)",
+    "lotr": "Lord of the Rings (UB candidate)",
+    "starwars": "Star Wars (UB candidate — covers Andor + Mandalorian)",
+    "tardis": "Doctor Who (UB candidate — slug is 'tardis')",
+    "cowboybebop": "Cowboy Bebop (UB candidate)",
+    # dungeon-meshi omitted — returned 0 top-articles on the Apr 20 smoke
+    # test. Keep the IP scored (Reddit/YouTube carry the trajectory) but
+    # don't scrape a wiki that yields empty data. See scripts/seed_ub_candidate_ips.py.
+    "bluelock": "Blue Lock (UB candidate)",
+    "frieren": "Frieren (UB candidate)",
+    "jujutsu-kaisen": "Jujutsu Kaisen (UB candidate)",
+    "attackontitan": "Attack on Titan (UB candidate)",
+    "onepiece": "One Piece (UB candidate)",
+    "chainsawman": "Chainsaw Man (UB candidate)",
+    "stormlightarchive": "Stormlight Archive (UB candidate)",
+    "kpop-demon-hunters": "Kpop Demon Hunters (UB candidate)",
+    "godzilla": "Godzilla (UB candidate)",
+}
+
 EXCLUDED_TITLE_PREFIXES = ["User:", "File:", "Talk:", "Category:", "Template:", "Blog:", "Forum:"]
 EXCLUDED_TITLES = [
     "Main Page", "Wiki_Activity", "Special:Search",
@@ -132,7 +171,13 @@ async def run_fetcher():
         )
         page = await context.new_page()
 
-        for slug in WIKI_REGISTRY:
+        # D&D-registry wikis + UB-candidate wikis (Step 9.9 Chunk C).
+        # Merged at runtime so the UB list lives next to its label
+        # source (seed_ub_candidate_ips.py) rather than inflating
+        # WIKI_REGISTRY with non-D&D entries. Any slug that 404s
+        # returns an empty view_map and is logged — low-risk extension.
+        all_slugs = list(WIKI_REGISTRY.keys()) + list(UB_CANDIDATE_WIKIS.keys())
+        for slug in all_slugs:
             view_map = await fetch_view_counts(page, slug)
             update_view_counts(slug, view_map)
             results[slug] = len(view_map)

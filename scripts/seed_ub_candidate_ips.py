@@ -30,7 +30,7 @@ Run standalone to print distribution + counts:
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Literal
 
 Tier = Literal["winner", "edge"]
@@ -49,6 +49,22 @@ class UBCandidateIP:
     # (useful for IPs with name collisions — e.g. "Foundation" the
     # Asimov novels vs. the Apple TV adaptation).
     disambiguation: str = ""
+    # Step 9.9 Chunk C — trajectory-signal joins.
+    # `steam_app_id` joins to dnd_trends_raw.steam_player_counts for
+    # player-count velocity (the IP's "are people actually engaged?"
+    # trajectory component). Populate for video-game IPs with Steam
+    # presence; leave None for IPs without a Steam app or where
+    # multiple apps would cause false signals (e.g. Dune has Spice
+    # Wars + Awakening — better handled in 9.9.5 or a future
+    # franchise-rollup pass). ~40 of the 53 video_game IPs have
+    # Steam presence as of 2026-04-20.
+    steam_app_id: int | None = None
+    # `fandom_wiki_slug` joins to dnd_trends_raw.fandom_daily_metrics
+    # for wiki view-count heat. Matches a slug in the
+    # fandom_view_fetcher WIKI_REGISTRY + UB_CANDIDATE_WIKIS dicts.
+    # Only populated for IPs we're explicitly harvesting — other IPs
+    # land on the 9.9.5 trending-wikis auto-discovery path.
+    fandom_wiki_slug: str | None = None
 
 
 # ──────────────────────────────────────────────────────────────────────────
@@ -295,12 +311,170 @@ OTHER: list[UBCandidateIP] = [
 
 
 # ──────────────────────────────────────────────────────────────────────────
+# Signal-stream join tables (Step 9.9 Chunk C)
+# ──────────────────────────────────────────────────────────────────────────
+# Flat dicts keyed by ip_name, applied via dataclasses.replace so the
+# medium-bucket lists above stay scannable without inline plumbing.
+# Add/remove entries freely — assertions at import time catch typos
+# (dangling keys that don't match any IP).
+
+# Steam app_ids for IPs with Steam presence. Populated 2026-04-20 from
+# store.steampowered.com. Skipping: franchise-wide rollups (Dune has
+# multiple games, LotR has Shadow of Mordor + LotR Online, etc.), games
+# that don't ship through Steam (Genshin/HSR/Wuthering Waves via
+# HoYoverse launcher; EFT via its own launcher; Bloodborne/Unicorn
+# Overlord console-only). Single-app IPs only for v1 — franchise
+# rollups belong in a later pass.
+STEAM_APP_IDS: dict[str, int] = {
+    # Winners
+    "Elden Ring": 1245620,
+    "Cyberpunk 2077": 1091500,
+    "Baldur's Gate 3": 1086940,
+    "Helldivers 2": 553850,
+    "Fallout": 377160,               # Fallout 4 as franchise flagship
+    "Final Fantasy XVI": 2515020,
+    "Persona 5 Royal": 1687950,
+    "The Witcher 3": 292030,
+    "Hades": 1145360,
+    "Monster Hunter Wilds": 2246340,
+    # Soulslike / FromSoft adjacent
+    "Dark Souls": 374320,            # DS3 as franchise flagship
+    "Sekiro: Shadows Die Twice": 814380,
+    "Lies of P": 1627720,
+    "Nioh 2": 1325200,
+    # Action-RPG
+    "Path of Exile 2": 2694490,
+    "Destiny 2": 1085660,
+    "Warframe": 230410,
+    # Indie narrative / cult
+    "Disco Elysium": 632470,
+    "Pentiment": 1205520,
+    "Citizen Sleeper": 1608700,
+    "Norco": 1221250,
+    "Signalis": 1262350,
+    "Rain World": 312520,
+    "Caves of Qud": 333640,
+    "Inscryption": 1092790,
+    # Strategy / tactics
+    "XCOM 2": 268500,
+    "Total War: Warhammer 3": 1142710,
+    "Warhammer 40,000: Rogue Trader": 2186680,
+    "Crusader Kings 3": 1158310,
+    "Triangle Strategy": 2170800,
+    # Survival / sandbox
+    "Valheim": 892970,
+    "Deep Rock Galactic": 548430,
+    "Sea of Thieves": 1172620,
+    "Rimworld": 294100,
+    "Dwarf Fortress": 975370,
+    # CRPG
+    "Pathfinder: Wrath of the Righteous": 1184370,
+    "Pillars of Eternity II: Deadfire": 560130,
+    "Tyranny": 362960,
+    "Divinity: Original Sin 2": 435150,
+    # Platformer / metroidvania
+    "Hollow Knight": 367520,
+    # FPS / extraction
+    "Hunt: Showdown": 594650,
+    # Co-op / cult multiplayer
+    "Lethal Company": 1966720,
+    "Balatro": 2379780,
+    # Narrative indie
+    "Roadwarden": 1155970,
+    "Undertale": 391540,
+}
+
+# Fandom wiki slugs for ~20 non-TTRPG IPs we're adding to the Fandom
+# harvester (cloud_functions/fandom_view_fetcher). Slugs verified as
+# Fandom subdomains 2026-04-20. Note Doctor Who uses "tardis" as its
+# wiki slug, not "doctorwho" — Fandom's naming is per-wiki-owner, not
+# algorithmic. Any slug that 404s just returns zero articles and is
+# logged by the harvester; low operational risk.
+#
+# Distribution across the seed list's 142 IPs: covers core winners +
+# 2-3 explicit edge-case picks per non-video-game medium so the gold
+# view always has fandom signal for the commercially-important IPs.
+FANDOM_WIKI_SLUGS: dict[str, str] = {
+    # Video games (confirming existing Fandom wiki coverage)
+    "Cyberpunk 2077": "cyberpunk",
+    "Elden Ring": "eldenring",
+    "The Witcher 3": "witcher",
+    "Warhammer 40,000: Rogue Trader": "warhammer40k",
+    # TV / film — big franchises
+    "Dune": "dune",
+    "Severance": "severance",
+    "Arcane": "arcane",
+    "Stranger Things": "strangerthings",
+    "House of the Dragon": "gameofthrones",    # HotD entries live under GoT wiki
+    "The Lord of the Rings: The Rings of Power": "lotr",
+    "Andor": "starwars",                       # Star Wars catch-all
+    "The Mandalorian": "starwars",
+    "Doctor Who": "tardis",                    # wiki slug is "tardis"
+    # Anime / manga — guardrail picks + big franchises
+    "Cowboy Bebop": "cowboybebop",
+    # Delicious in Dungeon intentionally omitted (Apr 20 smoke test):
+    # dungeon-meshi.fandom.com returned 0 top-articles via Playwright,
+    # likely too new/small for Fandom's algorithmic top-articles surface.
+    # The IP stays in the seed list — Reddit/YouTube signal carries the
+    # trajectory; fandom_wiki_slug stays NULL so the gold view doesn't
+    # JOIN empty signal. Re-add when a working slug is identified
+    # (possibly via 9.9.5 auto-discovery).
+    "Blue Lock": "bluelock",                    # guardrail pick
+    "Frieren: Beyond Journey's End": "frieren",
+    "Jujutsu Kaisen": "jujutsu-kaisen",
+    "Attack on Titan": "attackontitan",
+    "One Piece": "onepiece",
+    "Chainsaw Man": "chainsawman",
+    # Literature
+    "The Lord of the Rings": "lotr",
+    "The Stormlight Archive": "stormlightarchive",
+    # Other
+    "Kpop Demon Hunters": "kpop-demon-hunters",  # guardrail pick
+    "Godzilla": "godzilla",
+}
+
+
+# ──────────────────────────────────────────────────────────────────────────
 # Assembly + distribution enforcement
 # ──────────────────────────────────────────────────────────────────────────
 
-ALL_CANDIDATES: list[UBCandidateIP] = (
+# Enrich the base dataclasses with the signal-stream joins. Frozen
+# dataclass + dataclasses.replace keeps immutability while letting
+# the top-of-file lists stay readable.
+_base_candidates = (
     VIDEO_GAMES + TV_FILM + ANIME_MANGA + LITERATURE + WEBTOONS_KR + OTHER
 )
+ALL_CANDIDATES: list[UBCandidateIP] = [
+    replace(
+        c,
+        steam_app_id=STEAM_APP_IDS.get(c.name),
+        fandom_wiki_slug=FANDOM_WIKI_SLUGS.get(c.name),
+    )
+    for c in _base_candidates
+]
+
+
+def _verify_join_keys() -> None:
+    """Catch typos in STEAM_APP_IDS / FANDOM_WIKI_SLUGS at import time.
+
+    If a key doesn't match any IP name in the seed list, the mapping
+    silently no-ops — which is exactly the kind of bug that's invisible
+    until the gold view shows missing signal. Fail loud instead.
+    """
+    names = {c.name for c in _base_candidates}
+    stray_steam = set(STEAM_APP_IDS) - names
+    stray_fandom = set(FANDOM_WIKI_SLUGS) - names
+    assert not stray_steam, (
+        f"STEAM_APP_IDS has keys that don't match any IP name: "
+        f"{sorted(stray_steam)}. Likely typos."
+    )
+    assert not stray_fandom, (
+        f"FANDOM_WIKI_SLUGS has keys that don't match any IP name: "
+        f"{sorted(stray_fandom)}. Likely typos."
+    )
+
+
+_verify_join_keys()
 
 
 def _distribution_stats() -> dict[str, tuple[int, float]]:
