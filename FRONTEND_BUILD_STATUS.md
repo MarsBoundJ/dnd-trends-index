@@ -1,8 +1,31 @@
 # Frontend Build Status
 
 **Last updated:** 2026-04-20
-**Current phase:** Step 9.7 complete — Gamer Gary + Player's-Eye frame live
-**Next step:** Step 9.8 (Hasbro-2026 frame + Track D), 9.9 (Universes Beyond Matrix), 9.10 (Industry Fundamentals + Track C), 9.11 (Reports format). Step 12.5 (legacy admin port) and Step 13 (Aceternity) land after the 9.x series.
+**Current phase:** Step 9.8 complete — Hasbro-2026 frame seeded + corpus ingested (216 chunks) + concept enrichment running (4-hr bg job, ~$5 total) + Track D (Bursar single-author) wired end-to-end. Frame stays INACTIVE — admin flips at `/admin/frames`.
+**Next step:** Step 9.8b (co-byline prompt generation — Bursar + Weaver/QM/Architect co-authored prose when multiple wheelhouses touched), 9.9 (Universes Beyond Matrix), 9.10 (Industry Fundamentals + The Dean), 9.11 (Reports format). Step 12.5 (legacy admin port) and Step 13 (Aceternity) land after the 9.x series.
+
+---
+
+## Step 9.8 Verification Evidence
+
+**Smoke test (2026-04-20):** flipped `frames/_meta.activeFrameId` → `hasbro-2026`, triggered `dnd-daily-journalist?mode=council`, observed one Track D article, flipped back to `pure-data` (production state unchanged).
+
+**Handler response:**
+```json
+{"mode": "council", "author": "The Bursar", "track": "D",
+ "frame_id": "hasbro-2026", "tone_register": "deck_ready",
+ "status": "Success"}
+```
+
+**BQ row inspection** (`gold_data.daily_articles` WHERE track='D' ORDER BY date DESC LIMIT 1):
+- `author_name`: "The Bursar"
+- `track`: "D", `length`: "standard", `frame_id`: "hasbro-2026"
+- `co_authors`: `[]` (9.8 ships plumbing; 9.8b fills it)
+- `tone_register` (in `raw_context`): "deck_ready"
+- `headline`: "D&D Hype-to-Play Disconnect Signals Portfolio Risk" — recognizably Bursar-on-Hasbro register
+- Body cites the worldview priors ("Ghost Hype," portfolio risk language)
+
+**Deployed:** bouncer-api revision 00054-gon, dnd-daily-journalist revision 00020-xar (both ACTIVE).
 
 ---
 
