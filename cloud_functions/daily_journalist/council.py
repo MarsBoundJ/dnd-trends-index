@@ -761,6 +761,69 @@ def recent_author_keys(bq_client, project_id: str, dataset_id: str, table_id: st
 
 
 # ---------------------------------------------------------------------------
+# Track D helpers — corporate-strategy frame routing + tone sampling
+# ---------------------------------------------------------------------------
+
+def is_corporate_strategy_frame(frame: Optional[dict]) -> bool:
+    """True if the frame is a corporate-strategy frame (Hasbro-2026,
+    future Paizo-2026, etc.) vs. a null/neutral one (pure-data,
+    industry-fundamentals, players-eye).
+
+    Gated on `portfolio_taxonomy` being non-empty — the Grow/Optimize/
+    Reinvent-shaped list is the marker. Pure-data has it empty; Hasbro
+    sets it to ["Grow", "Optimize", "Reinvent"].
+
+    Step 9.8 wires Bursar-primary Track D when this returns True. Step
+    9.8b extends to Weaver/Quartermaster/Architect co-bylines when the
+    signal's wheelhouse matches theirs.
+    """
+    if not frame:
+        return False
+    return bool(frame.get("portfolio_taxonomy"))
+
+
+def pick_tone_register(frame: Optional[dict]) -> str:
+    """Sample 'deck_ready' or 'sharp' from the frame's tone_distribution.
+
+    Hasbro-2026 ships 6:1 (six deck-ready articles per one sharp) per
+    project_hasbro_pitch_problems_solutions.md § "Tone calibration."
+    Tunable via Firestore edit — no code change needed to retune.
+
+    Frames without tone_distribution (or with it zeroed out) always
+    return "deck_ready" — the exec-safe default.
+    """
+    import random
+    td = (frame or {}).get("tone_distribution") or {}
+    deck = int(td.get("deck_ready", 1))
+    sharp = int(td.get("sharp", 0))
+    total = deck + sharp
+    if total <= 0:
+        return "deck_ready"
+    return random.choices(
+        ["deck_ready", "sharp"],
+        weights=[deck, sharp],
+        k=1,
+    )[0]
+
+
+TONE_REGISTER_DIRECTIVES = {
+    "deck_ready": (
+        "TONE REGISTER: Deck-Ready — polished, exec-safe, McKinsey brief. "
+        "Every sentence could land in a board-level slide note. Observe, "
+        "frame, quantify; no rhetorical flourish, no hot takes, no snark. "
+        "If the data implies a sharp truth, state it in neutral prose."
+    ),
+    "sharp": (
+        "TONE REGISTER: Sharp — deck-ready, plus one pointed sentence that "
+        "makes the reader stop. Still defensible in an exec meeting; the "
+        "sharpness comes from the implication being uncomfortable, not "
+        "from stylistic flourish. Save it for the paragraph where the "
+        "data earns it — usually the penultimate one."
+    ),
+}
+
+
+# ---------------------------------------------------------------------------
 # Prompt assembly
 # ---------------------------------------------------------------------------
 
@@ -768,6 +831,7 @@ def build_prompt(
     member: CouncilMember,
     context: dict,
     frame: Optional[dict] = None,
+    tone_register: Optional[str] = None,
 ) -> str:
     """Assemble the full Gemini prompt for one Council member.
 
@@ -780,10 +844,19 @@ def build_prompt(
     Empty-worldview frames (Pure Data baseline) intentionally render the
     same prompt as `frame=None` — a design invariant so "frame active but
     empty" behaves identically to "no frame active."
+
+    `tone_register` ("deck_ready" | "sharp") is sampled per-article from
+    the frame's `tone_distribution` when the frame is corporate-strategy
+    (Track D). See `pick_tone_register()`. No-op when None.
     """
     import json
 
     frame_section = _render_frame_section(frame) if frame else ""
+    tone_section = (
+        f"\n{TONE_REGISTER_DIRECTIVES[tone_register]}\n"
+        if tone_register and tone_register in TONE_REGISTER_DIRECTIVES
+        else ""
+    )
 
     return f"""You are {member.name}, a member of the Arcane Analytics Council.
 {frame_section}
@@ -794,7 +867,7 @@ VOICE GUIDELINES:
 {member.voice}
 
 {member.domain_prompt}
-
+{tone_section}
 {COUNCIL_HOUSE_RULES}
 
 INPUT DATA (anomaly signals from BigQuery):
@@ -866,6 +939,16 @@ def _render_frame_section(frame: dict) -> str:
                 lines.append(f"  - {risk.get('id')}: {risk.get('fact')}")
         else:
             lines.append(f"  {', '.join(items)}")
+
+    # Benchmarks (Step 9.8): reference numbers the frame wants cited when
+    # the data calls for calibration ("is 24% growth good?"). Always
+    # included verbatim — the model picks which ones are relevant.
+    benchmarks = frame.get("benchmarks") or {}
+    if benchmarks:
+        lines.append("")
+        lines.append("REFERENCE BENCHMARKS ('what good looks like'):")
+        for key, value in benchmarks.items():
+            lines.append(f"  - {key}: {value}")
 
     lines.append("")
     return "\n".join(lines)

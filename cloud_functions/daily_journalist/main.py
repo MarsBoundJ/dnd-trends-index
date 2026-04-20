@@ -20,13 +20,16 @@ from google.cloud import bigquery
 from vertexai.generative_models import GenerativeModel
 
 from council import (
+    BURSAR,
     CHRONICLER,
     COUNCIL,
     COUNCIL_VERSION,
     TIGHTENING_PROMPT,
     build_chronicler_prompt,
     build_prompt,
+    is_corporate_strategy_frame,
     load_active_frame,
+    pick_tone_register,
     recent_author_keys,
     route_writer,
     validate_chronicler_output,
@@ -128,6 +131,7 @@ def insert_council_article(
     track: str = "B",
     length: str = "standard",
     frame_id: str | None = None,
+    co_authors: list[str] | None = None,
 ) -> None:
     """Insert a Council-authored article.
 
@@ -139,18 +143,23 @@ def insert_council_article(
         frame; pass `track="D"` + `frame_id="hasbro-2026"`.
       - Flash length for Gary's punchier beats in Step 9.7.5+; pass
         `length="flash"`.
+
+    `co_authors` is an ARRAY<STRING> of secondary byline names (Step
+    9.8 plumbing; Step 9.8b will actually populate it). Single-author
+    articles pass `None` or `[]` — both land as an empty array in BQ.
     """
+    co_authors_value = co_authors or []
     insert_sql = f"""
         INSERT INTO `{table_ref}` (
             date, headline, hook, body_markdown, key_stat,
             persona, author_name, author_beat, author_bio, council_version,
-            track, length, frame_id,
+            track, length, frame_id, co_authors,
             raw_context
         )
         VALUES (
             @date, @headline, @hook, @body_markdown, @key_stat,
             @persona, @author_name, @author_beat, @author_bio, @council_version,
-            @track, @length, @frame_id,
+            @track, @length, @frame_id, @co_authors,
             PARSE_JSON(@raw_context)
         )
     """
@@ -169,6 +178,7 @@ def insert_council_article(
             bigquery.ScalarQueryParameter("track", "STRING", track),
             bigquery.ScalarQueryParameter("length", "STRING", length),
             bigquery.ScalarQueryParameter("frame_id", "STRING", frame_id),
+            bigquery.ArrayQueryParameter("co_authors", "STRING", co_authors_value),
             bigquery.ScalarQueryParameter("raw_context", "STRING", json.dumps(context, default=str)),
         ]
     )
@@ -255,22 +265,61 @@ def insert_legacy_article(table_ref: str, persona: str, article: dict, context: 
 # ---------------------------------------------------------------------------
 
 def generate_council_article(context: dict, forced_key: str | None = None) -> dict:
-    """Route to a Council member and generate their article."""
+    """Route to a Council member and generate their article.
+
+    When the active frame is a corporate-strategy frame (Hasbro-2026 et
+    al.), Track D takes precedence over the normal rotation: The Bursar
+    writes, the frame's worldview + benchmarks + strategic_priors inject
+    into the prompt, and tone_register is sampled from the frame's
+    tone_distribution (6:1 deck_ready:sharp for Hasbro).
+
+    `forced_key` still overrides — useful for smoke-testing a specific
+    voice regardless of active frame. When forced, track remains B and
+    frame injection proceeds but no Track D routing logic applies.
+    """
+    # Resolve active frame once. Lazy-import firestore to avoid paying
+    # the init cost on every call in tests / legacy mode.
+    from google.cloud import firestore as _firestore
+    active_frame = load_active_frame(_firestore.Client(project=PROJECT_ID))
+    frame_id = (active_frame or {}).get("frame_id") if active_frame else None
+
     excluded = recent_author_keys(bq_client, PROJECT_ID, DATASET_ID, TABLE_ID, days=1)
 
-    if forced_key and forced_key in COUNCIL:
+    # Track D path: corporate-strategy frame active → Bursar writes.
+    # 9.8 ships Bursar-only; Weaver/Quartermaster/Architect co-bylines
+    # arrive in 9.8b when we generate actual co-authored prose.
+    track_d_active = (
+        is_corporate_strategy_frame(active_frame) and not forced_key
+    )
+    if track_d_active:
+        member = BURSAR
+        track = "D"
+        tone_register = pick_tone_register(active_frame)
+    elif forced_key and forced_key in COUNCIL:
         member = COUNCIL[forced_key]
+        track = "B"
+        tone_register = None
     else:
         member = route_writer(context, excluded=excluded)
+        track = "B"
+        tone_register = None
 
     model = GenerativeModel(MODEL_NAME)
-    prompt = build_prompt(member, context)
+    prompt = build_prompt(
+        member, context, frame=active_frame, tone_register=tone_register
+    )
     response = model.generate_content(
         prompt,
         generation_config={"response_mime_type": "application/json"},
     )
     article = json.loads(response.text)
-    return {"member": member, "article": article}
+    return {
+        "member": member,
+        "article": article,
+        "track": track,
+        "frame_id": frame_id,
+        "tone_register": tone_register,
+    }
 
 
 def generate_chronicler_article(candidate, length: str) -> dict:
@@ -448,10 +497,32 @@ def generate_article(request):
                 out = generate_council_article(context, forced_key=forced_writer)
                 member = out["member"]
                 article = out["article"]
-                insert_council_article(table_ref, member, article, context)
+                track = out["track"]
+                frame_id = out["frame_id"]
+                tone_register = out["tone_register"]
+                # tone_register goes into raw_context for audit; not a
+                # first-class column since it's frame-dependent and the
+                # frame_id + the frame's tone_distribution together let
+                # us reconstruct it post-hoc if needed.
+                enriched_context = {
+                    **context,
+                    "tone_register": tone_register,
+                }
+                insert_council_article(
+                    table_ref,
+                    member,
+                    article,
+                    enriched_context,
+                    track=track,
+                    frame_id=frame_id,
+                    co_authors=[],  # 9.8 single-author; 9.8b fills this.
+                )
                 results.append({
                     "mode": "council",
                     "author": member.name,
+                    "track": track,
+                    "frame_id": frame_id,
+                    "tone_register": tone_register,
                     "status": "Success",
                 })
             except Exception as council_err:
