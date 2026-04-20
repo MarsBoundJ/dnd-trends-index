@@ -116,6 +116,19 @@ export interface Article {
   length?: ArticleLength | null
   /** Added Step 9.5. NULL when no active frame (or article predates the column). */
   frame_id?: string | null
+  /**
+   * Added Step 9.8. Secondary bylines when a single article is attributed
+   * to more than one Council voice (corporate-strategy Track D articles
+   * often touch multiple wheelhouses — e.g. Bursar + Weaver on a
+   * Universes Beyond signal that's both licensing and digital-platform).
+   *
+   * Empty array (BigQuery default for ARRAY<STRING> on rows that predate
+   * the schema migration or articles the journalist authored single-handed).
+   * For Step 9.8 the journalist still writes single-author Track D
+   * (Bursar-primary) — the co-byline prose pattern ships separately in
+   * Step 9.8b. This field is plumbing-ready ahead of that step.
+   */
+  co_authors?: (CouncilAuthorName | string)[]
 }
 
 // ─── Fetch ────────────────────────────────────────────────────────────────────

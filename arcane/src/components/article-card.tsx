@@ -60,7 +60,20 @@ const sigilByAuthor: Record<string, LucideIcon> = {
 // Same pattern Step 3 used pre-Step-6. Once article-level confidence
 // is defined (probably weighted average of the underlying data sources
 // the Council member cited), this becomes a real computation.
+// Co-author weighting (Step 9.8b) will replace this with a
+// multi-author aggregate.
 const STUB_CONFIDENCE = 75
+
+// Step 9.8 — produce "The Bursar & The Weaver" or
+// "The Bursar, The Weaver & The Quartermaster" from primary + co-authors.
+// Single-author bylines return the primary name unchanged.
+function formatByline(primary: string, coAuthors: readonly string[]): string {
+  if (coAuthors.length === 0) return primary
+  if (coAuthors.length === 1) return `${primary} & ${coAuthors[0]}`
+  const init = coAuthors.slice(0, -1).join(", ")
+  const last = coAuthors[coAuthors.length - 1]
+  return `${primary}, ${init} & ${last}`
+}
 
 function formatDate(isoDate: string): string {
   // Input format from BigQuery is "YYYY-MM-DD". Render as the US long form
@@ -81,6 +94,15 @@ export function ArticleCard({ article }: { article: Article }) {
   const Sigil = sigilByAuthor[article.author_name] ?? Quote
   const isFlash = article.length === "flash"
 
+  // Step 9.8 — co-bylines. Empty array on single-author rows (most
+  // articles). When present, render secondary sigils adjacent to the
+  // primary and extend the byline text. Popover stays on the primary
+  // only for 9.8 scope — multi-popover UX ships with 9.8b when the
+  // journalist actually emits co-authored prose.
+  const coAuthors = article.co_authors ?? []
+  const bylineName = formatByline(article.author_name, coAuthors)
+  const coAuthorSigils = coAuthors.map((name) => sigilByAuthor[name] ?? Quote)
+
   return (
     <CardChrome
       title={article.headline}
@@ -91,7 +113,7 @@ export function ArticleCard({ article }: { article: Article }) {
       cardId={`article:${article.date}:${article.author_name}`}
       sageContext={[
         `Article — ${article.headline}`,
-        `By ${article.author_name} · ${article.author_beat}`,
+        `By ${bylineName} · ${article.author_beat}`,
         `Date: ${article.date}`,
         `Hook: ${article.hook}`,
         `Key stat: ${article.key_stat}`,
@@ -112,13 +134,26 @@ export function ArticleCard({ article }: { article: Article }) {
                 "hover:bg-iron focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-onyx",
               )}
             >
-              <Sigil
-                className="h-4 w-4 mt-0.5 shrink-0 text-ember-bright"
-                aria-hidden
-              />
+              <span className="flex items-center gap-1 mt-0.5 shrink-0">
+                <Sigil
+                  className="h-4 w-4 text-ember-bright"
+                  aria-hidden
+                />
+                {coAuthorSigils.map((CoSigil, i) => (
+                  // Secondary sigils render slightly dimmed so the
+                  // visual hierarchy reads "primary + co-bylines" at a
+                  // glance. Hover/focus affordances stay on the primary
+                  // popover for Step 9.8.
+                  <CoSigil
+                    key={`${coAuthors[i]}-${i}`}
+                    className="h-4 w-4 text-ember-bright/70"
+                    aria-hidden
+                  />
+                ))}
+              </span>
               <span className="flex flex-col leading-tight">
                 <span className="font-display text-sm font-medium text-parchment">
-                  {article.author_name}
+                  {bylineName}
                 </span>
                 <span className="font-sans text-[11px] text-ash">
                   {article.author_beat}

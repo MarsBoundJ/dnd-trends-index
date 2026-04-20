@@ -322,7 +322,8 @@ def bouncer_api(request):
               key_stat,
               track,
               length,
-              frame_id
+              frame_id,
+              co_authors
             FROM `dnd-trends-index.gold_data.daily_articles`
             WHERE council_version = 'v1'
             ORDER BY date DESC, author_name ASC
