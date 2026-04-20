@@ -21,6 +21,7 @@ import {
   Anchor,
   Spline,
   Compass,
+  Telescope,
   Quote,
   type LucideIcon,
 } from "lucide-react"
@@ -44,6 +45,7 @@ const sigilByAuthor: Record<string, LucideIcon> = {
   "The Quartermaster": Anchor,
   "The Weaver": Spline,
   "The Architect": Compass,
+  "The Chronicler": Telescope,
 }
 
 // STUB — confidence scoring for articles lands in a follow-up.
@@ -69,6 +71,7 @@ function formatDate(isoDate: string): string {
 
 export function ArticleCard({ article }: { article: Article }) {
   const Sigil = sigilByAuthor[article.author_name] ?? Quote
+  const isFlash = article.length === "flash"
 
   return (
     <CardChrome
@@ -88,7 +91,7 @@ export function ArticleCard({ article }: { article: Article }) {
         article.body_markdown,
       ].join("\n")}
     >
-      <div className="flex flex-col gap-3 pt-1">
+      <div className={cn("flex flex-col pt-1", isFlash ? "gap-2" : "gap-3")}>
         {/* ── Byline row ─────────────────────────────────────────────── */}
         <Popover>
           <PopoverTrigger asChild>
@@ -136,33 +139,48 @@ export function ArticleCard({ article }: { article: Article }) {
         </Popover>
 
         {/* ── Hook ───────────────────────────────────────────────────── */}
-        <p className="font-display text-[15px] italic text-parchment/90 leading-snug border-l-2 border-ember/60 pl-3">
+        {/* Flash cards render the hook one visual notch tighter — the card
+            IS the article, so every gram of whitespace counts. */}
+        <p
+          className={cn(
+            "font-display italic text-parchment/90 leading-snug border-l-2 border-ember/60 pl-3",
+            isFlash ? "text-[14px]" : "text-[15px]",
+          )}
+        >
           {article.hook}
         </p>
 
-        {/* ── Body ───────────────────────────────────────────────────── */}
-        <div
-          className={cn(
-            "prose-article text-sm text-parchment/90 leading-relaxed",
-            "[&_p]:mb-3 [&_p:last-child]:mb-0",
-            "[&_h2]:font-display [&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-parchment [&_h2]:mt-4 [&_h2]:mb-2",
-            "[&_h3]:font-display [&_h3]:text-sm [&_h3]:font-semibold [&_h3]:text-parchment [&_h3]:mt-3 [&_h3]:mb-1.5",
-            "[&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-3 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-3",
-            "[&_li]:mb-1",
-            "[&_strong]:text-parchment [&_strong]:font-semibold",
-            "[&_em]:text-parchment/80",
-            "[&_code]:font-mono [&_code]:text-xs [&_code]:bg-iron [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded",
-          )}
-        >
-          <ReactMarkdown>{article.body_markdown}</ReactMarkdown>
-        </div>
+        {/* ── Body (Standard + Report only; Flash has empty body_markdown by
+             design — the whole point of Flash is that the hook IS the
+             article). */}
+        {!isFlash && article.body_markdown && (
+          <div
+            className={cn(
+              "prose-article text-sm text-parchment/90 leading-relaxed",
+              "[&_p]:mb-3 [&_p:last-child]:mb-0",
+              "[&_h2]:font-display [&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-parchment [&_h2]:mt-4 [&_h2]:mb-2",
+              "[&_h3]:font-display [&_h3]:text-sm [&_h3]:font-semibold [&_h3]:text-parchment [&_h3]:mt-3 [&_h3]:mb-1.5",
+              "[&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-3 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-3",
+              "[&_li]:mb-1",
+              "[&_strong]:text-parchment [&_strong]:font-semibold",
+              "[&_em]:text-parchment/80",
+              "[&_code]:font-mono [&_code]:text-xs [&_code]:bg-iron [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded",
+            )}
+          >
+            <ReactMarkdown>{article.body_markdown}</ReactMarkdown>
+          </div>
+        )}
 
         {/* ── Key stat chip ──────────────────────────────────────────── */}
+        {/* Flash drops the "Key stat" label — the entire card is the
+             stat already, so the label is redundant throat-clearing. */}
         {article.key_stat && (
           <div className="flex items-center gap-2 pt-1">
-            <span className="font-mono uppercase tracking-widest text-[10px] text-ash/70">
-              Key stat
-            </span>
+            {!isFlash && (
+              <span className="font-mono uppercase tracking-widest text-[10px] text-ash/70">
+                Key stat
+              </span>
+            )}
             <span className="font-mono text-xs text-ember-bright bg-iron border border-bronze/60 rounded px-2 py-0.5">
               {article.key_stat}
             </span>
