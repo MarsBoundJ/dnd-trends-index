@@ -90,7 +90,20 @@ function formatDate(isoDate: string): string {
   })
 }
 
-export function ArticleCard({ article }: { article: Article }) {
+export function ArticleCard({
+  article,
+  frameLabel,
+}: {
+  article: Article
+  /**
+   * Step 9.8 — human label of the interpretive frame the article was
+   * written through, e.g. "Hasbro / Wizards of the Coast — Playing to
+   * Win (FY26)". Looked up server-side from the frame doc so the UI
+   * adapts automatically when an admin swaps frames (paizo-2026,
+   * industry-fundamentals). Rendered only on Track D articles.
+   */
+  frameLabel?: string | null
+}) {
   const Sigil = sigilByAuthor[article.author_name] ?? Quote
   const isFlash = article.length === "flash"
 
@@ -102,6 +115,14 @@ export function ArticleCard({ article }: { article: Article }) {
   const coAuthors = article.co_authors ?? []
   const bylineName = formatByline(article.author_name, coAuthors)
   const coAuthorSigils = coAuthors.map((name) => sigilByAuthor[name] ?? Quote)
+
+  // Step 9.8 — frame attribution. Only Track D articles get the visible
+  // "Through the {frame}:" label; Tracks A/B/C articles read the signal
+  // either without a frame (A, B) or through a neutral industry-
+  // fundamentals lens (C, Step 9.10) where buyer-specific attribution
+  // doesn't apply.
+  const showFrameAttribution =
+    article.track === "D" && !!frameLabel && !!article.frame_id
 
   return (
     <CardChrome
@@ -115,13 +136,22 @@ export function ArticleCard({ article }: { article: Article }) {
         `Article — ${article.headline}`,
         `By ${bylineName} · ${article.author_beat}`,
         `Date: ${article.date}`,
+        showFrameAttribution ? `Through the frame: ${frameLabel}` : null,
         `Hook: ${article.hook}`,
         `Key stat: ${article.key_stat}`,
         "",
         article.body_markdown,
-      ].join("\n")}
+      ].filter(Boolean).join("\n")}
     >
       <div className={cn("flex flex-col pt-1", isFlash ? "gap-2" : "gap-3")}>
+        {showFrameAttribution && (
+          <p
+            className="font-mono uppercase tracking-widest text-[10px] text-ember-bright/80 -mb-1"
+            aria-label={`Interpretive frame: ${frameLabel}`}
+          >
+            Through the {frameLabel}
+          </p>
+        )}
         {/* ── Byline row ─────────────────────────────────────────────── */}
         <Popover>
           <PopoverTrigger asChild>

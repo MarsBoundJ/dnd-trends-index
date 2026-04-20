@@ -12,6 +12,7 @@
  */
 
 import { fetchArticles } from "@/lib/bouncer"
+import { getFrameById } from "@/lib/frames"
 import { ArticleCard } from "@/components/article-card"
 
 // Top-of-route ISR — matches /overview. The underlying fetchArticles()
@@ -27,6 +28,34 @@ export const metadata = {
 
 export default async function ArticlesPage() {
   const articles = await fetchArticles(20)
+
+  // Step 9.8 — collect unique frame_ids across Track D articles and
+  // resolve their labels once. Skip the lookup when there are no Track D
+  // articles (99% of days, until Hasbro-2026 is activated). Failures
+  // fall through as null — the attribution line just doesn't render.
+  const trackDFrameIds = Array.from(
+    new Set(
+      articles
+        .filter((a) => a.track === "D" && a.frame_id)
+        .map((a) => a.frame_id as string),
+    ),
+  )
+  const frameLabelById = new Map<string, string>()
+  if (trackDFrameIds.length > 0) {
+    const frames = await Promise.all(
+      trackDFrameIds.map(async (id) => {
+        try {
+          const frame = await getFrameById(id)
+          return frame ? ([id, frame.label] as const) : null
+        } catch {
+          return null
+        }
+      }),
+    )
+    for (const entry of frames) {
+      if (entry) frameLabelById.set(entry[0], entry[1])
+    }
+  }
 
   return (
     <main className="min-h-screen bg-obsidian px-6 py-10 md:py-16">
@@ -62,6 +91,9 @@ export default async function ArticlesPage() {
               <ArticleCard
                 key={`${a.date}:${a.author_name}:${a.headline}`}
                 article={a}
+                frameLabel={
+                  a.frame_id ? frameLabelById.get(a.frame_id) ?? null : null
+                }
               />
             ))}
           </section>
