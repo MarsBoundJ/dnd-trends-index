@@ -171,6 +171,8 @@ def bouncer_api(request):
             path = 'confidence'
         elif 'articles' in full_path:
             path = 'articles'
+        elif 'universes-beyond-matrix' in full_path:
+            path = 'universes_beyond_matrix'
         else:
             path = 'leaderboards'
         
@@ -337,6 +339,105 @@ def bouncer_api(request):
             )
             results = [dict(row) for row in client.query(query, job_config=job_config)]
             return (json.dumps(results, cls=ArcaneEncoder), 200, headers)
+        except Exception as e:
+            return (json.dumps({"error": str(e)}, cls=ArcaneEncoder), 500, headers)
+
+    elif path == 'universes_beyond_matrix':
+        # Step 9.9 — Universes Beyond Matrix. Ranks non-D&D/non-MTG IPs
+        # by license_fit_score (rubric-primary + fandom overlay + gated
+        # steam velocity). Supports ?limit=N (default 50, max 142).
+        try:
+            limit = int(request.args.get('limit', '50'))
+        except ValueError:
+            limit = 50
+        limit = max(1, min(limit, 142))
+        query = """
+            SELECT
+              ip_name, medium, tier, disambiguation,
+              license_fit_score,
+              rubric_composite, genre_fit, combat_translatability,
+              party_dynamics_fit, setting_portability,
+              fanbase_ttrpg_overlap, rubric_confidence, rubric_reasoning,
+              fandom_wiki_slug, fandom_hype_sum, fandom_article_count,
+              fandom_norm,
+              steam_app_id, steam_recent_players, steam_prior_players,
+              steam_velocity, steam_norm,
+              steam_gate_active, steam_covered_ips, fandom_covered_ips,
+              rubric_covered_ips, total_ips,
+              weight_rubric, weight_fandom, weight_steam
+            FROM `dnd-trends-index.gold_data.universes_beyond_candidates`
+            ORDER BY license_fit_score DESC NULLS LAST
+            LIMIT @limit
+        """
+        try:
+            job_config = bigquery.QueryJobConfig(
+                query_parameters=[
+                    bigquery.ScalarQueryParameter('limit', 'INT64', limit)
+                ]
+            )
+            raw_rows = [dict(row) for row in client.query(query, job_config=job_config)]
+
+            # Shape into candidates[] + top-level status. All rows carry
+            # identical gate/coverage/weight metadata (windowed columns);
+            # lifting it to the top level avoids client-side duplication.
+            status = None
+            candidates = []
+            for r in raw_rows:
+                if status is None:
+                    status = {
+                        'steam_gate_active': r.get('steam_gate_active'),
+                        'coverage': {
+                            'rubric': r.get('rubric_covered_ips'),
+                            'fandom': r.get('fandom_covered_ips'),
+                            'steam':  r.get('steam_covered_ips'),
+                            'total':  r.get('total_ips'),
+                        },
+                        'weights': {
+                            'rubric': r.get('weight_rubric'),
+                            'fandom': r.get('weight_fandom'),
+                            'steam':  r.get('weight_steam'),
+                        },
+                    }
+                candidates.append({
+                    'ip_name': r['ip_name'],
+                    'medium': r['medium'],
+                    'tier': r['tier'],
+                    'disambiguation': r.get('disambiguation'),
+                    'license_fit_score': r.get('license_fit_score'),
+                    'rubric': {
+                        'composite': r.get('rubric_composite'),
+                        'genre_fit': r.get('genre_fit'),
+                        'combat_translatability': r.get('combat_translatability'),
+                        'party_dynamics_fit': r.get('party_dynamics_fit'),
+                        'setting_portability': r.get('setting_portability'),
+                        'fanbase_ttrpg_overlap': r.get('fanbase_ttrpg_overlap'),
+                        'confidence': r.get('rubric_confidence'),
+                        'reasoning': r.get('rubric_reasoning'),
+                    },
+                    'fandom': {
+                        'wiki_slug': r.get('fandom_wiki_slug'),
+                        'hype_sum': r.get('fandom_hype_sum'),
+                        'article_count': r.get('fandom_article_count'),
+                        'norm': r.get('fandom_norm'),
+                        'available': r.get('fandom_wiki_slug') is not None,
+                    },
+                    'steam': {
+                        'app_id': r.get('steam_app_id'),
+                        'recent_players': r.get('steam_recent_players'),
+                        'prior_players': r.get('steam_prior_players'),
+                        'velocity': r.get('steam_velocity'),
+                        'norm': r.get('steam_norm'),
+                        'available': r.get('steam_velocity') is not None,
+                    },
+                })
+            return (
+                json.dumps(
+                    {'status': status or {}, 'candidates': candidates},
+                    cls=ArcaneEncoder,
+                ),
+                200,
+                headers,
+            )
         except Exception as e:
             return (json.dumps({"error": str(e)}, cls=ArcaneEncoder), 500, headers)
 
