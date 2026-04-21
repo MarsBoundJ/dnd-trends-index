@@ -10,9 +10,14 @@
  * summarize it — preventing numerical hallucination. Multi-step is enabled
  * (up to 5 LLM round-trips) so the model can chain multiple tool calls.
  *
- * Auth: @ai-sdk/google-vertex uses Application Default Credentials. On local
- * dev, run `gcloud auth application-default login` or set
- * GOOGLE_APPLICATION_CREDENTIALS to a service-account key path.
+ * Auth (three paths, auto-selected at runtime):
+ *   - Vercel (production): GOOGLE_APPLICATION_CREDENTIALS_JSON env var holds
+ *     the full service-account JSON as a string; passed inline to createVertex
+ *     via googleAuthOptions.credentials. Matches firebase-admin.ts's pattern.
+ *   - Local dev: `gcloud auth application-default login` sets ADC; the
+ *     @ai-sdk/google-vertex SDK falls back to it when googleAuthOptions is
+ *     undefined.
+ *   - Cloud Run (future fallback): attached service account via ADC.
  */
 
 import { convertToModelMessages, streamText, stepCountIs, type UIMessage } from "ai"
@@ -32,9 +37,19 @@ export const dynamic = "force-dynamic"
 // (VERTEX_AI_PROJECT / VERTEX_AI_LOCATION) are explicitly passed through —
 // the SDK's own defaults look for GOOGLE_VERTEX_PROJECT / GOOGLE_VERTEX_LOCATION,
 // which would silently bypass the .env.local values Yorri set in Step 4.
+//
+// Credentials: when GOOGLE_APPLICATION_CREDENTIALS_JSON is set (Vercel), parse
+// it and pass via googleAuthOptions.credentials. When absent (local dev), leave
+// googleAuthOptions undefined so the SDK falls back to gcloud ADC.
+const jsonCreds = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON
+const googleAuthOptions = jsonCreds
+  ? { credentials: JSON.parse(jsonCreds) }
+  : undefined
+
 const vertex = createVertex({
   project: process.env.VERTEX_AI_PROJECT,
   location: process.env.VERTEX_AI_LOCATION ?? "us-central1",
+  googleAuthOptions,
 })
 
 // Sage is the singular conversational voice (she/her) and chairs the
