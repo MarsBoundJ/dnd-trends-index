@@ -24,10 +24,12 @@ from council import (
     CHRONICLER,
     COUNCIL,
     COUNCIL_VERSION,
+    DEAN,
     TIGHTENING_PROMPT,
     build_chronicler_prompt,
     build_prompt,
     is_corporate_strategy_frame,
+    is_industry_fundamentals_frame,
     load_active_frame,
     pick_tone_register,
     recent_author_keys,
@@ -285,13 +287,28 @@ def generate_council_article(context: dict, forced_key: str | None = None) -> di
 
     excluded = recent_author_keys(bq_client, PROJECT_ID, DATASET_ID, TABLE_ID, days=1)
 
+    # Track C path: industry-fundamentals frame active → The Dean writes
+    # (Step 9.10). Frame-gated activation parallels Gary's demand-side
+    # route and Chronicler's mode=chronicler path — Dean is dormant
+    # when the frame isn't active.
+    track_c_active = (
+        is_industry_fundamentals_frame(active_frame) and not forced_key
+    )
     # Track D path: corporate-strategy frame active → Bursar writes.
     # 9.8 ships Bursar-only; Weaver/Quartermaster/Architect co-bylines
-    # arrive in 9.8b when we generate actual co-authored prose.
+    # arrive in 9.8b when we generate actual co-authored prose. Mutually
+    # exclusive with Track C (the two frame families don't co-apply),
+    # but guarded explicitly for future frame types.
     track_d_active = (
-        is_corporate_strategy_frame(active_frame) and not forced_key
+        is_corporate_strategy_frame(active_frame)
+        and not forced_key
+        and not track_c_active
     )
-    if track_d_active:
+    if track_c_active:
+        member = DEAN
+        track = "C"
+        tone_register = pick_tone_register(active_frame)
+    elif track_d_active:
         member = BURSAR
         track = "D"
         tone_register = pick_tone_register(active_frame)

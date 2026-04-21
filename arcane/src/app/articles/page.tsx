@@ -29,21 +29,25 @@ export const metadata = {
 export default async function ArticlesPage() {
   const articles = await fetchArticles(20)
 
-  // Step 9.8 — collect unique frame_ids across Track D articles and
-  // resolve their labels once. Skip the lookup when there are no Track D
-  // articles (99% of days, until Hasbro-2026 is activated). Failures
-  // fall through as null — the attribution line just doesn't render.
-  const trackDFrameIds = Array.from(
+  // Step 9.8 + 9.10 — collect unique frame_ids across framed articles
+  // (Track C industry-fundamentals + Track D corporate-strategy) and
+  // resolve their labels once. Skip the lookup when there are no
+  // framed articles (the common case until a frame is flipped active).
+  // Failures fall through as null — the attribution line just doesn't
+  // render.
+  const framedFrameIds = Array.from(
     new Set(
       articles
-        .filter((a) => a.track === "D" && a.frame_id)
+        .filter(
+          (a) => (a.track === "C" || a.track === "D") && a.frame_id,
+        )
         .map((a) => a.frame_id as string),
     ),
   )
   const frameLabelById = new Map<string, string>()
-  if (trackDFrameIds.length > 0) {
+  if (framedFrameIds.length > 0) {
     const frames = await Promise.all(
-      trackDFrameIds.map(async (id) => {
+      framedFrameIds.map(async (id) => {
         try {
           const frame = await getFrameById(id)
           return frame ? ([id, frame.label] as const) : null

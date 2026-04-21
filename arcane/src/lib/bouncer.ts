@@ -89,6 +89,12 @@ export type CouncilAuthorName =
   // handle format parallels Sage, signaling the perspective-voice
   // (vs. the Council's expertise-titled voices). Added Step 9.7.
   | "Gamer Gary"
+  // The Dean — 8th Council voice, academic-observer register. Lands in
+  // Step 9.10 (Industry Fundamentals frame + Track C canonical). Voice
+  // bench: Thompson + Galloway + HBR/McKinsey composite (Christensen
+  // + Kim). Seeded in advance of 9.10 synthesis via a hand-crafted
+  // reference article on 2026-04-21.
+  | "The Dean"
 
 /** Track A = Data Dispatches (The Chronicler); B = Council Takes; C =
  *  Fundamentals Reads; D = Corporate Strategy Reads. NULL on legacy rows

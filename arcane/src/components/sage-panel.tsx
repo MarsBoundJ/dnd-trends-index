@@ -33,6 +33,7 @@ import {
   positionedCitations,
   groundingTier,
 } from "@/lib/grounding"
+import { SAGE_DISCLAIMER } from "@/lib/disclaimer"
 
 // ─── Tool display names ──────────────────────────────────────────────────────
 // Human-readable labels for each tool. Shown in the chat when the Sage
@@ -537,6 +538,12 @@ function SagePanel() {
         </div>
         <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-ash/50">
           Enter to send · Shift+Enter for newline
+        </p>
+        {/* AI disclosure — same family as ARTICLE_DISCLAIMER but shorter
+            since Sage is unambiguously a chat UI. Protects against
+            chat excerpts being copy-pasted out of context. */}
+        <p className="mt-2 font-mono text-[10px] leading-snug text-ash/50">
+          {SAGE_DISCLAIMER}
         </p>
       </form>
     </aside>

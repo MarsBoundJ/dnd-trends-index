@@ -23,6 +23,7 @@ import {
   Compass,
   Telescope,
   Dices,
+  GraduationCap,
   Quote,
   type LucideIcon,
 } from "lucide-react"
@@ -35,6 +36,10 @@ import {
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 import type { Article } from "@/lib/bouncer"
+import {
+  ARTICLE_DISCLAIMER,
+  COUNCIL_PERSONA_DISCLAIMER,
+} from "@/lib/disclaimer"
 
 // Confirmed sigil mapping from the Step 9b brief (2026-04-17).
 // Keyed by author_name exactly as written to BigQuery in council.py.
@@ -54,6 +59,15 @@ const sigilByAuthor: Record<string, LucideIcon> = {
   // Sly Flourish (pragmatic-protector Lazy DM) + the "r/DnDBehindthe
   // Screen regular whose 8-paragraph post everyone upvotes."
   "Gamer Gary": Dices,
+  // The Dean lands as the 8th Council voice in Step 9.10 — academic-
+  // observer register built from Thompson (Stratechery) + Galloway
+  // (No Mercy / NYU Stern) + HBR/McKinsey composite (carrying
+  // Christensen + Kim). Sigil GraduationCap fits the expertise-title
+  // pattern. A hand-crafted reference article ("The D&D Book Isn't
+  // Dying. It's Moving Warehouses.") landed Apr 21 as a smoke-test
+  // acceptance criterion; the real voice-block synthesis ships in
+  // Step 9.10 proper.
+  "The Dean": GraduationCap,
 }
 
 // STUB — confidence scoring for articles lands in a follow-up.
@@ -116,13 +130,16 @@ export function ArticleCard({
   const bylineName = formatByline(article.author_name, coAuthors)
   const coAuthorSigils = coAuthors.map((name) => sigilByAuthor[name] ?? Quote)
 
-  // Step 9.8 — frame attribution. Only Track D articles get the visible
-  // "Through the {frame}:" label; Tracks A/B/C articles read the signal
-  // either without a frame (A, B) or through a neutral industry-
-  // fundamentals lens (C, Step 9.10) where buyer-specific attribution
-  // doesn't apply.
+  // Step 9.8 + 9.10 — frame attribution. Track D (corporate-strategy)
+  // and Track C (industry-fundamentals academic lens) both render the
+  // visible "Through the {frame}:" label so readers know which
+  // interpretive prior is applied. Tracks A + B don't — A is data-
+  // native (no frame), B uses own-expertise (no interpretive overlay
+  // worth surfacing).
   const showFrameAttribution =
-    article.track === "D" && !!frameLabel && !!article.frame_id
+    (article.track === "D" || article.track === "C") &&
+    !!frameLabel &&
+    !!article.frame_id
 
   return (
     <CardChrome
@@ -208,6 +225,15 @@ export function ArticleCard({
             <p className="text-xs text-parchment/85 leading-relaxed">
               {article.author_bio}
             </p>
+            {/* Council persona disclaimer — clarifies the voice is a
+                synthetic composite, not a real analyst. Protects
+                against leaked quotes being misread as from a real
+                person (e.g., "Chris Cocks said X" when actually the
+                Bursar voice — which draws on Cocks + Härenstam +
+                Stevens/Butler — said X). */}
+            <p className="font-mono text-[10px] leading-snug text-ash/60 pt-2 mt-1 border-t border-bronze/20">
+              {COUNCIL_PERSONA_DISCLAIMER}
+            </p>
           </PopoverContent>
         </Popover>
 
@@ -259,6 +285,20 @@ export function ArticleCard({
             </span>
           </div>
         )}
+
+        {/* ── AI disclaimer ──────────────────────────────────────────── */}
+        {/* Inside the card (not outside) so it travels with every
+             screenshot. Mono + small + low-opacity = "fine print"
+             register. Subordinate visual weight; present on every
+             length variant including Flash. */}
+        <p
+          className={cn(
+            "font-mono text-[10px] leading-snug text-ash/60",
+            "pt-3 mt-1 border-t border-bronze/20",
+          )}
+        >
+          {ARTICLE_DISCLAIMER}
+        </p>
       </div>
     </CardChrome>
   )
