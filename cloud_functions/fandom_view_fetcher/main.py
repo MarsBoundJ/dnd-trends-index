@@ -114,39 +114,73 @@ def update_view_counts(wiki_slug, view_map):
     If a row already exists (from the edit-count scraper), updates view_count.
     If no row exists yet, inserts a new row so view counts are captured
     regardless of whether the edit scraper ran first.
+
+    Pre-9.9 this built the MERGE via Python string concatenation of the
+    article titles — which silently failed on ~15 of the 36 wikis because
+    certain title characters (straight + curly apostrophes, quotes, etc.)
+    broke the quoted SQL literals with "concatenated string literals must
+    be separated by whitespace" errors. Elden Ring, Cyberpunk, LotR, Dune,
+    Star Wars, etc. all failed historically. Apr 20 fix: parameterize the
+    MERGE via ArrayQueryParameter so BQ handles all escaping.
     """
     if not view_map:
         return
 
     today = date.today().isoformat()
-    selects = []
-    for rank, (title, views) in enumerate(view_map.items(), start=1):
-        safe_title = title.replace("'", "\\'")
-        url_path = f"/wiki/{title.replace(' ', '_')}"
-        hype = round(1.01 - (rank * 0.01), 2)
-        selects.append(
-            f"SELECT '{wiki_slug}' as slug, '{safe_title}' as title, "
-            f"{views} as vc, {rank} as rk, {hype} as hs, '{url_path}' as up"
-        )
 
-    using_sql = " UNION ALL ".join(selects)
+    # Parallel arrays — simpler than ArrayQueryParameter of STRUCT
+    # (which the Python SDK requires as StructQueryParameter-wrapped
+    # values, awkward for this row shape). MERGE uses UNNEST over
+    # matching-index arrays: assumes @titles[i], @views[i], @ranks[i],
+    # @hypes[i], @urls[i] describe one article.
+    titles = []
+    views_arr = []
+    ranks = []
+    hypes = []
+    urls = []
+    for rank, (title, views) in enumerate(view_map.items(), start=1):
+        titles.append(title)
+        views_arr.append(int(views or 0))
+        ranks.append(rank)
+        hypes.append(round(1.01 - (rank * 0.01), 2))
+        urls.append(f"/wiki/{title.replace(' ', '_')}")
 
     query = f"""
     MERGE `{METRICS_TABLE}` t
-    USING ({using_sql}) s
-    ON t.wiki_slug = s.slug
+    USING (
+      SELECT
+        @titles[OFFSET(i)] AS title,
+        @views[OFFSET(i)]  AS views,
+        @ranks[OFFSET(i)]  AS rank,
+        @hypes[OFFSET(i)]  AS hype,
+        @urls[OFFSET(i)]   AS url
+      FROM UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(@titles) - 1)) AS i
+    ) s
+    ON t.wiki_slug = @slug
        AND t.article_title = s.title
-       AND t.extraction_date = '{today}'
+       AND t.extraction_date = @date
     WHEN MATCHED THEN
-      UPDATE SET view_count = s.vc
+      UPDATE SET view_count = s.views
     WHEN NOT MATCHED THEN
       INSERT (extraction_date, wiki_slug, article_title, rank_position,
               hype_score, view_count, edit_count, url_path)
-      VALUES ('{today}', s.slug, s.title, s.rk, s.hs, s.vc, NULL, s.up)
+      VALUES (@date, @slug, s.title, s.rank, s.hype, s.views, NULL, s.url)
     """
 
+    job_config = bigquery.QueryJobConfig(
+        query_parameters=[
+            bigquery.ArrayQueryParameter("titles", "STRING", titles),
+            bigquery.ArrayQueryParameter("views", "INT64", views_arr),
+            bigquery.ArrayQueryParameter("ranks", "INT64", ranks),
+            bigquery.ArrayQueryParameter("hypes", "FLOAT64", hypes),
+            bigquery.ArrayQueryParameter("urls", "STRING", urls),
+            bigquery.ScalarQueryParameter("slug", "STRING", wiki_slug),
+            bigquery.ScalarQueryParameter("date", "DATE", today),
+        ]
+    )
+
     try:
-        job = BQ_CLIENT.query(query)
+        job = BQ_CLIENT.query(query, job_config=job_config)
         job.result()
         print(f"✅ {wiki_slug}: upserted {len(view_map)} view counts in BQ")
     except Exception as e:

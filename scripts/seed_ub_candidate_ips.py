@@ -360,7 +360,7 @@ STEAM_APP_IDS: dict[str, int] = {
     "Total War: Warhammer 3": 1142710,
     "Warhammer 40,000: Rogue Trader": 2186680,
     "Crusader Kings 3": 1158310,
-    "Triangle Strategy": 2170800,
+    "Triangle Strategy": 1850510,   # corrected Apr 20 after 2170800 failed Steam API lookup
     # Survival / sandbox
     "Valheim": 892970,
     "Deep Rock Galactic": 548430,

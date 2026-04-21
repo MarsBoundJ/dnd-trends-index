@@ -51,6 +51,78 @@ DND_GAMES = {
     623280: "Dark Alliance",
 }
 
+# Step 9.9 Chunk D.1 — Universes Beyond candidate games. Mirrored from
+# scripts/seed_ub_candidate_ips.py::STEAM_APP_IDS (canonical source).
+# Kept here as a mirror (not imported) because Cloud Run deploys only
+# this directory — cross-directory imports would require restructuring.
+# When STEAM_APP_IDS changes in the seed list, mirror the change here
+# and redeploy. UB games participate in player_counts ONLY (trajectory
+# signal is the gold view's Steam input); reviews + achievements stay
+# DND_GAMES-scoped to keep those loops fast and focused.
+UB_GAMES = {
+    # Winners — fast-moving / high-player-count IPs
+    1245620: "Elden Ring",
+    1091500: "Cyberpunk 2077",
+    553850: "Helldivers 2",
+    377160: "Fallout 4",                   # franchise flagship
+    2515020: "Final Fantasy XVI",
+    1687950: "Persona 5 Royal",
+    292030: "The Witcher 3",
+    1145360: "Hades",
+    2246340: "Monster Hunter Wilds",
+    # Soulslike / FromSoft
+    374320: "Dark Souls III",               # franchise flagship
+    814380: "Sekiro: Shadows Die Twice",
+    1627720: "Lies of P",
+    1325200: "Nioh 2",
+    # Action-RPG / live-service
+    2694490: "Path of Exile 2",
+    1085660: "Destiny 2",
+    230410: "Warframe",
+    # Indie narrative / cult
+    632470: "Disco Elysium",
+    1205520: "Pentiment",
+    1608700: "Citizen Sleeper",
+    1221250: "Norco",
+    1262350: "Signalis",
+    312520: "Rain World",
+    333640: "Caves of Qud",
+    1092790: "Inscryption",
+    # Strategy / tactics
+    268500: "XCOM 2",
+    1142710: "Total War: Warhammer 3",
+    2186680: "Warhammer 40,000: Rogue Trader",
+    1158310: "Crusader Kings 3",
+    1850510: "Triangle Strategy",   # corrected Apr 20 after 2170800 failed Steam API lookup
+    # Survival / sandbox
+    892970: "Valheim",
+    548430: "Deep Rock Galactic",
+    1172620: "Sea of Thieves",
+    294100: "Rimworld",
+    975370: "Dwarf Fortress",
+    # CRPG
+    1184370: "Pathfinder: Wrath of the Righteous",
+    560130: "Pillars of Eternity II: Deadfire",
+    362960: "Tyranny",
+    435150: "Divinity: Original Sin 2",
+    # Platformer
+    367520: "Hollow Knight",
+    # FPS / extraction
+    594650: "Hunt: Showdown",
+    # Co-op / cult
+    1966720: "Lethal Company",
+    2379780: "Balatro",
+    # Narrative indie
+    1155970: "Roadwarden",
+    391540: "Undertale",
+}
+# BG3 (app_id 1086940) intentionally omitted from UB_GAMES — it's
+# already tracked in DND_GAMES. The seed list counts it as a UB IP
+# (steam_app_id=1086940 in STEAM_APP_IDS) but harvesting through
+# DND_GAMES is sufficient; adding it to both dicts would duplicate
+# API calls without changing the data we write.
+PLAYER_COUNTS_TRACKED = {**UB_GAMES, **DND_GAMES}
+
 STEAM_API_BASE = "https://api.steampowered.com"
 STORE_API_BASE = "https://store.steampowered.com"
 
@@ -67,9 +139,12 @@ class SteamHarvester:
     # 1. Concurrent Player Counts
     # ------------------------------------------------------------------
     def fetch_player_counts(self):
-        """Fetch current concurrent players for each D&D game."""
+        """Fetch current concurrent players for every tracked game
+        (D&D roster + UB candidate roster). Reviews + achievements
+        loops stay DND_GAMES-only — player_count is the trajectory
+        signal the UB Matrix gold view joins on."""
         rows = []
-        for app_id, name in DND_GAMES.items():
+        for app_id, name in PLAYER_COUNTS_TRACKED.items():
             try:
                 url = f"{STEAM_API_BASE}/ISteamUserStats/GetNumberOfCurrentPlayers/v1/"
                 resp = self.session.get(url, params={"appid": app_id}, timeout=10)
@@ -205,7 +280,9 @@ class SteamHarvester:
 
         return {
             "status": "success",
-            "games_tracked": len(DND_GAMES),
+            "games_tracked": len(PLAYER_COUNTS_TRACKED),
+            "games_dnd": len(DND_GAMES),
+            "games_ub": len(UB_GAMES),
             "player_snapshots": len(player_rows),
             "review_snapshots": len(review_rows),
             "achievements_tracked": achievement_count,
