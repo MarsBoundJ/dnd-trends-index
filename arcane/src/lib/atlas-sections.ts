@@ -25,6 +25,7 @@ import {
   Microscope,
   BookOpen,
   KeyRound,
+  Crown,
 } from "lucide-react"
 import { BagOfHoldingSigil } from "@/components/bag-of-holding-sigil"
 
@@ -122,6 +123,16 @@ export const ATLAS_SECTIONS: AtlasSection[] = [
     route: "/admin",
     status: "active",
     adminOnly: true,
+  },
+  // Step 9.9 — flagship commercial feature.
+  {
+    id: "universes-beyond",
+    title: "Universes Beyond",
+    description:
+      "Non-D&D/non-MTG IPs scored by license-fit for MTG crossover or D&D-setting adaptation.",
+    icon: Crown,
+    route: "/matrix/universes-beyond",
+    status: "active",
   },
   // ── Planned (spec §3.6 sections not yet built) ──────────────────────────
   {
