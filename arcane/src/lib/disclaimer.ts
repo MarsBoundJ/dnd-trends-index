@@ -45,13 +45,13 @@ export const SAGE_DISCLAIMER =
   "or endorsed by Hasbro or Wizards of the Coast."
 
 /**
- * For Council member bio popovers (fast-follow). Emphasizes that the
- * personas are synthetic composites built from real luminary voices,
- * not actual industry analysts. Protects against leaked quotes being
- * misread as from a real person (e.g., "Chris Cocks said X" when
- * actually "The Bursar — a synthetic voice partially modeled on
- * Cocks — said X").
+ * For Council member bio popovers. Clarifies synthetic-persona status
+ * without naming any real individuals. The 9.10.1 tuning pass moved
+ * this away from the earlier "built from real industry luminaries"
+ * phrasing to avoid even oblique attribution — pairs with the
+ * luminary-anonymity rule in COUNCIL_HOUSE_RULES (council.py) that
+ * keeps named individuals out of article output entirely.
  */
 export const COUNCIL_PERSONA_DISCLAIMER =
-  "Synthetic persona. Composite voice built from real industry " +
-  "luminaries. Not a real analyst."
+  "Synthetic persona. Composite analytical voice grounded in " +
+  "published strategic canon. Not a real analyst."

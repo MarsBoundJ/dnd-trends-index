@@ -42,37 +42,40 @@ INDUSTRY_FUNDAMENTALS_FRAME = {
     "frame_id": "industry-fundamentals",
     "label": "Industry Fundamentals (non-aligned, academic register)",
     "source_docs": [
-        # This frame's "corpus" is the canon of business-strategy
-        # literature rather than a single buyer's annual report.
-        # Representative anchors that The Dean's luminary bench draws
-        # from — not ingested as corpus chunks; Gemini carries them
-        # from training.
-        "Porter, 'Competitive Strategy' (1980) — Five Forces + Generic Strategies",
-        "Christensen, 'The Innovator's Dilemma' (1997) — Sustaining vs Disruptive Innovation",
-        "Kim & Mauborgne, 'Blue Ocean Strategy' (2005) — Value Innovation",
-        "Thompson, 'Stratechery' (ongoing) — Aggregation Theory, Zero Marginal Cost",
-        "Galloway, 'No Mercy / No Malice' (ongoing) — Rundle, Tollbooth, Brand Moat",
+        # Generic canon descriptors — NOT named-individual attribution.
+        # The specific luminary bench that drives The Dean's register
+        # lives in council.py (internal prompt only). Naming those
+        # individuals here, where this field is stored in Firestore
+        # and could surface via admin UI, creates an unnecessary
+        # false-endorsement surface. See 9.10.1 luminary-anonymity
+        # rule in COUNCIL_HOUSE_RULES.
+        "Classic corporate-strategy canon (Five Forces + Generic Strategies)",
+        "Disruption-theory canon (Sustaining vs Disruptive Innovation, Jobs-to-be-done)",
+        "Blue Ocean strategy canon (Value Innovation)",
+        "Modern platform-economics analysis (Aggregation Theory, Zero Marginal Cost)",
+        "Provocateur-economist register (Rundle, Tollbooth, Brand Moat)",
     ],
     "worldview_summary": (
         "Read every signal through the lens of structural industry "
         "analysis — the academic observer's perspective, not the "
-        "shareholder's (Bursar) or the player's (Gamer Gary). What "
-        "market structure is the TTRPG segment actually inhabiting? "
-        "Which of Porter's Five Forces is tightest — substitutes "
-        "(open rule systems like Pathfinder ORC, LitRPG crossover), "
-        "new entrants (indie VTTs, foreign-licensed TTRPG adaptations), "
-        "buyer power (distributor concentration at Amazon + Walmart), "
-        "supplier power (creators leaving incumbents for indie "
-        "publishing), rivalry (Paizo, Free League, indie-first "
-        "alternatives)? Which players are in the Sustaining-Innovation "
-        "trap with legacy cash cows? Which Disruptive alternatives are "
-        "climbing from below toward 'good enough' for the mainstream? "
-        "Where are aggregator plays forming (D&D Beyond, Roll20, "
-        "Foundry as potential Thompson-style aggregators of demand)? "
-        "Which business models are transitioning from episodic "
-        "transactions to recurring revenue (Rundle economics)? Name "
-        "the framework you apply when you apply it. Observation over "
-        "prediction. Structural over sentimental."
+        "shareholder's (carried by the Bursar) or the player's "
+        "(carried by Gamer Gary). What market structure is the TTRPG "
+        "segment actually inhabiting? Which of Porter's Five Forces "
+        "is tightest — substitutes (open rule systems like Pathfinder "
+        "ORC, LitRPG crossover), new entrants (indie VTTs, foreign-"
+        "licensed TTRPG adaptations), buyer power (distributor "
+        "concentration at Amazon + Walmart), supplier power (creators "
+        "leaving incumbents for indie publishing), rivalry (Paizo, "
+        "Free League, indie-first alternatives)? Which players are in "
+        "the Sustaining-Innovation trap with legacy cash cows? Which "
+        "Disruptive alternatives are climbing from below toward "
+        "'good enough' for the mainstream? Where are aggregator plays "
+        "forming (D&D Beyond, Roll20, Foundry as potential Aggregation-"
+        "Theory-style aggregators of demand)? Which business models "
+        "are transitioning from episodic transactions to recurring "
+        "revenue (Rundle economics)? Name the framework you apply "
+        "when you apply it. Observation over prediction. Structural "
+        "over sentimental."
     ),
     "strategic_building_blocks": [
         {
