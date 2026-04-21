@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 import type { Article } from "@/lib/bouncer"
+import { ARTICLE_DISCLAIMER } from "@/lib/disclaimer"
 
 // Confirmed sigil mapping from the Step 9b brief (2026-04-17).
 // Keyed by author_name exactly as written to BigQuery in council.py.
@@ -269,6 +270,20 @@ export function ArticleCard({
             </span>
           </div>
         )}
+
+        {/* ── AI disclaimer ──────────────────────────────────────────── */}
+        {/* Inside the card (not outside) so it travels with every
+             screenshot. Mono + small + low-opacity = "fine print"
+             register. Subordinate visual weight; present on every
+             length variant including Flash. */}
+        <p
+          className={cn(
+            "font-mono text-[10px] leading-snug text-ash/60",
+            "pt-3 mt-1 border-t border-bronze/20",
+          )}
+        >
+          {ARTICLE_DISCLAIMER}
+        </p>
       </div>
     </CardChrome>
   )
