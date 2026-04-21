@@ -1,8 +1,8 @@
 # Frontend Build Status
 
 **Last updated:** 2026-04-20
-**Current phase:** Step 9.8 complete — Hasbro-2026 frame seeded + corpus ingested (216 chunks) + concept enrichment running (4-hr bg job, ~$5 total) + Track D (Bursar single-author) wired end-to-end. Frame stays INACTIVE — admin flips at `/admin/frames`.
-**Next step:** Step 9.8b (co-byline prompt generation — Bursar + Weaver/QM/Architect co-authored prose when multiple wheelhouses touched), 9.9 (Universes Beyond Matrix), 9.10 (Industry Fundamentals + The Dean), 9.11 (Reports format). Step 12.5 (legacy admin port) and Step 13 (Aceternity) land after the 9.x series.
+**Current phase:** Step 9.9 complete — Universes Beyond Matrix shipped end-to-end. 142-IP curated seed list + Gemini rubric enrichment ($0.05) + Fandom harvester extended 13→35 wikis (22 UB) + Steam harvester extended 5→49 apps (44 UB) + `gold_data.universes_beyond_candidates` view (rubric-primary 0.60 + fandom 0.30 + gated Steam 0.10) + Bouncer endpoint + `/matrix/universes-beyond` UI page with honest data-trail labels. 18/20 non-video-game in the current top-20. Two pre-existing harvester bugs fixed in Chunk D (string-concat MERGE silent-drop; wrong Triangle Strategy app_id).
+**Next step:** 9.8b (co-byline prompt generation), 9.9.5 (trending-wikis auto-discovery), 9.9.6 (non-D&D Reddit + YouTube ingestion), 9.10 (Industry Fundamentals + The Dean), 9.11 (Reports format). Step 12.5 (legacy admin port) and Step 13 (Aceternity) land after the 9.x series.
 
 ---
 
