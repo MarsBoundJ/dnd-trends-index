@@ -131,6 +131,123 @@ export interface Article {
   co_authors?: (CouncilAuthorName | string)[]
 }
 
+// ─── Universes Beyond Matrix (Step 9.9) ──────────────────────────────────────
+
+export type UBMedium =
+  | "video_game"
+  | "anime_manga"
+  | "tv_film"
+  | "literature"
+  | "webtoon_kr"
+  | "other"
+export type UBTier = "winner" | "edge"
+
+export interface UBRubricDetail {
+  composite: number | null
+  genre_fit: number | null
+  combat_translatability: number | null
+  party_dynamics_fit: number | null
+  setting_portability: number | null
+  fanbase_ttrpg_overlap: number | null
+  confidence: number | null
+  reasoning: string | null
+}
+
+export interface UBFandomDetail {
+  wiki_slug: string | null
+  hype_sum: number | null
+  article_count: number | null
+  norm: number | null
+  available: boolean
+}
+
+export interface UBSteamDetail {
+  app_id: number | null
+  recent_players: number | null
+  prior_players: number | null
+  velocity: number | null
+  norm: number | null
+  available: boolean
+}
+
+export interface UBCandidate {
+  ip_name: string
+  medium: UBMedium
+  tier: UBTier
+  disambiguation: string | null
+  license_fit_score: number | null
+  rubric: UBRubricDetail
+  fandom: UBFandomDetail
+  steam: UBSteamDetail
+}
+
+export interface UBMatrixStatus {
+  steam_gate_active: boolean
+  coverage: {
+    rubric: number
+    fandom: number
+    steam: number
+    total: number
+  }
+  weights: {
+    rubric: number
+    fandom: number
+    steam: number
+  }
+}
+
+export interface UBMatrixResponse {
+  status: UBMatrixStatus
+  candidates: UBCandidate[]
+}
+
+/** Human-readable label for the medium enum. */
+export const UB_MEDIUM_LABEL: Record<UBMedium, string> = {
+  video_game: "Video game",
+  anime_manga: "Anime / manga",
+  tv_film: "TV / film",
+  literature: "Literature",
+  webtoon_kr: "Webtoon / Korean",
+  other: "Other",
+}
+
+/**
+ * Fetch ranked UB candidates from Bouncer `/universes-beyond-matrix`
+ * (Step 9.9). Server-side fetch with 1-hour ISR (matches the rest of
+ * the Bouncer client). Returns an empty response shape on API error
+ * so the Matrix page still renders with an empty-state.
+ */
+export async function fetchUBMatrix(limit = 50): Promise<UBMatrixResponse> {
+  const url = `${BOUNCER_URL}/universes-beyond-matrix?limit=${limit}`
+  try {
+    const res = await fetch(url, { next: { revalidate: 3600 } })
+    if (!res.ok) {
+      console.error(
+        `[bouncer] /universes-beyond-matrix returned ${res.status} ${res.statusText}`,
+      )
+      return {
+        status: {
+          steam_gate_active: false,
+          coverage: { rubric: 0, fandom: 0, steam: 0, total: 0 },
+          weights: { rubric: 0, fandom: 0, steam: 0 },
+        },
+        candidates: [],
+      }
+    }
+    return (await res.json()) as UBMatrixResponse
+  } catch (err) {
+    console.error("[bouncer] /universes-beyond-matrix fetch failed:", err)
+    return {
+      status: {
+        steam_gate_active: false,
+        coverage: { rubric: 0, fandom: 0, steam: 0, total: 0 },
+        weights: { rubric: 0, fandom: 0, steam: 0 },
+      },
+      candidates: [],
+    }
+  }
+}
+
 // ─── Fetch ────────────────────────────────────────────────────────────────────
 
 export async function fetchBouncerData(): Promise<BouncerCategory[]> {
