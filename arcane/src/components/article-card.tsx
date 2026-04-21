@@ -23,6 +23,7 @@ import {
   Compass,
   Telescope,
   Dices,
+  GraduationCap,
   Quote,
   type LucideIcon,
 } from "lucide-react"
@@ -54,6 +55,15 @@ const sigilByAuthor: Record<string, LucideIcon> = {
   // Sly Flourish (pragmatic-protector Lazy DM) + the "r/DnDBehindthe
   // Screen regular whose 8-paragraph post everyone upvotes."
   "Gamer Gary": Dices,
+  // The Dean lands as the 8th Council voice in Step 9.10 — academic-
+  // observer register built from Thompson (Stratechery) + Galloway
+  // (No Mercy / NYU Stern) + HBR/McKinsey composite (carrying
+  // Christensen + Kim). Sigil GraduationCap fits the expertise-title
+  // pattern. A hand-crafted reference article ("The D&D Book Isn't
+  // Dying. It's Moving Warehouses.") landed Apr 21 as a smoke-test
+  // acceptance criterion; the real voice-block synthesis ships in
+  // Step 9.10 proper.
+  "The Dean": GraduationCap,
 }
 
 // STUB — confidence scoring for articles lands in a follow-up.
