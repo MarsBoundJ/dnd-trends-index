@@ -88,3 +88,76 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
+
+/*
+ * Print-optimized styles. Applied whenever the user triggers the browser's
+ * print dialog (either via Ctrl+P or the "Save as PDF" button on the
+ * Bag of Holding report page). The report view declares
+ * `<main className="report-view ...">` so we can scope the heaviest
+ * overrides to that page; the general print rules (hide nav, swap
+ * colors) apply globally for sensible behavior on any route a user
+ * might print.
+ */
+@media print {
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    background: white !important;
+    color: #111 !important;
+  }
+
+  /* Hide persistent chrome — site header, atlas, Sage panel, etc.
+   * The report page also uses Tailwind's `print:hidden` utility
+   * for more granular control over its own chrome (back button,
+   * export buttons). */
+  header,
+  nav[aria-label="Report navigation"] {
+    display: none !important;
+  }
+
+  /* On the Bag of Holding report specifically, force a light-palette
+   * render so the output is readable on paper / legible as a PDF.
+   * Without these overrides the deep obsidian/bronze palette eats toner
+   * and looks ominous in PDF form. */
+  .report-view {
+    background: white !important;
+    color: #111 !important;
+  }
+
+  .report-view h1,
+  .report-view h2,
+  .report-view h3 {
+    color: #000 !important;
+  }
+
+  .report-view p {
+    color: #222 !important;
+  }
+
+  /* Pagination hints: keep individual items together on one page when
+   * possible, and push section starts to a new page if we're mid-page
+   * and the section has substantial content. */
+  .report-view article {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .report-view section {
+    break-inside: avoid-page;
+    page-break-inside: avoid;
+  }
+
+  /* No shadows, no glow effects — they don't render well in PDF and
+   * waste toner if the user prints on paper. */
+  .report-view * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Sensible page margins for PDF export. */
+  @page {
+    margin: 0.6in 0.5in;
+  }
+}

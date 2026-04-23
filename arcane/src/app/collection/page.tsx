@@ -27,6 +27,7 @@ import {
 } from "@/lib/bag-store"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { GenerateReportForm } from "@/components/generate-report-form"
 
 // Format a stow timestamp as a short relative string. Intentionally simple —
 // the polish pass in Step 16 can upgrade to Intl.RelativeTimeFormat.
@@ -100,6 +101,14 @@ export default function CollectionPage() {
         <EmptyState />
       ) : (
         <div className="space-y-12">
+          {/*
+           * Generate Report surface. Positioned above the stowed-item
+           * sections so it's the first action-affordance users see once
+           * they have items in the bag. Hidden when bag is empty (handled
+           * by the outer ternary).
+           */}
+          <GenerateReportForm />
+
           {cards.length > 0 && (
             <Section
               title="Cards"
