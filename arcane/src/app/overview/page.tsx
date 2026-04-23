@@ -15,22 +15,41 @@
  * the silver stub. AI grounding is not applied here (pure data cards).
  */
 
+import Link from "next/link"
+
 import { CardChrome } from "@/components/card-chrome"
 import { OverviewBarChart } from "@/components/overview-bar-chart"
 import { BagLink } from "@/components/bag-link"
 import { ConceptLink } from "@/components/concept-drawer"
 import {
   fetchBouncerData,
+  fetchLeaderboards,
+  fetchUBMatrix,
   fetchConfidence,
   cardConfidence,
   findCategory,
   deduplicateItems,
+  flattenTopItems,
   topOpportunities,
   topCategoriesByHeat,
+  UB_MEDIUM_LABEL,
 } from "@/lib/bouncer"
 
 export default async function OverviewPage() {
-  const data = await fetchBouncerData()
+  // Parallel fetch across multiple Bouncer endpoints — all are independent
+  // and 1-hr ISR cached, so fanning out keeps the page snappy even with
+  // 6+ cards' worth of data sources.
+  const [
+    data,
+    redditLeaderboard,
+    youtubeLeaderboard,
+    ubMatrix,
+  ] = await Promise.all([
+    fetchBouncerData(),
+    fetchLeaderboards("reddit"),
+    fetchLeaderboards("youtube"),
+    fetchUBMatrix(5),
+  ])
 
   // ── Card 1: Top Classes ─────────────────────────────────────────────────
   const classCategory = findCategory(data, "Class")
@@ -45,6 +64,15 @@ export default async function OverviewPage() {
 
   // ── Card 3: Top Opportunities ───────────────────────────────────────────
   const opportunities = topOpportunities(data, 5)
+
+  // ── Card 4: Reddit Top Concepts (new) ───────────────────────────────────
+  const redditTop = flattenTopItems(redditLeaderboard, 5)
+
+  // ── Card 5: YouTube Creator Consensus (new) ─────────────────────────────
+  const youtubeTop = flattenTopItems(youtubeLeaderboard, 5)
+
+  // ── Card 6: Universes Beyond Top-5 (new, cross-links to /matrix) ────────
+  const ubTop = ubMatrix.candidates.slice(0, 5)
 
   // ── Step 6: batch-fetch data confidence for every concept we're about
   // to render, then compute one aggregate score per card (min across
@@ -98,6 +126,33 @@ export default async function OverviewPage() {
       .map(
         (o, i) =>
           `  ${i + 1}. ${o.name} — index ${o.opportunity_index.toFixed(0)}`
+      )
+      .join("\n")
+
+  const redditContext =
+    `Card: "Top on Reddit" (Overview lens)\n` +
+    `Source: Reddit community chatter, scored by mention + sentiment volume.\n` +
+    `Top 5:\n` +
+    redditTop
+      .map((r, i) => `  ${i + 1}. ${r.name} — score ${Math.round(r.score)}`)
+      .join("\n")
+
+  const youtubeContext =
+    `Card: "YouTube Creator Consensus" (Overview lens)\n` +
+    `Source: consensus_score across tracked D&D-content creators.\n` +
+    `Top 5:\n` +
+    youtubeTop
+      .map((y, i) => `  ${i + 1}. ${y.name} — score ${Math.round(y.score)}`)
+      .join("\n")
+
+  const ubContext =
+    `Card: "Universes Beyond Top 5" (Overview lens — preview of /matrix/universes-beyond)\n` +
+    `Source: license_fit_score across 142 non-TTRPG IPs; overlays Fandom + Steam velocity on a calibrated 5-dimension rubric.\n` +
+    `Top 5:\n` +
+    ubTop
+      .map(
+        (c, i) =>
+          `  ${i + 1}. ${c.ip_name} (${UB_MEDIUM_LABEL[c.medium]}) — fit ${((c.license_fit_score ?? 0) * 100).toFixed(0)}`,
       )
       .join("\n")
 
@@ -220,27 +275,125 @@ export default async function OverviewPage() {
           </p>
         </CardChrome>
 
+        {/* 4 — Top on Reddit (new) */}
+        <CardChrome
+          title="Top on Reddit"
+          subtitle="overview · community chatter · 7-day"
+          lens="overview"
+          cardType="leaderboard"
+          confidence={75}
+          cardId="overview:top-reddit"
+          sageContext={redditContext}
+        >
+          <ol className="space-y-2 py-1">
+            {redditTop.length === 0 ? (
+              <li className="font-sans text-sm text-ash">No data available.</li>
+            ) : (
+              redditTop.map((item, i) => (
+                <li key={item.name} className="flex items-center gap-3">
+                  <span className="font-mono text-xs text-ash w-4 text-right shrink-0">
+                    {i + 1}
+                  </span>
+                  <span className="font-sans text-sm text-parchment flex-1">
+                    <ConceptLink name={item.name} />
+                  </span>
+                  <span className="font-mono text-xs text-ember-bright tabular-nums">
+                    {Math.round(item.score)}
+                  </span>
+                </li>
+              ))
+            )}
+          </ol>
+          <p className="font-mono text-[10px] text-ash/70 uppercase tracking-widest mt-3">
+            Mention + sentiment volume across 25 subreddits
+          </p>
+        </CardChrome>
+
+        {/* 5 — YouTube Creator Consensus (new) */}
+        <CardChrome
+          title="YouTube Creator Consensus"
+          subtitle="overview · tracked creators · consensus score"
+          lens="overview"
+          cardType="leaderboard"
+          confidence={75}
+          cardId="overview:top-youtube"
+          sageContext={youtubeContext}
+        >
+          <ol className="space-y-2 py-1">
+            {youtubeTop.length === 0 ? (
+              <li className="font-sans text-sm text-ash">No data available.</li>
+            ) : (
+              youtubeTop.map((item, i) => (
+                <li key={item.name} className="flex items-center gap-3">
+                  <span className="font-mono text-xs text-ash w-4 text-right shrink-0">
+                    {i + 1}
+                  </span>
+                  <span className="font-sans text-sm text-parchment flex-1">
+                    <ConceptLink name={item.name} />
+                  </span>
+                  <span className="font-mono text-xs text-ember-bright tabular-nums">
+                    {Math.round(item.score)}
+                  </span>
+                </li>
+              ))
+            )}
+          </ol>
+          <p className="font-mono text-[10px] text-ash/70 uppercase tracking-widest mt-3">
+            Consensus score across tracked creators
+          </p>
+        </CardChrome>
+
+        {/* 6 — Universes Beyond Top-5 preview (new, cross-links to /matrix) */}
+        <CardChrome
+          title="Universes Beyond Top 5"
+          subtitle="overview · license-fit score · 142 IPs ranked"
+          lens="overview"
+          cardType="leaderboard"
+          confidence={85}
+          cardId="overview:ub-top-5"
+          sageContext={ubContext}
+        >
+          <ol className="space-y-2 py-1">
+            {ubTop.length === 0 ? (
+              <li className="font-sans text-sm text-ash">No data available.</li>
+            ) : (
+              ubTop.map((c, i) => (
+                <li key={c.ip_name} className="flex items-center gap-3">
+                  <span className="font-mono text-xs text-ash w-4 text-right shrink-0">
+                    {i + 1}
+                  </span>
+                  <span className="font-sans text-sm text-parchment flex-1">
+                    {c.ip_name}
+                    <span className="ml-2 font-mono text-[10px] uppercase tracking-widest text-ash/60">
+                      {UB_MEDIUM_LABEL[c.medium]}
+                    </span>
+                  </span>
+                  <span className="font-mono text-xs text-ember-bright tabular-nums">
+                    {c.license_fit_score != null
+                      ? (c.license_fit_score * 100).toFixed(0)
+                      : "—"}
+                  </span>
+                </li>
+              ))
+            )}
+          </ol>
+          <div className="flex items-center justify-between mt-3">
+            <p className="font-mono text-[10px] text-ash/70 uppercase tracking-widest">
+              Rubric × market signal · 0-100 scale
+            </p>
+            <Link
+              href="/matrix/universes-beyond"
+              className="font-mono text-[10px] uppercase tracking-widest text-ember-bright hover:text-ember transition-colors"
+            >
+              Full matrix →
+            </Link>
+          </div>
+        </CardChrome>
+
       </section>
 
-      <footer className="border-t border-bronze pt-6 flex items-center justify-between flex-wrap gap-3">
-        <p className="font-mono text-xs text-ash">
-          FRONTEND_DESIGN_SPEC.md · §3.2 Overview lens · Step 3 of 16
-        </p>
-        <div className="flex items-center gap-4">
-          <BagLink />
-          <a
-            href="/test-card-chrome"
-            className="font-mono text-xs text-ash hover:text-ember transition-colors"
-          >
-            CardChrome harness
-          </a>
-          <a
-            href="/swatch"
-            className="font-mono text-xs text-ash hover:text-ember transition-colors"
-          >
-            ← palette
-          </a>
-        </div>
+      <footer className="border-t border-bronze pt-6 flex items-center justify-end">
+        <BagLink />
       </footer>
 
     </main>

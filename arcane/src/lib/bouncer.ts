@@ -137,6 +137,80 @@ export interface Article {
   co_authors?: (CouncilAuthorName | string)[]
 }
 
+// ─── Leaderboards (multi-source) ─────────────────────────────────────────────
+
+/**
+ * Supported source keys for the `/leaderboards?source=X` Bouncer endpoint.
+ * Each source returns the same top-level shape (`BouncerCategory[]`) but
+ * items may carry source-specific extras (e.g. Reddit adds `sentiment`,
+ * YouTube adds `consensus_score` + `creator_count`, BGG adds `owned`).
+ * For the /overview page cards we only use the common fields (name, score,
+ * rank); richer rendering by source is a later polish pass.
+ */
+export type LeaderboardSource =
+  | "google"
+  | "reddit"
+  | "youtube"
+  | "fandom"
+  | "wikipedia"
+  | "bgg"
+  | "rpggeek"
+  | "amazon"
+
+/**
+ * Fetch category/item leaderboards from the Bouncer /leaderboards endpoint,
+ * scoped to a given source. Returns an empty array on error so consumer
+ * pages still render with an empty-state rather than hard-failing.
+ *
+ * Cached server-side for 1 hour via Next 16 ISR, matching fetchBouncerData.
+ */
+export async function fetchLeaderboards(
+  source: LeaderboardSource,
+): Promise<BouncerCategory[]> {
+  const url = `${BOUNCER_URL}/leaderboards?source=${source}`
+  try {
+    const res = await fetch(url, { next: { revalidate: 3600 } })
+    if (!res.ok) {
+      console.error(
+        `[bouncer] /leaderboards?source=${source} returned ${res.status} ${res.statusText}`,
+      )
+      return []
+    }
+    const body = (await res.json()) as BouncerCategory[] | { error: string }
+    if (!Array.isArray(body)) {
+      console.error(`[bouncer] /leaderboards?source=${source} error payload:`, body)
+      return []
+    }
+    return body
+  } catch (err) {
+    console.error(`[bouncer] /leaderboards?source=${source} fetch failed:`, err)
+    return []
+  }
+}
+
+/**
+ * Helper: take leaderboard categories and return a flat top-N list of items
+ * globally deduplicated by name. Used by the /overview cards where we want
+ * one "top 5 across all categories for this source" rather than per-category.
+ */
+export function flattenTopItems(
+  data: BouncerCategory[],
+  limit = 5,
+): BouncerItem[] {
+  const byName = new Map<string, BouncerItem>()
+  for (const cat of data) {
+    for (const item of cat.items) {
+      const existing = byName.get(item.name)
+      if (!existing || item.score > existing.score) {
+        byName.set(item.name, item)
+      }
+    }
+  }
+  return Array.from(byName.values())
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+}
+
 // ─── Universes Beyond Matrix (Step 9.9) ──────────────────────────────────────
 
 export type UBMedium =
