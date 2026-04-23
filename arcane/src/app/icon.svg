@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Arcane Analytics">
+  <!--
+    Arcane Analytics favicon.
+    Ember-bright circle (#e87722) with parchment capital "A" (#e8e3d5)
+    in system serif — matches Obsidian & Ember palette + Spectral wordmark.
+    Web fonts don't load in favicons; system serif (Georgia / Times NR /
+    Liberation Serif) is a near-identical substitute at 16-32px sizes.
+  -->
+  <circle cx="16" cy="16" r="16" fill="#e87722"/>
+  <text
+    x="16"
+    y="23"
+    font-family="Georgia, 'Times New Roman', 'Liberation Serif', serif"
+    font-size="26"
+    font-weight="700"
+    text-anchor="middle"
+    fill="#e8e3d5"
+  >A</text>
+</svg>
