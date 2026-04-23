@@ -90,13 +90,20 @@ body {
 }
 
 /*
- * Print-optimized styles. Applied whenever the user triggers the browser's
- * print dialog (either via Ctrl+P or the "Save as PDF" button on the
- * Bag of Holding report page). The report view declares
+ * Print-optimized styles for the Bag of Holding report.
+ *
+ * Applied when the user triggers the browser's print dialog (Ctrl+P or the
+ * "Save as PDF" button). The report view declares
  * `<main className="report-view ...">` so we can scope the heaviest
- * overrides to that page; the general print rules (hide nav, swap
- * colors) apply globally for sensible behavior on any route a user
- * might print.
+ * overrides to that page; general print rules (hide nav, swap colors)
+ * apply globally for sensible behavior on any route a user might print.
+ *
+ * Typography note: the Spectral / Inter / JetBrains Mono fonts loaded
+ * via next/font in layout.tsx ARE available for print — browsers use
+ * whatever's already loaded in the DOM when rendering the print view.
+ * So we don't need explicit @font-face blocks here; the brand fonts
+ * render in PDFs naturally via the existing font-display / font-sans /
+ * font-mono utility classes on the page.
  */
 @media print {
   html {
@@ -105,59 +112,127 @@ body {
 
   body {
     background: white !important;
-    color: #111 !important;
+    color: #1a1a1a !important;
   }
 
-  /* Hide persistent chrome — site header, atlas, Sage panel, etc.
-   * The report page also uses Tailwind's `print:hidden` utility
-   * for more granular control over its own chrome (back button,
-   * export buttons). */
+  /* Hide persistent chrome — site header, report navigation bar, etc.
+   * The report page also uses Tailwind's `print:hidden` utility for more
+   * granular control (back button, export buttons, on-screen footer). */
   header,
   nav[aria-label="Report navigation"] {
     display: none !important;
   }
 
-  /* On the Bag of Holding report specifically, force a light-palette
-   * render so the output is readable on paper / legible as a PDF.
-   * Without these overrides the deep obsidian/bronze palette eats toner
-   * and looks ominous in PDF form. */
+  /* ─── Report page: light-palette render ──────────────────────────────
+   * Force a light palette on the report so the output is readable on
+   * paper and looks like a professional document. Without these overrides,
+   * the deep obsidian/bronze palette eats toner and looks ominous in
+   * PDF form. Warm off-black (#1a1a1a) rather than pure #000 reads more
+   * refined in print. */
   .report-view {
     background: white !important;
-    color: #111 !important;
+    color: #1a1a1a !important;
+    max-width: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
   }
 
-  .report-view h1,
-  .report-view h2,
+  /* Typographic hierarchy — tightened and color-balanced for print.
+   * Title reads as a warm off-black; subordinate headings step down in
+   * weight rather than in color, preserving color continuity through
+   * the document. */
+  .report-view h1 {
+    color: #0a0a0a !important;
+    font-size: 24pt;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.25em;
+  }
+
+  .report-view h2 {
+    color: #0a0a0a !important;
+    font-size: 14pt;
+    line-height: 1.25;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+  }
+
   .report-view h3 {
-    color: #000 !important;
+    color: #1a1a1a !important;
+    font-size: 11pt;
+    line-height: 1.3;
+    margin-bottom: 0.15em;
   }
 
   .report-view p {
-    color: #222 !important;
+    color: #2a2a2a !important;
+    font-size: 10.5pt;
+    line-height: 1.55;
   }
 
-  /* Pagination hints: keep individual items together on one page when
-   * possible, and push section starts to a new page if we're mid-page
-   * and the section has substantial content. */
+  /* Small-caps / meta labels (ember eyebrows, timestamps, etc.) —
+   * desaturate to a mid-grey that still clearly reads as secondary. */
+  .report-view .font-mono,
+  .report-view [class*="text-ember"],
+  .report-view [class*="text-ash"] {
+    color: #555 !important;
+  }
+
+  /* ─── Section dividers (only between sections, not after the last) ───
+   * Light rule lines give the report a structured, document-like cadence.
+   * `+ section` ensures the rule only appears between consecutive sections,
+   * not before the first or after the last. */
+  .report-view section + section {
+    margin-top: 1.75em;
+    padding-top: 1.25em;
+    border-top: 0.5pt solid #d0cabf; /* warm mid-parchment, prints clean */
+  }
+
+  /* ─── Card treatment for print ───────────────────────────────────────
+   * Replace the dark-UI bordered card with a print-friendly version:
+   * light background, thin rule line on the left as a marker (keeps the
+   * ember identity subtly), minimal bordering elsewhere. */
   .report-view article {
+    background: white !important;
+    border: none !important;
+    border-left: 1.5pt solid #b8692a !important; /* ember */
+    border-radius: 0 !important;
+    padding: 0.4em 0 0.4em 0.9em !important;
+    margin-bottom: 0.9em !important;
     break-inside: avoid;
     page-break-inside: avoid;
   }
 
-  .report-view section {
-    break-inside: avoid-page;
-    page-break-inside: avoid;
+  /* Item icons — render as the same warm off-black as body text; the
+   * ember accent is carried by the left border of each card. */
+  .report-view article svg {
+    color: #2a2a2a !important;
   }
 
-  /* No shadows, no glow effects — they don't render well in PDF and
+  /* Sections should try to avoid breaking across pages when they're
+   * short; long sections break naturally at card boundaries. */
+  .report-view section {
+    break-inside: auto;
+  }
+
+  /* ─── Visual stripping ──────────────────────────────────────────────
+   * No shadows, no glow effects — they don't render well in PDF and
    * waste toner if the user prints on paper. */
   .report-view * {
     box-shadow: none !important;
     text-shadow: none !important;
   }
 
-  /* Sensible page margins for PDF export. */
+  /* ─── Page geometry ────────────────────────────────────────────────── */
   @page {
-    margin: 0.6in 0.5in;
+    margin: 0.6in 0.55in;
+  }
+
+  /* First-page margin slightly larger so the title block has breathing
+   * room above; subsequent pages use the default. */
+  @page :first {
+    margin-top: 0.85in;
   }
 }
