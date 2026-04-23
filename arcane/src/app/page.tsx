@@ -1,53 +1,78 @@
+import type { Metadata } from "next"
+import { redirect } from "next/navigation"
+
+import { auth } from "../../auth"
+import { LandingCta } from "@/components/landing-cta"
+
 /*
- * Arcane Analytics — root landing stub.
+ * Arcane Analytics — root landing page.
  *
- * Placeholder until the real landing page ("State of the D&D Multiverse", §3.1)
- * is built in a later step. The Overview lens is now live with real data.
+ * Two distinct experiences driven by authentication state:
+ *
+ *   - Authenticated user → immediately redirected to /overview. No
+ *     point showing marketing copy to someone already inside the
+ *     product. Session is read server-side via auth() so the redirect
+ *     happens at the edge / RSC layer, not after a client-side flash.
+ *
+ *   - Unauthenticated visitor → marketing landing with a single
+ *     prominent Sign in CTA. This is what a WotC / Hasbro prospect
+ *     sees when they click the link in outreach email. Copy is
+ *     deliberately minimal: the email did the selling, the landing
+ *     page's job is to look legitimate and route them into sign-in.
+ *
+ * Copy matches the canonical outreach language from
+ * project_hasbro_pitch_problems_solutions.md §"What Arcane IS" — the
+ * 10-K + live-signal duality, the Universes Beyond Matrix, the
+ * eight-voice Council.
+ *
+ * Metadata is set page-level (overrides the layout default) so link
+ * previews — when a WotC exec forwards the URL internally — surface
+ * the production-ready positioning rather than the older "Fantasy
+ * Bloomberg Terminal" framing.
  */
 
-export default function RootPage() {
+export const metadata: Metadata = {
+  title: "Arcane Analytics",
+  description:
+    "Analytical instrumentation for the D&D ecosystem. Daily bylined analyst writing, Universes Beyond candidate ranking, and strategic signal intelligence for the tabletop industry.",
+}
+
+export default async function RootPage() {
+  const session = await auth()
+
+  // Authenticated users skip the marketing landing entirely.
+  if (session?.user) {
+    redirect("/overview")
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-obsidian px-6">
-      <div className="text-center space-y-3">
-        <p className="font-mono text-xs uppercase tracking-widest text-ember-bright">
-          Arcane Analytics · build in progress
+    <main className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center gap-10 bg-obsidian px-6 py-12">
+      <div className="w-full max-w-xl space-y-8 text-center">
+        {/* ── Wordmark eyebrow ───────────────────────────────────── */}
+        <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-ember-bright">
+          Arcane Analytics
         </p>
-        <h1 className="font-display text-4xl font-semibold text-parchment">
-          Step 3 — Overview Lens
+
+        {/* ── Tagline / hero ─────────────────────────────────────── */}
+        <h1 className="font-display text-4xl font-semibold leading-tight text-parchment sm:text-5xl">
+          Analytical instrumentation for the D&amp;D ecosystem.
         </h1>
-        <p className="font-sans text-base text-ash max-w-sm">
-          Real trend data is flowing from Bouncer into CardChrome. The full
-          landing page arrives in Step 3+ polish.
+
+        {/* ── Supporting paragraph ───────────────────────────────── */}
+        <p className="mx-auto max-w-lg font-sans text-base leading-relaxed text-ash">
+          We read Hasbro&rsquo;s 10-K and live cultural signal data in parallel.
+          Eight calibrated analyst voices, daily. Universes Beyond candidate
+          ranking across 142 non-TTRPG IPs. Hype-vs-play composite analysis.
         </p>
+
+        {/* ── Sign-in CTA ────────────────────────────────────────── */}
+        <div className="flex flex-col items-center gap-3 pt-2">
+          <LandingCta />
+          <p className="font-sans text-xs text-ash/70">
+            Sign in with your work email.
+          </p>
+        </div>
       </div>
-
-      <p className="font-sans text-sm text-ash/80 max-w-sm text-center">
-        Tap <span className="text-ember-bright">Atlas</span> in the header for
-        the full site map — Trends, Articles, your Bag of Holding, and what
-        the Council is still building.
-      </p>
-
-      <nav
-        aria-label="Developer harness"
-        className="flex flex-col sm:flex-row gap-3"
-      >
-        <a
-          href="/test-card-chrome"
-          className="inline-flex items-center justify-center rounded-lg border border-bronze bg-onyx px-4 py-2 font-sans text-xs font-medium text-ash transition-colors hover:bg-iron hover:text-parchment"
-        >
-          CardChrome harness
-        </a>
-        <a
-          href="/swatch"
-          className="inline-flex items-center justify-center rounded-lg border border-bronze bg-onyx px-4 py-2 font-sans text-xs font-medium text-ash transition-colors hover:bg-iron hover:text-parchment"
-        >
-          Palette &amp; fonts
-        </a>
-      </nav>
-
-      <p className="font-mono text-xs text-ash/50">
-        FRONTEND_DESIGN_SPEC.md · §3.1 landing page is Step 3+
-      </p>
     </main>
   )
 }
