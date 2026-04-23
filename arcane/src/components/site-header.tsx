@@ -35,13 +35,10 @@ export function SiteHeader() {
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 md:px-6">
         <Link
           href="/"
-          className="group flex items-baseline gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember rounded-sm"
+          className="group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember rounded-sm"
         >
           <span className="font-display text-base font-semibold text-parchment group-hover:text-ember-bright transition-colors">
             Arcane Analytics
-          </span>
-          <span className="hidden sm:inline font-mono text-[10px] uppercase tracking-widest text-ash/60">
-            Archive
           </span>
         </Link>
 
