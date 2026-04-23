@@ -781,14 +781,32 @@ def _has_demand_side_signal(context: dict) -> bool:
     beat), which is about digital *platforms* (VTTs, BG3, D&D Beyond) from
     the product-strategy angle. Gary reads the same platforms but from the
     player's side of the screen.
+
+    TIGHTENED 2026-04-23: the original detector used broad social words
+    like "community", "table", "campaign", "player", and bare "dm ". Those
+    words appear in almost every Reddit-harvester context blob (because
+    tabletop discussion naturally uses them), which meant Gary's detector
+    passed ~all D&D contexts and crowded out Weaver, Architect, etc.
+    The revised detector requires explicit emotional / experiential
+    vocabulary — words that signal the story is actually about felt
+    experience at the table, not just signal that happens to live in a
+    community medium.
     """
     blob = str(context).lower()
     return any(k in blob for k in (
-        "sentiment", "community", "player ", "players ", "dm ", "dms ",
-        "table", "campaign", "session zero", "home game", "goodwill",
-        "backlash", "trust", "roleplay", "actual play",
-        # Subreddit-name fragments that show up in reddit-harvester blobs
+        # Emotional / reaction words that only appear when the story IS
+        # about community sentiment, not when communities happen to be
+        # the medium of signal delivery
+        "sentiment", "backlash", "goodwill", "trust", "controversy",
+        "walkout", "frustration", "uproar", "outrage",
+        # Experiential terms tied to actual-table-play
+        "actual play", "home game", "session zero", "tpk",
+        # Subreddit-name fragments that show up in reddit-harvester blobs —
+        # these are SPECIFIC enough that their presence genuinely indicates
+        # a Reddit-community-centered story, not just any signal with a
+        # Reddit touchpoint.
         "r/dnd", "dmacademy", "dndnext", "dndbehindthescreen",
+        "r/3d6", "r/dungeonmasters", "r/rpg",
     ))
 
 
