@@ -285,7 +285,13 @@ def generate_council_article(context: dict, forced_key: str | None = None) -> di
     active_frame = load_active_frame(_firestore.Client(project=PROJECT_ID))
     frame_id = (active_frame or {}).get("frame_id") if active_frame else None
 
-    excluded = recent_author_keys(bq_client, PROJECT_ID, DATASET_ID, TABLE_ID, days=1)
+    # Rotation guard widened 2026-04-23 from days=1 to days=3. The 1-day
+    # exclusion was too weak: if a voice's trigger kept firing (e.g., Gary's
+    # demand-side detector matching almost every context pre-tightening),
+    # they could still monopolize the feed by writing every other day.
+    # A 3-day window forces real rotation across the 7-voice Council pool,
+    # capping any single voice at roughly 1-in-3 of the output frequency.
+    excluded = recent_author_keys(bq_client, PROJECT_ID, DATASET_ID, TABLE_ID, days=3)
 
     # Track C path: industry-fundamentals frame active → The Dean writes
     # (Step 9.10). Frame-gated activation parallels Gary's demand-side
