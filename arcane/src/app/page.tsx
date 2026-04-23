@@ -34,7 +34,7 @@ import { LandingCta } from "@/components/landing-cta"
 export const metadata: Metadata = {
   title: "Arcane Analytics",
   description:
-    "Analytical instrumentation for the D&D ecosystem. Daily bylined analyst writing, Universes Beyond candidate ranking, and strategic signal intelligence for the tabletop industry.",
+    "Data-driven intelligence for the D&D ecosystem. Daily bylined analyst writing, Universes Beyond candidate ranking, and strategic signal intelligence for the tabletop industry.",
 }
 
 export default async function RootPage() {
@@ -55,7 +55,7 @@ export default async function RootPage() {
 
         {/* ── Tagline / hero ─────────────────────────────────────── */}
         <h1 className="font-display text-4xl font-semibold leading-tight text-parchment sm:text-5xl">
-          Analytical instrumentation for the D&amp;D ecosystem.
+          Data-driven intelligence for the D&amp;D ecosystem
         </h1>
 
         {/* ── Supporting paragraph ───────────────────────────────── */}
