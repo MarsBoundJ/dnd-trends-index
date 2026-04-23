@@ -36,12 +36,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     ...authConfig.providers,
     Resend({
       apiKey: process.env.AUTH_RESEND_KEY,
-      // Resend's sandbox-from-address. In sandbox mode Resend only
-      // delivers mail to the account owner's own verified email
-      // (halftonejones@gmail.com here). Good enough for Step 11.5 —
-      // once a custom sending domain is verified at resend.com,
-      // swap this for something like "sage@arcaneanalytics.com".
-      from: "onboarding@resend.dev",
+      // Production sending address. Domain arcaneanalytics.io was
+      // verified at Resend on 2026-04-23 with DKIM/SPF/DMARC TXT
+      // records in Cloudflare DNS. This address can deliver to any
+      // recipient now — no more sandbox recipient-allowlist constraint.
+      // Using "hello@" handle (short, professional, reusable for any
+      // future transactional mail — welcome, notifications, etc.)
+      // rather than something flow-specific like "magic-links@".
+      from: "hello@arcaneanalytics.io",
     }),
   ],
   // Reuse our existing firebase-admin singleton rather than letting
