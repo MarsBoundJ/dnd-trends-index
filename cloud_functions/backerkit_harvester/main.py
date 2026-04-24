@@ -4,10 +4,16 @@ import json
 import re
 from datetime import datetime, timezone, date
 from google.cloud import bigquery
+from google.cloud import firestore
 
 # Config
 BQ_TABLE = "dnd-trends-index.commercial_data.backerkit_projects"
 URL = "https://www.backerkit.com/c/collections/role-playing-games?sort_by=trending"
+PROJECT_ID = "dnd-trends-index"
+
+# Firestore collection path for admin run logs. Mirrors the Next.js
+# admin console's structure (arcane/src/app/api/admin/backerkit/run/route.ts).
+ADMIN_RUN_COLLECTION = ("admin", "runs", "backerkit")
 
 DND_KEYWORDS = [
     "5e", "5th edition", "d&d", "dungeons", "2024 compatible",
@@ -47,10 +53,71 @@ def days_remaining(ended_at_str):
         return 0
 
 
+def _report_run_status(run_id, status, started_at, summary=None, error=None):
+    """Self-report the run outcome to Firestore.
+
+    Called from both success and failure paths so the admin console's
+    polling /api/admin/backerkit/status sees an updated doc even when the
+    Next.js route that triggered us has been torn down by Vercel. This is
+    the robust replacement for the fire-and-forget callback pattern, which
+    works on long-lived Node (local dev) but silently dies on serverless
+    (production Vercel).
+
+    No-ops when `run_id` is absent — the harvester remains callable without
+    a run_id (e.g., from the scheduled cron trigger) and will just skip the
+    Firestore write in that case.
+    """
+    if not run_id:
+        return
+
+    try:
+        fs = firestore.Client(project=PROJECT_ID)
+        doc_ref = (
+            fs.collection(ADMIN_RUN_COLLECTION[0])
+            .document(ADMIN_RUN_COLLECTION[1])
+            .collection(ADMIN_RUN_COLLECTION[2])
+            .document(run_id)
+        )
+        finished_at = datetime.now(timezone.utc)
+        duration_sec = int((finished_at - started_at).total_seconds())
+
+        update_fields = {
+            "status": status,
+            "finishedAt": finished_at,
+            "durationSec": duration_sec,
+        }
+        if summary is not None:
+            update_fields["summary"] = summary
+        if error is not None:
+            update_fields["error"] = error
+
+        # Use update() rather than set(merge=True) so a missing doc raises
+        # instead of silently creating one — the /run route ALWAYS creates
+        # the doc first, so a missing doc here means something's broken
+        # upstream and we want to see it in the harvester logs.
+        doc_ref.update(update_fields)
+        print(f"✅ Reported run status to Firestore: {run_id} → {status}")
+    except Exception as e:
+        # Don't let Firestore write failures cascade into harvester failure.
+        # The BQ insert already succeeded (for the success path) or already
+        # failed (for the failure path) — Firestore-reporting is just
+        # housekeeping. Log it and continue.
+        print(f"⚠️  Firestore status update failed for run {run_id}: {e}")
+
+
 @functions_framework.http
 def backerkit_harvester_http(request):
-    print("🚀 Starting BackerKit Harvest...")
+    started_at = datetime.now(timezone.utc)
 
+    # Pull run_id from JSON body if present. Harvester is still callable
+    # without it (scheduled cron trigger doesn't supply one), but when
+    # triggered from the admin console we pass run_id so we can self-report.
+    body = request.get_json(silent=True) or {}
+    run_id = body.get("run_id") if isinstance(body, dict) else None
+
+    print(f"🚀 Starting BackerKit Harvest... (run_id={run_id or 'none'})")
+
+    # ─── Fetch BackerKit listing ─────────────────────────────────────────
     try:
         resp = requests.get(
             URL,
@@ -64,7 +131,9 @@ def backerkit_harvester_http(request):
         resp.raise_for_status()
         data = resp.json()
     except Exception as e:
-        print(f"❌ Fetch failed: {e}")
+        err_msg = f"Fetch failed: {e}"
+        print(f"❌ {err_msg}")
+        _report_run_status(run_id, "failed", started_at, error=err_msg)
         return json.dumps({"status": "error", "message": str(e)}), 500
 
     projects = data.get("crowdfunding/projects", [])
@@ -89,14 +158,21 @@ def backerkit_harvester_http(request):
         })
 
     if not rows:
-        return json.dumps({"status": "warning", "message": "No projects found"}), 200
+        summary = {"status": "warning", "message": "No projects found"}
+        _report_run_status(run_id, "completed", started_at, summary=summary)
+        return json.dumps(summary), 200
 
+    # ─── BQ insert ────────────────────────────────────────────────────────
     client = bigquery.Client()
     errors = client.insert_rows_json(BQ_TABLE, rows)
     if errors:
-        print(f"❌ BQ errors: {errors}")
+        err_msg = f"BQ insert errors: {errors}"
+        print(f"❌ {err_msg}")
+        _report_run_status(run_id, "failed", started_at, error=err_msg)
         return json.dumps({"status": "error", "details": str(errors)}), 500
 
-    msg = f"✅ Inserted {len(rows)} BackerKit projects."
-    print(msg)
-    return json.dumps({"status": "success", "message": msg}), 200
+    msg = f"Inserted {len(rows)} BackerKit projects."
+    print(f"✅ {msg}")
+    summary = {"status": "success", "message": msg}
+    _report_run_status(run_id, "completed", started_at, summary=summary)
+    return json.dumps(summary), 200
