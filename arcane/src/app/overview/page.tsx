@@ -19,6 +19,14 @@ import Link from "next/link"
 
 import { CardChrome } from "@/components/card-chrome"
 import { OverviewBarChart } from "@/components/overview-bar-chart"
+import {
+  OpportunityScatter,
+  type OpportunityScatterPoint,
+} from "@/components/opportunity-scatter"
+import {
+  SignalSourceDonut,
+  type SignalSourceSlice,
+} from "@/components/signal-source-donut"
 import { BagLink } from "@/components/bag-link"
 import { ConceptLink } from "@/components/concept-drawer"
 import {
@@ -104,6 +112,52 @@ export default async function OverviewPage() {
 
   // ── Card 9: Amazon Bestsellers (new, with price) ────────────────────────
   const amazonTop = flattenTopItems(amazonLeaderboard, 5)
+
+  // ── Card 10: Opportunity Landscape (scatter chart, new visualization) ───
+  // Gather every concept with a meaningful interest × opportunity pair.
+  // Drop zeros on either axis (they'd pile up at origin). Limit to 80 dots
+  // to keep the chart legible — sorted by opportunity descending so the
+  // "top-right story" (high interest + high opportunity) surfaces reliably.
+  const scatterPoints: OpportunityScatterPoint[] = data
+    .flatMap((cat) =>
+      cat.items
+        .filter((i) => i.score > 0 && i.opportunity_index > 0)
+        .map((i) => ({
+          name: i.name,
+          category: cat.category,
+          score: i.score,
+          opportunityIndex: i.opportunity_index,
+        })),
+    )
+    // Dedupe by name — the same concept can appear under multiple category
+    // rollups. Keep the highest-opportunity instance.
+    .reduce<OpportunityScatterPoint[]>((acc, p) => {
+      const existing = acc.find((x) => x.name === p.name)
+      if (!existing) {
+        acc.push(p)
+      } else if (p.opportunityIndex > existing.opportunityIndex) {
+        existing.opportunityIndex = p.opportunityIndex
+        existing.score = p.score
+      }
+      return acc
+    }, [])
+    .sort((a, b) => b.opportunityIndex - a.opportunityIndex)
+    .slice(0, 80)
+
+  // ── Card 11: Signal Source Mix (donut chart, new visualization) ─────────
+  // Sum heat across all categories for each source, then split the donut
+  // by source. Tells the cross-stream story in a single glance.
+  function sumHeat(cats: typeof data): number {
+    return cats.reduce((sum, cat) => sum + (cat.heat ?? 0), 0)
+  }
+  const sourceMix: SignalSourceSlice[] = [
+    { source: "google", label: "Google Trends", total: sumHeat(data), color: "#e87722" },
+    { source: "reddit", label: "Reddit", total: sumHeat(redditLeaderboard), color: "#5fc9e7" },
+    { source: "youtube", label: "YouTube", total: sumHeat(youtubeLeaderboard), color: "#8b5cf6" },
+    { source: "fandom", label: "Fandom", total: sumHeat(fandomLeaderboard), color: "#6baa75" },
+    { source: "bgg", label: "BGG", total: sumHeat(bggLeaderboard), color: "#d4a94a" },
+    { source: "amazon", label: "Amazon", total: sumHeat(amazonLeaderboard), color: "#7ab8e0" },
+  ].filter((s) => s.total > 0)
 
   // ── Step 6: batch-fetch data confidence for every concept we're about
   // to render, then compute one aggregate score per card (min across
@@ -217,6 +271,30 @@ export default async function OverviewPage() {
       .map(
         (a, i) =>
           `  ${i + 1}. ${a.name} — sales_rank ${a.sales_rank ?? "?"}, price ${a.formatted_price ?? "?"}`,
+      )
+      .join("\n")
+
+  const scatterContext =
+    `Card: "Opportunity Landscape" (Overview lens — scatter chart)\n` +
+    `X-axis: interest score (Google Trends, 0-100). Y-axis: opportunity_index (demand vs. supply gap; higher = bigger opening). Dots colored by category.\n` +
+    `Top-right quadrant = concepts with high player interest but weak product coverage — i.e., the money opening.\n` +
+    `Total concepts plotted: ${scatterPoints.length}.\n` +
+    `Top 5 by opportunity:\n` +
+    scatterPoints
+      .slice(0, 5)
+      .map(
+        (p, i) =>
+          `  ${i + 1}. ${p.name} (${p.category}) — interest ${Math.round(p.score)}, opportunity ${Math.round(p.opportunityIndex)}`,
+      )
+      .join("\n")
+
+  const donutContext =
+    `Card: "Signal Source Mix" (Overview lens — donut chart)\n` +
+    `Shows proportion of total signal heat coming from each tracked data source. Arcane aggregates across ${sourceMix.length} streams.\n` +
+    sourceMix
+      .map(
+        (s) =>
+          `  ${s.label}: ${((s.total / sourceMix.reduce((t, x) => t + x.total, 0)) * 100).toFixed(1)}% (raw heat ${Math.round(s.total)})`,
       )
       .join("\n")
 
@@ -559,6 +637,40 @@ export default async function OverviewPage() {
           </ol>
           <p className="font-mono text-[10px] text-ash/70 uppercase tracking-widest mt-3">
             By Amazon sales rank · price shown
+          </p>
+        </CardChrome>
+
+        {/* 10 — Opportunity Landscape scatter chart (spans 2 cols on lg+) */}
+        <div className="sm:col-span-1 lg:col-span-2">
+          <CardChrome
+            title="Opportunity Landscape"
+            subtitle="overview · interest × opportunity · all concepts"
+            lens="overview"
+            cardType="chart"
+            confidence={75}
+            cardId="overview:opportunity-scatter"
+            sageContext={scatterContext}
+          >
+            <OpportunityScatter data={scatterPoints} />
+            <p className="font-mono text-[10px] text-ash/70 uppercase tracking-widest mt-1">
+              Top-right = high interest + underexploited · {scatterPoints.length} concepts
+            </p>
+          </CardChrome>
+        </div>
+
+        {/* 11 — Signal Source Mix donut */}
+        <CardChrome
+          title="Signal Source Mix"
+          subtitle="overview · cross-stream aggregation"
+          lens="overview"
+          cardType="chart"
+          confidence={90}
+          cardId="overview:source-mix"
+          sageContext={donutContext}
+        >
+          <SignalSourceDonut data={sourceMix} />
+          <p className="font-mono text-[10px] text-ash/70 uppercase tracking-widest mt-3">
+            % of total signal heat per source
           </p>
         </CardChrome>
 
