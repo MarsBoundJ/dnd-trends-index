@@ -30,6 +30,8 @@ import {
   findCategory,
   deduplicateItems,
   flattenTopItems,
+  filterYouTubeConsensus,
+  filterFandomTTRPG,
   topOpportunities,
   topCategoriesByHeat,
   UB_MEDIUM_LABEL,
@@ -38,18 +40,31 @@ import {
 export default async function OverviewPage() {
   // Parallel fetch across multiple Bouncer endpoints — all are independent
   // and 1-hr ISR cached, so fanning out keeps the page snappy even with
-  // 6+ cards' worth of data sources.
+  // 10+ cards' worth of data sources.
   const [
     data,
     redditLeaderboard,
-    youtubeLeaderboard,
+    youtubeLeaderboardRaw,
+    fandomLeaderboardRaw,
+    bggLeaderboard,
+    amazonLeaderboard,
     ubMatrix,
   ] = await Promise.all([
     fetchBouncerData(),
     fetchLeaderboards("reddit"),
     fetchLeaderboards("youtube"),
+    fetchLeaderboards("fandom"),
+    fetchLeaderboards("bgg"),
+    fetchLeaderboards("amazon"),
     fetchUBMatrix(5),
   ])
+
+  // Apply source-specific cleaners before flattening — YouTube needs
+  // multi-creator filtering to avoid the "everyone's at 100" normalization
+  // artifact; Fandom needs TTRPG-source filtering to avoid surfacing
+  // Stranger Things / Severance characters on a D&D-centric card.
+  const youtubeLeaderboard = filterYouTubeConsensus(youtubeLeaderboardRaw, 2)
+  const fandomLeaderboard = filterFandomTTRPG(fandomLeaderboardRaw)
 
   // ── Card 1: Top Classes ─────────────────────────────────────────────────
   const classCategory = findCategory(data, "Class")
@@ -68,11 +83,27 @@ export default async function OverviewPage() {
   // ── Card 4: Reddit Top Concepts (new) ───────────────────────────────────
   const redditTop = flattenTopItems(redditLeaderboard, 5)
 
-  // ── Card 5: YouTube Creator Consensus (new) ─────────────────────────────
-  const youtubeTop = flattenTopItems(youtubeLeaderboard, 5)
+  // ── Card 5: YouTube Creator Consensus (filtered to >=2 creators) ────────
+  // Sort by creator_count desc (with score as tiebreaker) so the "most-
+  // agreed-upon" concepts surface first rather than single-creator outliers.
+  const youtubeTop = flattenTopItems(youtubeLeaderboard, 20) // Take more then re-sort
+    .sort((a, b) => {
+      const c = (b.creator_count ?? 0) - (a.creator_count ?? 0)
+      return c !== 0 ? c : b.score - a.score
+    })
+    .slice(0, 5)
 
   // ── Card 6: Universes Beyond Top-5 (new, cross-links to /matrix) ────────
   const ubTop = ubMatrix.candidates.slice(0, 5)
+
+  // ── Card 7: Top on Fandom (new, TTRPG-filtered) ─────────────────────────
+  const fandomTop = flattenTopItems(fandomLeaderboard, 5)
+
+  // ── Card 8: BGG Hotness (new, TTRPG rulebooks & adventures) ─────────────
+  const bggTop = flattenTopItems(bggLeaderboard, 5)
+
+  // ── Card 9: Amazon Bestsellers (new, with price) ────────────────────────
+  const amazonTop = flattenTopItems(amazonLeaderboard, 5)
 
   // ── Step 6: batch-fetch data confidence for every concept we're about
   // to render, then compute one aggregate score per card (min across
@@ -139,10 +170,13 @@ export default async function OverviewPage() {
 
   const youtubeContext =
     `Card: "YouTube Creator Consensus" (Overview lens)\n` +
-    `Source: consensus_score across tracked D&D-content creators.\n` +
-    `Top 5:\n` +
+    `Source: consensus_score across tracked D&D-content creators; filtered to concepts mentioned by >=2 creators to avoid per-category normalization artifacts.\n` +
+    `Top 5 by creator count:\n` +
     youtubeTop
-      .map((y, i) => `  ${i + 1}. ${y.name} — score ${Math.round(y.score)}`)
+      .map(
+        (y, i) =>
+          `  ${i + 1}. ${y.name} — ${y.creator_count ?? 0} creators, score ${Math.round(y.score)}`,
+      )
       .join("\n")
 
   const ubContext =
@@ -153,6 +187,36 @@ export default async function OverviewPage() {
       .map(
         (c, i) =>
           `  ${i + 1}. ${c.ip_name} (${UB_MEDIUM_LABEL[c.medium]}) — fit ${((c.license_fit_score ?? 0) * 100).toFixed(0)}`,
+      )
+      .join("\n")
+
+  const fandomContext =
+    `Card: "Top on Fandom" (Overview lens)\n` +
+    `Source: Fandom wiki page-view hype, filtered to D&D / Pathfinder / 5e / Critical Role wikis. Cross-medium IPs surfaced separately on the Universes Beyond Matrix.\n` +
+    `Top 5:\n` +
+    fandomTop
+      .map((f, i) => `  ${i + 1}. ${f.name} — hype ${Math.round(f.score)}`)
+      .join("\n")
+
+  const bggContext =
+    `Card: "BGG Hotness" (Overview lens)\n` +
+    `Source: BoardGameGeek rank + owned counts for TTRPG rulebooks and adventures.\n` +
+    `Top 5:\n` +
+    bggTop
+      .map(
+        (b, i) =>
+          `  ${i + 1}. ${b.name} — rank ${Math.round(b.score)}, owned by ${b.owned ?? "?"}`,
+      )
+      .join("\n")
+
+  const amazonContext =
+    `Card: "Amazon Bestsellers" (Overview lens)\n` +
+    `Source: Amazon sales rank for D&D books, adventures, DM screens. Lower sales_rank = higher demand.\n` +
+    `Top 5:\n` +
+    amazonTop
+      .map(
+        (a, i) =>
+          `  ${i + 1}. ${a.name} — sales_rank ${a.sales_rank ?? "?"}, price ${a.formatted_price ?? "?"}`,
       )
       .join("\n")
 
@@ -309,10 +373,10 @@ export default async function OverviewPage() {
           </p>
         </CardChrome>
 
-        {/* 5 — YouTube Creator Consensus (new) */}
+        {/* 5 — YouTube Creator Consensus (filtered to multi-creator items) */}
         <CardChrome
           title="YouTube Creator Consensus"
-          subtitle="overview · tracked creators · consensus score"
+          subtitle="overview · tracked creators · multi-creator agreement"
           lens="overview"
           cardType="leaderboard"
           confidence={75}
@@ -321,7 +385,9 @@ export default async function OverviewPage() {
         >
           <ol className="space-y-2 py-1">
             {youtubeTop.length === 0 ? (
-              <li className="font-sans text-sm text-ash">No data available.</li>
+              <li className="font-sans text-sm text-ash">
+                No multi-creator consensus yet.
+              </li>
             ) : (
               youtubeTop.map((item, i) => (
                 <li key={item.name} className="flex items-center gap-3">
@@ -331,15 +397,15 @@ export default async function OverviewPage() {
                   <span className="font-sans text-sm text-parchment flex-1">
                     <ConceptLink name={item.name} />
                   </span>
-                  <span className="font-mono text-xs text-ember-bright tabular-nums">
-                    {Math.round(item.score)}
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-ash/70 tabular-nums">
+                    {item.creator_count ?? 0}× creators
                   </span>
                 </li>
               ))
             )}
           </ol>
           <p className="font-mono text-[10px] text-ash/70 uppercase tracking-widest mt-3">
-            Consensus score across tracked creators
+            Ranked by number of creators agreeing · {youtubeTop.length} shown
           </p>
         </CardChrome>
 
@@ -388,6 +454,112 @@ export default async function OverviewPage() {
               Full matrix →
             </Link>
           </div>
+        </CardChrome>
+
+        {/* 7 — Top on Fandom (TTRPG-filtered) */}
+        <CardChrome
+          title="Top on Fandom"
+          subtitle="overview · ttrpg wikis · hype score"
+          lens="overview"
+          cardType="leaderboard"
+          confidence={75}
+          cardId="overview:top-fandom"
+          sageContext={fandomContext}
+        >
+          <ol className="space-y-2 py-1">
+            {fandomTop.length === 0 ? (
+              <li className="font-sans text-sm text-ash">No data available.</li>
+            ) : (
+              fandomTop.map((item, i) => (
+                <li key={item.name} className="flex items-center gap-3">
+                  <span className="font-mono text-xs text-ash w-4 text-right shrink-0">
+                    {i + 1}
+                  </span>
+                  <span className="font-sans text-sm text-parchment flex-1">
+                    <ConceptLink name={item.name} />
+                  </span>
+                  <span className="font-mono text-xs text-ember-bright tabular-nums">
+                    {Math.round(item.score)}
+                  </span>
+                </li>
+              ))
+            )}
+          </ol>
+          <p className="font-mono text-[10px] text-ash/70 uppercase tracking-widest mt-3">
+            Page-view hype across D&amp;D / Pathfinder / 5e wikis
+          </p>
+        </CardChrome>
+
+        {/* 8 — BGG Hotness */}
+        <CardChrome
+          title="BGG Hotness"
+          subtitle="overview · boardgamegeek · rulebooks & adventures"
+          lens="overview"
+          cardType="leaderboard"
+          confidence={80}
+          cardId="overview:top-bgg"
+          sageContext={bggContext}
+        >
+          <ol className="space-y-2 py-1">
+            {bggTop.length === 0 ? (
+              <li className="font-sans text-sm text-ash">No data available.</li>
+            ) : (
+              bggTop.map((item, i) => (
+                <li key={item.name} className="flex items-center gap-3">
+                  <span className="font-mono text-xs text-ash w-4 text-right shrink-0">
+                    {i + 1}
+                  </span>
+                  <span className="font-sans text-sm text-parchment flex-1">
+                    <ConceptLink name={item.name} />
+                  </span>
+                  {item.owned !== undefined && item.owned > 0 && (
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-ash/70 tabular-nums">
+                      {item.owned.toLocaleString()} owned
+                    </span>
+                  )}
+                </li>
+              ))
+            )}
+          </ol>
+          <p className="font-mono text-[10px] text-ash/70 uppercase tracking-widest mt-3">
+            BoardGameGeek rank × ownership count
+          </p>
+        </CardChrome>
+
+        {/* 9 — Amazon Bestsellers */}
+        <CardChrome
+          title="Amazon Bestsellers"
+          subtitle="overview · amazon sales rank · d&d books"
+          lens="overview"
+          cardType="leaderboard"
+          confidence={80}
+          cardId="overview:top-amazon"
+          sageContext={amazonContext}
+        >
+          <ol className="space-y-2 py-1">
+            {amazonTop.length === 0 ? (
+              <li className="font-sans text-sm text-ash">No data available.</li>
+            ) : (
+              amazonTop.map((item, i) => (
+                <li key={item.name} className="flex items-center gap-3">
+                  <span className="font-mono text-xs text-ash w-4 text-right shrink-0">
+                    {i + 1}
+                  </span>
+                  <span className="font-sans text-sm text-parchment flex-1 truncate">
+                    <ConceptLink name={item.name} />
+                  </span>
+                  {item.formatted_price && (
+                    <span className="font-mono text-xs text-ember-bright tabular-nums">
+                      {item.formatted_price}
+                    </span>
+                  )}
+                </li>
+              ))
+            )}
+          </ol>
+          <p className="font-mono text-[10px] text-ash/70 uppercase tracking-widest mt-3">
+            By Amazon sales rank · price shown
+          </p>
         </CardChrome>
 
       </section>
