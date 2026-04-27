@@ -39,27 +39,45 @@ from seed_fanfic_canonical_tags import (
 
 
 def ao3_url(canonical_tag: str, ip_name: str) -> str:
-    """Build AO3 D&D-tag-page URL filtered by an additional IP fandom tag.
+    """Build AO3 form-generator URL pattern for D&D x IP filter.
 
-    Pattern: /tags/[D&D tag]/works?work_search[other_tag_names]=[IP tag]
+    Verified pattern (Apr 27, 2026 — captured directly from AO3's own
+    Sort-and-Filter form output):
 
-    Why this pattern instead of /works/search?:
-    - /works/search?work_search[tag_names]=... was the original attempt
-      but AO3 silently ignores `tag_names` (not a real param). Bookmarklet
-      saw 15M counts (site-wide AO3 works) on first smoke test. We
-      switched to the canonical tag-page route + AO3's actual filter
-      param `other_tag_names` for the secondary tag.
-    - /tags/[NAME]/works is also explicitly allowed by AO3 robots.txt
-      for general User-agent (vs /works/search? which is Disallow).
-      Even though humans clicking links in browsers aren't bound by
-      robots.txt, using an allowed URL is cleaner ethics-wise.
+        /works?tag_id=<encoded D&D>&work_search[other_tag_names]=<IP>
+              &commit=Sort+and+Filter
+
+    The tag_id encoding is non-standard: AO3 uses `*a*` instead of
+    `%26` for the `&` character in the primary tag name. Standard URL
+    encoding (%20 for space, %26 for ampersand) does NOT work here —
+    AO3 silently strips the filter and returns site-wide results.
+
+    Earlier attempts that all failed:
+    - /works/search?work_search[tag_names]=A,B    (tag_names not a real param)
+    - /tags/[D&D]/works?work_search[other_tag_names]=...  (route doesn't filter)
+
+    The correct route is the form-submit endpoint /works? with tag_id
+    as the primary filter and work_search[other_tag_names] as the
+    secondary. AO3's UI itself uses this URL when you fill the
+    sidebar form and click "Sort and Filter".
     """
-    dnd_path = urllib.parse.quote(D_AND_D_AO3, safe='')
-    qs = urllib.parse.urlencode({
+    # tag_id encoding: spaces -> +, & -> *a*, parens -> %28/%29
+    tag_id_encoded = (
+        D_AND_D_AO3
+        .replace(' ', '+')
+        .replace('&', '*a*')
+        .replace('(', '%28')
+        .replace(')', '%29')
+    )
+    other_params = urllib.parse.urlencode({
         'work_search[other_tag_names]': canonical_tag,
+        'commit': 'Sort and Filter',
         '_arcane_ip': ip_name,
     })
-    return f'https://archiveofourown.org/tags/{dnd_path}/works?{qs}'
+    return (
+        f'https://archiveofourown.org/works?tag_id={tag_id_encoded}'
+        f'&{other_params}'
+    )
 
 
 def ffn_url(ffn_id: int | None, ip_name: str) -> str | None:

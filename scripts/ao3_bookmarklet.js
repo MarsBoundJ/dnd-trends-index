@@ -73,23 +73,41 @@
   }
 
   // ── Extract work count from DOM ─────────────────────────────────────────
-  // Order matters: try the most specific patterns first.
+  // AO3 has multiple H2 formats depending on result count + pagination:
+  //   "1 - 20 of 26 Works in <tag>"    (paginated — we want 26, not 1)
+  //   "26 Works in <tag>"              (single page — we want 26)
+  //   "1,234 Found"                    (search results endpoint)
+  //   "No works found"                 (zero results variant)
+  //
+  // Pattern A handles the paginated form first because it's the most
+  // common (most filtered queries return >20 results); pattern B handles
+  // the single-page case; patterns C/D handle edge cases.
   function extractWorkCount() {
-    // Pattern 1: tag pages — "N,NNN Works in <tag>"
+    // Pattern A: paginated — "1 - 20 of 26 Works in <tag>" — capture 26
+    for (const h of document.querySelectorAll('h2.heading, h3.heading')) {
+      const text = h.textContent;
+      const m = text.match(/of\s+([\d,]+)\s+Works?\s+in\b/i);
+      if (m) return parseInt(m[1].replace(/,/g, ''), 10);
+    }
+    // Pattern B: single-page — "26 Works in <tag>" (no "of X")
     for (const h of document.querySelectorAll('h2.heading, h3.heading')) {
       const text = h.textContent.trim();
-      // "1,234 Works in tag" or "1,234 Works"
-      const m = text.match(/^([\d,]+)\s+Work(s?)\b/);
+      // Must look like "N Works in <tag>" — anchored at start to avoid
+      // false-matches on the paginated form
+      const m = text.match(/^([\d,]+)\s+Works?\s+in\b/i);
       if (m) return parseInt(m[1].replace(/,/g, ''), 10);
-      // "1,234 Found" (search results)
-      const m2 = text.match(/^([\d,]+)\s+Found\b/);
-      if (m2) return parseInt(m2[1].replace(/,/g, ''), 10);
     }
-    // Pattern 2: "0 results" / no-results variants
+    // Pattern C: search results endpoint — "1,234 Found"
+    for (const h of document.querySelectorAll('h2.heading, h3.heading')) {
+      const m = h.textContent.match(/^([\d,]+)\s+Found\b/);
+      if (m) return parseInt(m[1].replace(/,/g, ''), 10);
+    }
+    // Pattern D: zero-results variants
     for (const h of document.querySelectorAll('h2.heading, h3.heading')) {
       if (/0\s+(works|found)/i.test(h.textContent)) return 0;
+      if (/no works found/i.test(h.textContent)) return 0;
     }
-    // Pattern 3: pagination text "of N" — fallback
+    // Pattern E: pagination element fallback — "of N" anywhere
     const pag = document.querySelector('ol.pagination li.next');
     if (pag) {
       const total = pag.textContent.match(/of\s+([\d,]+)/i);
@@ -111,7 +129,10 @@
   let canonical = '';
   const h2 = document.querySelector('h2.heading');
   if (h2) {
-    const m = h2.textContent.match(/Works in\s+(.+?)$/);
+    // AO3's H2 sometimes mashes "Navigation and Actions" or "Sort and
+    // Filter" UI text into the same textContent — strip those before
+    // capturing the tag name.
+    const m = h2.textContent.match(/Works in\s+(.+?)(?:Navigation and Actions|Sort and Filter|$)/i);
     if (m) canonical = m[1].trim();
   }
   // Filter sidebar 'Other tags' (when present) gives us the SECONDARY tag
