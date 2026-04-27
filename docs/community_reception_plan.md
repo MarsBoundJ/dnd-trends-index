@@ -50,7 +50,7 @@ Inverse case is just as informative: zero AO3 crossover fic means "literally nob
 
 **Public data, ethically clean to scrape.** ~1 day to build the scraper.
 
-### 2. MTG Universes Beyond historical precedent
+### 2. MTG Universes Beyond historical precedent — PLUS D&D crossover precedents
 
 WotC has been doing UB for 3+ years. The reception of past UB sets is publicly visible and is a leading indicator for D&D crossovers:
 - Walking Dead UB → community revolt
@@ -62,7 +62,11 @@ We build a curated database of ~30 past UB sets, each scored on reception outcom
 
 **This explicitly speaks WotC's own language.** They lived through the Walking Dead reception. Showing them an AI that learned from their own history is uniquely persuasive.
 
-~half day to assemble the curated database.
+**Companion table — D&D crossover precedents (added Apr 27, 2026 per Phil's expansion):** D&D itself has shipped roughly 6-8 crossover products (Stranger Things Starter Set, Rick and Morty boxed set, Critical Role: Wildemount + Netherdeep, Strixhaven, Honor Among Thieves tie-ins). This dataset is much sparser than MTG UB but each entry is gold-standard signal because it's the **same community** judging the **same product line** we're predicting for. The matcher will weight D&D-precedent matches **heavier** (~0.65) than MTG-UB-precedent matches (~0.35) when both apply to a candidate IP, with per-IP renormalization when only one type matches.
+
+Strategic bonus: the **gap between "MTG community received this IP well" and "D&D community received this IP well"** is itself a signal worth surfacing in the data trail. The two communities overlap but aren't identical.
+
+~3/4 day to assemble both curated databases (was ~half-day for MTG-only).
 
 ### 3. BGG licensed-game proxy
 
@@ -79,10 +83,10 @@ When this IP previously got a board game adaptation, how did tabletop gamers rec
 | Gemini-anchored baseline | LLM rubric pass with 6th dimension | ~1 hr | Coverage — works for all 142 IPs |
 | Reddit sentiment | Existing pipeline (25 subreddits) | ~2 hrs | Core discourse signal |
 | **AO3 crossover signal** | New scraper (public AO3 tags) | ~1 day | **Unique — nobody else has this** |
-| **MTG UB precedent database** | Hand-curated DB + analogical matching | ~half day | **Unique — leading indicator from WotC's own history** |
+| **MTG UB + D&D crossover precedent databases** | Two hand-curated DBs + analogical matching | ~3/4 day | **Unique — leading indicators from WotC's own history (MTG broad, D&D same-community gold)** |
 | **BGG licensed-game proxy** | Existing BGG data + new query | ~half day | **Unique — mechanics-literate audience proxy** |
 
-**Total Phase 1 effort:** ~3 working days. Doable in remaining window before Expo.
+**Total Phase 1 effort:** ~3-3.5 working days. Doable in remaining window before Expo.
 
 ### Phase 1 composition formula
 
