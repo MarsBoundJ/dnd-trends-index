@@ -2,12 +2,14 @@
 Arcane Analytics — Universes Beyond candidate enrichment (Step 9.9, Chunk B).
 
 Scores the ~143 seed IPs from scripts/seed_ub_candidate_ips.py against
-the 5-dimension rubric (genre_fit, combat_translatability,
-party_dynamics_fit, setting_portability, fanbase_ttrpg_overlap) using
-gemini-2.5-flash with structured output. Writes results to
-dnd_trends_raw.ub_candidate_enrichment.
+the 6-dimension rubric (genre_fit, combat_translatability,
+party_dynamics_fit, setting_portability, fanbase_ttrpg_overlap,
+community_reception) using gemini-2.5-flash with structured output.
+Writes results to dnd_trends_raw.ub_candidate_enrichment.
 
-Rubric sign-off: approved 2026-04-20 with Severance orthogonality anchor.
+Rubric sign-off: 5-dim approved 2026-04-20 with Severance orthogonality
+anchor; community_reception (6th dim) approved 2026-04-27 with Pokemon
+fit/reception independence anchor.
 
 Args:
     --dry-run         Don't write to BigQuery; print results to stdout.
@@ -81,8 +83,8 @@ You are an IP licensing analyst for Arcane Analytics, scoring non-D&D/
 non-MTG IPs on their fit as Universes Beyond (Magic: The Gathering
 crossover) or D&D-campaign-setting licensing candidates.
 
-For each IP, score five INDEPENDENT dimensions on [0.0, 1.0]. A high
-score on one does NOT imply high on others. Two calibration examples:
+For each IP, score six INDEPENDENT dimensions on [0.0, 1.0]. A high
+score on one does NOT imply high on others. Three calibration examples:
   - Stardew Valley: high setting_portability, very low
     combat_translatability.
   - Severance: high setting_portability, low combat_translatability,
@@ -90,6 +92,12 @@ score on one does NOT imply high on others. Two calibration examples:
     TTRPG-licensing fit is much weaker than its cultural footprint
     would suggest. Score the IP as it IS, not as its popularity
     implies.
+  - Pokemon: high genre_fit / combat_translatability / party_dynamics_fit
+    / fanbase_ttrpg_overlap, but very low community_reception — fit
+    and reception are independent. The first five dimensions ask "would
+    this WORK as D&D content"; community_reception asks "would the
+    established D&D community EMBRACE it if WotC actually shipped it."
+    Score them independently.
 
 ─── DIMENSIONS ────────────────────────────────────────────────────────────
 
@@ -164,6 +172,35 @@ score on one does NOT imply high on others. Two calibration examples:
      0.0–0.4  Minimal overlap. Anchors: cozy sim, most romance,
               mainstream reality, pop-culture lifestyle.
 
+6. COMMUNITY_RECEPTION — if WotC actually licensed this IP as
+   Universes Beyond or a campaign setting, would the established
+   D&D community embrace or reject it? Score INDEPENDENTLY of the
+   first five dimensions. An IP can be a strong mechanical fit but a
+   community disaster (Pokemon: high fit, low reception — perceived
+   as MTG competitor + tonal mismatch) or a middling fit but a
+   community celebration (LotR). Consider: community trust signals,
+   perceived "cash grab" risk, tonal alignment with D&D's self-image,
+   and prior reception of similar crossovers in MTG Universes Beyond
+   (Walking Dead UB → revolt; LotR UB → celebrated; Final Fantasy UB
+   → record sales; Spongebob UB → divisive).
+     0.9–1.0  Community-celebrated. The crossover already exists in
+              fan imagination; licensing it formalizes what fans
+              built. Anchors: Baldur's Gate 3, Critical Role, Lord
+              of the Rings, Stranger Things.
+     0.7–0.9  Welcomed with mild grumbling. Strong organic overlap
+              with D&D-adjacent communities; some purists object but
+              broad reception is positive. Anchors: Stormlight
+              Archive, Final Fantasy, The Witcher.
+     0.4–0.7  Divisive. Reception splits along community faction
+              lines; commercial success likely but cultural cost
+              real. Anchors: Severance, Cyberpunk 2077.
+     0.0–0.4  Community-rejected. Read as "WotC pandering," "cash
+              grab," or "doesn't feel like D&D." High backlash risk
+              regardless of commercial fit. Anchors: Bridgerton
+              (perceived pandering), Stardew Valley (cozy register
+              mismatch), Pokemon (Magic competitor + tonal clash),
+              reality TV / lifestyle brands.
+
 ─── OUTPUT ────────────────────────────────────────────────────────────────
 
 For each IP, return a JSON object with:
@@ -173,12 +210,15 @@ For each IP, return a JSON object with:
   - party_dynamics_fit   — float [0.0, 1.0]
   - setting_portability  — float [0.0, 1.0]
   - fanbase_ttrpg_overlap — float [0.0, 1.0]
+  - community_reception  — float [0.0, 1.0]
   - confidence           — float [0.0, 1.0], your certainty across the
                            whole scoring tuple. Use ≥0.8 for famous
                            IPs with clear profiles; 0.5-0.8 for edge
                            cases; <0.5 if a field is truly ambiguous.
   - reasoning            — ONE sentence ≤25 words. Cite the highest-
-                           or lowest-scoring dimension and why.
+                           or lowest-scoring dimension and why. If
+                           fit and reception diverge sharply (e.g.
+                           Pokemon), say so explicitly.
 
 Return ONE object per IP in the same order as received. JSON array only,
 no preamble, no markdown.
@@ -198,6 +238,7 @@ IP_ITEM_SCHEMA = genai_types.Schema(
         "party_dynamics_fit",
         "setting_portability",
         "fanbase_ttrpg_overlap",
+        "community_reception",
         "confidence",
         "reasoning",
     ],
@@ -212,6 +253,9 @@ IP_ITEM_SCHEMA = genai_types.Schema(
         ),
         "setting_portability": genai_types.Schema(type=genai_types.Type.NUMBER),
         "fanbase_ttrpg_overlap": genai_types.Schema(
+            type=genai_types.Type.NUMBER
+        ),
+        "community_reception": genai_types.Schema(
             type=genai_types.Type.NUMBER
         ),
         "confidence": genai_types.Schema(type=genai_types.Type.NUMBER),
@@ -380,6 +424,7 @@ def merge_result_with_input(ip: UBCandidateIP, result: dict) -> dict:
         "party_dynamics_fit": float(result["party_dynamics_fit"]),
         "setting_portability": float(result["setting_portability"]),
         "fanbase_ttrpg_overlap": float(result["fanbase_ttrpg_overlap"]),
+        "community_reception": float(result["community_reception"]),
         "confidence": float(result["confidence"]),
         "reasoning": str(result["reasoning"])[:500],
         "model": GEMINI_MODEL,
