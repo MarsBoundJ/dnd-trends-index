@@ -39,12 +39,27 @@ from seed_fanfic_canonical_tags import (
 
 
 def ao3_url(canonical_tag: str, ip_name: str) -> str:
-    """Build AO3 works/search URL for D&D + IP, with _arcane_ip marker."""
+    """Build AO3 D&D-tag-page URL filtered by an additional IP fandom tag.
+
+    Pattern: /tags/[D&D tag]/works?work_search[other_tag_names]=[IP tag]
+
+    Why this pattern instead of /works/search?:
+    - /works/search?work_search[tag_names]=... was the original attempt
+      but AO3 silently ignores `tag_names` (not a real param). Bookmarklet
+      saw 15M counts (site-wide AO3 works) on first smoke test. We
+      switched to the canonical tag-page route + AO3's actual filter
+      param `other_tag_names` for the secondary tag.
+    - /tags/[NAME]/works is also explicitly allowed by AO3 robots.txt
+      for general User-agent (vs /works/search? which is Disallow).
+      Even though humans clicking links in browsers aren't bound by
+      robots.txt, using an allowed URL is cleaner ethics-wise.
+    """
+    dnd_path = urllib.parse.quote(D_AND_D_AO3, safe='')
     qs = urllib.parse.urlencode({
-        'work_search[tag_names]': f'{D_AND_D_AO3},{canonical_tag}',
+        'work_search[other_tag_names]': canonical_tag,
         '_arcane_ip': ip_name,
     })
-    return f'https://archiveofourown.org/works/search?{qs}'
+    return f'https://archiveofourown.org/tags/{dnd_path}/works?{qs}'
 
 
 def ffn_url(ffn_id: int | None, ip_name: str) -> str | None:

@@ -123,6 +123,26 @@
       : decodeURIComponent(otherTagsParam);
   }
 
+  // ── Sanity guard: refuse to save unfiltered site-wide counts ────────────
+  // The original print_fanfic_capture_urls.py used the wrong AO3 URL
+  // pattern, which AO3 silently treated as no-filter — bookmarklet saw
+  // 15M counts (AO3 site-wide). Catch this loudly before saving:
+  //   - if no canonical tag was detected (page H2 didn't contain "in <tag>")
+  //   - AND the work count is unrealistically high (>100k)
+  // both true → abort with explanation. A real D&D × IP crossover count
+  // is in the hundreds-to-low-thousands range.
+  if (!canonical && work_count > 100000) {
+    log(
+      '⚠️ Likely unfiltered AO3 search.<br>' +
+      `Work count ${work_count.toLocaleString()} is too high for a real ` +
+      'D&D x IP crossover (expected hundreds–thousands).<br>' +
+      'No canonical tag detected on page header — most likely the URL ' +
+      'is missing the tag filter. Check the URL and re-run.'
+    );
+    close(15000);
+    return;
+  }
+
   // ── Confirm modal ───────────────────────────────────────────────────────
   const confirmed = confirm(
     `Save AO3 crossover count?\n\n` +
