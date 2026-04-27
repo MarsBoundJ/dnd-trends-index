@@ -90,6 +90,26 @@ export function getBookmarklets(): Bookmarklet[] {
         "Drag the pill to your bookmarks bar. Works on either dmsguild.com or drivethrurpg.com — click it on a best-seller or metal-tier page and it will harvest every product link on the page.",
       href: wrapBookmarkletFromJs("dmsguild_incursion_mini.js"),
     },
+    {
+      id: "ao3-crossover",
+      name: "AO3 D&D-Crossover Capture",
+      targetHost: "archiveofourown.org",
+      description:
+        "Reads the visible work count from an AO3 search results page (e.g. 'Dungeons & Dragons (Roleplaying Game)' filtered to '+ The Lord of the Rings — All Media Types') and POSTs to Bouncer. Stage 4 of community_reception. Captures organic crossover demand — fans don't write 4,500 Percy Jackson × D&D fic for marketing reasons.",
+      usage:
+        "Drag the pill to your bookmarks bar. Navigate to the AO3 search URL for the IP × D&D combination (the URL can include `&_arcane_ip=Name` so the bookmarklet auto-attributes the count to a seed-list IP — otherwise it prompts). Click the bookmark on the loaded results page; confirm the count and IP in the modal.",
+      href: readBookmarklet("ao3_bookmarklet.txt"),
+    },
+    {
+      id: "ffn-crossover",
+      name: "FFN D&D-Crossover Capture",
+      targetHost: "fanfiction.net",
+      description:
+        "Reads the story count from an FFN crossover page (e.g. /Lord-of-the-Rings-and-Dungeons-and-Dragons-Crossovers/382/1116/) and POSTs to Bouncer. Companion to the AO3 capture for cross-platform reception triangulation.",
+      usage:
+        "Drag the pill to your bookmarks bar. Navigate to FFN's D&D crossover hub at /Dungeons-and-Dragons-Crossovers/1116/0/, click through to the IP-specific crossover page (e.g. Lord of the Rings × D&D), then click the bookmark. The bookmarklet derives the story count from FFN's page-of-N pagination + per-page row count.",
+      href: readBookmarklet("ffn_bookmarklet.txt"),
+    },
   ]
   return cached
 }

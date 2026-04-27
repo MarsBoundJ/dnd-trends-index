@@ -167,6 +167,8 @@ def bouncer_api(request):
             path = 'system/amazon/ingest-ranks'
         elif 'kickstarter/ingest-projects' in full_path:
             path = 'system/kickstarter/ingest-projects'
+        elif 'fanfic/ingest-crossover-count' in full_path:
+            path = 'system/fanfic/ingest-crossover-count'
         elif 'confidence' in full_path:
             path = 'confidence'
         elif 'articles' in full_path:
@@ -1372,13 +1374,64 @@ def bouncer_api(request):
             return (json.dumps({"error": str(errors)}), 500, headers)
         return (json.dumps({"inserted": len(rows)}), 200, headers)
 
+    elif path == 'system/fanfic/ingest-crossover-count':
+        # Ingest one or more (ip_name, platform) crossover counts from a
+        # bookmarklet. Phil/curator browses to AO3 / FFN / Wattpad
+        # search-results page in their normal browser, clicks the
+        # bookmarklet, the bookmarklet reads the visible work count from
+        # the DOM and POSTs here.
+        #
+        # Stage 4 of the community_reception multi-source composite. The
+        # bookmarklet pattern is the resolution to AO3/FFN forbidding
+        # automated scraping in robots.txt + ToS — a human-driven UI
+        # tool is not an automated bot.
+        if request.method != 'POST':
+            return (json.dumps({"error": "POST required"}), 405, headers)
+        ritual_key = request.headers.get('X-Ritual-Key', '')
+        if ritual_key != 'ArcaneLibrarian2026':
+            return (json.dumps({"error": "Unauthorized"}), 403, headers)
+        rows = request.get_json()
+        if not rows:
+            return (json.dumps({"error": "No data"}), 400, headers)
+        if isinstance(rows, dict):
+            rows = [rows]
+        valid_platforms = {'ao3', 'ffn', 'wattpad'}
+        now_ts = datetime.datetime.utcnow().isoformat() + 'Z'
+        cleaned = []
+        for r in rows:
+            platform = (r.get('platform') or '').lower()
+            if platform not in valid_platforms:
+                return (json.dumps({
+                    "error": f"invalid platform '{platform}', must be one of {sorted(valid_platforms)}"
+                }), 400, headers)
+            if not r.get('ip_name'):
+                return (json.dumps({"error": "ip_name required"}), 400, headers)
+            cleaned.append({
+                'ip_name': r['ip_name'],
+                'platform': platform,
+                'platform_canonical': r.get('platform_canonical', ''),
+                'work_count': safe_int(r.get('work_count'), 0),
+                'source_url': r.get('source_url', ''),
+                'scraped_at': now_ts,
+                'scraped_by': r.get('scraped_by', 'bookmarklet'),
+            })
+        errors = client.insert_rows_json(
+            'dnd-trends-index.dnd_trends_raw.fanfic_crossover_counts',
+            cleaned,
+            skip_invalid_rows=True,
+            ignore_unknown_values=True,
+        )
+        if errors:
+            return (json.dumps({"error": str(errors)}), 500, headers)
+        return (json.dumps({"inserted": len(cleaned)}), 200, headers)
+
     elif path == 'system/library/enrich':
         if request.method != 'POST':
             return (json.dumps({"error": "POST required"}), 405, headers)
         items = request.get_json()
         if not items or not isinstance(items, list):
             return (json.dumps({"error": "Invalid input, expected list of product titles/snippets"}), 400, headers)
-        
+
         model = get_gemini_model()
         if not model:
             return (json.dumps({"error": "Vertex AI Init Failure"}), 500, headers)
