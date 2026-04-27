@@ -156,20 +156,33 @@ Concrete observed problem: literature IPs (Stormlight, Murderbot Diaries, Founda
 
 ---
 
+## Locked decisions
+
+### 1. Two scores per IP, both surfaced — LOCKED Apr 27, 2026
+
+Each candidate displays:
+- **Fit score** = `rubric_composite` (mean of the 5 fit dimensions: `genre_fit`, `combat_translatability`, `party_dynamics_fit`, `setting_portability`, `fanbase_ttrpg_overlap`)
+- **Reception score** = `community_reception_score` (the new multi-source composite — Gemini baseline + AO3 + MTG UB precedent + BGG proxy + Reddit, per-IP renormalized)
+- Both shown side-by-side. **NOT averaged together.** The reviewer (WotC exec, Phil during demo, etc.) weighs the two in their own head.
+
+**Why locked, not deferred:** collapsing "fit" and "reception" into a single ranking number destroys exactly the information community_reception was built to surface. A high-fit / low-reception IP (Pokemon, Bridgerton) requires a completely different licensing decision than a low-fit / high-reception IP — but both might score the same blended number under any single-score system. The whole strategic premise of community_reception is that the **gap between fit and reception is the actionable signal.** Hiding that gap behind a composite would defeat the feature.
+
+**Rejected alternatives** (recorded for context, not for revisit):
+- Averaging community_reception into `rubric_composite` as a 6th dimension at 1/6 weight — collapses the fit/reception distinction
+- Modifier on top of fit composite (`license_fit × (0.6 + 0.4 × reception)`) — same problem in different math
+
+**Subject to revisit only:** the LABELS on the two scores ("Fit" / "Reception" / "License-fit") and exact UI placement. The two-scores-not-one structure is permanent.
+
+---
+
 ## Open decisions deferred
 
-1. **Should `community_reception` affect `license_fit_score` directly?**
-   - A. 6th dimension averaged into `rubric_composite` (1/6 weight)
-   - B. Modifier on top of fit composite (`license_fit × (0.6 + 0.4 × reception)`)
-   - C. **Separate score, both displayed, user weighs in their head** ← Phil's lean
-   Phil's preference is **C**; revisit after seeing how the demo plays.
-
-2. **Naming:** `community_reception` or `backlash_risk`?
+1. **Naming:** `community_reception` or `backlash_risk`?
    Phil leaned toward neutral framing: `community_reception` with high = better, matching the polarity of the existing 5 fit dimensions.
 
-3. **Bridgerton-tier negative anchors:** initial draft picks include Bridgerton, Stardew Valley (cozy mismatch), Pokemon (Magic competitor), reality TV / lifestyle brands. Phil to validate before the rubric prompt is finalized.
+2. **Bridgerton-tier negative anchors:** initial draft picks include Bridgerton, Stardew Valley (cozy mismatch), Pokemon (Magic competitor), reality TV / lifestyle brands. Phil to validate before the rubric prompt is finalized.
 
-4. **Phase 2 scope before outreach:** Phil said "possibly add in Phase 2 work before we reach out." Decision deferred until we see Phase 1 progress.
+3. **Phase 2 scope before outreach:** Phil said "possibly add in Phase 2 work before we reach out." Decision deferred until we see Phase 1 progress.
 
 ---
 
