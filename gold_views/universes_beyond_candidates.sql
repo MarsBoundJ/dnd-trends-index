@@ -15,7 +15,7 @@
 --
 -- ─── COMPOSITE FORMULA (baseline, tunable at the constants block below) ─
 --
---   license_fit_score =
+-- Target weights when ALL signals are present for an IP:
 --     0.60 × rubric_composite           -- primary, all 142 IPs covered
 --   + 0.30 × fandom_heat_overlay        -- secondary, 24 IPs covered
 --   + 0.10 × steam_velocity_overlay     -- tertiary, GATED on coverage
@@ -24,6 +24,33 @@
 -- calibrated dimensions, orthogonality anchors, Gemini-validated on all
 -- 142 IPs).  Fandom + Steam overlays validate or challenge the rubric
 -- where live market signals exist; they don't carry primary weight.
+--
+-- ─── PER-IP RENORMALIZATION (Option A fix, 2026-04-27) ─────────────────
+--
+-- Older versions of this view used the target weights LITERALLY — any
+-- IP missing a signal had that signal's weight multiplied by 0, costing
+-- it whatever weight that signal carried.  This structurally penalized
+-- IPs that CANNOT have certain signals — literature has no Steam,
+-- TV/anime/webtoons rarely have Steam, books have no Fandom wikis
+-- yet — and eroded scores for entire categories of IP.
+--
+-- Concrete observed problem (Stormlight Archive, literature):
+--   - rubric_composite = 0.95  (all 5 dims at 0.95)
+--   - fandom_norm = 1.0        (highest fandom hype in the dataset)
+--   - steam_norm = NULL        (no Steam game exists)
+-- Old composite:  0.60 × 0.95 + 0.30 × 1.0 + 0.10 × 0  = 0.87
+-- After Option A: 0.667 × 0.95 + 0.333 × 1.0 + 0 × 0   ≈ 0.967
+--
+-- The fix: divide the weighted sum by the SUM OF WEIGHTS FOR AVAILABLE
+-- SIGNALS (per IP, computed inline).  Mathematically identical to
+-- "score using only the signals that apply to this IP, with weights
+-- renormalized to sum to 1.0."  Each IP is now scored on its own
+-- merits, not penalized for the structural absence of an inapplicable
+-- signal.
+--
+-- IPs that DO have all signals (typically video games like Elden Ring,
+-- Cyberpunk 2077, etc.) score the same as before — the renormalization
+-- is a no-op when sum_of_available_weights = 1.0.
 --
 -- ─── STEAM GATE ─────────────────────────────────────────────────────────
 --
@@ -262,16 +289,88 @@ SELECT
   n.tier,
   n.disambiguation,
 
-  -- Primary composite (rubric-weighted + overlays + gate math).
-  -- NULLs are treated as 0 for the composite — an IP without Fandom
-  -- signal doesn't get boosted; it just rides on the rubric.  The UI
-  -- surfaces the underlying NULLs via the data-trail columns below.
+  -- Primary composite (rubric-weighted + overlays + gate math + per-IP
+  -- renormalization).  Per-IP renormalization (Option A, 2026-04-27)
+  -- divides the weighted sum by the sum of weights for AVAILABLE
+  -- signals — so an IP missing a signal doesn't get penalized for
+  -- the structural absence of that signal.  See header docstring for
+  -- the Stormlight Archive worked example.
+  --
+  -- Numerator: weighted sum of signals that ARE present (NULLs zero out).
+  -- Denominator: sum of weights for signals that are present.  When all
+  -- signals are present, denominator = 1.0 and the formula reduces to
+  -- the old fixed-weight composite (no behavior change for video-game
+  -- IPs that have rubric + fandom + steam all populated).
+  --
+  -- SAFE_DIVIDE returns NULL if denominator is 0 (an IP with no
+  -- signal at all — shouldn't happen post-rubric-pass, but defensive).
+  -- ROUND truncates to 4 decimals to keep license_fit_score human-
+  -- readable (e.g. 0.9667) rather than IEEE-754 noisy.
   ROUND(
-    w.w_rubric * COALESCE(n.rubric_composite, 0)
-    + w.w_fandom * COALESCE(n.fandom_norm, 0)
-    + w.w_steam  * COALESCE(n.steam_norm,  0),
+    SAFE_DIVIDE(
+        (CASE WHEN n.rubric_composite IS NULL THEN 0
+              ELSE w.w_rubric * n.rubric_composite END)
+      + (CASE WHEN n.fandom_norm IS NULL THEN 0
+              ELSE w.w_fandom * n.fandom_norm END)
+      + (CASE WHEN n.steam_norm IS NULL THEN 0
+              ELSE w.w_steam  * n.steam_norm END),
+      NULLIF(
+          (CASE WHEN n.rubric_composite IS NULL THEN 0 ELSE w.w_rubric END)
+        + (CASE WHEN n.fandom_norm IS NULL THEN 0 ELSE w.w_fandom END)
+        + (CASE WHEN n.steam_norm IS NULL THEN 0 ELSE w.w_steam  END),
+        0
+      )
+    ),
     4
   ) AS license_fit_score,
+
+  -- Per-IP "available signals" diagnostics — the data-trail UI uses
+  -- these to surface WHY a particular score is what it is.  E.g., a
+  -- literature IP would show signals_available = ['rubric','fandom']
+  -- and effective weights of (0.667, 0.333, 0.0), making it visible
+  -- to the reviewer that Steam wasn't held against this IP.
+  ROUND(
+    (CASE WHEN n.rubric_composite IS NULL THEN 0 ELSE w.w_rubric END)
+    + (CASE WHEN n.fandom_norm IS NULL THEN 0 ELSE w.w_fandom END)
+    + (CASE WHEN n.steam_norm IS NULL THEN 0 ELSE w.w_steam END),
+    4
+  ) AS sum_of_available_weights,
+  ROUND(
+    SAFE_DIVIDE(
+      CASE WHEN n.rubric_composite IS NULL THEN 0 ELSE w.w_rubric END,
+      NULLIF(
+          (CASE WHEN n.rubric_composite IS NULL THEN 0 ELSE w.w_rubric END)
+        + (CASE WHEN n.fandom_norm IS NULL THEN 0 ELSE w.w_fandom END)
+        + (CASE WHEN n.steam_norm IS NULL THEN 0 ELSE w.w_steam END),
+        0
+      )
+    ),
+    4
+  ) AS effective_w_rubric,
+  ROUND(
+    SAFE_DIVIDE(
+      CASE WHEN n.fandom_norm IS NULL THEN 0 ELSE w.w_fandom END,
+      NULLIF(
+          (CASE WHEN n.rubric_composite IS NULL THEN 0 ELSE w.w_rubric END)
+        + (CASE WHEN n.fandom_norm IS NULL THEN 0 ELSE w.w_fandom END)
+        + (CASE WHEN n.steam_norm IS NULL THEN 0 ELSE w.w_steam END),
+        0
+      )
+    ),
+    4
+  ) AS effective_w_fandom,
+  ROUND(
+    SAFE_DIVIDE(
+      CASE WHEN n.steam_norm IS NULL THEN 0 ELSE w.w_steam END,
+      NULLIF(
+          (CASE WHEN n.rubric_composite IS NULL THEN 0 ELSE w.w_rubric END)
+        + (CASE WHEN n.fandom_norm IS NULL THEN 0 ELSE w.w_fandom END)
+        + (CASE WHEN n.steam_norm IS NULL THEN 0 ELSE w.w_steam END),
+        0
+      )
+    ),
+    4
+  ) AS effective_w_steam,
 
   -- Rubric detail (all 142 IPs have these)
   n.rubric_composite,
