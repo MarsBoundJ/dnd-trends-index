@@ -70,60 +70,59 @@
     return;
   }
 
-  // ── Extract story count from DOM ────────────────────────────────────────
-  // FFN's crossover-page count is harder to extract than AO3's because the
-  // page rarely shows an explicit total count. Strategy:
-  //   1. Look for "Page 1 of N" pagination at top → multiply N by ~25
-  //   2. If page 1 has fewer than 25 stories AND there's no "next" link,
-  //      use the actual visible count
-  //   3. Fall back to manual entry if we can't detect anything
-  function extractStoryCount() {
-    // Pattern 1: pagination — "Page 1 of N" (N is the last-page number)
-    const centerEls = document.querySelectorAll('center');
-    for (const c of centerEls) {
+  // ── Extract story count from DOM (best-effort suggestion only) ──────────
+  // FFN doesn't expose an authoritative total count in a stable place,
+  // and historical "25 stories per page" assumptions broke (Phil's HP ×
+  // D&D test on Apr 28 showed 35 on page 1, undermining the math).
+  //
+  // Strategy: try a few patterns to SUGGEST a count, but ALWAYS prompt
+  // the user to verify against the actual page. Manual confirmation is
+  // more reliable than fragile DOM scraping for FFN.
+  function suggestStoryCount() {
+    // Pattern A: explicit "X-Y of Z" or "of Z" pattern (some FFN pages)
+    for (const c of document.querySelectorAll('center, .pagination, body')) {
       const text = c.textContent;
-      // "Page 1 of 47" — capture the last page number
-      const m = text.match(/Page\s+\d+\s+of\s+(\d+)/i);
+      const m = text.match(/of\s+([\d,]+)\b/i);
       if (m) {
-        const totalPages = parseInt(m[1], 10);
-        // Count stories on current page (page 1 typically full at 25)
-        const onCurrentPage = document.querySelectorAll(
-          'div.z-list.zhover.zpointer, div.z-list'
-        ).length;
-        // FFN paginates ~25 stories per page; the last page may have fewer
-        // so this is an approximate upper bound.
-        if (totalPages === 1) return onCurrentPage;
-        // Estimate: (totalPages - 1) full pages of 25 + current page count
-        // (assumes we are on page 1 and current page is full)
-        return (totalPages - 1) * 25 + onCurrentPage;
+        const n = parseInt(m[1].replace(/,/g, ''), 10);
+        if (n > 0 && n < 1000000) return { count: n, via: 'matched "of N" in page text' };
       }
     }
-    // Pattern 2: no pagination = single page; count visible stories
+    // Pattern B: count visible story rows (last-page case, or single-page result)
     const stories = document.querySelectorAll(
-      'div.z-list.zhover.zpointer, div.z-list'
+      'div.z-list.zhover.zpointer, div.z-list, div[data-storyid]'
     );
-    if (stories.length > 0) return stories.length;
+    if (stories.length > 0) {
+      return { count: stories.length, via: `counted ${stories.length} story rows on this page (may not be total)` };
+    }
     return null;
   }
 
-  let work_count = extractStoryCount();
-  if (work_count === null) {
-    const manual = prompt(
-      'Could not auto-detect story count.\n\n' +
-      'Look at the page (pagination at bottom often shows "Page 1 of N").\n' +
-      'Enter the number of stories manually:'
-    );
-    if (!manual) {
-      log('Cancelled.');
-      close(3000);
-      return;
-    }
-    work_count = parseInt(manual.replace(/[^\d]/g, ''), 10);
-    if (!work_count) {
-      log('⚠️ Invalid count.');
-      close(3000);
-      return;
-    }
+  const suggestion = suggestStoryCount();
+  const promptText = suggestion
+    ? `Total stories for ${ip_name} × D&D on FFN?\n\n` +
+      `Suggested: ${suggestion.count} (${suggestion.via})\n\n` +
+      `Look at the page (bottom usually shows "Page X of Y" or similar).\n` +
+      `Press OK to accept ${suggestion.count}, or type the correct number:`
+    : `Total stories for ${ip_name} × D&D on FFN?\n\n` +
+      `Could not auto-detect from the page DOM.\n` +
+      `Look at the page (bottom usually shows "Page X of Y" or similar).\n` +
+      `Enter the total story count:`;
+
+  const userInput = prompt(
+    promptText,
+    suggestion ? String(suggestion.count) : ''
+  );
+  if (userInput === null) {
+    log('Cancelled.');
+    close(3000);
+    return;
+  }
+  const work_count = parseInt(String(userInput).replace(/[^\d]/g, ''), 10);
+  if (!work_count && work_count !== 0) {
+    log('⚠️ Invalid count.');
+    close(3000);
+    return;
   }
 
   // ── Extract canonical fandom-pair from URL path ─────────────────────────
