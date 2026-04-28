@@ -99,9 +99,26 @@ WITH
   ),
 
   -- ────────────────────────────────────────────────────────────────────
-  -- Per-IP aggregation across platforms. Per-IP renormalization:
-  -- average is taken only over platforms where the IP has data, so an
-  -- IP with AO3-only data isn't penalized for missing FFN/Wattpad.
+  -- Per-IP aggregation across platforms — SCORE COMPUTATION.
+  --
+  -- WHERE platform != 'ffn': FFN excluded from the score (Apr 28, 2026).
+  -- Rationale: when Phil first captured FFN data via the index page
+  -- bookmarklet, only 6 of 142 IPs had ANY FFN crossover with D&D, and
+  -- their counts maxed out at 7. Compared to AO3's max of 47,660 works
+  -- on a single IP, that's a 6,800:1 ratio — too sparse for meaningful
+  -- triangulation. Worse, the per-platform log-scale normalization
+  -- gives the IP with 7 FFN works a platform_score of 1.0 (because 7
+  -- IS the FFN dataset max), which would falsely boost any IP captured
+  -- on both AO3 and FFN.
+  --
+  -- The captured FFN rows stay in dnd_trends_raw.fanfic_crossover_counts
+  -- for historical record + data-trail visibility (see per_platform_pivot
+  -- below — ffn_work_count is still surfaced in the output schema). They
+  -- just don't contribute to fanfic_proxy_score.
+  --
+  -- Same exclusion applies to Wattpad (no captures planned). The
+  -- composite community_reception_score will be 4-source not 5-source:
+  -- Gemini + MTG/D&D precedents + BGG + AO3 + Reddit (Stage 5).
   -- ────────────────────────────────────────────────────────────────────
   per_ip_aggregated AS (
     SELECT
@@ -113,6 +130,11 @@ WITH
       MAX(work_count) AS max_works_single_platform,
       MAX(scraped_at) AS latest_scrape
     FROM per_platform_normalized
+    -- Allow-list of platforms that contribute to the score. AO3 only for
+    -- now (FFN/Wattpad excluded — see comment above for rationale). To
+    -- bring a new platform into the score, add it here AND verify the
+    -- platform has comparable scale + meaningful coverage first.
+    WHERE platform IN ('ao3')
     GROUP BY ip_name
   ),
 
