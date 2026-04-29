@@ -110,6 +110,16 @@ export function getBookmarklets(): Bookmarklet[] {
         "Drag the pill to your bookmarks bar. Navigate to FFN's D&D crossover hub at /Dungeons-and-Dragons-Crossovers/1116/0/, click through to the IP-specific crossover page (e.g. Lord of the Rings × D&D), then click the bookmark. The bookmarklet derives the story count from FFN's page-of-N pagination + per-page row count.",
       href: readBookmarklet("ffn_bookmarklet.txt"),
     },
+    {
+      id: "ddb-homebrew",
+      name: "DDB Homebrew Capture",
+      targetHost: "dndbeyond.com",
+      description:
+        "Stage 6a of community_reception. Two-state floating panel for D&D Beyond's homebrew sections (subclasses, spells, monsters, magic-items, races, etc.). Pick mode: searchable dropdown of 40 priority IPs grouped by cohort with per-IP per-section progress bars; on selection it types the IP into DDB's filter and submits. Capture mode: reads .list-row elements (name, slug, adds, views, rating, base class) and POSTs the structured rows to /system/homebrew/ingest-ddb. localStorage-backed sent log persists across browser sessions.",
+      usage:
+        "Drag the pill to your bookmarks bar. Open dndbeyond.com/homebrew/<section> (subclasses / spells / monsters / magic-items / races / classes / feats / backgrounds), click the bookmark. Pick an IP from the dropdown — the bookmarklet fills the filter and submits. After the page reloads with filtered results, click the bookmark again to capture and save. Dropdown shows progress bars so you know what's done across all 5 priority sections per IP.",
+      href: readBookmarklet("ddb_homebrew_bookmarklet.txt"),
+    },
   ]
   return cached
 }
