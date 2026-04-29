@@ -188,15 +188,27 @@ WITH
   ),
 
   -- ────────────────────────────────────────────────────────────────────
-  -- Source 6: Homebrew creation intensity (r/UnearthedArcana)
+  -- Source 6: Homebrew creation intensity (combined v1 + v2 sub-streams)
+  --
+  -- Apr 29, 2026 v2 rewire: now reads from homebrew_combined_proxy which
+  -- blends v1 (r/UnearthedArcana classified mentions) with v2 (GMBinder
+  -- + Homebrewery confirmed-5e-homebrew artifacts after two-layer
+  -- disambiguation). Surface column `homebrew_creation_score` retained
+  -- for backwards-compat with the matrix output schema.
   -- ────────────────────────────────────────────────────────────────────
   homebrew_score AS (
     SELECT
       ip_name,
-      homebrew_creation_score,
-      homebrew_mention_count,
-      sample_post_title AS homebrew_sample_title
-    FROM `dnd-trends-index.gold_data.homebrew_creation_proxy`
+      homebrew_combined_score          AS homebrew_creation_score,
+      ua_homebrew_mention_count        AS homebrew_mention_count,
+      ua_sample_post_title             AS homebrew_sample_title,
+      ua_homebrew_score                AS ua_homebrew_score,
+      external_homebrew_score          AS external_homebrew_score,
+      confirmed_5e_homebrew_count      AS confirmed_5e_homebrew_count,
+      gmbinder_confirmed               AS gmbinder_confirmed,
+      homebrewery_confirmed            AS homebrewery_confirmed,
+      homebrew_sub_signals_present     AS homebrew_sub_signals_present
+    FROM `dnd-trends-index.gold_data.homebrew_combined_proxy`
   ),
 
   -- ────────────────────────────────────────────────────────────────────
@@ -266,6 +278,12 @@ WITH
       hb.homebrew_creation_score,
       hb.homebrew_mention_count,
       hb.homebrew_sample_title,
+      hb.ua_homebrew_score,
+      hb.external_homebrew_score,
+      hb.confirmed_5e_homebrew_count,
+      hb.gmbinder_confirmed,
+      hb.homebrewery_confirmed,
+      hb.homebrew_sub_signals_present,
       fm.forum_presence_score,
       fm.forum_total_results,
       fm.enworld_top_hits,
@@ -559,6 +577,13 @@ SELECT
   w.reddit_confirmed_mentions,
   w.homebrew_mention_count,
   w.homebrew_sample_title,
+  -- v2 homebrew sub-trail (Apr 29 — combined UA Reddit + external GMBinder/Homebrewery)
+  w.ua_homebrew_score,
+  w.external_homebrew_score,
+  w.confirmed_5e_homebrew_count,
+  w.gmbinder_confirmed,
+  w.homebrewery_confirmed,
+  w.homebrew_sub_signals_present,
   w.forum_total_results,
   w.enworld_top_hits,
   w.giantitp_top_hits,
