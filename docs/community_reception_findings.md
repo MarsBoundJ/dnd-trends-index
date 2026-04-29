@@ -1,8 +1,8 @@
 # Community Reception + Acquisition: Strategic Findings Report
 
-**Status:** Phase 1 build complete. All 5 sources of `community_reception_score` shipped to BigQuery. New sibling matrix dimension `reddit_acquisition_score` (reverse-funnel) added in-flight. Composite scoring + UI surfacing remain.
+**Status:** All 7 stages of `community_reception_score` shipped to BigQuery + sibling `reddit_acquisition_score` matrix dimension. Stages 6 + 7 are v1 (presence/light-coverage). v2 (sentiment-rich) is the next focus. Composite gold view + dual-view (equal + weighted) scoring deployed.
 
-**Date:** 2026-04-28
+**Last updated:** 2026-04-29 (Stages 6 + 7 v1 added)
 
 **Audience:** Phil + outside reviewers (Gemini, Perplexity, future collaborators) helping decide composite-score weighting and demo prioritization.
 
@@ -374,7 +374,118 @@ When a platform's ToS or robots.txt forbids automated access, build human-driven
 
 ---
 
-## Appendix: the data tables in BQ
+## Appendix A: v1 baseline snapshot (Apr 29, 2026)
+
+**Captured before v2 Stages 6 + 7 (sentiment-rich) work begins.** Use this for A/B comparison: when v2 lands, query `ub_matrix_composite` again and check whether the composite scores + flag firings move meaningfully.
+
+### Composite distribution (v1 baseline)
+
+```
+total_ips:           142
+sufficient:           50 (>=2 measured sources)
+thin_evidence:        78 (1 measured source)
+modeled_only:         14 (Gemini baseline only or no data)
+has_quadrant:          4 (BCG quadrant assignment)
+n_gold_mine:           4
+n_brand_hazard:        0
+n_fan_service:         0
+n_trojan_horse:        0
+n_high_backlash_risk:  2
+n_engagement_only:     1
+n_phase2_unlock:       1
+n_highly_corroborated: 0
+```
+
+### Top 30 by `community_reception_score_equal` (v1 baseline)
+
+| IP | fit | rec_eq | rec_wt | acq | s1_gemini | s2_prec | s3_bgg | s4_ao3 | s5_reddit | s6_homebrew | s7_forum | m | quadrant |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Berserk | 0.94 | **0.90** | 0.881 | — | 1.00 | — | 0.71 | — | 0.91 | 1.00 | 0.88 | 4 | — |
+| Baldur's Gate 3 | 0.91 | 0.86 | 0.883 | 0.62 | 1.00 | — | — | 1.00 | 0.73 | 0.76 | 0.83 | 4 | gold_mine |
+| Dungeon Crawler Carl | 0.97 | 0.84 | 0.854 | 0.71 | 0.95 | — | 0.84 | — | — | — | 0.73 | 2 | gold_mine |
+| The Legend of Korra | 0.90 | 0.82 | 0.82 | — | 0.90 | — | 0.79 | — | — | — | 0.76 | 2 | — |
+| Fallout | 0.64 | 0.81 | 0.794 | — | 0.70 | 0.80 | 0.76 | — | — | — | 0.99 | 3 | — |
+| Godzilla | 0.73 | 0.78 | 0.742 | — | 0.50 | 0.72 | — | — | — | 1.00 | 0.91 | 3 | — |
+| Magnus Archives | 0.74 | 0.78 | 0.775 | — | 0.75 | — | — | — | — | 1.00 | 0.59 | 2 | — |
+| Invincible | 0.76 | 0.78 | 0.761 | — | 0.50 | — | 0.84 | — | — | — | 1.00 | 2 | — |
+| Cowboy Bebop | 0.88 | 0.73 | 0.738 | — | 0.70 | — | 0.78 | — | — | — | 0.71 | 2 | — |
+| Pathfinder: WotR | 0.90 | 0.73 | 0.771 | — | 0.95 | — | 0.81 | — | — | — | 0.43 | 2 | — |
+| One Piece | 0.95 | 0.73 | 0.663 | 0.87 | 0.80 | — | — | 0.17 | 1.00 | — | 0.94 | 3 | gold_mine |
+| The Lord of the Rings | 0.97 | 0.72 | 0.692 | — | 1.00 | — | 0.75 | 0.41 | — | — | — | 2 | — |
+| Bloodborne | 0.84 | 0.71 | 0.694 | — | 0.90 | — | 0.81 | 0.23 | 1.00 | — | 0.63 | 4 | — |
+| Elden Ring | 0.85 | 0.71 | 0.667 | — | 0.90 | — | 0.70 | 0.30 | — | 1.00 | 0.64 | 4 | — |
+| Avatar: TLA | 0.92 | 0.71 | 0.714 | — | 0.90 | 0.88 | 0.78 | 0.26 | — | — | — | 3 | — |
+| **Stranger Things** | 0.89 | **0.70** | 0.662 | **0.54** | 0.95 | 0.73 | 0.30 | 0.41 | 0.85 | — | 0.98 | **5** | — *(ENG flag)* |
+| Hollow Knight | 0.64 | 0.70 | 0.717 | 0.85 | 0.55 | — | — | — | 1.00 | — | 0.54 | 2 | gold_mine |
+| Sea of Thieves | 0.73 | 0.69 | 0.711 | — | 0.80 | — | 0.73 | — | — | — | 0.53 | 2 | — |
+| Goblin Slayer | 0.96 | 0.65 | 0.682 | — | 0.80 | — | 0.71 | — | — | — | 0.44 | 2 | — |
+| Doctor Who | 0.75 | 0.65 | 0.63 | — | 0.50 | 0.75 | 0.76 | 0.24 | — | — | 0.98 | 4 | — |
+
+**Triple-source negative (canonical demo case):**
+
+| IP | fit | rec_eq | rec_wt | s3_bgg | s4_ao3 | s5_reddit | s6_homebrew | s7_forum | m |
+|---|---|---|---|---|---|---|---|---|---|
+| **Spy x Family** | 0.66 | **0.25** | 0.21 | **0.10** | **0.00** | — | — | 0.41 | 3 |
+
+BGG buyers_remorse (0.10 = cash-grab pattern) + AO3 zero + Reddit insufficient → still locked-in negative across all measured sources.
+
+### Mid-tier (sufficient evidence, lower scores)
+
+| IP | rec_eq | s3_bgg | s4_ao3 | s5_reddit | s6_homebrew | s7_forum |
+|---|---|---|---|---|---|---|
+| Mistborn | 0.61 | 0.81 | 0.10 | — | — | 0.72 |
+| Final Fantasy XIV | 0.59 | 0.74 | 0.32 | — | — | 0.51 |
+| Cyberpunk 2077 | 0.57 | 0.79 | 0.32 | — | — | 0.66 |
+| Stormlight Archive | 0.55 | 0.76 | 0.17 | — | 0.50 | 0.51 |
+| Witcher | 0.52 | 0.72 | 0.36 | — | — | 0.19 |
+| Helldivers 2 | 0.49 | 0.52 | — | — | — | 0.25 |
+| Demon Slayer | 0.41 | — | 0.00 | — | — | 0.42 |
+| Squid Game | 0.35 | 0.29 | — | — | — | 0.36 |
+| Severance | 0.33 | — | 0.00 | — | — | 0.54 |
+| Spy x Family | 0.25 | 0.10 | 0.00 | — | — | 0.41 |
+
+### Thin_evidence cases (1 measured source) — cannot composite-score reliably
+
+These IPs have only 1 measured source so the composite is NULL (per abstention rule). Notable cases:
+- **Tyranny** — forum 0.95 ⚠️ likely inflated (the word "tyranny" is generic in fantasy). v2 sentiment classification should drop this dramatically.
+- **Cthulhu Mythos** — forum 0.90 ⚠️ also possibly inflated (mythology is widely referenced beyond the IP)
+- **The Boys** — forum 0.83 (genuine signal — show + comic discussion on RPG.net)
+- **Genshin Impact** — forum 0.38, Gemini 0.40 (gacha cluster, low signal)
+- **Mushoku Tensei** — forum 0.12 (controversial themes, anime niche)
+- **Andor** — forum 0.17 (Star Wars-side discussion, niche on D&D forums)
+- **Frieren** — forum 0.42, Gemini 0.90
+- **Final Fantasy XVI** — forum 0.31
+
+### Modeled-only (no measured signal)
+
+14 IPs have only Gemini baseline (no measured sources). These get `modeled_only_low_confidence` status:
+- From, Pantheon, Hilda (canonically ambiguous names — alias library flags them but no measured signal yet)
+- Several manhwa / niche literary IPs
+
+### Composite-shape outliers — where the gap IS the signal
+
+| IP | composite_status | Notes |
+|---|---|---|
+| **Stranger Things** | sufficient (5 sources) | **High reception (0.70) / mid acquisition (0.54)** = `is_engagement_only` flag fires. Asymmetry case. |
+| **Hollow Knight** | sufficient (2 sources via Reddit + forum) | `quadrant=gold_mine` (rec 0.70 / acq 0.85). Phase 1 reception 1.0 + Phase 2 acquisition 0.85. |
+| **DCC** | sufficient (2 sources via BGG + forum) | `quadrant=gold_mine` (rec 0.84 / acq 0.71). Phase-2-only unlock confirmed by post-Stage-7 forum signal. |
+| **Spy x Family** | sufficient (3 sources) | Triple-source negative: BGG 0.10 + AO3 0.00 + forum 0.41. Composite 0.25. |
+| **Tyranny** | thin_evidence | Forum 0.95 ⚠️ — known false-positive inflation; v2 should drop dramatically. |
+
+### Stage-by-stage IP coverage (v1)
+
+| Stage | Coverage | Notes |
+|---|---|---|
+| 1 Gemini | 142/142 | Always present (modeled prior) |
+| 2 Precedents | ~10/142 | Exact ip_name match only; analogical matching is future work |
+| 3 BGG | 41/142 | Curated mapping to licensed board games |
+| 4 AO3 | 26/142 | Bookmarklet-captured manually by Phil |
+| 5 Reddit reception | 7/142 | Small but reliable Reddit-D&D discourse |
+| 5 Reddit acquisition | 6/142 | Reverse-funnel from IP-side subs |
+| 6 Homebrew | 11/142 | r/UnearthedArcana subset of Stage 5 data |
+| **7 Forum presence** | **122/142** | **Google CSE — broadest single source** |
+
+## Appendix B: the data tables in BQ
 
 Built between 2026-04-27 and 2026-04-28:
 
