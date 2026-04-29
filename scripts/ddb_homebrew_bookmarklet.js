@@ -2,34 +2,22 @@
  * D&D Beyond Homebrew Capture Bookmarklet
  * (Stage 6a of the community_reception multi-source composite, Apr 29, 2026)
  *
- * Two-state floating panel:
+ * BULK MODE (default) — land on any dndbeyond.com page, click once,
+ * bookmarklet sequentially fetches `/homebrew/<section>?filter-name=<IP>`
+ * for all 40 priority IPs × 5 priority sections = 200 captures, parses
+ * the filtered HTML response with DOMParser, POSTs each result to
+ * /system/homebrew/ingest-ddb on the bouncer. Progress UI shows
+ * live status. Skips already-captured combinations by default. ~5
+ * minutes per full run.
  *
- *   PICK mode    — when no filter active. Dropdown of 40 priority IPs
- *                   (grouped by cohort, with per-IP per-section progress
- *                   bars). On selection: fill DDB's search input + submit
- *                   the filter form. Page reloads with filtered results.
- *
- *   CAPTURE mode — when a filter IS active and listing rows are visible.
- *                   Reads the .list-row elements, presents a confirm
- *                   summary (IP / section / visible items / top adds),
- *                   POSTs to /system/homebrew/ingest-ddb on the bouncer.
- *
- * On bookmarklet click the panel decides which state based on the page:
- *   - filter-search input has a non-empty value → CAPTURE mode
- *   - else → PICK mode
- *
- * Ethics: this is human-wielded UI tooling, not an automated scraper.
- * Phil clicks links / types in DDB's own UI; the bookmarklet just reads
- * what's already rendered and POSTs structured rows home. No fetch() to
- * D&D Beyond, no auto-iteration.
- *
- * Sent log: per-(ip, section) timestamps persisted in localStorage so
- * progress survives page reloads + browser restarts. The bouncer's
- * /system/homebrew/ip-list route also returns server-side sent counts so
- * a fresh browser starts with the right state.
+ * MANUAL MODE (fallback) — pick a single IP from a searchable dropdown
+ * grouped by cohort with per-IP per-section progress bars. Bookmarklet
+ * fills DDB's filter input + submits the form. Re-click on the filtered
+ * page to capture. For ad-hoc one-offs or if bulk mode hits a problem.
  *
  * Selectors learned from Phil's F12 scout on Apr 29:
- *   - Row container:    .list-row (with data-slug + data-type)
+ *   - Filter URL pattern: /homebrew/<section>?filter-name=<IP>&filter-sort=adds-desc
+ *   - Row container:    .list-row[data-slug] (with data-type)
  *   - Name link:        .list-row-name-primary-text a
  *   - Adds count:       .list-row-col-adds .list-row-primary-text
  *   - Views count:      .list-row-col-views .list-row-primary-text
@@ -39,6 +27,11 @@
  *   - Base class:       .list-row-col-baseclass .list-row-primary-text
  *   - Author:           .list-row-author-primary-text
  *   - Pagination:       .b-pagination — last page number is the page count
+ *
+ * Ethics: same-origin fetches with Phil's session cookies. Same logical
+ * pattern as the Amazon bookmarklet (which fetches Amazon's own list
+ * pages with the user's authenticated session). Not an automated bot
+ * — a human-clicked tool that runs while a human's browser is open.
  */
 
 (async function () {
@@ -62,29 +55,20 @@
 
   const SENT_LOG_KEY  = 'arcane_ddb_homebrew_sent_log';
   const IP_LIST_KEY   = 'arcane_ddb_homebrew_ip_list';
-  const IP_LIST_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+  const IP_LIST_TTL_MS = 24 * 60 * 60 * 1000; // 24h
+  const FETCH_DELAY_MS = 1500;                 // pacing between DDB fetches
+  const FETCH_TIMEOUT_MS = 25000;              // give DDB plenty of time
 
-  // ── Sanity: must be on D&D Beyond homebrew ────────────────────────────────
-  if (!location.hostname.endsWith('dndbeyond.com') ||
-      !location.pathname.startsWith('/homebrew/')) {
-    alert(
-      'Open a D&D Beyond homebrew section first.\n' +
-      'e.g. dndbeyond.com/homebrew/subclasses'
-    );
+  // ── Sanity: must be on D&D Beyond ─────────────────────────────────────────
+  if (!location.hostname.endsWith('dndbeyond.com')) {
+    alert('Open any dndbeyond.com page first (the bookmarklet uses your DDB session cookies via fetch).');
     return;
   }
 
-  const section = location.pathname.split('/').filter(Boolean).pop();
-  if (!section || section === 'homebrew') {
-    alert('Navigate INTO a homebrew section (subclasses / spells / monsters / etc.)');
-    return;
-  }
-
-  // ── Remove pre-existing panel (re-clicks reset) ───────────────────────────
+  // ── Reset panel on re-click ───────────────────────────────────────────────
   const existing = document.getElementById('__ddb_homebrew_panel__');
   if (existing) existing.remove();
 
-  // ── Build panel skeleton ──────────────────────────────────────────────────
   const panel = document.createElement('div');
   panel.id = '__ddb_homebrew_panel__';
   Object.assign(panel.style, {
@@ -93,31 +77,40 @@
     padding: '14px 16px', borderRadius: '12px',
     fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
     fontSize: '13px', lineHeight: '1.4',
-    width: '440px', maxHeight: '85vh', overflowY: 'auto',
+    width: '460px', maxHeight: '88vh', overflowY: 'auto',
     boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
     border: '1px solid #2a2a4a',
   });
   panel.innerHTML = `
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
       <div style="font-weight:600;font-size:14px;color:#e87722;">📜 DDB Homebrew Capture</div>
-      <button id="__ddb_close_btn" style="background:none;border:none;color:#888;font-size:18px;cursor:pointer;">×</button>
+      <button id="__ddb_close_btn" style="background:none;border:none;color:#888;font-size:18px;cursor:pointer;line-height:1;">×</button>
     </div>
     <div id="__ddb_panel_body" style="display:flex;flex-direction:column;gap:10px;"></div>
   `;
   document.body.appendChild(panel);
-  document.getElementById('__ddb_close_btn').onclick = () => panel.remove();
+  document.getElementById('__ddb_close_btn').onclick = () => {
+    if (window.__ddb_bulk_running__) {
+      if (!confirm('A bulk capture is in progress. Close anyway? (Captures already saved are kept.)')) return;
+      window.__ddb_bulk_abort__ = true;
+    }
+    panel.remove();
+  };
 
   const body = document.getElementById('__ddb_panel_body');
-  const set = (html) => { body.innerHTML = html; };
-  const append = (html) => { body.insertAdjacentHTML('beforeend', html); };
+  const set    = (html) => { body.innerHTML = html; };
   const status = (msg, color = '#e0e0ff') => {
-    const el = document.getElementById('__ddb_status') ||
-      (() => { const e = document.createElement('div'); e.id = '__ddb_status'; body.prepend(e); return e; })();
+    let el = document.getElementById('__ddb_status');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = '__ddb_status';
+      body.prepend(el);
+    }
     el.style.cssText = `padding:6px 8px;border-radius:6px;background:#1a1a2e;color:${color};font-size:12px;`;
     el.textContent = msg;
   };
 
-  status('Loading…');
+  status('Loading priority list…');
 
   // ── Fetch IP list (cached) ────────────────────────────────────────────────
   let ipPayload = null;
@@ -125,16 +118,13 @@
     const cached = localStorage.getItem(IP_LIST_KEY);
     if (cached) {
       const parsed = JSON.parse(cached);
-      if (Date.now() - parsed.fetched_at < IP_LIST_TTL_MS) {
-        ipPayload = parsed.payload;
-      }
+      if (Date.now() - parsed.fetched_at < IP_LIST_TTL_MS) ipPayload = parsed.payload;
     }
   } catch (_) {}
   if (!ipPayload) {
     try {
       const resp = await fetch(`${BOUNCER}/system/homebrew/ip-list`, {
-        method: 'GET',
-        headers: { 'X-Ritual-Key': KEY },
+        method: 'GET', headers: { 'X-Ritual-Key': KEY },
       });
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       ipPayload = await resp.json();
@@ -151,9 +141,47 @@
   const PRIORITY_SECTIONS = ipPayload.priority_sections;
   const ALL_SECTIONS      = ipPayload.all_sections;
 
-  // ── Parse the page: rows, search input, pagination ────────────────────────
-  function parseRows() {
-    const rowEls = document.querySelectorAll('.list-row[data-slug]');
+  // ── Sent log helpers ──────────────────────────────────────────────────────
+  function loadSentLog() {
+    try { return JSON.parse(localStorage.getItem(SENT_LOG_KEY) || '[]'); }
+    catch (_) { return []; }
+  }
+  function appendSentLog(entry) {
+    const log = loadSentLog();
+    log.unshift(entry);
+    while (log.length > 500) log.pop();
+    localStorage.setItem(SENT_LOG_KEY, JSON.stringify(log));
+  }
+
+  // Per-IP-section completion derived from BOTH server-side timestamps
+  // (returned by /system/homebrew/ip-list) AND the local sent log.
+  function progressFor(ipName) {
+    const log = loadSentLog();
+    const fromLog = new Set(log.filter((e) => e.ip_name === ipName).map((e) => e.section));
+    const ipRow = PRIORITY_IPS.find((x) => x.ip_name === ipName);
+    const fromServer = ipRow ? Object.entries(ipRow.sections || {}).filter(([_, ts]) => !!ts).map(([s]) => s) : [];
+    const all = new Set([...fromLog, ...fromServer]);
+    const priorityDone = PRIORITY_SECTIONS.filter((s) => all.has(s));
+    return { priorityDone: priorityDone.length, priorityTotal: PRIORITY_SECTIONS.length, allDone: Array.from(all) };
+  }
+
+  function isAlreadyCaptured(ipName, section) {
+    const log = loadSentLog();
+    if (log.some((e) => e.ip_name === ipName && e.section === section)) return true;
+    const ipRow = PRIORITY_IPS.find((x) => x.ip_name === ipName);
+    return !!(ipRow && ipRow.sections && ipRow.sections[section]);
+  }
+
+  // ── HTML escape ───────────────────────────────────────────────────────────
+  function escapeHtml(s) {
+    return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  const escapeAttr = escapeHtml;
+
+  // ── DOM parsers (used by both modes) ──────────────────────────────────────
+  function parseRowsFromDoc(doc) {
+    const rowEls = doc.querySelectorAll('.list-row[data-slug]');
     return Array.from(rowEls).map((row) => {
       const text = (sel) => {
         const el = row.querySelector(sel);
@@ -180,12 +208,284 @@
       };
     });
   }
+  function parsePagesFromDoc(doc) {
+    const pag = doc.querySelector('.b-pagination');
+    if (!pag) return 1;
+    const items = Array.from(pag.querySelectorAll('*'))
+      .map((el) => el.textContent.trim())
+      .filter((t) => /^\d+$/.test(t))
+      .map((t) => parseInt(t, 10));
+    return items.length ? Math.max(...items) : 1;
+  }
 
+  // ── Bulk-mode entry: plan screen ──────────────────────────────────────────
+  function renderEntryScreen() {
+    delete window.__ddb_bulk_running__;
+    delete window.__ddb_bulk_abort__;
+
+    // Compute the plan
+    const tasks = [];
+    for (const ip of PRIORITY_IPS) {
+      for (const section of PRIORITY_SECTIONS) {
+        tasks.push({
+          ip_name: ip.ip_name, section, cohort: ip.cohort, rank: ip.rank,
+          alreadyCaptured: isAlreadyCaptured(ip.ip_name, section),
+        });
+      }
+    }
+    const total = tasks.length;
+    const done = tasks.filter((t) => t.alreadyCaptured).length;
+    const pending = total - done;
+    const estTimeSec = Math.ceil(pending * FETCH_DELAY_MS / 1000) + Math.ceil(pending * 0.5);
+    const estMin = Math.floor(estTimeSec / 60);
+    const estS = estTimeSec % 60;
+
+    set(`
+      <div style="background:#1a1a2e;padding:10px;border-radius:6px;">
+        <div style="font-size:13px;font-weight:600;color:#e87722;margin-bottom:6px;">🚀 Bulk capture priority queue</div>
+        <div style="font-size:12px;color:#aaa;line-height:1.5;">
+          <b style="color:#e0e0ff;">${total}</b> total captures · <b style="color:#5fdc7c;">${done}</b> already done · <b style="color:#e87722;">${pending}</b> pending<br/>
+          40 priority IPs × ${PRIORITY_SECTIONS.length} sections (<i>${PRIORITY_SECTIONS.join(', ')}</i>)<br/>
+          Estimated time: ~${estMin}m ${estS}s
+        </div>
+        <div style="display:flex;gap:6px;margin-top:10px;">
+          <button id="__ddb_bulk_pending_btn" style="flex:1;background:#e87722;color:#fff;border:none;padding:9px;border-radius:5px;cursor:pointer;font-weight:600;font-size:12px;" ${pending === 0 ? 'disabled' : ''}>
+            ${pending === 0 ? '✅ All done' : `▶ Capture ${pending} pending`}
+          </button>
+          <button id="__ddb_bulk_all_btn" style="flex:0 0 auto;background:#1a1a2e;color:#aaa;border:1px solid #2a2a4a;padding:9px 12px;border-radius:5px;cursor:pointer;font-size:11px;">
+            Force re-do all ${total}
+          </button>
+        </div>
+      </div>
+
+      <details style="background:#0a0a18;border:1px solid #2a2a4a;border-radius:6px;padding:8px 10px;">
+        <summary style="cursor:pointer;font-size:11px;color:#888;">▾ Per-cohort progress</summary>
+        <div style="margin-top:6px;">${renderCohortProgress(tasks)}</div>
+      </details>
+
+      <details style="background:#0a0a18;border:1px solid #2a2a4a;border-radius:6px;padding:8px 10px;">
+        <summary style="cursor:pointer;font-size:11px;color:#888;">▸ Or: manual pick mode (single IP)</summary>
+        <div style="margin-top:6px;font-size:11px;color:#888;line-height:1.5;">
+          Manual mode opens a searchable dropdown. Pick one IP → bookmarklet
+          fills DDB's filter input + submits the form. Re-click bookmarklet
+          on the filtered page to capture. Use this for ad-hoc one-offs.
+        </div>
+        <button id="__ddb_manual_btn" style="margin-top:6px;background:#1a1a2e;color:#7aa3ff;border:1px solid #2a2a4a;padding:7px;border-radius:4px;cursor:pointer;font-size:12px;width:100%;">
+          Open manual mode
+        </button>
+      </details>
+
+      ${renderSentLog()}
+    `);
+
+    document.getElementById('__ddb_bulk_pending_btn').onclick = () => runBulk(tasks.filter((t) => !t.alreadyCaptured));
+    document.getElementById('__ddb_bulk_all_btn').onclick     = () => {
+      if (confirm(`Re-capture ALL ${total}? Existing rows in BQ will get duplicate harvested_at entries (gold view picks latest).`)) {
+        runBulk(tasks);
+      }
+    };
+    document.getElementById('__ddb_manual_btn').onclick       = () => renderManualPickMode();
+  }
+
+  function renderCohortProgress(tasks) {
+    const cohorts = ['marquee', 'asymmetry', 'canary', 'active', 'roundout'];
+    return cohorts.map((cohort) => {
+      const cohortTasks = tasks.filter((t) => t.cohort === cohort);
+      if (!cohortTasks.length) return '';
+      const done = cohortTasks.filter((t) => t.alreadyCaptured).length;
+      const pct = Math.round((done / cohortTasks.length) * 100);
+      return `
+        <div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:2px 0;">
+          <span style="flex:0 0 130px;color:${COHORT_COLORS[cohort]};">${COHORT_LABELS[cohort]}</span>
+          <span style="flex:1;background:#1a1a2e;height:6px;border-radius:3px;overflow:hidden;">
+            <span style="display:block;width:${pct}%;height:100%;background:${COHORT_COLORS[cohort]};"></span>
+          </span>
+          <span style="flex:0 0 50px;text-align:right;color:#888;">${done}/${cohortTasks.length}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ── Bulk-mode runner ──────────────────────────────────────────────────────
+  async function runBulk(tasks) {
+    window.__ddb_bulk_running__ = true;
+    delete window.__ddb_bulk_abort__;
+
+    const results = { saved: 0, empty: 0, failed: 0 };
+    const startTs = Date.now();
+    const recent = [];
+
+    function renderProgress() {
+      const i = results.saved + results.empty + results.failed;
+      const pct = tasks.length > 0 ? Math.round((i / tasks.length) * 100) : 0;
+      const elapsedMs = Date.now() - startTs;
+      const rate = i > 0 ? elapsedMs / i : 0;
+      const remainingMs = (tasks.length - i) * rate;
+      const etaSec = Math.ceil(remainingMs / 1000);
+      const etaMin = Math.floor(etaSec / 60);
+      const etaS = etaSec % 60;
+      const recentHtml = recent.slice(-12).reverse().map((r) => {
+        const icon = r.outcome === 'saved' ? '✓' : r.outcome === 'empty' ? '∅' : '✗';
+        const color = r.outcome === 'saved' ? '#5fdc7c' : r.outcome === 'empty' ? '#888' : '#ff8888';
+        return `<div style="font-size:11px;padding:1px 0;color:${color};">${icon} <span style="color:#ccc;">${escapeHtml(r.ip_name)}</span> <span style="color:#666;">/${escapeHtml(r.section)}</span> <span style="color:#888;">— ${escapeHtml(r.note)}</span></div>`;
+      }).join('');
+      set(`
+        <div style="background:#1a1a2e;padding:10px;border-radius:6px;">
+          <div style="font-size:13px;font-weight:600;color:#e87722;margin-bottom:6px;">🚀 Capturing ${i} / ${tasks.length} (${pct}%)</div>
+          <div style="background:#0a0a18;height:8px;border-radius:4px;overflow:hidden;">
+            <span style="display:block;width:${pct}%;height:100%;background:#e87722;transition:width 0.2s;"></span>
+          </div>
+          <div style="font-size:11px;color:#aaa;margin-top:6px;display:flex;gap:12px;">
+            <span><b style="color:#5fdc7c;">${results.saved}</b> saved</span>
+            <span><b style="color:#888;">${results.empty}</b> empty</span>
+            <span><b style="color:#ff8888;">${results.failed}</b> failed</span>
+            <span style="margin-left:auto;color:#888;">ETA ${etaMin}m ${etaS}s</span>
+          </div>
+        </div>
+        <div style="background:#0a0a18;border:1px solid #2a2a4a;border-radius:6px;padding:8px;max-height:280px;overflow-y:auto;">
+          <div style="font-size:11px;color:#888;margin-bottom:4px;">Live feed (most recent first):</div>
+          ${recentHtml || '<i style="color:#666;font-size:11px;">starting…</i>'}
+        </div>
+        <button id="__ddb_abort_btn" style="background:#1a1a2e;color:#d9a64a;border:1px solid #2a2a4a;padding:7px;border-radius:4px;cursor:pointer;font-size:12px;width:100%;">
+          ⏸ Pause / abort
+        </button>
+      `);
+      document.getElementById('__ddb_abort_btn').onclick = () => {
+        if (confirm('Abort the bulk capture? Already-saved captures are kept; remaining will not run.')) {
+          window.__ddb_bulk_abort__ = true;
+        }
+      };
+    }
+    renderProgress();
+
+    for (let i = 0; i < tasks.length; i++) {
+      if (window.__ddb_bulk_abort__) break;
+      const task = tasks[i];
+      let outcome = 'failed', note = '?';
+      try {
+        const result = await captureOne(task.ip_name, task.section);
+        if (result.visible_items_count === 0) {
+          outcome = 'empty';
+          note = 'no rows';
+        } else {
+          outcome = 'saved';
+          note = `${result.visible_items_count} items, top ${result.top_adds}`;
+          appendSentLog({
+            ip_name: task.ip_name, section: task.section,
+            visible_items_count: result.visible_items_count,
+            top_adds: result.top_adds,
+            ts: new Date().toISOString(),
+          });
+        }
+      } catch (e) {
+        outcome = 'failed';
+        note = e.message || String(e);
+      }
+      results[outcome]++;
+      recent.push({ ip_name: task.ip_name, section: task.section, outcome, note });
+      renderProgress();
+      if (i < tasks.length - 1 && !window.__ddb_bulk_abort__) {
+        await new Promise((r) => setTimeout(r, FETCH_DELAY_MS));
+      }
+    }
+
+    window.__ddb_bulk_running__ = false;
+    const elapsedSec = Math.floor((Date.now() - startTs) / 1000);
+    const elapsedMin = Math.floor(elapsedSec / 60);
+    const elapsedS = elapsedSec % 60;
+    const aborted = !!window.__ddb_bulk_abort__;
+    set(`
+      <div style="background:#1a1a2e;padding:10px;border-radius:6px;">
+        <div style="font-size:13px;font-weight:600;color:${aborted ? '#d9a64a' : '#5fdc7c'};margin-bottom:6px;">
+          ${aborted ? '⏸ Capture paused' : '✅ Bulk capture complete'}
+        </div>
+        <div style="font-size:12px;color:#aaa;line-height:1.6;">
+          <b style="color:#5fdc7c;">${results.saved}</b> saved
+          · <b style="color:#888;">${results.empty}</b> empty (no homebrew exists)
+          · <b style="color:#ff8888;">${results.failed}</b> failed<br/>
+          Elapsed: ${elapsedMin}m ${elapsedS}s
+        </div>
+      </div>
+      <button id="__ddb_back_btn" style="background:#e87722;color:#fff;border:none;padding:9px;border-radius:5px;cursor:pointer;font-weight:600;font-size:12px;">
+        ↻ Refresh plan
+      </button>
+      <details open style="background:#0a0a18;border:1px solid #2a2a4a;border-radius:6px;padding:8px;">
+        <summary style="cursor:pointer;font-size:11px;color:#888;">Full feed (${recent.length})</summary>
+        <div style="margin-top:6px;max-height:300px;overflow-y:auto;">
+          ${recent.slice().reverse().map((r) => {
+            const icon = r.outcome === 'saved' ? '✓' : r.outcome === 'empty' ? '∅' : '✗';
+            const color = r.outcome === 'saved' ? '#5fdc7c' : r.outcome === 'empty' ? '#888' : '#ff8888';
+            return `<div style="font-size:11px;padding:1px 0;color:${color};">${icon} <span style="color:#ccc;">${escapeHtml(r.ip_name)}</span> <span style="color:#666;">/${escapeHtml(r.section)}</span> <span style="color:#888;">— ${escapeHtml(r.note)}</span></div>`;
+          }).join('')}
+        </div>
+      </details>
+    `);
+    document.getElementById('__ddb_back_btn').onclick = () => {
+      // Refresh server-side counts: clear cache, re-fetch
+      try { localStorage.removeItem(IP_LIST_KEY); } catch (_) {}
+      // Re-run the bookmarklet by removing the panel and re-clicking — simulate
+      // a re-click by calling the IIFE's effective entry. Easiest: reload panel.
+      panel.remove();
+      // Re-enter by triggering a fresh outer IIFE
+      const script = document.createElement('script');
+      // We can't re-run our own IIFE inline cleanly, so just prompt the user
+      alert('Click the bookmarklet again to refresh the plan with updated counts.');
+    };
+  }
+
+  // captureOne: fetch + parse + POST for one (ip_name, section)
+  async function captureOne(ipName, section) {
+    const ipQ = encodeURIComponent(ipName);
+    const url = `/homebrew/${section}?filter-name=${ipQ}&filter-sort=adds-desc`;
+    const ctrl = new AbortController();
+    const timeout = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
+    let resp;
+    try {
+      resp = await fetch(url, {
+        method: 'GET',
+        credentials: 'include',
+        headers: { 'Accept': 'text/html' },
+        signal: ctrl.signal,
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
+    if (!resp.ok) throw new Error(`DDB HTTP ${resp.status}`);
+    const html = await resp.text();
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const rows = parseRowsFromDoc(doc);
+    const pages = parsePagesFromDoc(doc);
+    const topAdds = rows.length ? Math.max(...rows.map((r) => r.adds)) : 0;
+    const estTotal = pages * 30;
+
+    const payload = {
+      ip_name: ipName,
+      ddb_section: section,
+      search_query: ipName,
+      visible_items_count: rows.length,
+      pages_count: pages,
+      estimated_total_count: estTotal,
+      top_items: rows.slice(0, 30),
+      source_url: new URL(url, location.origin).toString(),
+      scraped_by: 'ddb_homebrew_bookmarklet_bulk',
+    };
+
+    const bouncerResp = await fetch(`${BOUNCER}/system/homebrew/ingest-ddb`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Ritual-Key': KEY },
+      body: JSON.stringify(payload),
+    });
+    const data = await bouncerResp.json();
+    if (!bouncerResp.ok || !data.inserted) {
+      throw new Error(`bouncer: ${data.error || bouncerResp.status}`);
+    }
+    return { visible_items_count: rows.length, top_adds: topAdds, pages };
+  }
+
+  // ── Manual mode: dropdown picker (legacy) ─────────────────────────────────
   function findSearchInput() {
-    // Phil's F12 scout showed the input value didn't auto-populate from URL, so
-    // we try several plausible selectors. The first selector is the most
-    // specific; later ones are progressively looser.
     return (
+      document.querySelector('input[name="filter-name"]') ||
       document.querySelector('input[name="filter-search"]') ||
       document.querySelector('input[name*="search" i]') ||
       document.querySelector('input[placeholder*="earch" i]:not([type="hidden"])') ||
@@ -194,159 +494,46 @@
     );
   }
 
-  function parsePages() {
-    // Pagination "1 2 3 4 5 … 2832 Next" — the second-to-last item before
-    // "Next" is the last page number.
-    const pag = document.querySelector('.b-pagination');
-    if (!pag) return 1;
-    const items = Array.from(pag.querySelectorAll('.b-pagination-item, li, a, span'))
-      .map((el) => el.textContent.trim())
-      .filter((t) => /^\d+$/.test(t))
-      .map((t) => parseInt(t, 10));
-    return items.length ? Math.max(...items) : 1;
-  }
-
-  // ── Sent log helpers ──────────────────────────────────────────────────────
-  function loadSentLog() {
-    try { return JSON.parse(localStorage.getItem(SENT_LOG_KEY) || '[]'); }
-    catch (_) { return []; }
-  }
-  function appendSentLog(entry) {
-    const log = loadSentLog();
-    log.unshift(entry);
-    while (log.length > 200) log.pop();
-    localStorage.setItem(SENT_LOG_KEY, JSON.stringify(log));
-  }
-
-  // Per-IP-section completion derived from BOTH the server-side
-  // ip-list response AND the local sent-log (most-recent wins).
-  function progressFor(ipName) {
-    const log = loadSentLog();
-    const fromLog = new Set(log.filter((e) => e.ip_name === ipName).map((e) => e.section));
-    const ipRow = PRIORITY_IPS.find((x) => x.ip_name === ipName);
-    const fromServer = ipRow ? Object.entries(ipRow.sections || {}).filter(([_, ts]) => !!ts).map(([s]) => s) : [];
-    const all = new Set([...fromLog, ...fromServer]);
-    const priorityDone = PRIORITY_SECTIONS.filter((s) => all.has(s));
-    return {
-      priorityDone:  priorityDone.length,
-      priorityTotal: PRIORITY_SECTIONS.length,
-      allDone:       Array.from(all),
-    };
-  }
-
-  const rows         = parseRows();
-  const searchInput  = findSearchInput();
-  const activeQuery  = searchInput && searchInput.value ? searchInput.value.trim() : '';
-  const totalPages   = parsePages();
-  // Heuristic for "filter looks applied": EITHER the input has a value, OR
-  // the URL has filter-search and there are very few pages (an unfiltered
-  // section has 1000s of pages).
-  const urlHasFilter = !!new URLSearchParams(location.search).get('filter-search');
-  const filterApplied = (!!activeQuery && rows.length > 0) ||
-                        (urlHasFilter && totalPages > 0 && totalPages < 100);
-  const queryFromUrl = new URLSearchParams(location.search).get('filter-search') || '';
-  const effectiveQuery = activeQuery || queryFromUrl;
-
-  // ── Render: shared "page meta" header ─────────────────────────────────────
-  function renderHeader() {
-    return `
-      <div style="background:#1a1a2e;padding:8px 10px;border-radius:6px;font-size:12px;">
-        <div><b>Section:</b> <span style="color:#e87722;">/homebrew/${section}</span></div>
-        ${filterApplied ?
-          `<div><b>Active filter:</b> <span style="color:#5fdc7c;">"${effectiveQuery || '(visible)'}"</span></div>` :
-          `<div style="color:#888;">No filter detected</div>`}
-        <div style="color:#888;font-size:11px;margin-top:2px;">
-          ${rows.length} rows visible · ${totalPages} page${totalPages !== 1 ? 's' : ''} total
-        </div>
-      </div>
-    `;
-  }
-
-  // ── Render: CAPTURE mode ──────────────────────────────────────────────────
-  function renderCaptureMode() {
-    const top = rows.slice(0, 5).map((r, i) =>
-      `<div style="padding:2px 0;font-size:11px;"><span style="color:#888;">${i + 1}.</span> ${escapeHtml(r.name)} · <b style="color:#5fdc7c;">${r.adds}</b> adds${r.base_class ? ` · ${escapeHtml(r.base_class)}` : ''}</div>`
-    ).join('');
-
-    // Best-guess IP from active query — matched against priority list
-    const guess = guessIpFromQuery(effectiveQuery);
-
-    set(`
-      ${renderHeader()}
-      <div style="background:#1a1a2e;padding:10px;border-radius:6px;">
-        <div style="font-size:11px;color:#888;margin-bottom:4px;">Top ${Math.min(5, rows.length)} by adds:</div>
-        ${top || '<i style="color:#888;">no rows parsed</i>'}
-      </div>
-      <div>
-        <label style="font-size:11px;color:#888;">Save as IP:</label>
-        <select id="__ddb_capture_ip" style="width:100%;background:#1a1a2e;color:#e0e0ff;border:1px solid #2a2a4a;padding:6px;border-radius:4px;margin-top:4px;font-size:13px;">
-          ${PRIORITY_IPS.map((ip) =>
-            `<option value="${escapeAttr(ip.ip_name)}" ${ip.ip_name === guess ? 'selected' : ''}>${escapeHtml(ip.ip_name)} (${COHORT_LABELS[ip.cohort].split(' ')[0]})</option>`
-          ).join('')}
-        </select>
-      </div>
-      <button id="__ddb_save_btn" style="background:#e87722;color:#fff;border:none;padding:10px;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;">
-        💾 Save ${rows.length} ${section} for selected IP
-      </button>
-      <div style="border-top:1px solid #2a2a4a;padding-top:8px;">
-        <button id="__ddb_pickmode_btn" style="background:#1a1a2e;color:#7aa3ff;border:1px solid #2a2a4a;padding:6px;border-radius:4px;cursor:pointer;font-size:12px;width:100%;">
-          ↻ Pick a different IP (clears filter)
-        </button>
-      </div>
-      ${renderSentLog()}
-    `);
-
-    document.getElementById('__ddb_save_btn').onclick = onCaptureClick;
-    document.getElementById('__ddb_pickmode_btn').onclick = onClearFilterClick;
-  }
-
-  // ── Render: PICK mode ─────────────────────────────────────────────────────
-  function renderPickMode() {
+  function renderManualPickMode() {
     const cohorts = ['marquee', 'asymmetry', 'canary', 'active', 'roundout'];
     const groupHtml = cohorts.map((cohort) => {
       const ipsInCohort = PRIORITY_IPS.filter((ip) => ip.cohort === cohort);
       if (!ipsInCohort.length) return '';
       const items = ipsInCohort.map((ip) => {
         const prog = progressFor(ip.ip_name);
-        const pct = prog.priorityTotal > 0 ?
-          (prog.priorityDone / prog.priorityTotal) : 0;
-        const isSectionDone = prog.allDone.includes(section);
-        const fadeStyle = isSectionDone ? 'opacity:0.55;' : '';
-        const sectionDoneIcon = isSectionDone ? ' ✓' : '';
-        const allDoneIcon = pct === 1 ? ' ✅' : '';
-        const bar = renderBar(prog.priorityDone, prog.priorityTotal, COHORT_COLORS[cohort]);
-        return `<div class="__ddb_pick_row" data-ip="${escapeAttr(ip.ip_name)}" style="${fadeStyle}padding:4px 6px;cursor:pointer;border-radius:4px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;" onmouseover="this.style.background='#1a1a2e'" onmouseout="this.style.background='transparent'">
+        const pct = prog.priorityTotal > 0 ? Math.round((prog.priorityDone / prog.priorityTotal) * 100) : 0;
+        const sectionDoneIcon = '';  // section context unknown in manual entry from any page
+        const allDoneIcon = pct === 100 ? ' ✅' : '';
+        return `<div class="__ddb_pick_row" data-ip="${escapeAttr(ip.ip_name)}" style="padding:4px 6px;cursor:pointer;border-radius:4px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;" onmouseover="this.style.background='#1a1a2e'" onmouseout="this.style.background='transparent'">
           <span><span style="color:#e0e0ff;">${escapeHtml(ip.ip_name)}</span>${sectionDoneIcon}${allDoneIcon}</span>
           <span style="display:flex;align-items:center;gap:6px;">
             <span style="font-size:10px;color:#888;">${prog.priorityDone}/${prog.priorityTotal}</span>
-            ${bar}
+            <span style="display:inline-block;width:50px;height:5px;background:#1a1a2e;border-radius:3px;overflow:hidden;">
+              <span style="display:block;width:${pct}%;height:100%;background:${COHORT_COLORS[cohort]};"></span>
+            </span>
           </span>
         </div>`;
       }).join('');
-      return `<div style="margin-bottom:8px;">
-        <div style="font-size:11px;color:${COHORT_COLORS[cohort]};font-weight:600;margin-bottom:4px;">${COHORT_LABELS[cohort]} (${ipsInCohort.length})</div>
+      return `<div style="margin-bottom:6px;">
+        <div style="font-size:10px;color:${COHORT_COLORS[cohort]};font-weight:600;margin-bottom:3px;">${COHORT_LABELS[cohort]}</div>
         ${items}
       </div>`;
     }).join('');
 
     set(`
-      ${renderHeader()}
-      <div>
-        <input id="__ddb_search" type="text" placeholder="Type to filter the list…" style="width:100%;background:#1a1a2e;color:#e0e0ff;border:1px solid #2a2a4a;padding:7px;border-radius:4px;font-size:13px;box-sizing:border-box;" />
-      </div>
-      <div id="__ddb_pick_list" style="max-height:380px;overflow-y:auto;background:#0a0a18;padding:6px;border-radius:6px;border:1px solid #2a2a4a;">
+      <div style="font-size:11px;color:#888;">Manual mode — pick an IP, bookmarklet fills DDB's filter + submits. Re-click bookmarklet on filtered page to capture.</div>
+      <input id="__ddb_search" type="text" placeholder="Type to filter the list…" style="width:100%;background:#1a1a2e;color:#e0e0ff;border:1px solid #2a2a4a;padding:7px;border-radius:4px;font-size:13px;box-sizing:border-box;" />
+      <div id="__ddb_pick_list" style="max-height:340px;overflow-y:auto;background:#0a0a18;padding:6px;border-radius:6px;border:1px solid #2a2a4a;">
         ${groupHtml}
       </div>
-      <div style="font-size:11px;color:#888;text-align:center;">
-        Pick an IP → bookmarklet types it into DDB's search + submits filter.<br/>
-        Re-click bookmarklet on the filtered page to capture.
-      </div>
+      <button id="__ddb_back_to_bulk_btn" style="background:#1a1a2e;color:#7aa3ff;border:1px solid #2a2a4a;padding:6px;border-radius:4px;cursor:pointer;font-size:11px;">
+        ◂ Back to bulk mode
+      </button>
       ${renderSentLog()}
     `);
 
-    // Wire up clicks + filter
     document.querySelectorAll('.__ddb_pick_row').forEach((el) => {
-      el.onclick = () => onPickClick(el.getAttribute('data-ip'));
+      el.onclick = () => onManualPickClick(el.getAttribute('data-ip'));
     });
     const searchEl = document.getElementById('__ddb_search');
     searchEl.oninput = () => {
@@ -357,13 +544,46 @@
       });
     };
     searchEl.focus();
+    document.getElementById('__ddb_back_to_bulk_btn').onclick = () => renderEntryScreen();
   }
 
-  function renderBar(done, total, color) {
-    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-    return `<span style="display:inline-block;width:60px;height:6px;background:#1a1a2e;border-radius:3px;overflow:hidden;"><span style="display:block;width:${pct}%;height:100%;background:${color};"></span></span>`;
+  function onManualPickClick(ipName) {
+    // First check if we're on a homebrew section page; if not, navigate.
+    if (!location.pathname.startsWith('/homebrew/') ||
+        location.pathname === '/homebrew/' ||
+        location.pathname === '/homebrew') {
+      const targetSection = PRIORITY_SECTIONS[0]; // default to subclasses
+      location.href = `/homebrew/${targetSection}?filter-name=${encodeURIComponent(ipName)}&filter-sort=adds-desc`;
+      return;
+    }
+
+    const input = findSearchInput();
+    if (!input) {
+      // Direct URL navigation as fallback
+      const url = new URL(location.href);
+      url.searchParams.set('filter-name', ipName);
+      url.searchParams.set('filter-sort', 'adds-desc');
+      location.href = url.toString();
+      return;
+    }
+    const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+    nativeSetter.call(input, ipName);
+    input.dispatchEvent(new Event('input',  { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+
+    const form = input.closest('form') ||
+                 document.querySelector('form[action*="homebrew"]');
+    if (form) {
+      try { form.submit(); return; } catch (_) {}
+    }
+    // URL-fallback if form submit failed
+    const url = new URL(location.href);
+    url.searchParams.set('filter-name', ipName);
+    url.searchParams.set('filter-sort', 'adds-desc');
+    location.href = url.toString();
   }
 
+  // ── Sent log preview ──────────────────────────────────────────────────────
   function renderSentLog() {
     const log = loadSentLog().slice(0, 8);
     if (!log.length) return '';
@@ -378,123 +598,6 @@
     `;
   }
 
-  // ── Action handlers ───────────────────────────────────────────────────────
-  function guessIpFromQuery(q) {
-    if (!q) return null;
-    const lq = q.toLowerCase();
-    let best = null;
-    for (const ip of PRIORITY_IPS) {
-      if (ip.ip_name.toLowerCase() === lq) return ip.ip_name;
-      if (ip.ip_name.toLowerCase().includes(lq) || lq.includes(ip.ip_name.toLowerCase())) {
-        best = best || ip.ip_name;
-      }
-    }
-    return best;
-  }
-
-  function onPickClick(ipName) {
-    status(`→ Filtering DDB for "${ipName}"…`, '#e87722');
-    const input = findSearchInput();
-    if (!input) {
-      status('⚠️ Could not find the DDB search input. Type "' + ipName + '" into the page filter manually, then click Apply.', '#ff8888');
-      return;
-    }
-    // Set value via the React-friendly path (some controlled inputs need the
-    // native setter to fire properly)
-    const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-    nativeSetter.call(input, ipName);
-    input.dispatchEvent(new Event('input',  { bubbles: true }));
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-
-    // Find the form / submit button
-    const form = input.closest('form') ||
-                 document.querySelector('form[action*="homebrew"]') ||
-                 document.querySelector('.ddb-listing-filters form');
-    const submitBtn = (form && form.querySelector('button[type="submit"], input[type="submit"]')) ||
-                      document.querySelector('.ddb-listing-filters-field-list-item-submit, [class*="submit"]');
-    if (form) {
-      try { form.submit(); return; } catch (e) {}
-    }
-    if (submitBtn) {
-      submitBtn.click();
-      return;
-    }
-    status('⚠️ Filled the input but couldn\'t auto-submit. Press Enter / click Filter manually.', '#d9a64a');
-  }
-
-  function onClearFilterClick() {
-    // Navigate to the section root with no filter
-    location.href = `/homebrew/${section}`;
-  }
-
-  async function onCaptureClick() {
-    const ipName = document.getElementById('__ddb_capture_ip').value;
-    if (!ipName) { status('⚠️ Select an IP first', '#ff8888'); return; }
-    const btn = document.getElementById('__ddb_save_btn');
-    btn.disabled = true; btn.textContent = '… saving …';
-
-    const topAdds = rows.length ? Math.max(...rows.map((r) => r.adds)) : 0;
-    const estTotal = totalPages * 30; // 30 rows per page upper-bound
-
-    const payload = {
-      ip_name: ipName,
-      ddb_section: section,
-      search_query: effectiveQuery,
-      visible_items_count: rows.length,
-      pages_count: totalPages,
-      estimated_total_count: estTotal,
-      top_items: rows.slice(0, 30),
-      source_url: location.href,
-      scraped_by: 'ddb_homebrew_bookmarklet',
-    };
-
-    try {
-      const resp = await fetch(`${BOUNCER}/system/homebrew/ingest-ddb`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Ritual-Key': KEY,
-        },
-        body: JSON.stringify(payload),
-      });
-      const data = await resp.json();
-      if (resp.ok && data.inserted) {
-        appendSentLog({
-          ip_name: ipName,
-          section,
-          visible_items_count: rows.length,
-          top_adds: topAdds,
-          ts: new Date().toISOString(),
-        });
-        status(`✅ Saved ${rows.length} ${section} for ${ipName} (top adds: ${topAdds}).`, '#5fdc7c');
-        btn.style.background = '#5fdc7c';
-        btn.textContent = '✓ Saved — click anywhere to dismiss';
-        // Refresh in 1.2s to PICK mode so user can move on
-        setTimeout(() => {
-          renderPickMode();
-        }, 1500);
-      } else {
-        status(`⚠️ Bouncer error: ${data.error || resp.status}`, '#ff8888');
-        btn.disabled = false; btn.textContent = '💾 Retry save';
-      }
-    } catch (e) {
-      status(`⚠️ Network error: ${e.message}`, '#ff8888');
-      btn.disabled = false; btn.textContent = '💾 Retry save';
-    }
-  }
-
-  // ── Helpers: HTML escape ──────────────────────────────────────────────────
-  function escapeHtml(s) {
-    return String(s || '')
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  }
-  function escapeAttr(s) { return escapeHtml(s); }
-
-  // ── Initial render based on detected state ────────────────────────────────
-  if (filterApplied && rows.length > 0) {
-    renderCaptureMode();
-  } else {
-    renderPickMode();
-  }
+  // ── Initial render: bulk plan screen ──────────────────────────────────────
+  renderEntryScreen();
 })();

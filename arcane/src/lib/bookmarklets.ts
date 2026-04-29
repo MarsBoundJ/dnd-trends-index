@@ -115,9 +115,9 @@ export function getBookmarklets(): Bookmarklet[] {
       name: "DDB Homebrew Capture",
       targetHost: "dndbeyond.com",
       description:
-        "Stage 6a of community_reception. Two-state floating panel for D&D Beyond's homebrew sections (subclasses, spells, monsters, magic-items, races, etc.). Pick mode: searchable dropdown of 40 priority IPs grouped by cohort with per-IP per-section progress bars; on selection it types the IP into DDB's filter and submits. Capture mode: reads .list-row elements (name, slug, adds, views, rating, base class) and POSTs the structured rows to /system/homebrew/ingest-ddb. localStorage-backed sent log persists across browser sessions.",
+        "Stage 6a of community_reception. BULK MODE (default): land on any dndbeyond.com page, click once, bookmarklet sequentially fetches /homebrew/<section>?filter-name=<IP> for all 40 priority IPs × 5 priority sections = 200 captures using your DDB session cookies (Amazon-bookmarklet pattern). Parses .list-row[data-slug] containers, POSTs each to /system/homebrew/ingest-ddb. ~5-7 minutes per full run. Skips already-captured combinations using server-side timestamps + localStorage sent log. MANUAL MODE: searchable dropdown for ad-hoc one-off captures.",
       usage:
-        "Drag the pill to your bookmarks bar. Open dndbeyond.com/homebrew/<section> (subclasses / spells / monsters / magic-items / races / classes / feats / backgrounds), click the bookmark. Pick an IP from the dropdown — the bookmarklet fills the filter and submits. After the page reloads with filtered results, click the bookmark again to capture and save. Dropdown shows progress bars so you know what's done across all 5 priority sections per IP.",
+        "Drag the pill to your bookmarks bar. Open ANY dndbeyond.com page while signed in (or browse a homebrew section). Click the bookmark. Bulk-mode plan screen shows already-done vs pending counts; click 'Capture pending'. Live progress bar + feed of saved/empty/failed entries. Pause/abort button if you need to stop. When complete, refresh-plan button updates the counts.",
       href: readBookmarklet("ddb_homebrew_bookmarklet.txt"),
     },
   ]
