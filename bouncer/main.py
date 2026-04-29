@@ -1492,20 +1492,34 @@ def bouncer_api(request):
             {"ip_name": "Tokyo Ghoul", "cohort": "roundout", "rank": 40},
         ]
 
+        # Priority sections — five mechanically-rich character/play categories.
+        # Apr 29 evening: replaced "races" with "species" (5e 2024 rename;
+        # /homebrew/races returns 404 on DDB, the section moved to /species).
         DDB_PRIORITY_SECTIONS = [
             "subclasses",
             "spells",
             "monsters",
             "magic-items",
-            "races",
+            "species",
         ]
 
-        # Pull sent counts from BQ — one row per (ip_name, ddb_section)
+        # Pull sent counts from BQ — one row per (ip_name, ddb_section).
+        # Apr 29 evening: filter OUT contaminated rows from the first bulk
+        # run where the wrong filter param (filter-name vs filter-search)
+        # caused /spells, /monsters, /magic-items to return globally-top
+        # items rather than IP-filtered items. Those rows are pending a
+        # streaming-buffer-flush DELETE; treat them as not-yet-done so the
+        # next bulk run re-captures them with the corrected filter params.
         sent_counts = {}
         try:
             sent_query = """
             SELECT ip_name, ddb_section, MAX(scraped_at) AS last_sent
             FROM `dnd-trends-index.dnd_trends_raw.ddb_homebrew_counts`
+            WHERE NOT (
+              scraped_by = 'ddb_homebrew_bookmarklet_bulk'
+              AND ddb_section IN ('spells', 'monsters', 'magic-items')
+              AND scraped_at < TIMESTAMP('2026-04-29T23:00:00Z')
+            )
             GROUP BY ip_name, ddb_section
             """
             for row in client.query(sent_query).result():
@@ -1515,9 +1529,10 @@ def bouncer_api(request):
             # Table may not exist yet on first deploy — return empty sent map
             print(f"DEBUG: ddb_homebrew_counts query failed (ok if first run): {e}")
 
-        # Augment each priority IP with per-section status
+        # Augment each priority IP with per-section status. /classes is
+        # excluded — DDB doesn't host homebrew of full classes (404).
         all_sections = DDB_PRIORITY_SECTIONS + [
-            "classes", "feats", "backgrounds",
+            "feats", "backgrounds",
         ]
         ips_with_status = []
         for ip in DDB_PRIORITY_IPS:
@@ -1556,9 +1571,12 @@ def bouncer_api(request):
             return (json.dumps({"error": "No data"}), 400, headers)
         if isinstance(rows, dict):
             rows = [rows]
+        # Apr 29 evening: dropped "races" (rebranded to /species in 5e 2024,
+        # /homebrew/races is 404) and "classes" (DDB doesn't host homebrew
+        # of full classes — 404 on /homebrew/classes).
         valid_sections = {
             "subclasses", "spells", "monsters", "magic-items",
-            "races", "classes", "feats", "backgrounds",
+            "species", "feats", "backgrounds",
         }
         now_ts = datetime.datetime.utcnow().isoformat() + 'Z'
         cleaned = []

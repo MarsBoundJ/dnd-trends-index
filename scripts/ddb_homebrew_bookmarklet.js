@@ -59,6 +59,23 @@
   const FETCH_DELAY_MS = 1500;                 // pacing between DDB fetches
   const FETCH_TIMEOUT_MS = 25000;              // give DDB plenty of time
 
+  // Per-section filter-param map. DDB has two listing-component generations:
+  //   - Newer 5e-2024 character-creation sections use `filter-name` (subclasses,
+  //     species, feats, backgrounds).
+  //   - Older sections use `filter-search` (spells, monsters, magic-items).
+  // Empirically verified Apr 29, 2026 via console probe across all 7 valid
+  // homebrew section paths. /races (legacy name) and /classes both 404 — DDB
+  // renamed races to species in 5e 2024 and never hosted full classes.
+  const SECTION_FILTER_PARAM = {
+    'subclasses':  'filter-name',
+    'species':     'filter-name',
+    'feats':       'filter-name',
+    'backgrounds': 'filter-name',
+    'spells':      'filter-search',
+    'monsters':    'filter-search',
+    'magic-items': 'filter-search',
+  };
+
   // ── Sanity: must be on D&D Beyond ─────────────────────────────────────────
   if (!location.hostname.endsWith('dndbeyond.com')) {
     alert('Open any dndbeyond.com page first (the bookmarklet uses your DDB session cookies via fetch).');
@@ -436,7 +453,8 @@
   // captureOne: fetch + parse + POST for one (ip_name, section)
   async function captureOne(ipName, section) {
     const ipQ = encodeURIComponent(ipName);
-    const url = `/homebrew/${section}?filter-name=${ipQ}&filter-sort=adds-desc`;
+    const filterParam = SECTION_FILTER_PARAM[section] || 'filter-name';
+    const url = `/homebrew/${section}?${filterParam}=${ipQ}&filter-sort=adds-desc`;
     const ctrl = new AbortController();
     const timeout = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
     let resp;
@@ -548,20 +566,24 @@
   }
 
   function onManualPickClick(ipName) {
-    // First check if we're on a homebrew section page; if not, navigate.
-    if (!location.pathname.startsWith('/homebrew/') ||
-        location.pathname === '/homebrew/' ||
-        location.pathname === '/homebrew') {
-      const targetSection = PRIORITY_SECTIONS[0]; // default to subclasses
-      location.href = `/homebrew/${targetSection}?filter-name=${encodeURIComponent(ipName)}&filter-sort=adds-desc`;
+    // Detect current section (if any) to pick the right filter param
+    const currentSection = (location.pathname.split('/').filter(Boolean).pop() || '');
+    const sectionFromUrl = SECTION_FILTER_PARAM[currentSection] ? currentSection : null;
+
+    // If not on a homebrew section page, navigate to /subclasses (most-popular section)
+    if (!sectionFromUrl) {
+      const targetSection = 'subclasses';
+      const param = SECTION_FILTER_PARAM[targetSection];
+      location.href = `/homebrew/${targetSection}?${param}=${encodeURIComponent(ipName)}&filter-sort=adds-desc`;
       return;
     }
 
+    const filterParam = SECTION_FILTER_PARAM[sectionFromUrl];
     const input = findSearchInput();
     if (!input) {
-      // Direct URL navigation as fallback
+      // Direct URL navigation fallback (uses the right param for this section)
       const url = new URL(location.href);
-      url.searchParams.set('filter-name', ipName);
+      url.searchParams.set(filterParam, ipName);
       url.searchParams.set('filter-sort', 'adds-desc');
       location.href = url.toString();
       return;
@@ -578,7 +600,7 @@
     }
     // URL-fallback if form submit failed
     const url = new URL(location.href);
-    url.searchParams.set('filter-name', ipName);
+    url.searchParams.set(filterParam, ipName);
     url.searchParams.set('filter-sort', 'adds-desc');
     location.href = url.toString();
   }
