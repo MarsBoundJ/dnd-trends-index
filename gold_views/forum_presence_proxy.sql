@@ -1,68 +1,67 @@
 -- ═══════════════════════════════════════════════════════════════════════
--- gold_data.forum_presence_proxy — Stage 7 of community_reception
+-- gold_data.forum_presence_proxy — Stage 7 of community_reception (v2)
 -- ═══════════════════════════════════════════════════════════════════════
 --
--- Per-IP "forum presence intensity" computed from Google Custom Search
--- of the 4 major TTRPG forums (EN World, Giant in the Playground,
--- RPG.net, Dragonsfoot).
---
--- ─── WHY THIS IS A DIFFERENT DIMENSION ────────────────────────────────
---
--- Reception (Reddit Stage 5)    — players talking
--- Acquisition (Reddit P2)        — IP fans wanting D&D
--- BGG (Stage 3)                  — board-game wallet voting
--- AO3 (Stage 4)                  — narrative-fan creative output
--- Homebrew (Stage 6)             — D&D mechanical creators
--- Forums (THIS STAGE)            — DM/whale demographic, brand purity
---
--- The audience here is the "Whale" buyer: older, more system-literate,
--- protective of D&D's identity, and wields purchasing power for $50
--- hardcovers and $150 miniature sets. Per Gemini's framing:
+-- Per-IP "TTRPG-forum reception" scored from AI-Bouncer-confirmed top
+-- URLs across the 4 major forums (EN World, GitP, RPG.net, Dragonsfoot).
+-- The audience here is the "DM/whale demographic" — older, more system-
+-- literate, more protective of D&D's identity. Per Gemini's framing:
 -- "Reddit is full of Players. AO3 is full of Fans. Traditional forums
 -- are full of Dungeon Masters."
 --
--- High forum presence indicates the IP has registered with the DM
--- demographic. Low presence (especially while Reddit/AO3 show signal)
--- means the IP is mainstream-popular but hasn't penetrated the
--- DM-decision-maker layer yet.
+-- ─── TWO-LAYER DISAMBIGUATION ──────────────────────────────────────────
 --
--- ─── v1 LIMITATIONS ────────────────────────────────────────────────────
+-- This view consumes the intersection of two BQ tables:
 --
--- Presence-only — no sentiment classification yet. We capture thread
--- counts + top URLs but don't read the thread content.
+--   forum_presence_counts        ← Layer 1 (co-term-gated CSE harvest)
+--   forum_top_urls_classified    ← Layer 2 (Gemini Flash AI Bouncer
+--                                   on title+snippet)
 --
--- v2 (deferred to post-Expo): scrape the captured top URLs via
--- Playwright (or bookmarklet pattern for Cloudflare-blocked forums)
--- and classify sentiment per thread. The schema captures top_thread_urls
--- specifically so v2 can layer cleanly without re-running CSE.
+-- Layer 1 (in harvest_forum_presence.py): co-term gating + banned-
+-- context post-filter on top URLs. Mirrors the Stage 5 Reddit pattern.
 --
--- ─── SCORE FORMULA ─────────────────────────────────────────────────────
+-- Layer 2 (in classify_forum_top_urls.py): per-URL Gemini Flash binary
+-- is_about_ip + attitude classification. Stage 7a-i ("cheap path") uses
+-- title+snippet only. Stage 7a-ii (deferred) will add Playwright thread-
+-- body scrape for high-resolution sentiment + backlash narrative
+-- extraction.
 --
--- Log-scale normalize total_results_combined within the dataset:
+-- ─── SCORE FORMULA (SENTIMENT-WEIGHTED) ────────────────────────────────
 --
---   forum_presence_score = log10(total_results + 1) / log10(MAX + 1)
+-- Mirrors the Stage 5 reddit_reception_proxy + Stage 6 homebrew pattern:
+-- confidence-weighted attitude average mapped to [0, 1].
 --
--- Same pattern as AO3 fanfic_proxy_score. Heavy-tailed distribution
--- (mainstream IPs in thousands, niche in single digits) is correctly
--- represented on a log scale.
+--   attitude_score per URL:
+--     positive       = +1.0
+--     mentions_only  =  0.0
+--     divisive       = -0.4
+--     negative       = -1.0
+--
+--   attitude_avg = SUM(attitude * confidence) / SUM(confidence)
+--
+--   forum_presence_score = (attitude_avg + 1) / 2
+--
+-- Sentiment-weighted is the right semantic for a "reception" measure:
+-- an IP with 10 negative forum threads gets a low score (DMs reject it),
+-- an IP with 10 positive threads gets a high score (DMs embrace it),
+-- mixed sentiment gets ~0.5.
 --
 -- ─── ABSTENTION ────────────────────────────────────────────────────────
 --
--- Lower threshold than Reddit (>=1 vs >=5) because each forum thread
--- represents disproportionate effort — these are long-form discussion
--- forums, not quick-hit social feeds.
+-- Lower threshold than Stage 5 reddit_reception (>=1 vs >=5) because
+-- each forum thread represents disproportionate effort — long-form
+-- discussion forums, not quick-hit social feeds.
 --
---   = 0 results          →  NULL with status='no_forum_signal'
---   1-10 results         →  scored with confidence='LOW'
---   11-100 results       →  scored with confidence='MEDIUM'
---   100+ results         →  scored with confidence='HIGH'
+--   = 0 confirmed   →  NULL with status='no_confirmed_forum_signal'
+--   1-2 confirmed   →  scored, confidence='LOW'
+--   3-5 confirmed   →  scored, confidence='MEDIUM'
+--   6+ confirmed    →  scored, confidence='HIGH'
 --
--- ─── PER-FORUM BREAKDOWN ───────────────────────────────────────────────
+-- ─── DATA TRAIL ───────────────────────────────────────────────────────
 --
--- The top 10 URLs per IP are bucketed by forum_domain via URL parsing,
--- producing per-forum hit counts (out of top 10) for the data trail.
--- Useful for showing "this IP has presence on EN World but not
--- Dragonsfoot" patterns.
+-- Surfaces both the disambiguation funnel (cse_total → after_banned_context
+-- → about_ip) and the attitude breakdown (positive / negative / divisive /
+-- mentions_only counts) plus per-forum confirmed bucketing.
 -- ═══════════════════════════════════════════════════════════════════════
 
 CREATE OR REPLACE VIEW `dnd-trends-index.gold_data.forum_presence_proxy` AS
@@ -78,39 +77,87 @@ WITH
   ),
 
   -- ────────────────────────────────────────────────────────────────────
-  -- Compute the dataset-wide max for log-scale normalization.
-  -- Done as a CROSS JOIN because BQ doesn't allow aggregate-functions
-  -- inside expressions in the same SELECT.
+  -- Per-(ip, url) classifications. Take the latest classification.
   -- ────────────────────────────────────────────────────────────────────
-  max_results AS (
-    SELECT MAX(total_results_combined) AS max_total
-    FROM latest_per_ip
-    WHERE total_results_combined > 0
+  classifications AS (
+    SELECT *
+    FROM `dnd-trends-index.dnd_trends_raw.forum_top_urls_classified`
+    QUALIFY ROW_NUMBER() OVER (
+      PARTITION BY ip_name, url ORDER BY classified_at DESC
+    ) = 1
   ),
 
   -- ────────────────────────────────────────────────────────────────────
-  -- Per-forum bucketing of the top URLs.  Each top_thread_urls entry
-  -- has a forum_domain field; UNNEST + COUNTIF gives us per-forum hit
-  -- counts (out of top 10 results returned by Google).
+  -- Flatten top URLs per IP and join classifications. Map attitude
+  -- string to numeric attitude_score.
   -- ────────────────────────────────────────────────────────────────────
-  per_forum_buckets AS (
+  flattened_with_class AS (
     SELECT
       l.ip_name,
-      COUNTIF(t.forum_domain = 'enworld.org')           AS enworld_top_hits,
-      COUNTIF(t.forum_domain = 'forums.giantitp.com')   AS giantitp_top_hits,
-      COUNTIF(t.forum_domain = 'rpg.net')               AS rpgnet_top_hits,
-      COUNTIF(t.forum_domain = 'dragonsfoot.org')       AS dragonsfoot_top_hits
+      t.url,
+      t.title,
+      t.forum_domain,
+      c.is_about_ip,
+      c.forum_attitude,
+      c.confidence AS classifier_confidence,
+      c.reasoning AS classifier_reasoning,
+      CASE c.forum_attitude
+        WHEN 'positive'      THEN  1.0
+        WHEN 'mentions_only' THEN  0.0
+        WHEN 'divisive'      THEN -0.4
+        WHEN 'negative'      THEN -1.0
+        ELSE NULL
+      END AS attitude_score
     FROM latest_per_ip l, UNNEST(l.top_thread_urls) AS t
-    GROUP BY l.ip_name
+    LEFT JOIN classifications c
+      ON c.ip_name = l.ip_name AND c.url = t.url
   ),
 
-  -- Pull the top URL + title for the data trail (for the IP detail panel)
-  top_url_per_ip AS (
+  -- ────────────────────────────────────────────────────────────────────
+  -- Aggregate per-IP: counts at each stage of the funnel + attitude
+  -- breakdown + per-forum confirmed bucketing.
+  -- ────────────────────────────────────────────────────────────────────
+  per_ip_agg AS (
     SELECT
-      l.ip_name,
-      ARRAY_AGG(STRUCT(t.url, t.title, t.forum_domain) ORDER BY t.forum_domain LIMIT 1)[OFFSET(0)] AS top_url
-    FROM latest_per_ip l, UNNEST(l.top_thread_urls) AS t
-    GROUP BY l.ip_name
+      f.ip_name,
+      COUNT(*)                             AS top_after_banned_context,
+      COUNTIF(f.is_about_ip)               AS confirmed_about_ip_count,
+      COUNTIF(f.is_about_ip AND f.forum_attitude = 'positive')      AS positive_count,
+      COUNTIF(f.is_about_ip AND f.forum_attitude = 'mentions_only') AS mentions_only_count,
+      COUNTIF(f.is_about_ip AND f.forum_attitude = 'divisive')      AS divisive_count,
+      COUNTIF(f.is_about_ip AND f.forum_attitude = 'negative')      AS negative_count,
+      SAFE_DIVIDE(
+        SUM(IF(f.is_about_ip, f.attitude_score * f.classifier_confidence, NULL)),
+        NULLIF(SUM(IF(f.is_about_ip, f.classifier_confidence, NULL)), 0)
+      ) AS attitude_avg,
+      COUNTIF(f.is_about_ip AND f.forum_domain = 'enworld.org')         AS enworld_confirmed,
+      COUNTIF(f.is_about_ip AND f.forum_domain = 'forums.giantitp.com') AS giantitp_confirmed,
+      COUNTIF(f.is_about_ip AND f.forum_domain = 'rpg.net')             AS rpgnet_confirmed,
+      COUNTIF(f.is_about_ip AND f.forum_domain = 'dragonsfoot.org')     AS dragonsfoot_confirmed
+    FROM flattened_with_class f
+    GROUP BY f.ip_name
+  ),
+
+  -- Pick a confirmed-positive top URL for the data trail
+  top_positive AS (
+    SELECT
+      f.ip_name,
+      ARRAY_AGG(STRUCT(f.url, f.title, f.forum_domain)
+                ORDER BY f.classifier_confidence DESC LIMIT 1)[OFFSET(0)] AS top_url
+    FROM flattened_with_class f
+    WHERE f.is_about_ip AND f.forum_attitude = 'positive'
+    GROUP BY f.ip_name
+  ),
+
+  -- Fallback: any confirmed URL if no positives
+  top_confirmed AS (
+    SELECT
+      f.ip_name,
+      ARRAY_AGG(STRUCT(f.url, f.title, f.forum_domain)
+                ORDER BY f.classifier_confidence DESC LIMIT 1)[OFFSET(0)] AS top_url
+    FROM flattened_with_class f
+    WHERE f.is_about_ip
+    GROUP BY f.ip_name
   ),
 
   joined AS (
@@ -118,18 +165,26 @@ WITH
       s.ip_name,
       s.medium,
       s.tier,
-      l.total_results_combined,
+      l.total_results_combined  AS cse_total_results_estimate,
       l.harvested_at,
-      l.top_thread_urls,
-      pf.enworld_top_hits,
-      pf.giantitp_top_hits,
-      pf.rpgnet_top_hits,
-      pf.dragonsfoot_top_hits,
-      tu.top_url AS top_url_struct
+      l.top_thread_urls         AS top_thread_urls_after_banned_context,
+      COALESCE(p.top_after_banned_context,    0) AS top_after_banned_context,
+      COALESCE(p.confirmed_about_ip_count,    0) AS confirmed_about_ip_count,
+      COALESCE(p.positive_count,              0) AS positive_count,
+      COALESCE(p.mentions_only_count,         0) AS mentions_only_count,
+      COALESCE(p.divisive_count,              0) AS divisive_count,
+      COALESCE(p.negative_count,              0) AS negative_count,
+      p.attitude_avg,
+      COALESCE(p.enworld_confirmed,           0) AS enworld_confirmed,
+      COALESCE(p.giantitp_confirmed,          0) AS giantitp_confirmed,
+      COALESCE(p.rpgnet_confirmed,            0) AS rpgnet_confirmed,
+      COALESCE(p.dragonsfoot_confirmed,       0) AS dragonsfoot_confirmed,
+      COALESCE(tp.top_url, tc.top_url)        AS top_thread_struct
     FROM `dnd-trends-index.dnd_trends_raw.ub_candidate_seeds` s
     LEFT JOIN latest_per_ip l USING (ip_name)
-    LEFT JOIN per_forum_buckets pf USING (ip_name)
-    LEFT JOIN top_url_per_ip tu USING (ip_name)
+    LEFT JOIN per_ip_agg p USING (ip_name)
+    LEFT JOIN top_positive tp USING (ip_name)
+    LEFT JOIN top_confirmed tc USING (ip_name)
   )
 
 SELECT
@@ -139,63 +194,89 @@ SELECT
 
   -- ─── THE SCORE ────────────────────────────────────────────────────────
   CASE
-    WHEN COALESCE(j.total_results_combined, 0) = 0 THEN NULL
-    ELSE ROUND(
-      SAFE_DIVIDE(
-        LOG10(j.total_results_combined + 1),
-        LOG10((SELECT max_total FROM max_results) + 1)
-      ),
-      4
-    )
+    WHEN j.confirmed_about_ip_count = 0 THEN NULL
+    ELSE ROUND((j.attitude_avg + 1.0) / 2.0, 4)
   END AS forum_presence_score,
 
   -- ─── STATUS + CONFIDENCE ──────────────────────────────────────────────
   CASE
-    WHEN COALESCE(j.total_results_combined, 0) = 0 THEN 'no_forum_signal'
+    WHEN j.confirmed_about_ip_count = 0 THEN 'no_confirmed_forum_signal'
     ELSE 'sufficient'
   END AS forum_status,
 
   CASE
-    WHEN COALESCE(j.total_results_combined, 0) = 0 THEN 'NONE'
-    WHEN j.total_results_combined <= 10 THEN 'LOW'
-    WHEN j.total_results_combined <= 100 THEN 'MEDIUM'
+    WHEN j.confirmed_about_ip_count = 0 THEN 'NONE'
+    WHEN j.confirmed_about_ip_count <= 2 THEN 'LOW'
+    WHEN j.confirmed_about_ip_count <= 5 THEN 'MEDIUM'
     ELSE 'HIGH'
   END AS forum_signal_confidence,
 
-  -- ─── DATA TRAIL ───────────────────────────────────────────────────────
-  COALESCE(j.total_results_combined, 0) AS total_results_combined,
-  COALESCE(j.enworld_top_hits, 0)       AS enworld_top_hits,
-  COALESCE(j.giantitp_top_hits, 0)      AS giantitp_top_hits,
-  COALESCE(j.rpgnet_top_hits, 0)        AS rpgnet_top_hits,
-  COALESCE(j.dragonsfoot_top_hits, 0)   AS dragonsfoot_top_hits,
-  j.top_url_struct.url AS top_thread_url,
-  j.top_url_struct.title AS top_thread_title,
-  j.top_url_struct.forum_domain AS top_thread_forum,
-  j.top_thread_urls,  -- full list of top 10 — for v2 sentiment scraping
+  -- ─── DISAMBIGUATION FUNNEL (data trail) ───────────────────────────────
+  COALESCE(j.cse_total_results_estimate, 0) AS cse_total_results_estimate,
+  j.top_after_banned_context,
+  j.confirmed_about_ip_count,
+
+  -- ─── ATTITUDE BREAKDOWN ───────────────────────────────────────────────
+  j.positive_count,
+  j.mentions_only_count,
+  j.divisive_count,
+  j.negative_count,
+  ROUND(COALESCE(j.attitude_avg, 0), 4) AS attitude_avg,
+
+  -- ─── PER-FORUM CONFIRMED BUCKETING ────────────────────────────────────
+  j.enworld_confirmed,
+  j.giantitp_confirmed,
+  j.rpgnet_confirmed,
+  j.dragonsfoot_confirmed,
+
+  -- ─── SAMPLE URL ──────────────────────────────────────────────────────
+  j.top_thread_struct.url           AS top_thread_url,
+  j.top_thread_struct.title         AS top_thread_title,
+  j.top_thread_struct.forum_domain  AS top_thread_forum,
+  j.top_thread_urls_after_banned_context AS top_thread_urls,
   j.harvested_at,
+
+  -- ─── BACKWARDS-COMPAT COLUMN ALIASES ──────────────────────────────────
+  -- The composite view reads these names; keep them stable.
+  COALESCE(j.cse_total_results_estimate, 0) AS total_results_combined,
+  j.enworld_confirmed AS enworld_top_hits,
+  j.giantitp_confirmed AS giantitp_top_hits,
+  j.rpgnet_confirmed AS rpgnet_top_hits,
+  j.dragonsfoot_confirmed AS dragonsfoot_top_hits,
 
   -- ─── HUMAN-READABLE REASONING ─────────────────────────────────────────
   CASE
-    WHEN COALESCE(j.total_results_combined, 0) = 0 THEN
-      'No forum-thread mentions in the 4 monitored TTRPG forums.'
+    WHEN j.confirmed_about_ip_count = 0 AND COALESCE(j.cse_total_results_estimate, 0) = 0 THEN
+      'No forum-thread mentions in EN World / GitP / RPG.net / Dragonsfoot.'
+    WHEN j.confirmed_about_ip_count = 0 THEN
+      CONCAT(
+        'No CONFIRMED forum threads about this IP. ',
+        'Funnel: ~', CAST(j.cse_total_results_estimate AS STRING),
+        ' CSE → ', CAST(j.top_after_banned_context AS STRING),
+        ' post-banned-context → 0 about-IP. Likely false-positive name collision.'
+      )
     ELSE
       CONCAT(
-        CAST(j.total_results_combined AS STRING),
-        ' forum-thread mentions across EN World/GitP/RPG.net/Dragonsfoot. ',
-        'Top URLs from: EN World ', CAST(COALESCE(j.enworld_top_hits, 0) AS STRING),
-        ', GitP ', CAST(COALESCE(j.giantitp_top_hits, 0) AS STRING),
-        ', RPG.net ', CAST(COALESCE(j.rpgnet_top_hits, 0) AS STRING),
-        ', Dragonsfoot ', CAST(COALESCE(j.dragonsfoot_top_hits, 0) AS STRING),
-        '. Sample thread: "',
-        SUBSTR(COALESCE(j.top_url_struct.title, ''), 1, 80),
-        IF(LENGTH(COALESCE(j.top_url_struct.title, '')) > 80, '..."', '"')
+        CAST(j.confirmed_about_ip_count AS STRING),
+        ' confirmed forum thread(s). Attitude: ',
+        CAST(j.positive_count AS STRING),     ' positive / ',
+        CAST(j.mentions_only_count AS STRING),' mentions / ',
+        CAST(j.divisive_count AS STRING),     ' divisive / ',
+        CAST(j.negative_count AS STRING),     ' negative. ',
+        'Top URLs from: EN World ', CAST(j.enworld_confirmed AS STRING),
+        ', GitP ', CAST(j.giantitp_confirmed AS STRING),
+        ', RPG.net ', CAST(j.rpgnet_confirmed AS STRING),
+        ', Dragonsfoot ', CAST(j.dragonsfoot_confirmed AS STRING),
+        '. Sample: "',
+        SUBSTR(COALESCE(j.top_thread_struct.title, ''), 1, 80),
+        IF(LENGTH(COALESCE(j.top_thread_struct.title, '')) > 80, '..."', '"')
       )
   END AS forum_reasoning,
 
   -- Standardized output contract
-  'community_reception' AS signal_type,
-  'forum_presence_google_cse' AS stream_name,
-  CURRENT_DATE() AS snapshot_date
+  'community_reception'           AS signal_type,
+  'forum_presence_disambiguated'  AS stream_name,
+  CURRENT_DATE()                  AS snapshot_date
 
 FROM joined j
 ORDER BY forum_presence_score DESC NULLS LAST;
