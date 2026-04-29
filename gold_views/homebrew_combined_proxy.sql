@@ -1,34 +1,46 @@
 -- ═══════════════════════════════════════════════════════════════════════
--- gold_data.homebrew_combined_proxy — Stage 6 unified (v1 + v2 sub-stream)
+-- gold_data.homebrew_combined_proxy — Stage 6 unified (3 sub-streams)
 -- ═══════════════════════════════════════════════════════════════════════
 --
--- Blends two complementary homebrew signals into a single per-IP score
--- that the UB Matrix composite consumes:
+-- Blends THREE complementary homebrew signals into a single per-IP
+-- score that the UB Matrix composite consumes:
 --
 --   v1 sub-signal — homebrew_creation_proxy
 --     Reddit r/UnearthedArcana classified mention intensity.
 --     Sentiment-aware (positive/divisive/negative weighting).
---     Captures "people are TALKING about brewing for X" in 30-day window.
+--     "people are TALKING about brewing for X" — 30-day discussion window.
 --     Coverage: ~11/142 IPs (thin — limited by PRAW window).
 --
---   v2 sub-signal — external_homebrew_proxy (disambiguated, two-layer)
+--   v2a sub-signal — external_homebrew_proxy (Stage 6b, disambiguated)
 --     Google CSE count of CONFIRMED 5e homebrew artifacts on
 --     GMBinder + Homebrewery, after Layer 1 (co-term gating + banned-
 --     context filter) and Layer 2 (Gemini Flash AI Bouncer
 --     is_about_ip + is_5e_homebrew classification). Score is from
---     the confirmed top-10 count, not raw CSE total.
---     Captures "people have PUBLISHED 5e brews for X" — artifacts
---     accumulate over years.
+--     the confirmed top-10 count.
+--     "people have PUBLISHED 5e brews for X" — artifacts accumulate
+--     over years on external publishing tools.
+--
+--   v2b sub-signal — ddb_homebrew_proxy (Stage 6a, NEW Apr 29 evening)
+--     D&D Beyond native homebrew — bookmarklet-captured visible items
+--     across 5 priority sections (subclasses, spells, monsters,
+--     magic-items, species). Score is from total_items aggregated
+--     across sections, log-normalized.
+--     "people have BUILT and SHARED 5e content for X on the native
+--     D&D platform" — strongest "I want to play this at the table
+--     TODAY" signal in the matrix.
+--     v1 ships raw counts; v2 (Stage 6c) will add an AI Bouncer pass
+--     to disambiguate fuzzy filter-name matches.
 --
 -- ─── BLENDING RULE ─────────────────────────────────────────────────────
 --
--- Equal-weighted average with per-IP renormalization (same pattern as
--- the master composite):
+-- Equal-weighted average across the present sub-signals. NULL signals
+-- drop out and the average is taken only over the present ones (per-
+-- IP renormalization, same pattern as the master composite).
 --
---   both present       →  AVG(v1, v2)
---   only v1 present    →  v1 (Reddit UA discussion only)
---   only v2 present    →  v2 (external artifacts only)
---   neither present    →  NULL
+--   3 present →  AVG(ua, ext, ddb)
+--   2 present →  AVG(of the present pair)
+--   1 present →  use that one
+--   0 present →  NULL
 -- ═══════════════════════════════════════════════════════════════════════
 
 CREATE OR REPLACE VIEW `dnd-trends-index.gold_data.homebrew_combined_proxy` AS
@@ -67,6 +79,26 @@ WITH
     FROM `dnd-trends-index.gold_data.external_homebrew_proxy`
   ),
 
+  ddb_signal AS (
+    SELECT
+      ip_name,
+      ddb_homebrew_score,
+      ddb_homebrew_status,
+      ddb_total_items,
+      ddb_subclasses_items,
+      ddb_spells_items,
+      ddb_monsters_items,
+      ddb_magic_items_items,
+      ddb_species_items,
+      ddb_sections_captured,
+      ddb_top_item_name,
+      ddb_top_item_url,
+      ddb_top_item_section,
+      ddb_top_item_adds,
+      ddb_last_captured_at
+    FROM `dnd-trends-index.gold_data.ddb_homebrew_proxy`
+  ),
+
   joined AS (
     SELECT
       s.ip_name,
@@ -91,10 +123,25 @@ WITH
       ext.top_confirmed_homebrew_url,
       ext.top_confirmed_homebrew_title,
       ext.top_confirmed_homebrew_source,
-      ext.external_homebrew_top_urls
+      ext.external_homebrew_top_urls,
+      ddb.ddb_homebrew_score,
+      ddb.ddb_homebrew_status,
+      ddb.ddb_total_items,
+      ddb.ddb_subclasses_items,
+      ddb.ddb_spells_items,
+      ddb.ddb_monsters_items,
+      ddb.ddb_magic_items_items,
+      ddb.ddb_species_items,
+      ddb.ddb_sections_captured,
+      ddb.ddb_top_item_name,
+      ddb.ddb_top_item_url,
+      ddb.ddb_top_item_section,
+      ddb.ddb_top_item_adds,
+      ddb.ddb_last_captured_at
     FROM `dnd-trends-index.dnd_trends_raw.ub_candidate_seeds` s
-    LEFT JOIN ua_signal ua USING (ip_name)
+    LEFT JOIN ua_signal       ua  USING (ip_name)
     LEFT JOIN external_signal ext USING (ip_name)
+    LEFT JOIN ddb_signal      ddb USING (ip_name)
   )
 
 SELECT
@@ -102,30 +149,45 @@ SELECT
   j.medium,
   j.tier,
 
-  -- ─── THE COMBINED SCORE ───────────────────────────────────────────────
-  CASE
-    WHEN j.ua_homebrew_score IS NOT NULL
-         AND j.external_homebrew_score IS NOT NULL THEN
-      ROUND((j.ua_homebrew_score + j.external_homebrew_score) / 2.0, 4)
-    WHEN j.ua_homebrew_score IS NOT NULL THEN
-      j.ua_homebrew_score
-    WHEN j.external_homebrew_score IS NOT NULL THEN
-      j.external_homebrew_score
-    ELSE NULL
-  END AS homebrew_combined_score,
+  -- ─── THE COMBINED SCORE (3-way average with renormalization) ──────────
+  ROUND(
+    SAFE_DIVIDE(
+      COALESCE(j.ua_homebrew_score,       0)
+      + COALESCE(j.external_homebrew_score, 0)
+      + COALESCE(j.ddb_homebrew_score,      0),
+      NULLIF(
+        IF(j.ua_homebrew_score       IS NOT NULL, 1, 0) +
+        IF(j.external_homebrew_score IS NOT NULL, 1, 0) +
+        IF(j.ddb_homebrew_score      IS NOT NULL, 1, 0),
+        0
+      )
+    ),
+    4
+  ) AS homebrew_combined_score,
 
   -- ─── COMBINED STATUS ──────────────────────────────────────────────────
   CASE
-    WHEN j.ua_homebrew_score IS NOT NULL
-         AND j.external_homebrew_score IS NOT NULL THEN 'sufficient_both'
-    WHEN j.ua_homebrew_score IS NOT NULL THEN 'sufficient_ua_only'
-    WHEN j.external_homebrew_score IS NOT NULL THEN 'sufficient_external_only'
-    ELSE 'no_homebrew_signal'
+    WHEN j.ua_homebrew_score IS NULL
+         AND j.external_homebrew_score IS NULL
+         AND j.ddb_homebrew_score IS NULL
+      THEN 'no_homebrew_signal'
+    WHEN (
+      IF(j.ua_homebrew_score       IS NOT NULL, 1, 0) +
+      IF(j.external_homebrew_score IS NOT NULL, 1, 0) +
+      IF(j.ddb_homebrew_score      IS NOT NULL, 1, 0)
+    ) = 3 THEN 'sufficient_all_three'
+    WHEN (
+      IF(j.ua_homebrew_score       IS NOT NULL, 1, 0) +
+      IF(j.external_homebrew_score IS NOT NULL, 1, 0) +
+      IF(j.ddb_homebrew_score      IS NOT NULL, 1, 0)
+    ) = 2 THEN 'sufficient_two'
+    ELSE 'sufficient_one'
   END AS homebrew_combined_status,
 
   (
-    IF(j.ua_homebrew_score IS NOT NULL, 1, 0) +
-    IF(j.external_homebrew_score IS NOT NULL, 1, 0)
+    IF(j.ua_homebrew_score       IS NOT NULL, 1, 0) +
+    IF(j.external_homebrew_score IS NOT NULL, 1, 0) +
+    IF(j.ddb_homebrew_score      IS NOT NULL, 1, 0)
   ) AS homebrew_sub_signals_present,
 
   -- ─── PASS-THROUGH SUB-SIGNALS (data trail) ────────────────────────────
@@ -138,7 +200,7 @@ SELECT
   COALESCE(j.homebrew_negative_count, 0)      AS homebrew_negative_count,
   j.ua_sample_post_title,
 
-  -- v2 external (disambiguated)
+  -- v2a external
   j.external_homebrew_score,
   COALESCE(j.cse_total_results_estimate, 0)  AS cse_total_results_estimate,
   COALESCE(j.top_after_banned_context, 0)    AS top_after_banned_context,
@@ -151,36 +213,48 @@ SELECT
   j.top_confirmed_homebrew_source,
   j.external_homebrew_top_urls,
 
+  -- v2b DDB native (NEW)
+  j.ddb_homebrew_score,
+  COALESCE(j.ddb_total_items,         0) AS ddb_total_items,
+  COALESCE(j.ddb_subclasses_items,    0) AS ddb_subclasses_items,
+  COALESCE(j.ddb_spells_items,        0) AS ddb_spells_items,
+  COALESCE(j.ddb_monsters_items,      0) AS ddb_monsters_items,
+  COALESCE(j.ddb_magic_items_items,   0) AS ddb_magic_items_items,
+  COALESCE(j.ddb_species_items,       0) AS ddb_species_items,
+  COALESCE(j.ddb_sections_captured,   0) AS ddb_sections_captured,
+  j.ddb_top_item_name,
+  j.ddb_top_item_url,
+  j.ddb_top_item_section,
+  j.ddb_top_item_adds,
+  j.ddb_last_captured_at,
+
   -- ─── HUMAN-READABLE REASONING ─────────────────────────────────────────
-  CASE
-    WHEN j.ua_homebrew_score IS NULL AND j.external_homebrew_score IS NULL THEN
-      'No homebrew signal — neither r/UnearthedArcana mentions nor confirmed GMBinder/Homebrewery 5e artifacts.'
-    WHEN j.ua_homebrew_score IS NOT NULL AND j.external_homebrew_score IS NOT NULL THEN
-      CONCAT(
-        'Combined homebrew signal: UA Reddit ',
-        CAST(ROUND(j.ua_homebrew_score, 2) AS STRING),
-        ' (', CAST(j.ua_homebrew_mention_count AS STRING), ' mentions) + ',
-        'External ', CAST(ROUND(j.external_homebrew_score, 2) AS STRING),
-        ' (', CAST(j.confirmed_5e_homebrew_count AS STRING),
-        ' confirmed 5e artifacts).'
-      )
-    WHEN j.ua_homebrew_score IS NOT NULL THEN
-      CONCAT(
-        'UA Reddit homebrew only: ',
-        CAST(j.ua_homebrew_mention_count AS STRING),
-        ' classified mentions. No confirmed 5e artifacts on GMBinder/Homebrewery.'
-      )
-    ELSE
-      CONCAT(
-        'External homebrew only: ',
-        CAST(j.confirmed_5e_homebrew_count AS STRING),
-        ' confirmed 5e artifact(s) on GMBinder/Homebrewery. No r/UnearthedArcana classified mentions.'
-      )
-  END AS homebrew_combined_reasoning,
+  CONCAT(
+    CASE
+      WHEN j.ua_homebrew_score IS NULL
+           AND j.external_homebrew_score IS NULL
+           AND j.ddb_homebrew_score IS NULL THEN
+        'No homebrew signal across UA Reddit, GMBinder/Homebrewery, or D&D Beyond.'
+      ELSE 'Combined homebrew signal: '
+    END,
+    IF(j.ua_homebrew_score IS NOT NULL,
+       CONCAT('UA Reddit ', CAST(ROUND(j.ua_homebrew_score, 2) AS STRING),
+              ' (', CAST(j.ua_homebrew_mention_count AS STRING), ' mentions). '),
+       ''),
+    IF(j.external_homebrew_score IS NOT NULL,
+       CONCAT('External ', CAST(ROUND(j.external_homebrew_score, 2) AS STRING),
+              ' (', CAST(j.confirmed_5e_homebrew_count AS STRING),
+              ' confirmed 5e artifacts). '),
+       ''),
+    IF(j.ddb_homebrew_score IS NOT NULL,
+       CONCAT('DDB ', CAST(ROUND(j.ddb_homebrew_score, 2) AS STRING),
+              ' (', CAST(j.ddb_total_items AS STRING), ' items). '),
+       '')
+  ) AS homebrew_combined_reasoning,
 
   -- Standardized output contract
   'community_reception'    AS signal_type,
-  'homebrew_combined'      AS stream_name,
+  'homebrew_combined_v3'   AS stream_name,
   CURRENT_DATE()           AS snapshot_date
 
 FROM joined j
