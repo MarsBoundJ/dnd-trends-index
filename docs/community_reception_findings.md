@@ -1,8 +1,8 @@
 # Community Reception + Acquisition: Strategic Findings Report
 
-**Status:** All 7 stages of `community_reception_score` shipped to BigQuery + sibling `reddit_acquisition_score` matrix dimension. Stages 6 + 7 are v1 (presence/light-coverage). v2 (sentiment-rich) is the next focus. Composite gold view + dual-view (equal + weighted) scoring deployed.
+**Status:** All 7 stages of `community_reception_score` shipped, **plus v2 Stage 6b (GMBinder + Homebrewery, two-layer disambiguated) and Stage 7a-i (forum top-URL AI Bouncer, sentiment-weighted) shipped.** Composite-view rewire to consume the v2-disambiguated stages is live. v1 baseline preserved in `dnd_trends_raw.matrix_v1_baseline_snapshot` for A/B comparison.
 
-**Last updated:** 2026-04-29 (Stages 6 + 7 v1 added)
+**Last updated:** 2026-04-29 (v2 Stages 6b + 7a-i shipped — see new section below)
 
 **Audience:** Phil + outside reviewers (Gemini, Perplexity, future collaborators) helping decide composite-score weighting and demo prioritization.
 
@@ -366,11 +366,102 @@ When a platform's ToS or robots.txt forbids automated access, build human-driven
 
 ---
 
+## v2 update — Stages 6b + 7a-i shipped (Apr 29, 2026, later same day)
+
+After the v1 baseline above was snapshotted into `dnd_trends_raw.matrix_v1_baseline_snapshot`, two v2 sub-stream upgrades shipped that materially change Stages 6 and 7. Each applied the **two-layer disambiguation pattern** established in Stage 5 (front-line co-term gating in the harvester + Gemini Flash AI Bouncer on the surviving candidates).
+
+### What shipped
+
+- **Stage 6b** — Google CSE harvest of `gmbinder.com` + `homebrewery.naturalcrit.com` for "5e [IP name]" homebrew artifacts. Layer 1: gated CSE query for ambiguous IPs + banned-context filter. Layer 2: per-URL Gemini Flash classification on `is_about_ip` AND `is_5e_homebrew` (binary on each axis). Score from confirmed-5e-homebrew count in top-10, log-normalized. Coverage: **89/142 IPs (63%) have measurable signal**, vs v1 Stage 6 UA Reddit's 11/142 (8%).
+
+- **Stage 7a-i** — AI Bouncer pass over the existing forum top-URL captures (already in `forum_presence_counts.top_thread_urls` from v1). Layer 1 also re-applied: forum CSE harvest re-run with co-term gating. Layer 2: per-URL Gemini Flash classification on `is_about_ip` + `forum_attitude` (positive/negative/divisive/mentions_only). Score formula switched from log10(presence) to sentiment-weighted attitude average — same semantic as Stage 5 reddit_reception_proxy.
+
+- **Composite-view rewire** — `gold_data.ub_matrix_composite` now consumes `homebrew_combined_proxy` (v1 UA + v2 external blended) instead of `homebrew_creation_proxy` (v1 UA-only). Backwards-compat surface columns retained; new sub-trail columns added (`ua_homebrew_score`, `external_homebrew_score`, `confirmed_5e_homebrew_count`, `gmbinder_confirmed`, `homebrewery_confirmed`).
+
+### Composite distribution: v1 baseline → v2
+
+```
+total_ips:              142          142
+sufficient (>=2 src):    50  (35%)    59  (42%)    +9
+thin_evidence (1 src):   78  (55%)    54  (38%)   -24
+modeled_only (0 src):    14  (10%)    29  (20%)   +15
+```
+
+**+9 IPs scored confidently in v2** — coverage win. The 24 IPs that left thin_evidence split between gaining a second source (entering sufficient) and losing their only source post-disambiguation (entering modeled_only).
+
+### The Tyranny test (the disambiguation canary)
+
+| | v1 baseline | v2 |
+|---|---|---|
+| forum_presence_score | 0.95 | NULL |
+| homebrew_creation_score | NULL | NULL |
+| measured_sources_count | 1 | 0 |
+| composite_status | thin_evidence | modeled_only_low_confidence |
+
+Both false-positive sources collapsed. Tyranny's coterms (`obsidian / kyros / fatebinder / tapestry / game`) are themselves common D&D words, so Layer 1 alone wasn't sufficient — but Layer 2 (AI Bouncer reading title+snippet) caught all surviving "Tyranny" matches as either generic political-tyranny themes or the official "Tyranny of Dragons" 5e module, NOT the Obsidian video game. Score correctly abstains.
+
+### Major rescues (v1=NULL → v2=sufficient via the new external homebrew signal)
+
+| IP | v2 reception_eq | source pattern |
+|---|---|---|
+| Solo Leveling | 0.80 | external_homebrew + reddit |
+| Destiny 2 | 0.73 | external_homebrew + bgg |
+| Omniscient Reader's Viewpoint | 0.73 | external_homebrew + reddit |
+| Cthulhu Mythos | 0.70 | external_homebrew + bgg |
+| Sekiro: Shadows Die Twice | 0.68 | external_homebrew + bgg |
+| Divinity: Original Sin 2 | 0.65 | external_homebrew + bgg |
+| Genshin Impact | 0.57 | external_homebrew + reddit |
+| Pillars of Eternity II | 0.56 | external_homebrew + bgg |
+| Warframe | 0.55 | external_homebrew + bgg |
+| Mob Psycho 100 | 0.46 | external_homebrew + ao3 |
+
+All ten of these had Reddit / AO3 / BGG data already but were stranded at thin_evidence because the second measured source was missing. External_homebrew filled that gap.
+
+### Major adjustments (v1 scored, v2 score moved)
+
+| IP | v1 | v2 | Δ | what changed |
+|---|---|---|---|---|
+| Hollow Knight | 0.70 | 0.84 | +0.14 | external_homebrew confirmed 9/10 top URLs are real D&D 5e brews — score went UP because conservative scoring rewards confirmed top-10 density |
+| Final Fantasy XIV | 0.59 | 0.73 | +0.14 | external_homebrew added a high signal |
+| Goblin Slayer | 0.65 | 0.76 | +0.11 | same |
+| Invincible | 0.78 | 0.60 | -0.18 | disambiguation correctly tempered the v1 forum 1.00 false-positive |
+| Fallout | 0.81 | 0.72 | -0.09 | "OGL fallout" / "drama fallout" banned-context drops removed false-positive forum mass |
+| Doctor Who | 0.65 | 0.59 | -0.06 | sentiment-weighted forum (mostly mentions_only) replaced naive presence count |
+
+### Honest abstentions (v1 scored → v2 NULL)
+
+Three IPs lost their thin v1 signal and correctly fell to thin_evidence in v2: **Valheim** (0.63 → NULL), **Honkai: Star Rail** (0.58 → NULL), **Inscryption** (0.32 → NULL). Their v1 measured signal didn't survive the disambiguation funnel.
+
+### Novel finding: GMBinder + Homebrewery are ebook piracy hosts
+
+The AI Bouncer's `is_5e_homebrew` flag surfaced an unexpected pattern. Several popular novel-IPs had "homebrew" hits that turned out to be pirated novel PDFs hosted on GMBinder/Homebrewery for distribution, not actual game homebrew:
+
+- **Dungeon Crawler Carl:** 10/10 top URLs are PDFs of the DCC novels (`This Inevitable Ruin`, `Carl's Doomsday Scenario`, etc.). 0 are 5e homebrew. The GMBinder ecosystem is being used as a CDN for ebook piracy.
+- **Stranger Things:** 10/10 top URLs are PDFs of Netflix-licensed Stranger Things novels (`Flight of Icarus`, `The Dustin Experiment`, `Hawkins High Yearbook`, etc.). 0 are 5e homebrew.
+
+Without `is_5e_homebrew=TRUE/FALSE` second-axis classification, both IPs would have scored ~0.5+ on raw presence — false-positive game-homebrew signal driven by piracy infrastructure. The two-axis classifier catches this cleanly.
+
+### Cost summary (v2 Stages 6b + 7a-i)
+
+```
+CSE re-harvest (homebrew + forum):  ~$0.42
+Gemini Flash classifiers:           ~$0.43 (1082 URLs total)
+TOTAL:                              ~$0.85
+```
+
+### Remaining v2 work (post-Expo or as time permits)
+
+1. **Stage 6a** — D&D Beyond Homebrew bookmarklet. Highest expected novelty per the v2 plan (DDB is the native D&D ecosystem; presence there is the strongest signal). Constrained by Cloudflare + ToS, so requires the bookmarklet pattern (mirror `scripts/ao3_bookmarklet.js`).
+2. **Stage 7a-ii** — Playwright thread-body scraper for higher-resolution sentiment + backlash narrative classification. Lower priority since the cheap path (title+snippet) already passed the Tyranny test.
+3. **Stages 6c + 7c** — UA sentiment depth (homebrew type / upvote weighting) + backlash narrative extraction (cash_grab / tone_mismatch / not_dnd / pandering labels). Polish work.
+
+---
+
 ## What's next
 
-1. **Composite `community_reception_score`** — combine all 5 sources with per-IP renormalization. Outside review of weighting strategy welcome (this document is the brief).
-2. **UB Matrix UI surfacing** — render `community_reception_score` and `reddit_acquisition_score` as new columns alongside the existing `license_fit_score`. Highlight the cross-source insights via UI affordances (e.g., automatic flagging of high-fit/low-reception IPs).
-3. **Hasbro pitch deck** — the cross-source findings in this report are demo-ready. Spy x Family triple-negative slide and Hollow Knight cross-source positive slide are specifically suggested.
+1. **Stage 6a (D&D Beyond bookmarklet)** — biggest novel data unlock. See "Remaining v2 work" above.
+2. **UB Matrix UI surfacing** — render `community_reception_score` and `reddit_acquisition_score` as new columns alongside the existing `license_fit_score`. Highlight the cross-source insights + the v2 disambiguation funnel via UI affordances (e.g., automatic flagging of high-fit/low-reception IPs; "Tyranny test passed" badge for IPs where Layer 2 caught false positives).
+3. **Hasbro pitch deck** — the cross-source findings in this report PLUS the v2 disambiguation story (Tyranny canary + ebook-piracy-host finding) are demo-ready.
 
 ---
 
