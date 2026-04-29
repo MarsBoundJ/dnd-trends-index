@@ -24,6 +24,10 @@
 --   AO3 fanfic (Stage 4)        0.20
 --   Reddit D&D (Stage 5 P1)     0.15
 --   Gemini baseline (Stage 1)   0.15
+--   Homebrew (Stage 6)          0.10  (NEW Apr 29 — relative to others
+--                                       it's lowest because v1 coverage
+--                                       is thin; per-IP renormalization
+--                                       handles the unbalanced sum)
 --
 -- When the two scores AGREE (low divergence) → strong signal.
 -- When they DIVERGE (>0.15) → flag for inspection. The divergence
@@ -180,6 +184,18 @@ WITH
   ),
 
   -- ────────────────────────────────────────────────────────────────────
+  -- Source 6: Homebrew creation intensity (r/UnearthedArcana)
+  -- ────────────────────────────────────────────────────────────────────
+  homebrew_score AS (
+    SELECT
+      ip_name,
+      homebrew_creation_score,
+      homebrew_mention_count,
+      sample_post_title AS homebrew_sample_title
+    FROM `dnd-trends-index.gold_data.homebrew_creation_proxy`
+  ),
+
+  -- ────────────────────────────────────────────────────────────────────
   -- Acquisition signal (Stage 5 Phase 2 — separate matrix dimension)
   -- ────────────────────────────────────────────────────────────────────
   acquisition_score AS (
@@ -225,6 +241,9 @@ WITH
       ao3.ao3_work_count,
       rec.reddit_proxy_score,
       rec.reddit_confirmed_mentions,
+      hb.homebrew_creation_score,
+      hb.homebrew_mention_count,
+      hb.homebrew_sample_title,
       acq.reddit_acquisition_score,
       acq.acquisition_confirmed_mentions
     FROM `dnd-trends-index.dnd_trends_raw.ub_candidate_seeds` s
@@ -233,6 +252,7 @@ WITH
     LEFT JOIN bgg_score bgg USING (ip_name)
     LEFT JOIN ao3_score ao3 USING (ip_name)
     LEFT JOIN reddit_score rec USING (ip_name)
+    LEFT JOIN homebrew_score hb USING (ip_name)
     LEFT JOIN acquisition_score acq USING (ip_name)
     LEFT JOIN fit_score f USING (ip_name)
   ),
@@ -250,20 +270,23 @@ WITH
       j.*,
 
       -- Count of MEASURED sources (excluding Gemini baseline)
+      -- Stage 6 homebrew counts as measured.
       (
-        IF(j.precedent_score    IS NOT NULL, 1, 0) +
-        IF(j.bgg_proxy_score    IS NOT NULL, 1, 0) +
-        IF(j.fanfic_proxy_score IS NOT NULL, 1, 0) +
-        IF(j.reddit_proxy_score IS NOT NULL, 1, 0)
+        IF(j.precedent_score          IS NOT NULL, 1, 0) +
+        IF(j.bgg_proxy_score          IS NOT NULL, 1, 0) +
+        IF(j.fanfic_proxy_score       IS NOT NULL, 1, 0) +
+        IF(j.reddit_proxy_score       IS NOT NULL, 1, 0) +
+        IF(j.homebrew_creation_score  IS NOT NULL, 1, 0)
       ) AS measured_sources_count,
 
       -- Count of ALL sources (including Gemini)
       (
-        IF(j.gemini_baseline_score IS NOT NULL, 1, 0) +
-        IF(j.precedent_score       IS NOT NULL, 1, 0) +
-        IF(j.bgg_proxy_score       IS NOT NULL, 1, 0) +
-        IF(j.fanfic_proxy_score    IS NOT NULL, 1, 0) +
-        IF(j.reddit_proxy_score    IS NOT NULL, 1, 0)
+        IF(j.gemini_baseline_score    IS NOT NULL, 1, 0) +
+        IF(j.precedent_score          IS NOT NULL, 1, 0) +
+        IF(j.bgg_proxy_score          IS NOT NULL, 1, 0) +
+        IF(j.fanfic_proxy_score       IS NOT NULL, 1, 0) +
+        IF(j.reddit_proxy_score       IS NOT NULL, 1, 0) +
+        IF(j.homebrew_creation_score  IS NOT NULL, 1, 0)
       ) AS sources_present,
 
       -- ─── EQUAL-WEIGHTED COMPOSITE ───────────────────────────────────
@@ -274,35 +297,41 @@ WITH
           + COALESCE(j.precedent_score, 0)
           + COALESCE(j.bgg_proxy_score, 0)
           + COALESCE(j.fanfic_proxy_score, 0)
-          + COALESCE(j.reddit_proxy_score, 0),
+          + COALESCE(j.reddit_proxy_score, 0)
+          + COALESCE(j.homebrew_creation_score, 0),
           NULLIF(
-            IF(j.gemini_baseline_score IS NOT NULL, 1, 0) +
-            IF(j.precedent_score       IS NOT NULL, 1, 0) +
-            IF(j.bgg_proxy_score       IS NOT NULL, 1, 0) +
-            IF(j.fanfic_proxy_score    IS NOT NULL, 1, 0) +
-            IF(j.reddit_proxy_score    IS NOT NULL, 1, 0),
+            IF(j.gemini_baseline_score    IS NOT NULL, 1, 0) +
+            IF(j.precedent_score          IS NOT NULL, 1, 0) +
+            IF(j.bgg_proxy_score          IS NOT NULL, 1, 0) +
+            IF(j.fanfic_proxy_score       IS NOT NULL, 1, 0) +
+            IF(j.reddit_proxy_score       IS NOT NULL, 1, 0) +
+            IF(j.homebrew_creation_score  IS NOT NULL, 1, 0),
             0
           )
         ),
         4
       ) AS composite_score_equal_raw,
 
-      -- ─── WEIGHTED COMPOSITE (ChatGPT revised weights) ──────────────
-      -- Precedents 0.30 / BGG 0.20 / AO3 0.20 / Reddit 0.15 / Gemini 0.15
-      -- Renormalize denominator by sum of weights for present sources.
+      -- ─── WEIGHTED COMPOSITE (ChatGPT revised weights + Stage 6) ─────
+      -- Precedents 0.30 / BGG 0.20 / AO3 0.20 / Reddit 0.15 /
+      -- Gemini 0.15 / Homebrew 0.10
+      -- Per-IP renormalization handles the un-summing-to-1.0 — only
+      -- present-source weights enter the denominator.
       ROUND(
         SAFE_DIVIDE(
-          COALESCE(j.precedent_score, 0)       * 0.30 +
-          COALESCE(j.bgg_proxy_score, 0)       * 0.20 +
-          COALESCE(j.fanfic_proxy_score, 0)    * 0.20 +
-          COALESCE(j.reddit_proxy_score, 0)    * 0.15 +
-          COALESCE(j.gemini_baseline_score, 0) * 0.15,
+          COALESCE(j.precedent_score, 0)         * 0.30 +
+          COALESCE(j.bgg_proxy_score, 0)         * 0.20 +
+          COALESCE(j.fanfic_proxy_score, 0)      * 0.20 +
+          COALESCE(j.reddit_proxy_score, 0)      * 0.15 +
+          COALESCE(j.gemini_baseline_score, 0)   * 0.15 +
+          COALESCE(j.homebrew_creation_score, 0) * 0.10,
           NULLIF(
-            IF(j.precedent_score       IS NOT NULL, 0.30, 0) +
-            IF(j.bgg_proxy_score       IS NOT NULL, 0.20, 0) +
-            IF(j.fanfic_proxy_score    IS NOT NULL, 0.20, 0) +
-            IF(j.reddit_proxy_score    IS NOT NULL, 0.15, 0) +
-            IF(j.gemini_baseline_score IS NOT NULL, 0.15, 0),
+            IF(j.precedent_score          IS NOT NULL, 0.30, 0) +
+            IF(j.bgg_proxy_score          IS NOT NULL, 0.20, 0) +
+            IF(j.fanfic_proxy_score       IS NOT NULL, 0.20, 0) +
+            IF(j.reddit_proxy_score       IS NOT NULL, 0.15, 0) +
+            IF(j.gemini_baseline_score    IS NOT NULL, 0.15, 0) +
+            IF(j.homebrew_creation_score  IS NOT NULL, 0.10, 0),
             0
           )
         ),
@@ -311,27 +340,31 @@ WITH
 
       -- ─── CONSILIENCE METRICS ────────────────────────────────────────
       (
-        IF(COALESCE(j.gemini_baseline_score, 0) >= 0.7, 1, 0) +
-        IF(COALESCE(j.precedent_score, 0)       >= 0.7, 1, 0) +
-        IF(COALESCE(j.bgg_proxy_score, 0)       >= 0.7, 1, 0) +
-        IF(COALESCE(j.fanfic_proxy_score, 0)    >= 0.7, 1, 0) +
-        IF(COALESCE(j.reddit_proxy_score, 0)    >= 0.7, 1, 0)
+        IF(COALESCE(j.gemini_baseline_score, 0)   >= 0.7, 1, 0) +
+        IF(COALESCE(j.precedent_score, 0)         >= 0.7, 1, 0) +
+        IF(COALESCE(j.bgg_proxy_score, 0)         >= 0.7, 1, 0) +
+        IF(COALESCE(j.fanfic_proxy_score, 0)      >= 0.7, 1, 0) +
+        IF(COALESCE(j.reddit_proxy_score, 0)      >= 0.7, 1, 0) +
+        IF(COALESCE(j.homebrew_creation_score, 0) >= 0.7, 1, 0)
       ) AS sources_positive,
 
       (
-        IF(j.gemini_baseline_score IS NOT NULL AND j.gemini_baseline_score <= 0.3, 1, 0) +
-        IF(j.precedent_score       IS NOT NULL AND j.precedent_score       <= 0.3, 1, 0) +
-        IF(j.bgg_proxy_score       IS NOT NULL AND j.bgg_proxy_score       <= 0.3, 1, 0) +
-        IF(j.fanfic_proxy_score    IS NOT NULL AND j.fanfic_proxy_score    <= 0.3, 1, 0) +
-        IF(j.reddit_proxy_score    IS NOT NULL AND j.reddit_proxy_score    <= 0.3, 1, 0)
+        IF(j.gemini_baseline_score    IS NOT NULL AND j.gemini_baseline_score    <= 0.3, 1, 0) +
+        IF(j.precedent_score          IS NOT NULL AND j.precedent_score          <= 0.3, 1, 0) +
+        IF(j.bgg_proxy_score          IS NOT NULL AND j.bgg_proxy_score          <= 0.3, 1, 0) +
+        IF(j.fanfic_proxy_score       IS NOT NULL AND j.fanfic_proxy_score       <= 0.3, 1, 0) +
+        IF(j.reddit_proxy_score       IS NOT NULL AND j.reddit_proxy_score       <= 0.3, 1, 0) +
+        IF(j.homebrew_creation_score  IS NOT NULL AND j.homebrew_creation_score  <= 0.3, 1, 0)
       ) AS sources_negative,
 
-      -- Measured-source variance (for highly_corroborated flag)
+      -- Measured-source variance (for highly_corroborated flag).
+      -- Now includes homebrew as a measured source.
       (
         SELECT MAX(s) - MIN(s)
         FROM UNNEST([
           j.precedent_score, j.bgg_proxy_score,
-          j.fanfic_proxy_score, j.reddit_proxy_score
+          j.fanfic_proxy_score, j.reddit_proxy_score,
+          j.homebrew_creation_score
         ]) AS s
         WHERE s IS NOT NULL
       ) AS measured_score_range
@@ -381,12 +414,13 @@ SELECT
   END AS score_divergence,
   w.composite_status,
 
-  -- ─── 5 RECEPTION SUB-SCORES (always shown for the data trail) ─────────
+  -- ─── 6 RECEPTION SUB-SCORES (always shown for the data trail) ─────────
   w.gemini_baseline_score,
   w.precedent_score,
   w.bgg_proxy_score,
   w.fanfic_proxy_score,
   w.reddit_proxy_score,
+  w.homebrew_creation_score,
 
   -- ─── ACQUISITION DIMENSION (separate axis on the matrix) ──────────────
   w.reddit_acquisition_score,
@@ -483,6 +517,8 @@ SELECT
   w.bgg_archetype,
   w.ao3_work_count,
   w.reddit_confirmed_mentions,
+  w.homebrew_mention_count,
+  w.homebrew_sample_title,
 
   -- ─── HUMAN-READABLE REASONING ─────────────────────────────────────────
   CASE
