@@ -2,54 +2,66 @@
 -- gold_data.external_homebrew_proxy — Stage 6b of community_reception (v2)
 -- ═══════════════════════════════════════════════════════════════════════
 --
--- Per-IP "external homebrew document presence" computed from Google
--- Custom Search of the 2 major markdown-to-PDF homebrew tools:
+-- Per-IP "external homebrew artifact intensity" scored from
+-- AI-Bouncer-confirmed top URLs on the 2 major markdown-to-PDF
+-- homebrew tools:
 --
 --     gmbinder.com                  — long-form supplement publishing
 --     homebrewery.naturalcrit.com   — markdown homebrew brewery
 --
--- Anyone polishing a "5e <IP>" supplement to PDF almost always lands
--- on one of these two tools. So a count of "<IP>" results on these
--- sites is a proxy for "this IP has revealed external homebrew
--- demand" beyond what r/UnearthedArcana captures.
+-- ─── TWO-LAYER DISAMBIGUATION ──────────────────────────────────────────
 --
--- ─── WHY THIS COMPLEMENTS v1 (homebrew_creation_proxy) ────────────────
+-- This view consumes the intersection of two BQ tables:
 --
--- v1 Stage 6 (homebrew_creation_proxy) measures discussion intensity
--- on r/UnearthedArcana — covered ~11 IPs out of 142 because PRAW only
--- harvested ~30 days of posts.
+--   external_homebrew_presence_counts   ← Layer 1 (co-term-gated CSE)
+--   external_homebrew_classified        ← Layer 2 (Gemini Flash AI Bouncer)
 --
--- This v2 sub-stream measures *artifact intensity* — the polished PDF
--- output that someone published rather than just discussed. Artifacts
--- accumulate over years; discussion is a 30-day window.
+-- The score is computed from CONFIRMED top URLs only — those where
+-- the AI Bouncer says is_about_ip=TRUE AND is_5e_homebrew=TRUE.
 --
--- Together they form a 2-axis homebrew picture:
---   v1 UA Reddit       = "people are TALKING about brewing for X"
---   v2 GMB/Homebrewery = "people have PUBLISHED brews for X"
+-- Why both flags:
+--   is_about_ip       — disambiguates "Tyranny" (game) from
+--                        "tyranny" (generic English noun)
+--   is_5e_homebrew    — separates real D&D 5e homebrew from book PDFs,
+--                        cookbooks, art-of books, Star Wars 5e (SW5e),
+--                        Pathfinder docs, etc. that happen to live on
+--                        GMBinder/Homebrewery hosting infrastructure
 --
--- The combined view (homebrew_combined_proxy) blends them.
+-- Stage 6b v0 (Apr 29 morning) shipped without disambiguation and
+-- inflated Tyranny / Invincible / The Boys via coincidental keyword
+-- matches and non-homebrew PDFs hosted on these platforms. v1 (this
+-- file) corrects that.
 --
--- ─── SCORE FORMULA ─────────────────────────────────────────────────────
+-- ─── SCORE FORMULA (CONSERVATIVE) ──────────────────────────────────────
 --
--- Log-scale normalize total_results_combined within the dataset:
+--   confirmed_5e_homebrew_count = COUNT of top URLs where
+--     is_about_ip=TRUE AND is_5e_homebrew=TRUE
 --
---   external_homebrew_score = log10(total + 1) / log10(MAX + 1)
+--   external_homebrew_score = LOG10(confirmed + 1) / LOG10(11)
 --
--- Same pattern as forum_presence_proxy. Heavy-tailed distribution
--- (mainstream IPs in hundreds, niche in single digits) is correctly
--- represented on a log scale.
+-- The denominator is fixed at LOG10(11) because the maximum possible
+-- confirmed_count is 10 (we capture top 10 URLs per IP). This is the
+-- "conservative" approach — we score from what we observed in the
+-- top 10, never extrapolate from CSE's total_results_combined estimate.
+--
+-- Score curve:
+--   0 confirmed  →  NULL  (abstention)
+--   1 confirmed  →  0.289
+--   2 confirmed  →  0.458
+--   5 confirmed  →  0.747
+--   10 confirmed →  1.000
 --
 -- ─── ABSTENTION ────────────────────────────────────────────────────────
 --
--- Lower threshold than Reddit (>=1 vs >=5) because each PDF on
--- GMBinder/Homebrewery represents 5-15 hours of game-design labor.
--- A single "Unofficial 5e Berserk Supplement" on Homebrewery IS a
--- meaningful signal.
+--   0 confirmed   →  NULL with status='no_confirmed_homebrew_signal'
+--   1 confirmed   →  scored, confidence='LOW'
+--   2-4 confirmed →  scored, confidence='MEDIUM'
+--   5+ confirmed  →  scored, confidence='HIGH'
 --
---   = 0 results          →  NULL with status='no_external_homebrew_signal'
---   1-5 results          →  scored with confidence='LOW'
---   6-25 results         →  scored with confidence='MEDIUM'
---   26+ results          →  scored with confidence='HIGH'
+-- ─── DATA TRAIL ───────────────────────────────────────────────────────
+--
+-- Surfaces both layers' counts so reviewers can see the disambiguation
+-- funnel: cse_total → after_banned_context → about_ip → 5e_homebrew.
 -- ═══════════════════════════════════════════════════════════════════════
 
 CREATE OR REPLACE VIEW `dnd-trends-index.gold_data.external_homebrew_proxy` AS
@@ -64,32 +76,61 @@ WITH
     ) = 1
   ),
 
-  max_results AS (
-    SELECT MAX(total_results_combined) AS max_total
-    FROM latest_per_ip
-    WHERE total_results_combined > 0
+  -- ────────────────────────────────────────────────────────────────────
+  -- Per-(ip, url) classifications. Take the latest classification for
+  -- any (ip, url) pair (handles re-classification with --force).
+  -- ────────────────────────────────────────────────────────────────────
+  classifications AS (
+    SELECT *
+    FROM `dnd-trends-index.dnd_trends_raw.external_homebrew_classified`
+    QUALIFY ROW_NUMBER() OVER (
+      PARTITION BY ip_name, url ORDER BY classified_at DESC
+    ) = 1
   ),
 
   -- ────────────────────────────────────────────────────────────────────
-  -- Per-platform bucketing of the top URLs.  Each top_thread_urls entry
-  -- has a source_domain field; UNNEST + COUNTIF gives us per-platform
-  -- hit counts (out of top 10 results).
+  -- Flatten top URLs per IP and join classifications
   -- ────────────────────────────────────────────────────────────────────
-  per_platform_buckets AS (
+  flattened_with_class AS (
     SELECT
       l.ip_name,
-      COUNTIF(t.source_domain = 'gmbinder.com')                AS gmbinder_top_hits,
-      COUNTIF(t.source_domain = 'homebrewery.naturalcrit.com') AS homebrewery_top_hits
+      t.url,
+      t.title,
+      t.source_domain,
+      c.is_about_ip,
+      c.is_5e_homebrew,
+      c.confidence AS classifier_confidence,
+      c.reasoning AS classifier_reasoning
     FROM latest_per_ip l, UNNEST(l.top_thread_urls) AS t
-    GROUP BY l.ip_name
+    LEFT JOIN classifications c
+      ON c.ip_name = l.ip_name AND c.url = t.url
   ),
 
-  top_url_per_ip AS (
+  -- ────────────────────────────────────────────────────────────────────
+  -- Aggregate per-IP: count surviving top URLs at each disambiguation
+  -- layer, plus per-platform breakdown.
+  -- ────────────────────────────────────────────────────────────────────
+  per_ip_agg AS (
     SELECT
-      l.ip_name,
-      ARRAY_AGG(STRUCT(t.url, t.title, t.source_domain) ORDER BY t.source_domain LIMIT 1)[OFFSET(0)] AS top_url
-    FROM latest_per_ip l, UNNEST(l.top_thread_urls) AS t
-    GROUP BY l.ip_name
+      f.ip_name,
+      COUNT(*) AS top_after_banned_context,
+      COUNTIF(f.is_about_ip)                                     AS confirmed_about_ip_count,
+      COUNTIF(f.is_about_ip AND f.is_5e_homebrew)                AS confirmed_5e_homebrew_count,
+      COUNTIF(f.is_5e_homebrew AND f.source_domain = 'gmbinder.com')                AS gmbinder_confirmed,
+      COUNTIF(f.is_5e_homebrew AND f.source_domain = 'homebrewery.naturalcrit.com') AS homebrewery_confirmed
+    FROM flattened_with_class f
+    GROUP BY f.ip_name
+  ),
+
+  -- Sample one confirmed URL for the data trail (best-confidence first)
+  top_confirmed AS (
+    SELECT
+      f.ip_name,
+      ARRAY_AGG(STRUCT(f.url, f.title, f.source_domain)
+                ORDER BY f.classifier_confidence DESC LIMIT 1)[OFFSET(0)] AS top_confirmed_url
+    FROM flattened_with_class f
+    WHERE f.is_about_ip AND f.is_5e_homebrew
+    GROUP BY f.ip_name
   ),
 
   joined AS (
@@ -97,16 +138,19 @@ WITH
       s.ip_name,
       s.medium,
       s.tier,
-      l.total_results_combined,
+      l.total_results_combined          AS cse_total_results_estimate,
       l.harvested_at,
-      l.top_thread_urls,
-      pp.gmbinder_top_hits,
-      pp.homebrewery_top_hits,
-      tu.top_url AS top_url_struct
+      l.top_thread_urls                 AS top_thread_urls_after_banned_context,
+      COALESCE(p.top_after_banned_context,    0) AS top_after_banned_context,
+      COALESCE(p.confirmed_about_ip_count,    0) AS confirmed_about_ip_count,
+      COALESCE(p.confirmed_5e_homebrew_count, 0) AS confirmed_5e_homebrew_count,
+      COALESCE(p.gmbinder_confirmed,          0) AS gmbinder_confirmed,
+      COALESCE(p.homebrewery_confirmed,       0) AS homebrewery_confirmed,
+      tc.top_confirmed_url
     FROM `dnd-trends-index.dnd_trends_raw.ub_candidate_seeds` s
     LEFT JOIN latest_per_ip l USING (ip_name)
-    LEFT JOIN per_platform_buckets pp USING (ip_name)
-    LEFT JOIN top_url_per_ip tu USING (ip_name)
+    LEFT JOIN per_ip_agg p USING (ip_name)
+    LEFT JOIN top_confirmed tc USING (ip_name)
   )
 
 SELECT
@@ -116,58 +160,71 @@ SELECT
 
   -- ─── THE SCORE ────────────────────────────────────────────────────────
   CASE
-    WHEN COALESCE(j.total_results_combined, 0) = 0 THEN NULL
-    ELSE ROUND(
-      SAFE_DIVIDE(
-        LOG10(j.total_results_combined + 1),
-        LOG10((SELECT max_total FROM max_results) + 1)
-      ),
-      4
-    )
+    WHEN j.confirmed_5e_homebrew_count = 0 THEN NULL
+    ELSE ROUND(LOG10(j.confirmed_5e_homebrew_count + 1) / LOG10(11), 4)
   END AS external_homebrew_score,
 
   -- ─── STATUS + CONFIDENCE ──────────────────────────────────────────────
   CASE
-    WHEN COALESCE(j.total_results_combined, 0) = 0 THEN 'no_external_homebrew_signal'
+    WHEN j.confirmed_5e_homebrew_count = 0 THEN 'no_confirmed_homebrew_signal'
     ELSE 'sufficient'
   END AS external_homebrew_status,
 
   CASE
-    WHEN COALESCE(j.total_results_combined, 0) = 0 THEN 'NONE'
-    WHEN j.total_results_combined <= 5 THEN 'LOW'
-    WHEN j.total_results_combined <= 25 THEN 'MEDIUM'
+    WHEN j.confirmed_5e_homebrew_count = 0 THEN 'NONE'
+    WHEN j.confirmed_5e_homebrew_count = 1 THEN 'LOW'
+    WHEN j.confirmed_5e_homebrew_count <= 4 THEN 'MEDIUM'
     ELSE 'HIGH'
   END AS external_homebrew_signal_confidence,
 
-  -- ─── DATA TRAIL ───────────────────────────────────────────────────────
-  COALESCE(j.total_results_combined, 0)  AS external_homebrew_total_results,
-  COALESCE(j.gmbinder_top_hits, 0)       AS gmbinder_top_hits,
-  COALESCE(j.homebrewery_top_hits, 0)    AS homebrewery_top_hits,
-  j.top_url_struct.url                   AS top_homebrew_url,
-  j.top_url_struct.title                 AS top_homebrew_title,
-  j.top_url_struct.source_domain         AS top_homebrew_source,
-  j.top_thread_urls                      AS external_homebrew_top_urls,
-  j.harvested_at                         AS external_homebrew_harvested_at,
+  -- ─── DISAMBIGUATION FUNNEL (data trail) ───────────────────────────────
+  -- Stages of the funnel from raw CSE → confirmed homebrew artifact:
+  COALESCE(j.cse_total_results_estimate, 0)  AS cse_total_results_estimate,  -- unfiltered, often inflated
+  j.top_after_banned_context                  AS top_after_banned_context,    -- L1 banned-context drop
+  j.confirmed_about_ip_count                  AS confirmed_about_ip_count,    -- L2 is_about_ip=TRUE
+  j.confirmed_5e_homebrew_count               AS confirmed_5e_homebrew_count, -- L2 BOTH flags TRUE (the score input)
+
+  -- Per-platform confirmed breakdown
+  j.gmbinder_confirmed,
+  j.homebrewery_confirmed,
+
+  -- Sample of a confirmed homebrew artifact
+  j.top_confirmed_url.url    AS top_confirmed_homebrew_url,
+  j.top_confirmed_url.title  AS top_confirmed_homebrew_title,
+  j.top_confirmed_url.source_domain AS top_confirmed_homebrew_source,
+  j.top_thread_urls_after_banned_context AS external_homebrew_top_urls,
+  j.harvested_at AS external_homebrew_harvested_at,
 
   -- ─── HUMAN-READABLE REASONING ─────────────────────────────────────────
   CASE
-    WHEN COALESCE(j.total_results_combined, 0) = 0 THEN
-      'No homebrew artifacts found on GMBinder or Homebrewery for this IP.'
+    WHEN j.confirmed_5e_homebrew_count = 0 AND COALESCE(j.cse_total_results_estimate, 0) = 0 THEN
+      'No GMBinder/Homebrewery search results for this IP.'
+    WHEN j.confirmed_5e_homebrew_count = 0 THEN
+      CONCAT(
+        'No CONFIRMED 5e homebrew artifacts. ',
+        'CSE returned ~', CAST(j.cse_total_results_estimate AS STRING),
+        ' raw results, ', CAST(j.top_after_banned_context AS STRING),
+        ' survived the banned-context filter, ',
+        CAST(j.confirmed_about_ip_count AS STRING),
+        ' were genuinely about the IP, but 0 were 5e homebrew (likely book PDFs / non-D&D systems).'
+      )
     ELSE
       CONCAT(
-        CAST(j.total_results_combined AS STRING),
-        ' external homebrew artifact(s) on GMBinder/Homebrewery. ',
-        'Top URLs from: GMBinder ', CAST(COALESCE(j.gmbinder_top_hits, 0) AS STRING),
-        ', Homebrewery ', CAST(COALESCE(j.homebrewery_top_hits, 0) AS STRING),
-        '. Sample: "',
-        SUBSTR(COALESCE(j.top_url_struct.title, ''), 1, 80),
-        IF(LENGTH(COALESCE(j.top_url_struct.title, '')) > 80, '..."', '"')
+        CAST(j.confirmed_5e_homebrew_count AS STRING),
+        ' confirmed 5e homebrew artifact(s) in top 10. ',
+        'Funnel: ~', CAST(j.cse_total_results_estimate AS STRING),
+        ' CSE → ', CAST(j.top_after_banned_context AS STRING),
+        ' post-banned-context → ', CAST(j.confirmed_about_ip_count AS STRING),
+        ' about-IP → ', CAST(j.confirmed_5e_homebrew_count AS STRING),
+        ' 5e-homebrew. Sample: "',
+        SUBSTR(COALESCE(j.top_confirmed_url.title, ''), 1, 80),
+        IF(LENGTH(COALESCE(j.top_confirmed_url.title, '')) > 80, '..."', '"')
       )
   END AS external_homebrew_reasoning,
 
   -- Standardized output contract
   'community_reception' AS signal_type,
-  'external_homebrew_google_cse' AS stream_name,
+  'external_homebrew_disambiguated' AS stream_name,
   CURRENT_DATE() AS snapshot_date
 
 FROM joined j

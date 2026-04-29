@@ -16,9 +16,25 @@ on these sites is a proxy for "external revealed homebrew demand"
 that complements v1 Stage 6 (which only sees Reddit r/UnearthedArcana
 classified mentions).
 
-v1 Stage 6 covered ~11 IPs; v2 Stage 6b should broaden the homebrew
-signal to dozens more (most enthusiastic homebrewers post the polished
-artifact to GMBinder/Homebrewery, not just discussion to Reddit).
+─── DISAMBIGUATION (Layer 1) ──────────────────────────────────────────
+
+Mirrors the Stage 5 Reddit pattern (harvest_reddit_ub_candidates.py):
+
+  1. Load `dnd_trends_raw.ub_ip_alias_library`.
+  2. For ambiguous IPs (ambiguity_flag=TRUE), AND the canonical name
+     with required_coterms in the CSE query itself.
+     e.g. "Tyranny" ("obsidian" OR "kyros" OR "fatebinder")
+          (site:gmbinder.com OR site:homebrewery.naturalcrit.com)
+  3. After fetching results, drop any top URL whose title+snippet
+     contains a banned_context phrase.
+
+This is "Layer 1" disambiguation. A downstream AI Bouncer
+(classify_external_homebrew_results.py) provides Layer 2 — definitive
+binary `is_about_ip` classification — for any URL that survives Layer 1.
+
+51 of 142 UB IPs have ambiguity_flag=TRUE (Tyranny, Invincible,
+The Boys, Fallout, Halo, Hades, etc.). Without Layer 1, these IPs
+inflate by 10x-100x with coincidental keyword matches.
 
 Auth:
 - Google CSE API key + cx ID from Secret Manager:
@@ -29,7 +45,6 @@ Auth:
 Cost:
 - ~$0.21 to run 142 IPs in one day, or free if split across 2 days
   (Custom Search API: 100 free queries/day; $5 per 1000 beyond).
-- Mirrors Stage 7 forum harvest cost — same CSE infrastructure, same rate.
 """
 
 from __future__ import annotations
@@ -41,6 +56,7 @@ import logging
 import time
 import urllib.parse
 import urllib.request
+from dataclasses import dataclass
 from urllib.parse import urlparse
 
 from google.cloud import bigquery, secretmanager
@@ -58,14 +74,28 @@ HOMEBREW_SITES = [
 # Build the OR-of-sites clause once
 SITE_CLAUSE = "(" + " OR ".join(f"site:{s}" for s in HOMEBREW_SITES) + ")"
 
+# Cap on how many coterms we splice into the CSE query. Five matches the
+# Reddit harvester's cap. Keeps URL length sane.
+MAX_COTERMS_IN_QUERY = 5
+
 CSE_URL = "https://www.googleapis.com/customsearch/v1"
 RATE_LIMIT_SEC = 0.5
-RESULTS_PER_QUERY = 10  # top 10 URLs captured for data trail / future v2c sentiment
+RESULTS_PER_QUERY = 10  # top 10 URLs captured for AI Bouncer Layer 2
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
 )
 log = logging.getLogger(__name__)
+
+
+@dataclass
+class AliasEntry:
+    ip_name: str
+    canonical_name: str
+    aliases: list[str]
+    ambiguity_flag: bool
+    required_coterms: list[str]
+    banned_contexts: list[str]
 
 
 def fetch_secret(name: str) -> str:
@@ -74,6 +104,27 @@ def fetch_secret(name: str) -> str:
         name=f"projects/{PROJECT_ID}/secrets/{name}/versions/latest"
     )
     return resp.payload.data.decode("utf-8")
+
+
+def load_alias_library(bq: bigquery.Client) -> list[AliasEntry]:
+    query = f"""
+    SELECT ip_name, canonical_name, aliases, ambiguity_flag,
+           required_coterms, banned_contexts
+    FROM `{ALIAS_TABLE}`
+    ORDER BY ip_name
+    """
+    rows = list(bq.query(query).result())
+    return [
+        AliasEntry(
+            ip_name=r["ip_name"],
+            canonical_name=r["canonical_name"],
+            aliases=list(r["aliases"] or []),
+            ambiguity_flag=bool(r["ambiguity_flag"]),
+            required_coterms=list(r["required_coterms"] or []),
+            banned_contexts=list(r["banned_contexts"] or []),
+        )
+        for r in rows
+    ]
 
 
 def parse_source_domain(url: str) -> str:
@@ -90,9 +141,28 @@ def parse_source_domain(url: str) -> str:
     return ""
 
 
-def build_query(canonical_name: str) -> str:
-    """Quoted exact-phrase query restricted to the 2 homebrew platforms."""
-    return f'"{canonical_name}" {SITE_CLAUSE}'
+def build_query(entry: AliasEntry) -> str:
+    """Quoted exact-phrase query, restricted to the 2 homebrew platforms,
+    AND-ed with required_coterms for ambiguous IPs.
+
+    Pattern mirrors harvest_reddit_ub_candidates.build_search_queries.
+    Google CSE supports the same boolean syntax PRAW does.
+    """
+    canonical_q = f'"{entry.canonical_name}"'
+    if entry.ambiguity_flag and entry.required_coterms:
+        coterm_clause = " OR ".join(
+            f'"{t}"' for t in entry.required_coterms[:MAX_COTERMS_IN_QUERY]
+        )
+        return f"{canonical_q} ({coterm_clause}) {SITE_CLAUSE}"
+    return f"{canonical_q} {SITE_CLAUSE}"
+
+
+def text_contains_banned_context(text: str, banned_contexts: list[str]) -> bool:
+    """Mirror of harvest_reddit_ub_candidates.text_contains_banned_context."""
+    if not banned_contexts:
+        return False
+    lower = text.lower()
+    return any(b.lower() in lower for b in banned_contexts)
 
 
 def fetch_cse_results(api_key: str, cx: str, query: str) -> dict:
@@ -108,15 +178,15 @@ def fetch_cse_results(api_key: str, cx: str, query: str) -> dict:
         return json.loads(r.read())
 
 
-def harvest_for_ip(api_key: str, cx: str, ip_name: str, canonical_name: str) -> dict:
+def harvest_for_ip(api_key: str, cx: str, entry: AliasEntry) -> dict:
     """Harvest external-homebrew presence for one IP."""
-    query = build_query(canonical_name)
+    query = build_query(entry)
     try:
         data = fetch_cse_results(api_key, cx, query)
     except Exception as e:
-        log.warning("CSE fetch failed for %r: %s", ip_name, e)
+        log.warning("CSE fetch failed for %r: %s", entry.ip_name, e)
         return {
-            "ip_name": ip_name,
+            "ip_name": entry.ip_name,
             "query": query,
             "total_results_combined": 0,
             "top_thread_urls": [],
@@ -128,19 +198,33 @@ def harvest_for_ip(api_key: str, cx: str, ip_name: str, canonical_name: str) -> 
     total = int(data.get("searchInformation", {}).get("totalResults", "0") or 0)
     items = data.get("items", []) or []
     top_urls = []
+    banned_skipped = 0
     for item in items:
         url = item.get("link", "")
         if not url:
             continue
+        title = (item.get("title") or "")[:300]
+        snippet = (item.get("snippet") or "")[:500]
+        # Layer 1 banned-context post-filter
+        if text_contains_banned_context(
+            f"{title} {snippet}", entry.banned_contexts
+        ):
+            banned_skipped += 1
+            continue
         top_urls.append({
             "url": url,
-            "title": (item.get("title") or "")[:300],
-            "snippet": (item.get("snippet") or "")[:500],
+            "title": title,
+            "snippet": snippet,
             "source_domain": parse_source_domain(url),
         })
+    if banned_skipped:
+        log.info(
+            "    [%s] dropped %d top URLs via banned-context filter",
+            entry.ip_name, banned_skipped,
+        )
 
     return {
-        "ip_name": ip_name,
+        "ip_name": entry.ip_name,
         "query": query,
         "total_results_combined": total,
         "top_thread_urls": top_urls,
@@ -161,35 +245,41 @@ def main() -> None:
 
     bq = bigquery.Client(project=PROJECT_ID)
 
-    # Load IP list with canonical_name from alias library (preserve
-    # disambiguation — search "The Lord of the Rings" not "lotr").
-    rows = list(bq.query(f"""
-        SELECT s.ip_name, COALESCE(a.canonical_name, s.ip_name) AS canonical_name
-        FROM `dnd-trends-index.dnd_trends_raw.ub_candidate_seeds` s
-        LEFT JOIN `{ALIAS_TABLE}` a USING (ip_name)
-        ORDER BY s.ip_name
+    aliases = load_alias_library(bq)
+    log.info("Loaded %d alias-library entries.", len(aliases))
+
+    # Filter to the seed list to be sure we only run on the 142 UB candidates
+    seed_rows = list(bq.query("""
+        SELECT ip_name FROM `dnd-trends-index.dnd_trends_raw.ub_candidate_seeds`
     """).result())
-    ip_entries = [(r["ip_name"], r["canonical_name"]) for r in rows]
+    seed_set = {r["ip_name"] for r in seed_rows}
+    entries = [a for a in aliases if a.ip_name in seed_set]
 
     if args.ip:
-        ip_entries = [(n, c) for n, c in ip_entries if n == args.ip]
-        if not ip_entries:
+        entries = [a for a in entries if a.ip_name == args.ip]
+        if not entries:
             log.error("IP %r not found.", args.ip)
             return
     if args.limit:
-        ip_entries = ip_entries[: args.limit]
+        entries = entries[: args.limit]
 
-    log.info("Will harvest external-homebrew presence for %d IPs.", len(ip_entries))
+    log.info("Will harvest external-homebrew presence for %d IPs.", len(entries))
     log.info("Sites: %s", ", ".join(HOMEBREW_SITES))
+    n_ambiguous = sum(1 for a in entries if a.ambiguity_flag)
+    log.info(
+        "  %d IPs are ambiguity-flagged → co-term-gated queries",
+        n_ambiguous,
+    )
 
     api_key = fetch_secret("google-cse-api-key")
     cx = fetch_secret("google-cse-id")
 
     all_rows = []
-    for i, (ip_name, canonical) in enumerate(ip_entries, 1):
-        log.info("[%d/%d] %s (canonical: %s)",
-                 i, len(ip_entries), ip_name, canonical)
-        row = harvest_for_ip(api_key, cx, ip_name, canonical)
+    for i, entry in enumerate(entries, 1):
+        gated = " [GATED]" if entry.ambiguity_flag else ""
+        log.info("[%d/%d] %s (canonical: %s)%s",
+                 i, len(entries), entry.ip_name, entry.canonical_name, gated)
+        row = harvest_for_ip(api_key, cx, entry)
         all_rows.append(row)
         log.info("    total=%d, top_urls=%d",
                  row["total_results_combined"], len(row["top_thread_urls"]))

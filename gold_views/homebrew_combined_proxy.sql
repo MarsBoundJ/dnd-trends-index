@@ -11,12 +11,14 @@
 --     Captures "people are TALKING about brewing for X" in 30-day window.
 --     Coverage: ~11/142 IPs (thin — limited by PRAW window).
 --
---   v2 sub-signal — external_homebrew_proxy
---     Google CSE count of "<IP>" results on GMBinder + Homebrewery.
---     Presence-only (no sentiment yet — v2c could add it).
---     Captures "people have PUBLISHED brews for X" — artifacts accumulate
---     over years.
---     Coverage: broader (anything indexed by Google).
+--   v2 sub-signal — external_homebrew_proxy (disambiguated, two-layer)
+--     Google CSE count of CONFIRMED 5e homebrew artifacts on
+--     GMBinder + Homebrewery, after Layer 1 (co-term gating + banned-
+--     context filter) and Layer 2 (Gemini Flash AI Bouncer
+--     is_about_ip + is_5e_homebrew classification). Score is from
+--     the confirmed top-10 count, not raw CSE total.
+--     Captures "people have PUBLISHED 5e brews for X" — artifacts
+--     accumulate over years.
 --
 -- ─── BLENDING RULE ─────────────────────────────────────────────────────
 --
@@ -27,30 +29,6 @@
 --   only v1 present    →  v1 (Reddit UA discussion only)
 --   only v2 present    →  v2 (external artifacts only)
 --   neither present    →  NULL
---
--- This matches the philosophy of the composite-level math: don't
--- penalize an IP for missing one signal as long as the other is
--- meaningful.
---
--- The v1 abstention rule (>=1 UA mention) and the v2 abstention rule
--- (>=1 external artifact) each pass through the underlying view's
--- own status field. Combined status is 'sufficient' if either side
--- is present.
---
--- ─── WHY NOT JUST UPDATE homebrew_creation_proxy? ─────────────────────
---
--- Two reasons to keep them separate:
---
--- 1. v1 distinction: keeping homebrew_creation_proxy unchanged
---    preserves the v1 baseline snapshot's interpretation. Anyone
---    looking at the matrix_v1_baseline_snapshot table can still
---    match the v1 UA-only score by reading homebrew_creation_proxy
---    directly.
---
--- 2. Future v2c work: Stage 6c (UA sentiment depth — extracting
---    homebrew type, upvote weighting, etc.) will modify the UA-side
---    scoring. Keeping that localized to homebrew_creation_proxy
---    means v2c changes don't touch the external_homebrew side.
 -- ═══════════════════════════════════════════════════════════════════════
 
 CREATE OR REPLACE VIEW `dnd-trends-index.gold_data.homebrew_combined_proxy` AS
@@ -76,12 +54,15 @@ WITH
       ip_name,
       external_homebrew_score,
       external_homebrew_status,
-      external_homebrew_total_results,
-      gmbinder_top_hits,
-      homebrewery_top_hits,
-      top_homebrew_url,
-      top_homebrew_title,
-      top_homebrew_source,
+      cse_total_results_estimate,
+      top_after_banned_context,
+      confirmed_about_ip_count,
+      confirmed_5e_homebrew_count,
+      gmbinder_confirmed,
+      homebrewery_confirmed,
+      top_confirmed_homebrew_url,
+      top_confirmed_homebrew_title,
+      top_confirmed_homebrew_source,
       external_homebrew_top_urls
     FROM `dnd-trends-index.gold_data.external_homebrew_proxy`
   ),
@@ -101,12 +82,15 @@ WITH
       ua.ua_sample_post_title,
       ext.external_homebrew_score,
       ext.external_homebrew_status,
-      ext.external_homebrew_total_results,
-      ext.gmbinder_top_hits,
-      ext.homebrewery_top_hits,
-      ext.top_homebrew_url,
-      ext.top_homebrew_title,
-      ext.top_homebrew_source,
+      ext.cse_total_results_estimate,
+      ext.top_after_banned_context,
+      ext.confirmed_about_ip_count,
+      ext.confirmed_5e_homebrew_count,
+      ext.gmbinder_confirmed,
+      ext.homebrewery_confirmed,
+      ext.top_confirmed_homebrew_url,
+      ext.top_confirmed_homebrew_title,
+      ext.top_confirmed_homebrew_source,
       ext.external_homebrew_top_urls
     FROM `dnd-trends-index.dnd_trends_raw.ub_candidate_seeds` s
     LEFT JOIN ua_signal ua USING (ip_name)
@@ -139,7 +123,6 @@ SELECT
     ELSE 'no_homebrew_signal'
   END AS homebrew_combined_status,
 
-  -- How many of the two sub-signals contributed
   (
     IF(j.ua_homebrew_score IS NOT NULL, 1, 0) +
     IF(j.external_homebrew_score IS NOT NULL, 1, 0)
@@ -155,39 +138,43 @@ SELECT
   COALESCE(j.homebrew_negative_count, 0)      AS homebrew_negative_count,
   j.ua_sample_post_title,
 
-  -- v2 external
+  -- v2 external (disambiguated)
   j.external_homebrew_score,
-  COALESCE(j.external_homebrew_total_results, 0) AS external_homebrew_total_results,
-  COALESCE(j.gmbinder_top_hits, 0)              AS gmbinder_top_hits,
-  COALESCE(j.homebrewery_top_hits, 0)           AS homebrewery_top_hits,
-  j.top_homebrew_url,
-  j.top_homebrew_title,
-  j.top_homebrew_source,
+  COALESCE(j.cse_total_results_estimate, 0)  AS cse_total_results_estimate,
+  COALESCE(j.top_after_banned_context, 0)    AS top_after_banned_context,
+  COALESCE(j.confirmed_about_ip_count, 0)    AS confirmed_about_ip_count,
+  COALESCE(j.confirmed_5e_homebrew_count, 0) AS confirmed_5e_homebrew_count,
+  COALESCE(j.gmbinder_confirmed, 0)          AS gmbinder_confirmed,
+  COALESCE(j.homebrewery_confirmed, 0)       AS homebrewery_confirmed,
+  j.top_confirmed_homebrew_url,
+  j.top_confirmed_homebrew_title,
+  j.top_confirmed_homebrew_source,
   j.external_homebrew_top_urls,
 
   -- ─── HUMAN-READABLE REASONING ─────────────────────────────────────────
   CASE
     WHEN j.ua_homebrew_score IS NULL AND j.external_homebrew_score IS NULL THEN
-      'No homebrew signal — neither r/UnearthedArcana mentions nor GMBinder/Homebrewery artifacts.'
+      'No homebrew signal — neither r/UnearthedArcana mentions nor confirmed GMBinder/Homebrewery 5e artifacts.'
     WHEN j.ua_homebrew_score IS NOT NULL AND j.external_homebrew_score IS NOT NULL THEN
       CONCAT(
         'Combined homebrew signal: UA Reddit ',
         CAST(ROUND(j.ua_homebrew_score, 2) AS STRING),
         ' (', CAST(j.ua_homebrew_mention_count AS STRING), ' mentions) + ',
         'External ', CAST(ROUND(j.external_homebrew_score, 2) AS STRING),
-        ' (', CAST(j.external_homebrew_total_results AS STRING), ' GMBinder/Homebrewery results).'
+        ' (', CAST(j.confirmed_5e_homebrew_count AS STRING),
+        ' confirmed 5e artifacts).'
       )
     WHEN j.ua_homebrew_score IS NOT NULL THEN
       CONCAT(
         'UA Reddit homebrew only: ',
         CAST(j.ua_homebrew_mention_count AS STRING),
-        ' classified mentions. No external artifacts on GMBinder/Homebrewery.'
+        ' classified mentions. No confirmed 5e artifacts on GMBinder/Homebrewery.'
       )
     ELSE
       CONCAT(
         'External homebrew only: ',
-        CAST(j.external_homebrew_total_results AS STRING),
-        ' artifact(s) on GMBinder/Homebrewery. No r/UnearthedArcana classified mentions.'
+        CAST(j.confirmed_5e_homebrew_count AS STRING),
+        ' confirmed 5e artifact(s) on GMBinder/Homebrewery. No r/UnearthedArcana classified mentions.'
       )
   END AS homebrew_combined_reasoning,
 
