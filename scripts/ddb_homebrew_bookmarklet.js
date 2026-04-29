@@ -56,8 +56,9 @@
   const SENT_LOG_KEY  = 'arcane_ddb_homebrew_sent_log';
   const IP_LIST_KEY   = 'arcane_ddb_homebrew_ip_list';
   const IP_LIST_TTL_MS = 24 * 60 * 60 * 1000; // 24h
-  const FETCH_DELAY_MS = 1500;                 // pacing between DDB fetches
-  const FETCH_TIMEOUT_MS = 25000;              // give DDB plenty of time
+  const FETCH_DELAY_MS = 2000;                 // pacing between DDB fetches
+  const FETCH_TIMEOUT_MS = 45000;              // some /magic-items queries take 30s+
+  const FETCH_RETRY_BACKOFF_MS = 5000;         // wait before single retry on timeout
 
   // Per-section filter-param map. DDB has two listing-component generations:
   //   - Newer 5e-2024 character-creation sections use `filter-name` (subclasses,
@@ -450,23 +451,43 @@
     };
   }
 
-  // captureOne: fetch + parse + POST for one (ip_name, section)
+  // captureOne: fetch + parse + POST for one (ip_name, section).
+  // Single retry on timeout — DDB's /magic-items endpoint occasionally
+  // takes 30s+ and trips the AbortController. Other failures don't retry.
   async function captureOne(ipName, section) {
     const ipQ = encodeURIComponent(ipName);
     const filterParam = SECTION_FILTER_PARAM[section] || 'filter-name';
     const url = `/homebrew/${section}?${filterParam}=${ipQ}&filter-sort=adds-desc`;
-    const ctrl = new AbortController();
-    const timeout = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
+
+    async function fetchOnce() {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort('timeout'), FETCH_TIMEOUT_MS);
+      try {
+        const resp = await fetch(url, {
+          method: 'GET',
+          credentials: 'include',
+          headers: { 'Accept': 'text/html' },
+          signal: ctrl.signal,
+        });
+        return resp;
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
     let resp;
     try {
-      resp = await fetch(url, {
-        method: 'GET',
-        credentials: 'include',
-        headers: { 'Accept': 'text/html' },
-        signal: ctrl.signal,
-      });
-    } finally {
-      clearTimeout(timeout);
+      resp = await fetchOnce();
+    } catch (e) {
+      const isTimeout = e && (e.name === 'AbortError' || String(e).toLowerCase().includes('abort'));
+      if (!isTimeout) throw e;
+      // Retry once after backoff
+      await new Promise((r) => setTimeout(r, FETCH_RETRY_BACKOFF_MS));
+      try {
+        resp = await fetchOnce();
+      } catch (e2) {
+        throw new Error('timeout (retried once)');
+      }
     }
     if (!resp.ok) throw new Error(`DDB HTTP ${resp.status}`);
     const html = await resp.text();
