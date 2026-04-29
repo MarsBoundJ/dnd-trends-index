@@ -28,6 +28,10 @@
 --                                       it's lowest because v1 coverage
 --                                       is thin; per-IP renormalization
 --                                       handles the unbalanced sum)
+--   Forum presence (Stage 7)    0.10  (NEW Apr 29 — DM/whale demographic
+--                                       brand-purity signal. v1 is
+--                                       presence-only; sentiment in v2
+--                                       would justify higher weight)
 --
 -- When the two scores AGREE (low divergence) → strong signal.
 -- When they DIVERGE (>0.15) → flag for inspection. The divergence
@@ -196,6 +200,24 @@ WITH
   ),
 
   -- ────────────────────────────────────────────────────────────────────
+  -- Source 7: Forum presence (EN World, GitP, RPG.net, Dragonsfoot)
+  -- DM/whale demographic brand-purity signal. v1 is presence-only.
+  -- ────────────────────────────────────────────────────────────────────
+  forum_score AS (
+    SELECT
+      ip_name,
+      forum_presence_score,
+      total_results_combined AS forum_total_results,
+      enworld_top_hits,
+      giantitp_top_hits,
+      rpgnet_top_hits,
+      dragonsfoot_top_hits,
+      top_thread_url AS forum_top_thread_url,
+      top_thread_title AS forum_top_thread_title
+    FROM `dnd-trends-index.gold_data.forum_presence_proxy`
+  ),
+
+  -- ────────────────────────────────────────────────────────────────────
   -- Acquisition signal (Stage 5 Phase 2 — separate matrix dimension)
   -- ────────────────────────────────────────────────────────────────────
   acquisition_score AS (
@@ -244,6 +266,14 @@ WITH
       hb.homebrew_creation_score,
       hb.homebrew_mention_count,
       hb.homebrew_sample_title,
+      fm.forum_presence_score,
+      fm.forum_total_results,
+      fm.enworld_top_hits,
+      fm.giantitp_top_hits,
+      fm.rpgnet_top_hits,
+      fm.dragonsfoot_top_hits,
+      fm.forum_top_thread_url,
+      fm.forum_top_thread_title,
       acq.reddit_acquisition_score,
       acq.acquisition_confirmed_mentions
     FROM `dnd-trends-index.dnd_trends_raw.ub_candidate_seeds` s
@@ -253,6 +283,7 @@ WITH
     LEFT JOIN ao3_score ao3 USING (ip_name)
     LEFT JOIN reddit_score rec USING (ip_name)
     LEFT JOIN homebrew_score hb USING (ip_name)
+    LEFT JOIN forum_score fm USING (ip_name)
     LEFT JOIN acquisition_score acq USING (ip_name)
     LEFT JOIN fit_score f USING (ip_name)
   ),
@@ -269,14 +300,15 @@ WITH
     SELECT
       j.*,
 
-      -- Count of MEASURED sources (excluding Gemini baseline)
-      -- Stage 6 homebrew counts as measured.
+      -- Count of MEASURED sources (excluding Gemini baseline).
+      -- Stages 2-7 all count as measured.
       (
         IF(j.precedent_score          IS NOT NULL, 1, 0) +
         IF(j.bgg_proxy_score          IS NOT NULL, 1, 0) +
         IF(j.fanfic_proxy_score       IS NOT NULL, 1, 0) +
         IF(j.reddit_proxy_score       IS NOT NULL, 1, 0) +
-        IF(j.homebrew_creation_score  IS NOT NULL, 1, 0)
+        IF(j.homebrew_creation_score  IS NOT NULL, 1, 0) +
+        IF(j.forum_presence_score     IS NOT NULL, 1, 0)
       ) AS measured_sources_count,
 
       -- Count of ALL sources (including Gemini)
@@ -286,7 +318,8 @@ WITH
         IF(j.bgg_proxy_score          IS NOT NULL, 1, 0) +
         IF(j.fanfic_proxy_score       IS NOT NULL, 1, 0) +
         IF(j.reddit_proxy_score       IS NOT NULL, 1, 0) +
-        IF(j.homebrew_creation_score  IS NOT NULL, 1, 0)
+        IF(j.homebrew_creation_score  IS NOT NULL, 1, 0) +
+        IF(j.forum_presence_score     IS NOT NULL, 1, 0)
       ) AS sources_present,
 
       -- ─── EQUAL-WEIGHTED COMPOSITE ───────────────────────────────────
@@ -298,23 +331,25 @@ WITH
           + COALESCE(j.bgg_proxy_score, 0)
           + COALESCE(j.fanfic_proxy_score, 0)
           + COALESCE(j.reddit_proxy_score, 0)
-          + COALESCE(j.homebrew_creation_score, 0),
+          + COALESCE(j.homebrew_creation_score, 0)
+          + COALESCE(j.forum_presence_score, 0),
           NULLIF(
             IF(j.gemini_baseline_score    IS NOT NULL, 1, 0) +
             IF(j.precedent_score          IS NOT NULL, 1, 0) +
             IF(j.bgg_proxy_score          IS NOT NULL, 1, 0) +
             IF(j.fanfic_proxy_score       IS NOT NULL, 1, 0) +
             IF(j.reddit_proxy_score       IS NOT NULL, 1, 0) +
-            IF(j.homebrew_creation_score  IS NOT NULL, 1, 0),
+            IF(j.homebrew_creation_score  IS NOT NULL, 1, 0) +
+            IF(j.forum_presence_score     IS NOT NULL, 1, 0),
             0
           )
         ),
         4
       ) AS composite_score_equal_raw,
 
-      -- ─── WEIGHTED COMPOSITE (ChatGPT revised weights + Stage 6) ─────
+      -- ─── WEIGHTED COMPOSITE (ChatGPT revised weights + Stages 6+7) ──
       -- Precedents 0.30 / BGG 0.20 / AO3 0.20 / Reddit 0.15 /
-      -- Gemini 0.15 / Homebrew 0.10
+      -- Gemini 0.15 / Homebrew 0.10 / Forum 0.10
       -- Per-IP renormalization handles the un-summing-to-1.0 — only
       -- present-source weights enter the denominator.
       ROUND(
@@ -324,14 +359,16 @@ WITH
           COALESCE(j.fanfic_proxy_score, 0)      * 0.20 +
           COALESCE(j.reddit_proxy_score, 0)      * 0.15 +
           COALESCE(j.gemini_baseline_score, 0)   * 0.15 +
-          COALESCE(j.homebrew_creation_score, 0) * 0.10,
+          COALESCE(j.homebrew_creation_score, 0) * 0.10 +
+          COALESCE(j.forum_presence_score, 0)    * 0.10,
           NULLIF(
             IF(j.precedent_score          IS NOT NULL, 0.30, 0) +
             IF(j.bgg_proxy_score          IS NOT NULL, 0.20, 0) +
             IF(j.fanfic_proxy_score       IS NOT NULL, 0.20, 0) +
             IF(j.reddit_proxy_score       IS NOT NULL, 0.15, 0) +
             IF(j.gemini_baseline_score    IS NOT NULL, 0.15, 0) +
-            IF(j.homebrew_creation_score  IS NOT NULL, 0.10, 0),
+            IF(j.homebrew_creation_score  IS NOT NULL, 0.10, 0) +
+            IF(j.forum_presence_score     IS NOT NULL, 0.10, 0),
             0
           )
         ),
@@ -345,7 +382,8 @@ WITH
         IF(COALESCE(j.bgg_proxy_score, 0)         >= 0.7, 1, 0) +
         IF(COALESCE(j.fanfic_proxy_score, 0)      >= 0.7, 1, 0) +
         IF(COALESCE(j.reddit_proxy_score, 0)      >= 0.7, 1, 0) +
-        IF(COALESCE(j.homebrew_creation_score, 0) >= 0.7, 1, 0)
+        IF(COALESCE(j.homebrew_creation_score, 0) >= 0.7, 1, 0) +
+        IF(COALESCE(j.forum_presence_score, 0)    >= 0.7, 1, 0)
       ) AS sources_positive,
 
       (
@@ -354,17 +392,18 @@ WITH
         IF(j.bgg_proxy_score          IS NOT NULL AND j.bgg_proxy_score          <= 0.3, 1, 0) +
         IF(j.fanfic_proxy_score       IS NOT NULL AND j.fanfic_proxy_score       <= 0.3, 1, 0) +
         IF(j.reddit_proxy_score       IS NOT NULL AND j.reddit_proxy_score       <= 0.3, 1, 0) +
-        IF(j.homebrew_creation_score  IS NOT NULL AND j.homebrew_creation_score  <= 0.3, 1, 0)
+        IF(j.homebrew_creation_score  IS NOT NULL AND j.homebrew_creation_score  <= 0.3, 1, 0) +
+        IF(j.forum_presence_score     IS NOT NULL AND j.forum_presence_score     <= 0.3, 1, 0)
       ) AS sources_negative,
 
       -- Measured-source variance (for highly_corroborated flag).
-      -- Now includes homebrew as a measured source.
+      -- Includes Stages 2-7 (all measured).
       (
         SELECT MAX(s) - MIN(s)
         FROM UNNEST([
           j.precedent_score, j.bgg_proxy_score,
           j.fanfic_proxy_score, j.reddit_proxy_score,
-          j.homebrew_creation_score
+          j.homebrew_creation_score, j.forum_presence_score
         ]) AS s
         WHERE s IS NOT NULL
       ) AS measured_score_range
@@ -414,13 +453,14 @@ SELECT
   END AS score_divergence,
   w.composite_status,
 
-  -- ─── 6 RECEPTION SUB-SCORES (always shown for the data trail) ─────────
+  -- ─── 7 RECEPTION SUB-SCORES (always shown for the data trail) ─────────
   w.gemini_baseline_score,
   w.precedent_score,
   w.bgg_proxy_score,
   w.fanfic_proxy_score,
   w.reddit_proxy_score,
   w.homebrew_creation_score,
+  w.forum_presence_score,
 
   -- ─── ACQUISITION DIMENSION (separate axis on the matrix) ──────────────
   w.reddit_acquisition_score,
@@ -519,6 +559,13 @@ SELECT
   w.reddit_confirmed_mentions,
   w.homebrew_mention_count,
   w.homebrew_sample_title,
+  w.forum_total_results,
+  w.enworld_top_hits,
+  w.giantitp_top_hits,
+  w.rpgnet_top_hits,
+  w.dragonsfoot_top_hits,
+  w.forum_top_thread_url,
+  w.forum_top_thread_title,
 
   -- ─── HUMAN-READABLE REASONING ─────────────────────────────────────────
   CASE
