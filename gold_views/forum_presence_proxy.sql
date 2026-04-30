@@ -22,9 +22,10 @@
 --
 -- Layer 2 (in classify_forum_top_urls.py): per-URL Gemini Flash binary
 -- is_about_ip + attitude classification. Stage 7a-i ("cheap path") uses
--- title+snippet only. Stage 7a-ii (deferred) will add Playwright thread-
--- body scrape for high-resolution sentiment + backlash narrative
--- extraction.
+-- title+snippet only. Stage 7a-ii (Apr 30 2026) added Playwright thread-
+-- body scrape (forum_thread_bodies) for EN World + RPG.net (~83% of
+-- harvested URLs); GitP + Dragonsfoot Cloudflare-block the scraper and
+-- are queued for Stage 7b bookmarklet fallback.
 --
 -- ─── SCORE FORMULA (SENTIMENT-WEIGHTED) ────────────────────────────────
 --
@@ -199,6 +200,24 @@ WITH
     GROUP BY n.ip_name
   ),
 
+  -- ────────────────────────────────────────────────────────────────────
+  -- Stage 7a-ii body scrape coverage. Per-IP success counts from
+  -- forum_thread_bodies. EN World + RPG.net resolve via Playwright;
+  -- GitP + Dragonsfoot are Cloudflare-blocked (status='cloudflare_blocked').
+  -- This surfaces the audit signal so Council voices can adjust framing
+  -- when a verdict rests on body-text evidence vs. title+snippet only.
+  -- ────────────────────────────────────────────────────────────────────
+  body_scrape_per_ip AS (
+    SELECT
+      b.ip_name,
+      COUNTIF(b.scrape_status = 'success')             AS body_scrape_success_count,
+      COUNTIF(b.scrape_status = 'cloudflare_blocked')  AS body_scrape_cf_blocked_count,
+      COUNTIF(b.scrape_status NOT IN ('success', 'cloudflare_blocked'))
+        AS body_scrape_other_error_count
+    FROM `dnd-trends-index.dnd_trends_raw.forum_thread_bodies` b
+    GROUP BY b.ip_name
+  ),
+
   -- Surface a sample backlash narrative for the data trail (top
   -- evidence string from any backlash-tagged thread for this IP)
   sample_backlash AS (
@@ -240,7 +259,11 @@ WITH
       COALESCE(na.pandering_count,                 0) AS pandering_count,
       COALESCE(na.constructive_narrative_count,    0) AS constructive_narrative_count,
       COALESCE(na.backlash_narrative_count,        0) AS backlash_narrative_count,
-      sb.sample AS sample_backlash_struct
+      sb.sample AS sample_backlash_struct,
+      -- Stage 7a-ii body scrape audit
+      COALESCE(bs.body_scrape_success_count,    0) AS body_scrape_success_count,
+      COALESCE(bs.body_scrape_cf_blocked_count, 0) AS body_scrape_cf_blocked_count,
+      COALESCE(bs.body_scrape_other_error_count,0) AS body_scrape_other_error_count
     FROM `dnd-trends-index.dnd_trends_raw.ub_candidate_seeds` s
     LEFT JOIN latest_per_ip l USING (ip_name)
     LEFT JOIN per_ip_agg p USING (ip_name)
@@ -248,6 +271,7 @@ WITH
     LEFT JOIN top_confirmed tc USING (ip_name)
     LEFT JOIN narrative_agg_per_ip na USING (ip_name)
     LEFT JOIN sample_backlash sb USING (ip_name)
+    LEFT JOIN body_scrape_per_ip bs USING (ip_name)
   )
 
 SELECT
@@ -304,6 +328,18 @@ SELECT
   j.giantitp_confirmed,
   j.rpgnet_confirmed,
   j.dragonsfoot_confirmed,
+
+  -- ─── STAGE 7A-II BODY SCRAPE COVERAGE ─────────────────────────────────
+  -- Per-IP audit of how much classifier signal came from full thread
+  -- bodies vs. title+snippet only. Coverage drops when GitP/Dragonsfoot
+  -- represent a large share of the IP's top URLs (Cloudflare-blocked).
+  j.body_scrape_success_count,
+  j.body_scrape_cf_blocked_count,
+  j.body_scrape_other_error_count,
+  SAFE_DIVIDE(
+    j.body_scrape_success_count,
+    NULLIF(j.top_after_banned_context, 0)
+  ) AS body_scrape_coverage_ratio,
 
   -- ─── SAMPLE URL ──────────────────────────────────────────────────────
   j.top_thread_struct.url           AS top_thread_url,

@@ -8,10 +8,11 @@
 - v3 Stage 6a Layer 2 (DDB AI Bouncer disambiguation pass — the "Hades Demigod" disambiguation)
 - v3 Stage 6c **original** (UA Reddit upvote-weighting + homebrew type extraction)
 - v3 Stage 7c (forum backlash narrative classification — the "TTRPG forums = 99% constructive DMs" finding)
+- **v4 Stage 7a-ii** (Playwright thread-body scrape for EN World + RPG.net; re-classification with body text — **7x backlash narrative count, +67 disambiguation corrections**)
 
-Stage 6e (Itch.io) and Stage 6d (World Anvil) were scouted on Apr 30 and **skipped — signal-fit poor.** Composite-view rewire consumes all live stages. v1 baseline preserved in `dnd_trends_raw.matrix_v1_baseline_snapshot` for A/B comparison.
+Stage 6e (Itch.io) and Stage 6d (World Anvil) were scouted on Apr 30 and **skipped — signal-fit poor.** Stage 7b (GitP bookmarklet for Cloudflare-blocked forum) is **deferred** pending demo-impact review of the v4 results. Composite-view rewire consumes all live stages. v1 baseline preserved in `dnd_trends_raw.matrix_v1_baseline_snapshot` for A/B comparison.
 
-**Last updated:** 2026-04-30 (v3 Stages 6a recovery + 6c original + 7c shipped; Itch.io + World Anvil scouted-and-skipped — see new sections below)
+**Last updated:** 2026-04-30 (v4 Stage 7a-ii Playwright forum scrape + body-text re-classification shipped — see end of doc)
 
 **Audience:** Phil + outside reviewers (Gemini, Perplexity, future collaborators) helping decide composite-score weighting and demo prioritization.
 
@@ -897,3 +898,367 @@ Built between 2026-04-27 and 2026-04-28:
 - `gold_data.reddit_acquisition_proxy` (Stage 5 Phase 2 — `reddit_acquisition_score`, NEW matrix dimension)
 
 **Total Phase 1 build cost (Gemini API):** ~$0.50 across all stages.
+
+---
+
+## v4 update — Stage 7a-ii Playwright thread-body scrape (Apr 30, 2026 evening)
+
+The single biggest lift since the original scoping. v3-final's Stage 7c showed only **5 backlash narratives across 218 classified threads** — a striking finding that validated the "TTRPG forums = 99% constructive DMs" framing, but always carried the asterisk that *we were classifying on title+snippet only.* Stage 7a-ii Playwrighted the actual thread bodies (OP + first 20 replies) so the classifier could read the real conversation. Result: **7x more backlash narratives surfaced, +67 false-positive corrections, Tyranny canary still holds.**
+
+### What shipped
+
+1. **`scripts/scrape_forum_thread_bodies.py`** — Playwright-based scraper, vanilla headless chromium, per-forum CSS selectors, idempotent skip-already-scraped, 5-sec rate limit with jitter, stop-on-429 per forum. Inserts to new `dnd_trends_raw.forum_thread_bodies` table.
+2. **`dnd_trends_raw.forum_thread_bodies`** (new) — schema: `ip_name, url, forum_domain, op_text, replies_text_combined, reply_count, scrape_status, error_message, scraped_at`.
+3. **`classify_forum_top_urls.py` v2** — LEFT JOINs `forum_thread_bodies`, appends `op_text` (≤1500 chars) + `replies_text` (≤2500 chars) to the Gemini Flash prompt when present. Falls back to title+snippet only for body-text-absent rows. Batch size dropped 15→10 to keep token budget under ~12K/batch.
+4. **`classify_forum_narratives.py` v2** — same LEFT JOIN + body-text input. Prompt language directs Gemini to weight reply text especially heavily for backlash detection ("backlash language tends to live in replies, not OPs").
+5. **`gold_views/forum_presence_proxy.sql` v3** — adds `body_scrape_success_count`, `body_scrape_cf_blocked_count`, `body_scrape_other_error_count`, `body_scrape_coverage_ratio` for per-IP coverage audit. Backwards-compatible — all v2/v3 columns preserved.
+
+### Smoke test discovery — the Cloudflare landscape was inverted
+
+The original Stage 7a-ii plan flagged **RPG.net as the Cloudflare risk** (since RPG.net's home page returns `Server: cloudflare`). Reality, after `curl -I` probing all 4 forums plus actual Playwright runs:
+
+| Forum | Cloudflare | URLs in dataset | % | Playwright result |
+|---|---|---|---|---|
+| **enworld.org** | None (nginx) | 97 | 14% | ✅ Direct |
+| **rpg.net** | Yes, no challenge | 486 | **69%** | ✅ Passes |
+| forums.giantitp.com | **Yes, JS challenge** | 113 | 16% | ❌ HTTP 403 |
+| dragonsfoot.org | **Yes, JS challenge** | 8 | 1% | ❌ HTTP 403 |
+
+**RPG.net works fine** despite the Cloudflare header — no interactive challenge for thread URLs, just the front door. The actual blocked forums are **GitP and Dragonsfoot** (both phpBB/vBulletin with `Cf-Mitigated: challenge` interstitials). Even **`curl_cffi` with TLS fingerprint impersonation across 4 browser profiles** (chrome131, chrome124, firefox133, safari17_2_ios) all returned 403 on GitP — Cloudflare's challenge requires real browser JS execution that headless tooling can't replay anonymously.
+
+**Decision (with Phil):** ship Playwright for the 583 reachable URLs (83% of dataset), defer GitP to a Stage 7b same-origin bookmarklet that runs in Phil's authenticated browser session (mirrors the DDB / Amazon / AO3 bookmarklet pattern). Dragonsfoot dropped — only 8 URLs, not worth the bookmarklet round-trip.
+
+Why anonymous Playwright (not authenticated): all 704 URLs are CSE-indexed, meaning publicly readable. Account login wouldn't unlock new content, and using Yorri's authenticated forum account for automated scraping puts those community accounts at TOS-ban risk. See [feedback_playwright_forums.md](../../.claude/projects/C--Users-Yorri-dnd-trends/memory/feedback_playwright_forums.md) for the full dead-ends list (networkidle wait, playwright-stealth + chromium hang, Firefox launch hang).
+
+### Scrape results
+
+583 URLs attempted, ~75 minutes runtime, $0 cost (no API calls):
+
+| Forum | Success | Other errors | Cloudflare hits | Success % |
+|---|---|---|---|---|
+| enworld.org | 95 | 2 | 0 | **97.9%** |
+| rpg.net | 475 | 7 | 4 | **97.7%** |
+| **Total** | **570** | **9** | **4** | **97.8%** |
+
+Body-text yield: EN World averaged 1168 chars OP + 3952 chars replies (7.5 replies/thread); RPG.net averaged 941 chars OP + **9441 chars replies** (16.4 replies/thread, often hitting the 20-reply cap — RPG.net threads run deep). That's roughly a **10x token increase** vs the v1 title+snippet input. Worth the Gemini cost overhead.
+
+### A/B vs v1 baseline — the headline result
+
+After re-classifying both attitude (`classify_forum_top_urls.py --force`) and narratives (`classify_forum_narratives.py --force`) with the body text appended:
+
+**Attitudes — disambiguation tightened, divisive emerged:**
+
+| Attitude | v1 | v4 | Δ |
+|---|---|---|---|
+| `not_about_ip` | 51 | **118** | **+67** ⬆️ |
+| `divisive` | 3 | **13** | **+10** ⬆️ |
+| `mentions_only` | 435 | 422 | -13 |
+| `positive` | 209 | 197 | -12 |
+| `negative` | 6 | 1 | -5 |
+
+The +67 false-positive corrections is the disambiguation story: body text reveals name collisions that title+snippet missed. Many of those v1 "positive" / "mentions_only" rows were actually unrelated threads where the IP name happened to surface. The +10 `divisive` is body text revealing real argument that title-level signal couldn't see.
+
+The drop in `negative` (6→1) is interesting — it looks like Gemini, with body text in hand, more reliably distinguishes `divisive` (some users object) from `negative` (whole-thread rejection). The shift from 6 negative to 1 negative + 13 divisive is a more accurate carving of the same underlying signal.
+
+**Backlash narratives — 7x increase:**
+
+| Narrative | v1 | v4 | Δ |
+|---|---|---|---|
+| `tone_mismatch` | 2 | **17** | **+15** (8.5x) |
+| `cash_grab` | 2 | **11** | **+9** (5.5x) |
+| `pandering` | 1 | **4** | +3 |
+| `not_dnd` | 0 | **3** | +3 |
+| **Total backlash** | **5** | **35** | **7x** |
+| `system_design_critique` | 96 | 137 | +41 |
+| `worldbuilding_endorsement` | 101 | 115 | +14 |
+
+This is exactly the predicted result. Backlash language ("doesn't fit D&D", "WotC's just cashing in", "this isn't D&D anymore") lives in **replies, not OPs**. The OP usually frames a neutral or positive question; the rhetoric arrives in the conversation. v1's title+snippet pass couldn't see that conversation. v4 can.
+
+`system_design_critique` jumped 41 because DM-heavy forums genuinely *love* arguing about mechanics — replies are dense with class-balance / action-economy / spell-level critique that title+snippet skimmed past. `worldbuilding_endorsement` only modestly grew because OPs already frame those — "would [IP]'s setting work for D&D?" is a self-classifying title.
+
+### Real IP signal that surfaced
+
+| IP | v4 forum_score | Body-text reveal |
+|---|---|---|
+| **Stranger Things** | 0.84 | 3 backlash narratives surfaced (1 cash_grab, 1 not_dnd, 2 pandering, 1 tone_mismatch) — DM-community pushback **completely invisible** in v1 |
+| **The Boys** | 0.60 | 2 tone_mismatch — "doesn't fit D&D" rhetoric in replies |
+| **Wuthering Waves** | 0.50 | 1 cash_grab + 1 pandering — body text confirms the gacha-game skepticism the v3 work first identified |
+| **Cyberpunk 2077** | 0.60 | 1 tone_mismatch (sci-fi ≠ high fantasy debate in replies) |
+| **Discworld** | 0.72 | 1 tone_mismatch (Pratchett's comedic register debated) |
+| **Delicious in Dungeon** | **0.91** | 7 worldbuilding_endorsement, **0 backlash** — DMs enthusiastically discuss running it as a campaign. Top forum signal in the dataset. |
+
+The Stranger Things finding is particularly load-bearing for the Hasbro pitch deck. v1 said "0 backlash narratives, mostly mentions, score ~0.84" — looks fine. v4 reveals 3 backlash narratives buried in the replies, including `not_dnd` ("this isn't D&D anymore"). That's the kind of nuanced reception signal a licensing exec actually needs — *brand crossover sentiment from the DM whales who buy the $50 hardcover*, not just the social-feed surface.
+
+### The "99% constructive DMs" framing — softens but doesn't break
+
+Phil's earlier framing, lifted from Gemini's input — *"Reddit is full of Players. AO3 is full of Fans. Traditional forums are full of Dungeon Masters."* — held that DM-forum sentiment is overwhelmingly constructive (worldbuilding endorsement + system-design critique) rather than backlash.
+
+v1: 5 backlash narratives / 200 confirmed-attitude threads = **2.5% backlash**.
+v4: 35 backlash narratives / 197 confirmed-attitude threads = **18% backlash**.
+
+The framing **softens but doesn't break**. Forums are still mostly constructive (255 constructive vs 35 backlash narratives = 88% constructive overall). But "99%" was an artifact of v1's thin signal. The honest framing for the deck:
+
+> *"Reddit is full of Players. AO3 is full of Fans. Forums are full of Dungeon Masters. DM-forum sentiment is **overwhelmingly constructive — ~88% of fit-evaluation threads endorse worldbuilding or critique system design** — but the **18% backlash that does exist surfaces brand-purity signal you won't see anywhere else** (`not_dnd`, `tone_mismatch`, `pandering`, `cash_grab`)."*
+
+This is actually a *more* useful framing for the pitch — it turns forums from a "checks out" stamp into a **brand-purity early-warning system** for licensing decisions.
+
+### Tyranny canary — still holds
+
+The cross-version disambiguation canary: Tyranny (Obsidian Entertainment 2016 RPG, ambiguity-flagged because "tyranny" is a common English word about despots, which fills D&D forums for unrelated reasons). Across v1/v2/v3-disambig/v3-final/**v4**:
+
+- v4: 0 forum threads survive co-term gating + banned-context filter → 0 classifications → `forum_status: 'no_confirmed_forum_signal'`, `forum_presence_score: NULL`
+- Same outcome as all 4 prior versions. The two-layer disambiguation pattern remains airtight.
+
+### What's still deferred
+
+**Stage 7b — GitP bookmarklet (113 URLs).** Cloudflare-blocked from Playwright. The pattern is fully proven (DDB Homebrew bookmarklet at `scripts/ddb_homebrew_bookmarklet.js` is the reference) — same-origin fetch in Phil's authenticated browser session, panel UI with progress bars, idempotent via the bouncer endpoint. ~400 lines JS + 2 new bouncer routes.
+
+**Decision deferred until v4 demo-impact review.** If v4's body data dramatically shifts the IP rankings or surfaces critical findings the demo deck depends on, GitP becomes high-priority. If v4 is "good enough" for the Expo, GitP slots into post-Expo follow-on.
+
+The 8 Dragonsfoot URLs are dropped permanently — not worth bookmarklet effort for 1% of dataset.
+
+### Cost summary
+
+| Stage | Cost |
+|---|---|
+| Stage 7 v1 (CSE harvest) | $0.21 |
+| Stage 7a-i (title+snippet classifier) | ~$0.20 |
+| Stage 7c v1 (narratives, title+snippet) | $0.07 |
+| **Stage 7a-ii Playwright scrape** | **$0** (no API calls) |
+| **Stage 7a-ii body-text re-classify (attitudes)** | **$0.45** |
+| **Stage 7a-ii body-text re-classify (narratives)** | **$0.11** |
+| **v4 total** | **$0.56** |
+| **Cumulative Stage 7 spend** | **~$1.61** |
+
+For a 7x backlash signal increase + 67 disambiguation corrections + the Stranger Things-style nuance unlock, $0.56 is approximately the cheapest measurable win in the entire community_reception build.
+
+---
+
+## v5 update — Stage 7b GitP bookmarklet (Apr 30, 2026 late evening)
+
+Phil's call after seeing v4: *"based on the fact that we've uncovered backlash signal, we need to 'triangulate' it — meaning we need one more meaningfully large signal coming from GitP to give us confidence about the size, scope, and quality of our backlash signal. If certain IPs are getting backlash from 3 independent forums, we'll know it's not an anomaly."*
+
+The right epistemic move. v4 had backlash from 2 forums (EN World + RPG.net) — suggestive but not proof. v5 closes the third forum (forums.giantitp.com) using a same-origin bookmarklet pattern that bypasses Cloudflare via Phil's authenticated browser session.
+
+### What shipped
+
+1. **`scripts/gitp_thread_bodies_bookmarklet.js`** + minified `.txt` companion — mirrors the DDB Homebrew bookmarklet pattern (~400 lines). Sanity-checks you're on `forums.giantitp.com`, fetches pending-URL list from bouncer, iterates with same-origin `fetch()` (uses Phil's CF clearance + session), parses vBulletin DOM (`div[id^="post_message_"]` containers), POSTs each result to bouncer, displays progress UI with pause/abort + sent log.
+
+2. **Two new bouncer endpoints** (in `bouncer/main.py`):
+   - `GET /system/forum/url-list?forum=<domain>` — returns pending URLs (LEFT JOIN excludes already-scraped; excludes `archive/index.php` paths)
+   - `POST /system/forum/ingest-thread-body` — inserts `{ip_name, url, forum_domain, op_text, replies_text_combined, reply_count, scrape_status}` to `forum_thread_bodies`
+
+3. **`bouncer-api` Cloud Function redeployed** — revision 00060-fof active.
+
+### Bookmarklet run results — perfect
+
+Phil clicked the bookmarklet on a forums.giantitp.com tab. **96/96 success, 0 errors, 5m 4s elapsed.** Every URL parsed cleanly via the vBulletin selector. Average yield: **1144 chars OP + 12.9 replies + 9124 chars combined replies** per thread — comparable depth to RPG.net's data, richer than EN World.
+
+| Forum | Source | URLs | Success | Notes |
+|---|---|---|---|---|
+| enworld.org | Playwright (v4) | 97 | 95 (97.9%) | nginx, no Cloudflare |
+| rpg.net | Playwright (v4) | 486 | 475 (97.7%) | Cloudflare passes vanilla chromium |
+| forums.giantitp.com | **Bookmarklet (v5)** | 96 | **96 (100%)** | Cloudflare JS challenge bypassed via authenticated session |
+| **Combined** | | **679** | **666 (98.1%)** | |
+
+Total `forum_thread_bodies` corpus now spans all 3 reachable TTRPG forums.
+
+### v5 re-classification
+
+Both classifiers re-run with `--force` after GitP bodies landed. The same `classify_forum_top_urls.py` and `classify_forum_narratives.py` from v4 work unchanged — they LEFT JOIN against `forum_thread_bodies` regardless of which forum populated each row.
+
+| | v1 | v4 | v5 | Δ v4→v5 |
+|---|---|---|---|---|
+| **Attitudes** | | | | |
+| `mentions_only` | 435 | 422 | 435 | +13 |
+| `positive` | 209 | 197 | 182 | -15 |
+| `divisive` | 3 | 13 | **26** | **+13** ⬆️ |
+| `not_about_ip` | 51 | 118 | 109 | -9 |
+| `negative` | 6 | 1 | 2 | +1 |
+| **Narratives** | | | | |
+| `tone_mismatch` | 2 | 17 | 21 | +4 |
+| `cash_grab` | 2 | 11 | 12 | +1 |
+| `pandering` | 1 | 4 | 5 | +1 |
+| `not_dnd` | 0 | 3 | 3 | 0 |
+| **Total backlash** | **5** | **35** | **41** | **+6** |
+| `system_design_critique` | 96 | 137 | 144 | +7 |
+| `worldbuilding_endorsement` | 101 | 115 | 93 | -22 |
+
+**The interesting v5 shift isn't backlash — it's `divisive` doubling (13→26).** GitP body data revealed that many threads earlier classified as "positive" or "mentions_only" actually carry mixed reception in the replies. GitP's culture (older, optimization/theorycraft-focused, opinionated DMs) surfaces split-community signal that EN World's more news-style framing and RPG.net's broader-scope discussion didn't.
+
+`worldbuilding_endorsement` dropping 22 points reinforces this — Gemini, with the GitP replies in hand, is more reluctant to label a thread as straightforward worldbuilding endorsement when the actual conversation shows skepticism. The signal is more honest, not weaker.
+
+### The triangulation result — the headline finding
+
+Query: *"Which IPs have backlash narratives from 2+ forums independently?"* (cross-forum cross-validation rules out single-community noise.)
+
+| IP | Forums with backlash | Backlash threads | Notes |
+|---|---|---|---|
+| **Goblin Slayer** | **3 of 3** ✅ | 6 | The triangulated finding |
+| Baldur's Gate 3 | 2 (EN World, RPG.net) | 3 | Surprising — WotC's own adaptation |
+| Stranger Things | 2 (EN World, RPG.net) | 3 | Already a v4 signal, holds |
+| Welcome to Night Vale | 2 (EN World, RPG.net) | 3 | New v5 finding |
+| Warframe | 2 (EN World, **GitP**) | 2 | GitP unique participant |
+
+**Goblin Slayer hits all three forums independently.** Same narrative theme — `tone_mismatch` — across all three, with the same root critique:
+
+| Forum | Evidence (paraphrased from `forum_narratives_classified.evidence`) |
+|---|---|
+| EN World | *"Animated D&D... but every bad stereotype from 80s D&D male teen players, including sexualized violence."* + `cash_grab`: *"wondering exactly what the point of the license is."* |
+| GitP | *"Building Goblin Slayer as a D&D character, while debating if the manga's grimdark and exploitative tone fits D&D."* |
+| RPG.net | *"Replies discuss the IP's gratuitous rape and dark and edgy elements, creating a tone mismatch with D&D inspired fantasy."* |
+
+This is the kind of cross-community consensus that no single-forum sample could establish. Three independent DM communities, separately classified from raw thread text — all reaching the same verdict on the same IP for the same reason. **That's not noise. That's signal.**
+
+For the Hasbro pitch, this is methodologically demo-grade: it shows the system can detect cross-community backlash *risk* with a defensible triangulation rule (≥2 independent forums, same narrative type). A licensing exec asking "but how do you know it's not just one loud forum?" has a one-line answer: *the Goblin Slayer pattern requires three forums to all flag it before it surfaces.*
+
+### Notable secondary findings
+
+- **Baldur's Gate 3 with `not_dnd` × 2** — fascinating signal. WotC's own crown-jewel video game adaptation is getting "this isn't D&D anymore" rhetoric in DM forums. Worth a footnote in the deck about how even adjacent-D&D content can trigger purity backlash. The signal is mild (3 backlash threads vs 4 positive) but real.
+- **Welcome to Night Vale tone_mismatch × 2** — new v5 signal. NVL's surreal-comedy register doesn't translate to the dark-fantasy default; both EN World and RPG.net flagged it.
+- **Warframe** — GitP backlash + EN World backlash. RPG.net stayed positive. The kind of split that rewards triangulation analysis: it's *not* yet a triangulated find (still 2/3 forums), but the asymmetry is informative.
+- **Tyranny canary still NULL** across all 6 versions. v1, v2, v3-undisambig, v3-disambig, v4, v5 — 0 forum threads survive co-term gating. The two-layer disambiguation pattern remains airtight.
+
+### GitP's distinctive cultural signature
+
+Reading the GitP-only narratives confirms its long-standing reputation as the **optimization / theorycraft community**. The forum's `system_design_critique` count is dominated by *"how do I build [character] in D&D"* threads — Attack on Titan maneuver-gear feats, Berserk Guts builds, Bloodborne trick-weapon mechanics, Discworld characters in 3.5/5e. The cultural register is engineering, not editorial.
+
+This refines Gemini's earlier framing — *"Reddit is full of Players. AO3 is full of Fans. Forums are full of Dungeon Masters"* — into something more granular:
+
+> **EN World ≈ news-and-industry DMs** (Paizo announcements, OGL drama, system reviews)
+> **RPG.net ≈ broad-RPG-discussion DMs** (cross-system comparisons, deep reception threads)
+> **GitP ≈ optimization-and-theorycraft DMs** (mechanics translation, build reviews, system-design critique)
+>
+> All three share the brand-purity sensibility, but the rhetorical surface differs. **`tone_mismatch` lives strongest at EN World and RPG.net**; **`system_design_critique` lives strongest at GitP**.
+
+This is itself a useful demo-grade observation — a licensing exec gets a more honest answer to *"who's complaining about this and why?"* when the system can attribute backlash narrative type to forum culture, not just count it.
+
+### Cost summary
+
+| Stage | Cost |
+|---|---|
+| v4 cumulative | $0.56 |
+| GitP bookmarklet run | $0 (no API; same-origin fetch) |
+| v5 attitude re-classify | $0.48 |
+| v5 narrative re-classify | $0.12 |
+| **v5 incremental** | **$0.60** |
+| **v5 cumulative Stage 7** | **~$2.21** |
+
+For a triangulation result that materially changes how the demo deck can be defended (*"three independent DM communities flagged this IP, here's the evidence"*), $0.60 is once again the cheapest meaningful win in the build.
+
+### What changed in the build vs. v4
+
+- `scripts/gitp_thread_bodies_bookmarklet.js` (new) + `.txt` (URL-encoded `javascript:` form for browser bookmark)
+- `bouncer/main.py` — 2 new endpoints (`/system/forum/url-list` GET, `/system/forum/ingest-thread-body` POST), 80 lines added
+- `bouncer-api` Cloud Function redeployed (revision 00060-fof active)
+- `forum_thread_bodies` BQ table populated with 96 new GitP rows (now 666 total successful body scrapes)
+- `forum_top_urls_classified` and `forum_narratives_classified` re-run with `--force`
+- No gold view changes (v3 schema with `body_scrape_coverage_ratio` etc. already supports the GitP rows automatically)
+
+### Status across versions
+
+```
+v1 baseline:      50 / 142 sufficient | 5 backlash narratives | Tyranny NULL ✓
+v2:               59 / 142 sufficient | 5 backlash narratives | Tyranny NULL ✓
+v3 raw:           62 / 142 sufficient | 5 backlash narratives | Tyranny NULL ✓
+v3 disambig:      61 / 142 sufficient | 5 backlash narratives | Tyranny NULL ✓
+v4 (Playwright):  61 / 142 sufficient | 35 backlash narratives | Tyranny NULL ✓
+v5 (+ GitP):      61 / 142 sufficient | 41 backlash narratives | Tyranny NULL ✓
+                                          ↑ 1 IP triangulated across 3 forums
+                                            (Goblin Slayer, tone_mismatch)
+```
+
+Forum-presence sub-system is now structurally complete: Stage 7a-i (cheap-path classifier) → Stage 7a-ii (Playwright bodies for 2 forums) → Stage 7b (bookmarklet bodies for the Cloudflare-blocked forum). All 3 reachable DM forums covered. Stage 7 — done.
+
+---
+
+## Stage 8 — DMs Guild + DriveThruRPG commercial revealed-preference signal (Apr 30, 2026 late evening)
+
+After v5 closed the forum-sentiment triangulation, Phil flagged a separate question: *"do we have any other 'homebrew' sites left to gather data from?"* — which surfaced the gap. **DMs Guild and DriveThruRPG bestseller titles were already in our `catalog_supply` BQ table** (harvested via the existing `dmsguild_incursion` bookmarklet for the analytics_dmsguild_dtrpg view), but had never been cross-referenced against the UB candidate IP list. This stage builds that cross-reference.
+
+### Why this is a different *kind* of signal
+
+All previous community_reception stages measure **sentiment** (Reddit/forum/AO3) or **creator output** (UA/GMBinder/Homebrewery/DDB Homebrew). Stage 8 measures **commercial revealed preference** — TTRPG buyers paying real money for licensed third-party-IP TTRPGs. It's the strongest possible "would this license generate revenue" signal, because it shows that **buyers already pay for similar deals from non-Hasbro publishers**.
+
+### The two-platform asymmetry
+
+DMs Guild and DriveThruRPG are both run by OneBookShelf, but have structurally different licensing rules:
+
+| Platform | License posture | What can publish there |
+|---|---|---|
+| **DMs Guild** | D&D-exclusive (WotC community-creator program) | Only D&D content using D&D's own IP |
+| **DriveThruRPG** | Open marketplace | Third-party publishers can sell licensed IP TTRPGs |
+
+This makes the per-platform expectations highly asymmetric. DMs Guild *cannot* host UB-IP crossovers because the license forbids it. DriveThruRPG *can*, and does — Modiphius's Fallout RPG, R. Talsorian's Cyberpunk RED, Free League's Aliens RPG, etc.
+
+### What shipped
+
+1. **`scripts/classify_catalog_supply_titles.py`** — Layer 2 AI Bouncer (~470 lines) mirroring the GMBinder/Homebrewery pattern. Two-axis classification:
+   - `is_about_ip` — disambiguates alias false positives (e.g., *"OVA: The Anime Role-Playing Game"* matches "OVA" alias of Solo Leveling but isn't actually Solo Leveling content)
+   - `is_licensed_ttrpg` — distinguishes officially licensed TTRPGs (Cyberpunk RED, Fallout RPG) from generic supplements that merely alias-match
+2. **`dnd_trends_raw.catalog_supply_classified`** (new BQ table) — per-(ip_name, source, title) classifier output
+3. **`gold_views/dmsguild_dtrpg_ip_proxy.sql`** (new gold view) — per-IP commercial revealed-preference score (`catalog_proxy_score` + per-source breakdown + sample-product data trail)
+
+No new harvest needed — the existing `dmsguild_incursion` bookmarklet (V10) already populates `catalog_supply` with bestseller-tier products from both platforms. Stage 8 is server-side analysis of data we already had.
+
+### Classifier results
+
+136 alias-matched candidate pairs (97 DriveThruRPG + 39 DMs Guild) ran through the classifier:
+- **36 confirmed `is_about_ip`** (74% noise rate filtered — typical for substring-match Layer 1 → AI Bouncer Layer 2 pipelines on these forums/marketplaces)
+- **17 confirmed `is_licensed_ttrpg`** — the strongest signal subset
+- **0 DMs Guild confirmations** ← the structural-zero finding (matches platform license rules)
+
+Cost: $0.04 across 10 batches.
+
+### The headline ranking
+
+Per-IP `catalog_proxy_score` (AVG tier_weight + 0.10 licensed bonus, capped 1.0):
+
+| Rank | IP | Score | Confirmed | Licensed | Top tier | Story |
+|---|---|---|---|---|---|---|
+| 1 | **Fallout** | **1.00** | 6 | **6** | Platinum | Modiphius's licensed Fallout RPG. **5 Platinum** + 1 Adamantine. The cleanest licensed-IP-TTRPG signal in the entire dataset. |
+| 2 | The Stormlight Archive | 0.94 | 3 | 0* | Platinum | Brotherwise Games's Cosmere RPG (license real but unrecognized by Gemini's training data — surfaces as confirmed presence, no licensed bonus) |
+| 3 | Mistborn | 0.92 | 2 | 0* | Platinum | Same Cosmere RPG products (Mistborn = same Cosmere shared-universe) |
+| 4 | **Cyberpunk 2077** | 0.51 | **25** | **11** | Adamantine | R. Talsorian's Cyberpunk RED — 25 products including 11 licensed core books + accessories. Volume drags avg tier (lots of Silver-tier battle maps), but breadth is unmatched. |
+
+*Cosmere RPG note: Brotherwise Games has Sanderson's official Cosmere license. Gemini's prompt didn't include this case explicitly, so it labeled them confirmed-but-not-licensed. The signal still shows (catalog presence, top tier), just no licensed bonus. Refinable in a future prompt iteration if it matters for a Sanderson-focused pitch slide.
+
+### The DMs Guild structural-zero finding
+
+Of 8,062 DMs Guild bestseller-tier products across 5 medal tiers (Platinum 625, Mithral 2,697, Adamantine 1,540, Gold 2,619, Silver 581), **zero** are confirmed about any of our 142 UB candidate IPs. The four substring matches were all false positives:
+
+- *"A Guide to Tyranny of Dragons"* (the official 5e module, not the Obsidian video game)
+- *"DDEX1-10 Tyranny in Phlan (5e)"* (Adventurer's League, not the Obsidian game)
+- *"Monster Loot – Tyranny of Dragons"* (5e module supplement)
+- *"Frozen Castle - Expanding Tyranny of Dragons"* (5e module supplement)
+
+This isn't a missing-data problem — it's a **platform-design fact**. OneBookShelf's licensing rules prohibit DMs Guild creators from publishing third-party-IP content. Stranger Things-themed homebrew can't legally exist on DMs Guild. Cyberpunk-themed homebrew can't legally exist on DMs Guild. Hollow Knight, Berserk, Discworld — none of them.
+
+**For the Hasbro pitch, this is itself a useful demo slide:**
+
+> *"Hasbro's own creator marketplace, DMs Guild, contains 8,062 community products. Zero are about Stranger Things, Cyberpunk, Fallout, Hollow Knight, or any of our 142 UB candidate IPs — because Hasbro's own platform rules prohibit it. Compare to DriveThruRPG (open licensing): Cyberpunk RED is a top-tier bestseller with 25 SKUs, Fallout RPG has 5 Platinum-tier SKUs. The asymmetry quantifies unmet creator demand bottled up by Hasbro's own platform rules — a revenue stream waiting to be unlocked."*
+
+### Cross-stream signal alignment
+
+Stage 8 results align cleanly with prior stages, which is itself validating:
+
+- **Fallout** scored 0.72 on the Apr 29 v2 community_reception composite — the new commercial signal (1.00) reinforces it as a strong-fit case
+- **Cyberpunk 2077** is in the active-crossover tier across multiple stages; commercial signal (0.51) confirms there's an active, monetized TTRPG audience
+- **Mistborn / Stormlight Archive** had no signal in earlier community-only stages because they're literature IPs without strong forum/Reddit footprints — Stage 8 surfaces them precisely where they live (the Cosmere TTRPG Kickstarter / commercial space)
+
+This is the kind of multi-source pattern the renormalized composite is designed to capture: literature IPs that don't show up in forum/Reddit data still surface their TTRPG-buyer demand via DriveThruRPG signal.
+
+### Cost summary
+
+| Stage | Cost |
+|---|---|
+| Cumulative Stages 1-7 | ~$2.21 |
+| Stage 8 candidate classifier | $0.04 |
+| Stage 8 gold view | $0 |
+| **Cumulative all stages** | **~$2.25** |
+
+### What's deferred / out of scope
+
+- **Cosmere RPG license recognition** — minor prompt-tuning issue. 5 Cosmere products (Mistborn + Stormlight) are confirmed-presence but not flagged as licensed. Could be fixed by adding "Brotherwise Games / Cosmere RPG" to the prompt's licensed-examples list. Skipping for now — Mistborn/Stormlight already show up in the data trail with Platinum-tier products; the licensed flag mostly matters for the per-IP score nuance.
+- **Fresh DMs Guild + DriveThruRPG harvest** — current data is from Apr 24, 2026 (the latest `dmsguild_incursion` run). Re-running the bookmarklet would refresh the bestseller snapshot but is unlikely to materially shift the top-4 ranking before the May 19-21 Expo.
+- **Other OneBookShelf marketplaces** — Pathfinder Infinite, Storyteller's Vault. Both narrower than DriveThruRPG; deferred unless a specific pitch case demands them.

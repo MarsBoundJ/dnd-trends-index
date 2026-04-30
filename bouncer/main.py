@@ -173,6 +173,10 @@ def bouncer_api(request):
             path = 'system/homebrew/ip-list'
         elif 'homebrew/ingest-ddb' in full_path:
             path = 'system/homebrew/ingest-ddb'
+        elif 'forum/url-list' in full_path:
+            path = 'system/forum/url-list'
+        elif 'forum/ingest-thread-body' in full_path:
+            path = 'system/forum/ingest-thread-body'
         elif 'confidence' in full_path:
             path = 'confidence'
         elif 'articles' in full_path:
@@ -1610,6 +1614,160 @@ def bouncer_api(request):
             })
         errors = client.insert_rows_json(
             'dnd-trends-index.dnd_trends_raw.ddb_homebrew_counts',
+            cleaned,
+            skip_invalid_rows=True,
+            ignore_unknown_values=True,
+        )
+        if errors:
+            return (json.dumps({"error": str(errors)}), 500, headers)
+        return (json.dumps({"inserted": len(cleaned)}), 200, headers)
+
+    elif path == 'system/forum/url-list':
+        # Stage 7b — GitP thread-body bookmarklet support route.
+        # Returns the list of forum top-thread URLs that haven't been
+        # body-scraped yet, filtered by ?forum=<domain>. The bookmarklet
+        # uses this to drive its bulk-mode iteration.
+        #
+        # Why this exists: forums.giantitp.com Cloudflare-blocks Playwright
+        # (interactive JS challenge), so Stage 7a-ii's automated scraper
+        # couldn't reach those 113 URLs. The bookmarklet runs in Phil's
+        # already-authenticated browser session, where Cloudflare's
+        # challenge has already been passed transparently.
+        if request.method != 'GET':
+            return (json.dumps({"error": "GET required"}), 405, headers)
+        ritual_key = request.headers.get('X-Ritual-Key', '')
+        if ritual_key != 'ArcaneLibrarian2026':
+            return (json.dumps({"error": "Unauthorized"}), 403, headers)
+
+        forum = (request.args.get('forum') or '').strip()
+        valid_forums = {
+            'enworld.org', 'rpg.net',
+            'forums.giantitp.com', 'dragonsfoot.org',
+        }
+        if forum not in valid_forums:
+            return (json.dumps({
+                "error": f"forum must be one of {sorted(valid_forums)}"
+            }), 400, headers)
+
+        # LEFT JOIN against forum_thread_bodies so already-scraped URLs
+        # are excluded. Latest-harvest-per-IP via QUALIFY mirrors the
+        # classifier's load_top_urls pattern.
+        url_list_query = """
+        WITH latest_per_ip AS (
+          SELECT *
+          FROM `dnd-trends-index.dnd_trends_raw.forum_presence_counts`
+          QUALIFY ROW_NUMBER() OVER (
+            PARTITION BY ip_name ORDER BY harvested_at DESC
+          ) = 1
+        )
+        SELECT
+          l.ip_name,
+          t.url,
+          t.title,
+          t.forum_domain
+        FROM latest_per_ip l, UNNEST(l.top_thread_urls) AS t
+        LEFT JOIN `dnd-trends-index.dnd_trends_raw.forum_thread_bodies` b
+          ON b.url = t.url
+        WHERE t.forum_domain = @forum
+          AND NOT REGEXP_CONTAINS(t.url, r'archive/index\\.php')
+          AND b.url IS NULL
+        ORDER BY l.ip_name
+        """
+        try:
+            rows = list(client.query(
+                url_list_query,
+                job_config=bigquery.QueryJobConfig(query_parameters=[
+                    bigquery.ScalarQueryParameter('forum', 'STRING', forum),
+                ]),
+            ).result())
+        except Exception as e:
+            return (json.dumps({"error": f"BQ query failed: {e}"}), 500, headers)
+
+        url_items = [
+            {
+                "ip_name": r['ip_name'],
+                "url": r['url'],
+                "title": r['title'],
+                "forum_domain": r['forum_domain'],
+            }
+            for r in rows
+        ]
+
+        return (json.dumps({
+            "forum": forum,
+            "pending_count": len(url_items),
+            "urls": url_items,
+        }), 200, headers)
+
+    elif path == 'system/forum/ingest-thread-body':
+        # Stage 7b — GitP thread-body bookmarklet ingest.
+        # The bookmarklet POSTs one body per URL after scraping the
+        # vBulletin / phpBB / XenForo DOM client-side. Idempotent —
+        # the bookmarklet skips URLs already present in the table by
+        # using /url-list which excludes them, but we also accept
+        # duplicate POSTs gracefully (insert_rows_json with
+        # skip_invalid_rows=True; consumer dedup handled in the
+        # gold view by latest scraped_at).
+        #
+        # Ethics: same pattern as DDB / AO3 / Amazon bookmarklets —
+        # human-clicked tool, same-origin fetch from authenticated
+        # session, no automation pretending to be human.
+        if request.method != 'POST':
+            return (json.dumps({"error": "POST required"}), 405, headers)
+        ritual_key = request.headers.get('X-Ritual-Key', '')
+        if ritual_key != 'ArcaneLibrarian2026':
+            return (json.dumps({"error": "Unauthorized"}), 403, headers)
+        rows = request.get_json()
+        if not rows:
+            return (json.dumps({"error": "No data"}), 400, headers)
+        if isinstance(rows, dict):
+            rows = [rows]
+
+        valid_forums = {
+            'enworld.org', 'rpg.net',
+            'forums.giantitp.com', 'dragonsfoot.org',
+        }
+        valid_statuses = {
+            'success', 'cloudflare_blocked', 'not_found',
+            'rate_limited', 'other_error',
+        }
+        now_ts = datetime.datetime.utcnow().isoformat() + 'Z'
+        cleaned = []
+        for r in rows:
+            forum = (r.get('forum_domain') or '').strip()
+            status = (r.get('scrape_status') or 'success').strip()
+            if forum not in valid_forums:
+                return (json.dumps({
+                    "error": f"forum_domain '{forum}' must be one of {sorted(valid_forums)}"
+                }), 400, headers)
+            if status not in valid_statuses:
+                return (json.dumps({
+                    "error": f"scrape_status '{status}' must be one of {sorted(valid_statuses)}"
+                }), 400, headers)
+            if not r.get('ip_name') or not r.get('url'):
+                return (json.dumps({
+                    "error": "ip_name and url required"
+                }), 400, headers)
+            # Per-post char cap matches the Playwright scraper's
+            # MAX_CHARS_PER_POST=2000; combined replies cap is
+            # 20 replies * 2000 = 40000, but we apply a hard 50K
+            # ceiling here to defend against runaway client payloads.
+            op_text = str(r.get('op_text') or '')[:2500]
+            replies_text = str(r.get('replies_text_combined') or '')[:50000]
+            cleaned.append({
+                'ip_name': str(r['ip_name'])[:200],
+                'url': str(r['url'])[:1000],
+                'forum_domain': forum,
+                'op_text': op_text,
+                'replies_text_combined': replies_text,
+                'reply_count': safe_int(r.get('reply_count'), 0),
+                'scrape_status': status,
+                'error_message': str(r.get('error_message') or '')[:500],
+                'scraped_at': now_ts,
+            })
+
+        errors = client.insert_rows_json(
+            'dnd-trends-index.dnd_trends_raw.forum_thread_bodies',
             cleaned,
             skip_invalid_rows=True,
             ignore_unknown_values=True,
