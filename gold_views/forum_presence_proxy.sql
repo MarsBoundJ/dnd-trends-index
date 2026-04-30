@@ -88,6 +88,21 @@ WITH
   ),
 
   -- ────────────────────────────────────────────────────────────────────
+  -- Per-(ip, url) backlash narratives (Stage 7c, Apr 30, 2026).
+  -- One row per (ip, url); narratives is a multi-label array from
+  -- {cash_grab, tone_mismatch, not_dnd, pandering,
+  --  system_design_critique, worldbuilding_endorsement}. Empty array
+  -- means the title+snippet didn't strongly indicate any narrative.
+  -- ────────────────────────────────────────────────────────────────────
+  narratives_per_url AS (
+    SELECT *
+    FROM `dnd-trends-index.dnd_trends_raw.forum_narratives_classified`
+    QUALIFY ROW_NUMBER() OVER (
+      PARTITION BY ip_name, url ORDER BY classified_at DESC
+    ) = 1
+  ),
+
+  -- ────────────────────────────────────────────────────────────────────
   -- Flatten top URLs per IP and join classifications. Map attitude
   -- string to numeric attitude_score.
   -- ────────────────────────────────────────────────────────────────────
@@ -160,6 +175,42 @@ WITH
     GROUP BY f.ip_name
   ),
 
+  -- ────────────────────────────────────────────────────────────────────
+  -- Aggregate narratives per IP. One thread can have 0..N narrative
+  -- labels; we count threads-with-each-label, not labels-overall.
+  -- ────────────────────────────────────────────────────────────────────
+  narrative_agg_per_ip AS (
+    SELECT
+      n.ip_name,
+      COUNTIF('worldbuilding_endorsement' IN UNNEST(n.narratives)) AS worldbuilding_endorsement_count,
+      COUNTIF('system_design_critique'    IN UNNEST(n.narratives)) AS system_design_critique_count,
+      COUNTIF('cash_grab'                 IN UNNEST(n.narratives)) AS cash_grab_count,
+      COUNTIF('tone_mismatch'             IN UNNEST(n.narratives)) AS tone_mismatch_count,
+      COUNTIF('not_dnd'                   IN UNNEST(n.narratives)) AS not_dnd_count,
+      COUNTIF('pandering'                 IN UNNEST(n.narratives)) AS pandering_count,
+      -- Aggregated buckets
+      COUNTIF(EXISTS(SELECT 1 FROM UNNEST(n.narratives) AS x
+                     WHERE x IN ('worldbuilding_endorsement','system_design_critique')))
+        AS constructive_narrative_count,
+      COUNTIF(EXISTS(SELECT 1 FROM UNNEST(n.narratives) AS x
+                     WHERE x IN ('cash_grab','tone_mismatch','not_dnd','pandering')))
+        AS backlash_narrative_count
+    FROM narratives_per_url n
+    GROUP BY n.ip_name
+  ),
+
+  -- Surface a sample backlash narrative for the data trail (top
+  -- evidence string from any backlash-tagged thread for this IP)
+  sample_backlash AS (
+    SELECT
+      n.ip_name,
+      ARRAY_AGG(STRUCT(n.url, n.evidence, n.narratives) LIMIT 1)[OFFSET(0)] AS sample
+    FROM narratives_per_url n
+    WHERE EXISTS(SELECT 1 FROM UNNEST(n.narratives) AS x
+                 WHERE x IN ('cash_grab','tone_mismatch','not_dnd','pandering'))
+    GROUP BY n.ip_name
+  ),
+
   joined AS (
     SELECT
       s.ip_name,
@@ -179,12 +230,24 @@ WITH
       COALESCE(p.giantitp_confirmed,          0) AS giantitp_confirmed,
       COALESCE(p.rpgnet_confirmed,            0) AS rpgnet_confirmed,
       COALESCE(p.dragonsfoot_confirmed,       0) AS dragonsfoot_confirmed,
-      COALESCE(tp.top_url, tc.top_url)        AS top_thread_struct
+      COALESCE(tp.top_url, tc.top_url)        AS top_thread_struct,
+      -- Stage 7c — backlash narrative aggregates
+      COALESCE(na.worldbuilding_endorsement_count, 0) AS worldbuilding_endorsement_count,
+      COALESCE(na.system_design_critique_count,    0) AS system_design_critique_count,
+      COALESCE(na.cash_grab_count,                 0) AS cash_grab_count,
+      COALESCE(na.tone_mismatch_count,             0) AS tone_mismatch_count,
+      COALESCE(na.not_dnd_count,                   0) AS not_dnd_count,
+      COALESCE(na.pandering_count,                 0) AS pandering_count,
+      COALESCE(na.constructive_narrative_count,    0) AS constructive_narrative_count,
+      COALESCE(na.backlash_narrative_count,        0) AS backlash_narrative_count,
+      sb.sample AS sample_backlash_struct
     FROM `dnd-trends-index.dnd_trends_raw.ub_candidate_seeds` s
     LEFT JOIN latest_per_ip l USING (ip_name)
     LEFT JOIN per_ip_agg p USING (ip_name)
     LEFT JOIN top_positive tp USING (ip_name)
     LEFT JOIN top_confirmed tc USING (ip_name)
+    LEFT JOIN narrative_agg_per_ip na USING (ip_name)
+    LEFT JOIN sample_backlash sb USING (ip_name)
   )
 
 SELECT
@@ -222,6 +285,19 @@ SELECT
   j.divisive_count,
   j.negative_count,
   ROUND(COALESCE(j.attitude_avg, 0), 4) AS attitude_avg,
+
+  -- ─── STAGE 7C BACKLASH NARRATIVES (multi-label per thread) ────────────
+  j.worldbuilding_endorsement_count,
+  j.system_design_critique_count,
+  j.cash_grab_count,
+  j.tone_mismatch_count,
+  j.not_dnd_count,
+  j.pandering_count,
+  j.constructive_narrative_count,
+  j.backlash_narrative_count,
+  j.sample_backlash_struct.url      AS sample_backlash_url,
+  j.sample_backlash_struct.evidence AS sample_backlash_evidence,
+  j.sample_backlash_struct.narratives AS sample_backlash_narratives,
 
   -- ─── PER-FORUM CONFIRMED BUCKETING ────────────────────────────────────
   j.enworld_confirmed,

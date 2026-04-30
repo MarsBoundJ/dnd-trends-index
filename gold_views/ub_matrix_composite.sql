@@ -236,7 +236,19 @@ WITH
       rpgnet_top_hits,
       dragonsfoot_top_hits,
       top_thread_url AS forum_top_thread_url,
-      top_thread_title AS forum_top_thread_title
+      top_thread_title AS forum_top_thread_title,
+      -- Stage 7c — backlash narrative aggregates
+      worldbuilding_endorsement_count,
+      system_design_critique_count,
+      cash_grab_count,
+      tone_mismatch_count,
+      not_dnd_count,
+      pandering_count,
+      constructive_narrative_count,
+      backlash_narrative_count,
+      sample_backlash_url,
+      sample_backlash_evidence,
+      sample_backlash_narratives
     FROM `dnd-trends-index.gold_data.forum_presence_proxy`
   ),
 
@@ -313,6 +325,17 @@ WITH
       fm.dragonsfoot_top_hits,
       fm.forum_top_thread_url,
       fm.forum_top_thread_title,
+      fm.worldbuilding_endorsement_count,
+      fm.system_design_critique_count,
+      fm.cash_grab_count,
+      fm.tone_mismatch_count,
+      fm.not_dnd_count,
+      fm.pandering_count,
+      fm.constructive_narrative_count,
+      fm.backlash_narrative_count,
+      fm.sample_backlash_url,
+      fm.sample_backlash_evidence,
+      fm.sample_backlash_narratives,
       acq.reddit_acquisition_score,
       acq.acquisition_confirmed_mentions
     FROM `dnd-trends-index.dnd_trends_raw.ub_candidate_seeds` s
@@ -623,6 +646,19 @@ SELECT
   w.dragonsfoot_top_hits,
   w.forum_top_thread_url,
   w.forum_top_thread_title,
+
+  -- ─── STAGE 7C — BACKLASH NARRATIVES (data trail) ──────────────────────
+  w.worldbuilding_endorsement_count,
+  w.system_design_critique_count,
+  w.cash_grab_count,
+  w.tone_mismatch_count,
+  w.not_dnd_count,
+  w.pandering_count,
+  w.constructive_narrative_count,
+  w.backlash_narrative_count,
+  w.sample_backlash_url,
+  w.sample_backlash_evidence,
+  w.sample_backlash_narratives,
 
   -- ─── HUMAN-READABLE REASONING ─────────────────────────────────────────
   CASE
