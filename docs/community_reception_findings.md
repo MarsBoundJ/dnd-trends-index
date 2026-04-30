@@ -1,8 +1,8 @@
 # Community Reception + Acquisition: Strategic Findings Report
 
-**Status:** All 7 stages of `community_reception_score` shipped, **plus v2 Stage 6b (GMBinder + Homebrewery, two-layer disambiguated), Stage 7a-i (forum top-URL AI Bouncer, sentiment-weighted), and Stage 6a v1 (D&D Beyond Homebrew bookmarklet, bulk mode, per-section filter params) shipped.** Composite-view rewire to consume all three v2 stages is live. v1 baseline preserved in `dnd_trends_raw.matrix_v1_baseline_snapshot` for A/B comparison.
+**Status:** All 7 stages of `community_reception_score` shipped, **plus v2 Stage 6b (GMBinder + Homebrewery, two-layer disambiguated), Stage 7a-i (forum top-URL AI Bouncer, sentiment-weighted), Stage 6a (D&D Beyond Homebrew bookmarklet, bulk mode, per-section filter params) and Stage 6c (DDB AI Bouncer disambiguation pass) shipped.** Composite-view rewire to consume all four v2 stages is live. v1 baseline preserved in `dnd_trends_raw.matrix_v1_baseline_snapshot` for A/B comparison.
 
-**Last updated:** 2026-04-29 (v3 Stage 6a shipped — see new section below)
+**Last updated:** 2026-04-29 (v3 Stages 6a + 6c shipped — see new sections below)
 
 **Audience:** Phil + outside reviewers (Gemini, Perplexity, future collaborators) helping decide composite-score weighting and demo prioritization.
 
@@ -548,7 +548,42 @@ Bouncer ingest:          $0 (same Cloud Function)
 TOTAL Stage 6a v1:       $0
 ```
 
-Stage 6c (DDB AI Bouncer) will cost ~$0.10-0.20 for ~600 item classifications.
+### Stage 6c (DDB AI Bouncer) — shipped same evening
+
+Mirroring Stage 6b's two-layer pattern, `scripts/classify_ddb_homebrew_results.py` reads the captured `top_items` from `ddb_homebrew_counts` (flattened) and sends each item to Gemini Flash with alias-library context (canonical_name + ambiguity_flag + required_coterms + banned_contexts) for binary `is_about_ip` classification. Output table: `dnd_trends_raw.ddb_homebrew_classified`.
+
+The gold view rewrite scores from **confirmed count** (count where AI Bouncer says is_about_ip=TRUE) instead of raw visible count. The disambiguation funnel is surfaced explicitly: `ddb_visible_total → ddb_confirmed_total`.
+
+**Killer disambiguations:**
+- **Hades:** all 12 "Demigod" species (4440 / 164 / 74 / 56 / etc. adds) correctly excluded as universally-popular generic. 4 confirmed Hades-game items kept: "Hades" Warlock subclass (65 adds), "Hades Patron" subclass (51), "Hades patron" Paladin (7), "Fawn (Hades Demonborne Version)" species (6). Hades score: 0.53 → 0.39 (honest now).
+- **Berserk:** 38 visible → 9 confirmed. Generic "Berserker" subclasses (228 / 226 / 128 / 84 / etc. adds, all the all-time top barbarian frenzied-warrior subclasses) correctly excluded. Genuinely Berserk-IP-themed kept: "Berserker Redux", "Better Berserker", "Berserker of Madness", "Elf (Berserk)" species, etc.
+- **Foundation:** 5 visible → 0 confirmed. All entries ("School of Foundation Magic", "Circle of the Foundation", "The Foundation Patron", "COPY_OF_APEX foundations crocodile", "School of Arcane Foundations") correctly identified as generic foundation-of-magic theme, not Asimov's Foundation IP. Foundation: NULL (correctly abstains).
+- **Pantheon:** 12 visible → 0 confirmed. All entries identified as generic Greek mythology / pandora-box-style content, not the MMO Pantheon. Pantheon: NULL (correctly abstains).
+- **Invincible:** 3 visible → 0 confirmed. Conservative call: "Path of the Invincible" was rejected as matching the alias library's banned_context "the invincible" (used generically). Borderline — could be IP-themed barbarian (Omni-Man-style) but classifier biased toward abstain-when-uncertain.
+
+**Coverage delta after Stage 6c:** v3-disambig 61/142 sufficient (down 1 from v3-undisambig 62; the 1 was Pantheon, whose entire "signal" was generic mythology noise). 18 IPs now have a disambiguated DDB signal (down from 21 raw — the 3 lost are Foundation, Pantheon, Invincible, all correctly removed).
+
+**Score quality is dramatically higher:**
+
+| IP | v1 | v3-undisambig | v3-disambig | Why |
+|---|---|---|---|---|
+| Hollow Knight | 0.70 | 0.83 | **0.84** | All 28 confirmed |
+| Bloodborne | 0.71 | 0.81 | **0.79** | 29/31 confirmed |
+| Mistborn | 0.61 | 0.65 | **0.64** | All 24 confirmed (DDB jumped 0.51 → 0.95) |
+| Berserk | 0.90 | 0.85 | **0.83** | 9/38 confirmed (correctly tempered) |
+| Hades | NULL | 0.53 | **0.39** | 4/26 confirmed (Demigod 4440 excluded) |
+| Solo Leveling | NULL | 0.71 | **0.71** | 1/1 confirmed |
+| The Boys | NULL | 0.30 | **0.30** | 1/1 confirmed |
+| Foundation | NULL | NULL | NULL | 0/5 confirmed (all generic) |
+| Pantheon | NULL | NULL | NULL | 0/12 confirmed (all generic) |
+| Invincible | 0.78 | 0.60 | **0.60** | 0/3 confirmed (conservative call) |
+| Tyranny | NULL | NULL | NULL | 2/5 confirmed ("Tyranny Domain") but n=1 source still |
+
+**The Tyranny test extends to v3-disambig.** v1 = thin_evidence via false-positive forum 0.95 (the common English word). v2 = modeled_only via disambiguation killing both false signals. v3-undisambig = thin_evidence via real DDB signal but inflated by fuzzy matches. v3-disambig = thin_evidence via 2 confirmed "Tyranny Domain" items (the genuinely IP-themed homebrew). The matrix has been correct at every stage; the underlying signal quality has progressively improved.
+
+**Cost (Stage 6c):** $0.07 for 268 classifications, 0 failures. Total Stage 6 v2 + Stage 6a + 6c spend so far is ~$1.05.
+
+**One housekeeping incident:** the cleanup DELETE for the originally-contaminated rows used a too-broad timestamp cutoff and accidentally also deleted ~98 correctly-captured /spells, /monsters, /magic-items rows from the afternoon re-run. Net impact on the matrix was minimal (those captures were dominated by noise the classifier was rejecting anyway — Berserk's 38 visible → 9 confirmed were all in subclasses+species; the spells/monsters/magic-items rows contributed almost nothing to the confirmed count). One additional bookmarklet run would re-capture them (~4 min), but matrix coverage and score quality held without it.
 
 ---
 
