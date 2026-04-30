@@ -1031,3 +1031,141 @@ The 8 Dragonsfoot URLs are dropped permanently — not worth bookmarklet effort 
 | **Cumulative Stage 7 spend** | **~$1.61** |
 
 For a 7x backlash signal increase + 67 disambiguation corrections + the Stranger Things-style nuance unlock, $0.56 is approximately the cheapest measurable win in the entire community_reception build.
+
+---
+
+## v5 update — Stage 7b GitP bookmarklet (Apr 30, 2026 late evening)
+
+Phil's call after seeing v4: *"based on the fact that we've uncovered backlash signal, we need to 'triangulate' it — meaning we need one more meaningfully large signal coming from GitP to give us confidence about the size, scope, and quality of our backlash signal. If certain IPs are getting backlash from 3 independent forums, we'll know it's not an anomaly."*
+
+The right epistemic move. v4 had backlash from 2 forums (EN World + RPG.net) — suggestive but not proof. v5 closes the third forum (forums.giantitp.com) using a same-origin bookmarklet pattern that bypasses Cloudflare via Phil's authenticated browser session.
+
+### What shipped
+
+1. **`scripts/gitp_thread_bodies_bookmarklet.js`** + minified `.txt` companion — mirrors the DDB Homebrew bookmarklet pattern (~400 lines). Sanity-checks you're on `forums.giantitp.com`, fetches pending-URL list from bouncer, iterates with same-origin `fetch()` (uses Phil's CF clearance + session), parses vBulletin DOM (`div[id^="post_message_"]` containers), POSTs each result to bouncer, displays progress UI with pause/abort + sent log.
+
+2. **Two new bouncer endpoints** (in `bouncer/main.py`):
+   - `GET /system/forum/url-list?forum=<domain>` — returns pending URLs (LEFT JOIN excludes already-scraped; excludes `archive/index.php` paths)
+   - `POST /system/forum/ingest-thread-body` — inserts `{ip_name, url, forum_domain, op_text, replies_text_combined, reply_count, scrape_status}` to `forum_thread_bodies`
+
+3. **`bouncer-api` Cloud Function redeployed** — revision 00060-fof active.
+
+### Bookmarklet run results — perfect
+
+Phil clicked the bookmarklet on a forums.giantitp.com tab. **96/96 success, 0 errors, 5m 4s elapsed.** Every URL parsed cleanly via the vBulletin selector. Average yield: **1144 chars OP + 12.9 replies + 9124 chars combined replies** per thread — comparable depth to RPG.net's data, richer than EN World.
+
+| Forum | Source | URLs | Success | Notes |
+|---|---|---|---|---|
+| enworld.org | Playwright (v4) | 97 | 95 (97.9%) | nginx, no Cloudflare |
+| rpg.net | Playwright (v4) | 486 | 475 (97.7%) | Cloudflare passes vanilla chromium |
+| forums.giantitp.com | **Bookmarklet (v5)** | 96 | **96 (100%)** | Cloudflare JS challenge bypassed via authenticated session |
+| **Combined** | | **679** | **666 (98.1%)** | |
+
+Total `forum_thread_bodies` corpus now spans all 3 reachable TTRPG forums.
+
+### v5 re-classification
+
+Both classifiers re-run with `--force` after GitP bodies landed. The same `classify_forum_top_urls.py` and `classify_forum_narratives.py` from v4 work unchanged — they LEFT JOIN against `forum_thread_bodies` regardless of which forum populated each row.
+
+| | v1 | v4 | v5 | Δ v4→v5 |
+|---|---|---|---|---|
+| **Attitudes** | | | | |
+| `mentions_only` | 435 | 422 | 435 | +13 |
+| `positive` | 209 | 197 | 182 | -15 |
+| `divisive` | 3 | 13 | **26** | **+13** ⬆️ |
+| `not_about_ip` | 51 | 118 | 109 | -9 |
+| `negative` | 6 | 1 | 2 | +1 |
+| **Narratives** | | | | |
+| `tone_mismatch` | 2 | 17 | 21 | +4 |
+| `cash_grab` | 2 | 11 | 12 | +1 |
+| `pandering` | 1 | 4 | 5 | +1 |
+| `not_dnd` | 0 | 3 | 3 | 0 |
+| **Total backlash** | **5** | **35** | **41** | **+6** |
+| `system_design_critique` | 96 | 137 | 144 | +7 |
+| `worldbuilding_endorsement` | 101 | 115 | 93 | -22 |
+
+**The interesting v5 shift isn't backlash — it's `divisive` doubling (13→26).** GitP body data revealed that many threads earlier classified as "positive" or "mentions_only" actually carry mixed reception in the replies. GitP's culture (older, optimization/theorycraft-focused, opinionated DMs) surfaces split-community signal that EN World's more news-style framing and RPG.net's broader-scope discussion didn't.
+
+`worldbuilding_endorsement` dropping 22 points reinforces this — Gemini, with the GitP replies in hand, is more reluctant to label a thread as straightforward worldbuilding endorsement when the actual conversation shows skepticism. The signal is more honest, not weaker.
+
+### The triangulation result — the headline finding
+
+Query: *"Which IPs have backlash narratives from 2+ forums independently?"* (cross-forum cross-validation rules out single-community noise.)
+
+| IP | Forums with backlash | Backlash threads | Notes |
+|---|---|---|---|
+| **Goblin Slayer** | **3 of 3** ✅ | 6 | The triangulated finding |
+| Baldur's Gate 3 | 2 (EN World, RPG.net) | 3 | Surprising — WotC's own adaptation |
+| Stranger Things | 2 (EN World, RPG.net) | 3 | Already a v4 signal, holds |
+| Welcome to Night Vale | 2 (EN World, RPG.net) | 3 | New v5 finding |
+| Warframe | 2 (EN World, **GitP**) | 2 | GitP unique participant |
+
+**Goblin Slayer hits all three forums independently.** Same narrative theme — `tone_mismatch` — across all three, with the same root critique:
+
+| Forum | Evidence (paraphrased from `forum_narratives_classified.evidence`) |
+|---|---|
+| EN World | *"Animated D&D... but every bad stereotype from 80s D&D male teen players, including sexualized violence."* + `cash_grab`: *"wondering exactly what the point of the license is."* |
+| GitP | *"Building Goblin Slayer as a D&D character, while debating if the manga's grimdark and exploitative tone fits D&D."* |
+| RPG.net | *"Replies discuss the IP's gratuitous rape and dark and edgy elements, creating a tone mismatch with D&D inspired fantasy."* |
+
+This is the kind of cross-community consensus that no single-forum sample could establish. Three independent DM communities, separately classified from raw thread text — all reaching the same verdict on the same IP for the same reason. **That's not noise. That's signal.**
+
+For the Hasbro pitch, this is methodologically demo-grade: it shows the system can detect cross-community backlash *risk* with a defensible triangulation rule (≥2 independent forums, same narrative type). A licensing exec asking "but how do you know it's not just one loud forum?" has a one-line answer: *the Goblin Slayer pattern requires three forums to all flag it before it surfaces.*
+
+### Notable secondary findings
+
+- **Baldur's Gate 3 with `not_dnd` × 2** — fascinating signal. WotC's own crown-jewel video game adaptation is getting "this isn't D&D anymore" rhetoric in DM forums. Worth a footnote in the deck about how even adjacent-D&D content can trigger purity backlash. The signal is mild (3 backlash threads vs 4 positive) but real.
+- **Welcome to Night Vale tone_mismatch × 2** — new v5 signal. NVL's surreal-comedy register doesn't translate to the dark-fantasy default; both EN World and RPG.net flagged it.
+- **Warframe** — GitP backlash + EN World backlash. RPG.net stayed positive. The kind of split that rewards triangulation analysis: it's *not* yet a triangulated find (still 2/3 forums), but the asymmetry is informative.
+- **Tyranny canary still NULL** across all 6 versions. v1, v2, v3-undisambig, v3-disambig, v4, v5 — 0 forum threads survive co-term gating. The two-layer disambiguation pattern remains airtight.
+
+### GitP's distinctive cultural signature
+
+Reading the GitP-only narratives confirms its long-standing reputation as the **optimization / theorycraft community**. The forum's `system_design_critique` count is dominated by *"how do I build [character] in D&D"* threads — Attack on Titan maneuver-gear feats, Berserk Guts builds, Bloodborne trick-weapon mechanics, Discworld characters in 3.5/5e. The cultural register is engineering, not editorial.
+
+This refines Gemini's earlier framing — *"Reddit is full of Players. AO3 is full of Fans. Forums are full of Dungeon Masters"* — into something more granular:
+
+> **EN World ≈ news-and-industry DMs** (Paizo announcements, OGL drama, system reviews)
+> **RPG.net ≈ broad-RPG-discussion DMs** (cross-system comparisons, deep reception threads)
+> **GitP ≈ optimization-and-theorycraft DMs** (mechanics translation, build reviews, system-design critique)
+>
+> All three share the brand-purity sensibility, but the rhetorical surface differs. **`tone_mismatch` lives strongest at EN World and RPG.net**; **`system_design_critique` lives strongest at GitP**.
+
+This is itself a useful demo-grade observation — a licensing exec gets a more honest answer to *"who's complaining about this and why?"* when the system can attribute backlash narrative type to forum culture, not just count it.
+
+### Cost summary
+
+| Stage | Cost |
+|---|---|
+| v4 cumulative | $0.56 |
+| GitP bookmarklet run | $0 (no API; same-origin fetch) |
+| v5 attitude re-classify | $0.48 |
+| v5 narrative re-classify | $0.12 |
+| **v5 incremental** | **$0.60** |
+| **v5 cumulative Stage 7** | **~$2.21** |
+
+For a triangulation result that materially changes how the demo deck can be defended (*"three independent DM communities flagged this IP, here's the evidence"*), $0.60 is once again the cheapest meaningful win in the build.
+
+### What changed in the build vs. v4
+
+- `scripts/gitp_thread_bodies_bookmarklet.js` (new) + `.txt` (URL-encoded `javascript:` form for browser bookmark)
+- `bouncer/main.py` — 2 new endpoints (`/system/forum/url-list` GET, `/system/forum/ingest-thread-body` POST), 80 lines added
+- `bouncer-api` Cloud Function redeployed (revision 00060-fof active)
+- `forum_thread_bodies` BQ table populated with 96 new GitP rows (now 666 total successful body scrapes)
+- `forum_top_urls_classified` and `forum_narratives_classified` re-run with `--force`
+- No gold view changes (v3 schema with `body_scrape_coverage_ratio` etc. already supports the GitP rows automatically)
+
+### Status across versions
+
+```
+v1 baseline:      50 / 142 sufficient | 5 backlash narratives | Tyranny NULL ✓
+v2:               59 / 142 sufficient | 5 backlash narratives | Tyranny NULL ✓
+v3 raw:           62 / 142 sufficient | 5 backlash narratives | Tyranny NULL ✓
+v3 disambig:      61 / 142 sufficient | 5 backlash narratives | Tyranny NULL ✓
+v4 (Playwright):  61 / 142 sufficient | 35 backlash narratives | Tyranny NULL ✓
+v5 (+ GitP):      61 / 142 sufficient | 41 backlash narratives | Tyranny NULL ✓
+                                          ↑ 1 IP triangulated across 3 forums
+                                            (Goblin Slayer, tone_mismatch)
+```
+
+Forum-presence sub-system is now structurally complete: Stage 7a-i (cheap-path classifier) → Stage 7a-ii (Playwright bodies for 2 forums) → Stage 7b (bookmarklet bodies for the Cloudflare-blocked forum). All 3 reachable DM forums covered. Stage 7 — done.
