@@ -61,13 +61,19 @@ PROJECT_ID = "dnd-trends-index"
 PRESENCE_TABLE = f"{PROJECT_ID}.dnd_trends_raw.forum_presence_counts"
 CLASSIFIED_TABLE = f"{PROJECT_ID}.dnd_trends_raw.forum_top_urls_classified"
 ALIAS_TABLE = f"{PROJECT_ID}.dnd_trends_raw.ub_ip_alias_library"
+# Stage 7a-ii body text — appended to the classifier input where present.
+# LEFT JOIN so URLs without body data (Cloudflare-blocked GitP, Dragonsfoot)
+# still classify on title+snippet alone.
+BODIES_TABLE = f"{PROJECT_ID}.dnd_trends_raw.forum_thread_bodies"
 
 GEMINI_MODEL = "gemini-2.5-flash"
 GEMINI_SECRET_NAME = (
     f"projects/{PROJECT_ID}/secrets/gemini-api-key/versions/latest"
 )
 
-DEFAULT_BATCH_SIZE = 15
+# Smaller batch since Stage 7a-ii adds OP+replies body text per URL,
+# which roughly 5x's input tokens. 10 keeps each batch under ~12K tokens.
+DEFAULT_BATCH_SIZE = 10
 RETRY_LIMIT = 3
 RETRY_BACKOFF_SEC = 5.0
 
@@ -143,6 +149,18 @@ For each URL you receive:
   forum_domain    — enworld.org / forums.giantitp.com / rpg.net / dragonsfoot.org
   title           — the thread title from Google's search index
   snippet         — Google's snippet of the thread content
+  op_text         — (when available) the original-post body text, scraped
+                    via Playwright. Much higher-resolution signal than
+                    the snippet — use this primarily when present.
+  replies_text    — (when available) first ~20 reply post bodies, joined
+                    with "\\n\\n---\\n\\n". Use these to detect
+                    divisive/positive/negative reception in the actual
+                    forum conversation, not just the OP framing.
+
+When op_text and replies_text are present, base your judgement
+PRIMARILY on them — title+snippet are weak signal. When they're
+absent (some forums Cloudflare-blocked the scraper), fall back to
+title+snippet judgement at lower confidence.
 
 ─── OUTPUT FIELDS ────────────────────────────────────────────────────────
 
@@ -153,10 +171,13 @@ For each URL, return:
   forum_attitude     — string, one of:
                         'positive', 'negative', 'divisive',
                         'mentions_only', 'not_about_ip'
-  confidence         — float [0, 1]. Use ≥0.85 when title contains the
-                        canonical IP name AND snippet shows clear fit-
-                        evaluation language. 0.5-0.85 for ambiguous
-                        cases. <0.5 only when guessing.
+  confidence         — float [0, 1]. Use ≥0.90 when op_text/replies are
+                        present AND clearly resolve the question. ≥0.85
+                        when title contains canonical IP name AND
+                        snippet shows clear fit-evaluation language.
+                        0.5-0.85 for ambiguous cases or body-text-absent
+                        rows where title+snippet alone are inconclusive.
+                        <0.5 only when guessing.
   reasoning          — ONE sentence, ≤25 words. For is_about_ip=false,
                         say WHY (e.g. "'Halo' here refers to a paladin's
                         spell effect, not the video game IP").
@@ -221,7 +242,9 @@ def load_alias_lookup(bq: bigquery.Client) -> dict[str, dict]:
 
 
 def load_top_urls(bq: bigquery.Client, only_unclassified: bool) -> list[dict]:
-    """Flatten the latest top_thread_urls per IP into per-URL rows."""
+    """Flatten the latest top_thread_urls per IP into per-URL rows.
+    LEFT JOINs forum_thread_bodies so URLs with body data have op_text +
+    replies_text fields, others fall back to title+snippet only."""
     base_query = f"""
     WITH latest_per_ip AS (
       SELECT *
@@ -235,8 +258,13 @@ def load_top_urls(bq: bigquery.Client, only_unclassified: bool) -> list[dict]:
       t.url,
       t.title,
       t.snippet,
-      t.forum_domain
+      t.forum_domain,
+      b.op_text,
+      b.replies_text_combined,
+      b.scrape_status AS body_scrape_status
     FROM latest_per_ip l, UNNEST(l.top_thread_urls) AS t
+    LEFT JOIN `{BODIES_TABLE}` b
+      ON b.url = t.url AND b.scrape_status = 'success'
     """
     if only_unclassified:
         query = base_query + f"""
@@ -275,6 +303,14 @@ def build_user_prompt(batch: list[dict], aliases: dict[str, dict]) -> str:
         parts.append(f"forum_domain: {c.get('forum_domain', '')}")
         parts.append(f"title: {truncate_text(c.get('title') or '', 250)}")
         parts.append(f"snippet: {truncate_text(c.get('snippet') or '', 500)}")
+        op = c.get("op_text") or ""
+        replies = c.get("replies_text_combined") or ""
+        if op:
+            parts.append(f"op_text: {truncate_text(op, 1500)}")
+        if replies:
+            parts.append(f"replies_text: {truncate_text(replies, 2500)}")
+        if not op and not replies:
+            parts.append("(body_text unavailable — title+snippet only)")
         parts.append("")
     return "\n".join(parts)
 

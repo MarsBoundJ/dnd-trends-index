@@ -61,13 +61,18 @@ SOURCE_TABLE = f"{PROJECT_ID}.dnd_trends_raw.forum_top_urls_classified"
 PRESENCE_TABLE = f"{PROJECT_ID}.dnd_trends_raw.forum_presence_counts"
 NARRATIVES_TABLE = f"{PROJECT_ID}.dnd_trends_raw.forum_narratives_classified"
 ALIAS_TABLE = f"{PROJECT_ID}.dnd_trends_raw.ub_ip_alias_library"
+# Stage 7a-ii body-text source. LEFT JOIN so URLs without scraped bodies
+# (Cloudflare-blocked GitP, Dragonsfoot) still classify on title+snippet.
+BODIES_TABLE = f"{PROJECT_ID}.dnd_trends_raw.forum_thread_bodies"
 
 GEMINI_MODEL = "gemini-2.5-flash"
 GEMINI_SECRET_NAME = (
     f"projects/{PROJECT_ID}/secrets/gemini-api-key/versions/latest"
 )
 
-DEFAULT_BATCH_SIZE = 15
+# Reduced from 15 to 10 since Stage 7a-ii adds body text per row
+# (op_text + replies_text), roughly 5x'ing input tokens per item.
+DEFAULT_BATCH_SIZE = 10
 RETRY_LIMIT = 3
 RETRY_BACKOFF_SEC = 5.0
 
@@ -99,8 +104,15 @@ For each TTRPG-forum thread + IP-name pair (already pre-classified as
 genuinely about the IP with a non-trivial attitude), identify which
 NARRATIVE TYPES the thread expresses, from a 6-label vocabulary.
 
-Each thread can hit multiple narratives (multi-label). If the title +
-snippet don't strongly indicate any narrative, return an empty array.
+Each thread can hit multiple narratives (multi-label). If the available
+text doesn't strongly indicate any narrative, return an empty array.
+
+Where op_text and replies_text are present (Stage 7a-ii Playwright
+scrape), base your judgement primarily on those — they're the actual
+forum conversation, much higher-resolution than title+snippet alone.
+Reply text especially is where backlash narratives surface most
+clearly (top of thread is often a setup question; the rhetoric is in
+the responses).
 
 ─── THE 6 NARRATIVE TYPES ────────────────────────────────────────────
 
@@ -159,6 +171,14 @@ For each thread you receive:
                       dragonsfoot.org
   title             — the thread title
   snippet           — Google's snippet of the thread content
+  op_text           — (when available) original-post body text scraped
+                      via Playwright. Use this primarily when present.
+  replies_text      — (when available) first ~20 reply post bodies,
+                      joined with "\\n\\n---\\n\\n". This is where
+                      backlash language tends to live. Don't be afraid
+                      to label cash_grab/tone_mismatch/not_dnd if the
+                      replies clearly express that frame, even if the
+                      OP framing was neutral.
 
 ─── OUTPUT FIELDS ────────────────────────────────────────────────────────
 
@@ -245,10 +265,14 @@ def load_candidates(bq: bigquery.Client, only_unclassified: bool) -> list[dict]:
       c.forum_attitude,
       c.forum_domain,
       COALESCE(p.p_title,   c.title) AS title,
-      COALESCE(p.p_snippet, '')      AS snippet
+      COALESCE(p.p_snippet, '')      AS snippet,
+      b.op_text,
+      b.replies_text_combined
     FROM latest_class c
     LEFT JOIN presence p
       ON p.ip_name = c.ip_name AND p.url = c.url
+    LEFT JOIN `{BODIES_TABLE}` b
+      ON b.url = c.url AND b.scrape_status = 'success'
     WHERE c.is_about_ip = TRUE
       AND c.forum_attitude IN ('positive', 'negative', 'divisive')
     """
@@ -280,6 +304,14 @@ def build_user_prompt(batch: list[dict], aliases: dict[str, dict]) -> str:
         parts.append(f"forum_domain: {c.get('forum_domain', '')}")
         parts.append(f"title: {truncate_text(c.get('title') or '', 250)}")
         parts.append(f"snippet: {truncate_text(c.get('snippet') or '', 500)}")
+        op = c.get("op_text") or ""
+        replies = c.get("replies_text_combined") or ""
+        if op:
+            parts.append(f"op_text: {truncate_text(op, 1500)}")
+        if replies:
+            parts.append(f"replies_text: {truncate_text(replies, 2500)}")
+        if not op and not replies:
+            parts.append("(body_text unavailable — title+snippet only)")
         parts.append("")
     return "\n".join(parts)
 
