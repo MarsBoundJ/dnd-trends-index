@@ -1,8 +1,8 @@
 # Community Reception + Acquisition: Strategic Findings Report
 
-**Status:** All 7 stages of `community_reception_score` shipped, **plus v2 Stage 6b (GMBinder + Homebrewery, two-layer disambiguated) and Stage 7a-i (forum top-URL AI Bouncer, sentiment-weighted) shipped.** Composite-view rewire to consume the v2-disambiguated stages is live. v1 baseline preserved in `dnd_trends_raw.matrix_v1_baseline_snapshot` for A/B comparison.
+**Status:** All 7 stages of `community_reception_score` shipped, **plus v2 Stage 6b (GMBinder + Homebrewery, two-layer disambiguated), Stage 7a-i (forum top-URL AI Bouncer, sentiment-weighted), and Stage 6a v1 (D&D Beyond Homebrew bookmarklet, bulk mode, per-section filter params) shipped.** Composite-view rewire to consume all three v2 stages is live. v1 baseline preserved in `dnd_trends_raw.matrix_v1_baseline_snapshot` for A/B comparison.
 
-**Last updated:** 2026-04-29 (v2 Stages 6b + 7a-i shipped — see new section below)
+**Last updated:** 2026-04-29 (v3 Stage 6a shipped — see new section below)
 
 **Audience:** Phil + outside reviewers (Gemini, Perplexity, future collaborators) helping decide composite-score weighting and demo prioritization.
 
@@ -454,6 +454,101 @@ TOTAL:                              ~$0.85
 1. **Stage 6a** — D&D Beyond Homebrew bookmarklet. Highest expected novelty per the v2 plan (DDB is the native D&D ecosystem; presence there is the strongest signal). Constrained by Cloudflare + ToS, so requires the bookmarklet pattern (mirror `scripts/ao3_bookmarklet.js`).
 2. **Stage 7a-ii** — Playwright thread-body scraper for higher-resolution sentiment + backlash narrative classification. Lower priority since the cheap path (title+snippet) already passed the Tyranny test.
 3. **Stages 6c + 7c** — UA sentiment depth (homebrew type / upvote weighting) + backlash narrative extraction (cash_grab / tone_mismatch / not_dnd / pandering labels). Polish work.
+
+---
+
+## v3 update — Stage 6a v1 (DDB Homebrew bookmarklet) shipped (Apr 29, 2026 evening)
+
+The third v2 sub-stream landed the same day as the first two. Stage 6a goes after the highest-priority enrichment from the v2 plan: D&D Beyond Homebrew, the native-platform "Adds to Collection" signal that all three reviewer tools (ChatGPT / Gemini / Perplexity) rated as the #1 enrichment to add.
+
+### What shipped
+
+- **`scripts/ddb_homebrew_bookmarklet.js`** — single bookmarklet with two modes:
+  - **Bulk mode (default):** click once on any dndbeyond.com page, the bookmarklet sequentially `fetch()`'s `/homebrew/<section>?<filter-param>=<IP>&filter-sort=adds-desc` for the priority queue (40 IPs × 5 sections = 200 captures), parses `.list-row[data-slug]` with DOMParser, POSTs each row to the bouncer. Same logical pattern as `scripts/amazon_bookmarklet.js` — same-origin fetch with the user's session cookies. ~5 min per full run with 2s pacing + 45s timeout + single retry.
+  - **Manual mode:** searchable dropdown of priority IPs grouped by cohort with progress bars; on selection, fills DDB's filter input + submits the form. Fallback for ad-hoc one-offs.
+- **`bouncer/main.py`** — two new routes:
+  - `GET /system/homebrew/ip-list` returns the 40-IP priority list + per-IP per-section sent-counts joined from `ddb_homebrew_counts`.
+  - `POST /system/homebrew/ingest-ddb` accepts captured rows.
+- **`dnd_trends_raw.ddb_homebrew_counts`** — new BQ table with one row per (ip_name, ddb_section) capture, top_items[] of up to 30 entries with name/slug/url/adds/views/comments/rating/base_class/author.
+- **`gold_data.ddb_homebrew_proxy`** — log-normalizes total visible items across the 5 priority sections per IP. Score formula matches Stage 6b's pattern.
+- **`gold_data.homebrew_combined_proxy`** rewritten as a 3-way blend (UA Reddit + external GMBinder/Homebrewery + DDB native), equal-weighted average with per-IP renormalization.
+- **`gold_data.ub_matrix_composite`** surfaces the new DDB sub-trail columns (`ddb_homebrew_score`, `ddb_total_items`, per-section item counts, `ddb_top_item_name/section/adds`) so reviewers can drill all the way down.
+
+### Two architectural details worth remembering
+
+**DDB has two filter-form generations.** Phil's F12 console probe across all 8 plausible homebrew sections revealed two distinct DDB form-component generations:
+
+```
+filter-name (newer 5e-2024 character-creation):
+  /homebrew/subclasses, /homebrew/species, /homebrew/feats, /homebrew/backgrounds
+
+filter-search (older content sections):
+  /homebrew/spells, /homebrew/monsters, /homebrew/magic-items
+```
+
+Plus two path corrections: `/homebrew/races` is 404 (rebranded to `/species` in 5e 2024), and `/homebrew/classes` is 404 (DDB doesn't host homebrew of full classes). The bookmarklet's `SECTION_FILTER_PARAM` map handles the right param per section.
+
+**The bulk-mode shortcut.** The first scout suggested URL-based filtering didn't work (`?filter-search=Stranger+Things` returned the all-time-top globally), but Phil's manual filter showed DDB navigates to `?filter-name=Stranger+Things` after a form submit. That's the working URL — just with a different param name than the scout assumed. With the right param + same-origin fetch + session cookies, the Amazon-pattern fully-automated bookmarklet works fine. ~200 captures in 5 minutes vs ~200 manual clicks.
+
+### v1 limitation: disambiguation deferred to Stage 6c
+
+DDB's filter-name / filter-search params do **fuzzy matching** across name + tags + description, so the captured rows include some noise. Three visible cases in the data trail:
+
+- **Hades top item = "Demigod" with 4440 adds.** Likely the all-time top Demigod species (used universally for Hades/Greek/Asgard themes), not Hades-specific. Inflates Hades's ddb_homebrew_score to 0.9.
+- **Foundation top item = "School of Foundation Magic".** Generic foundation-of-magic theme, not Asimov's Foundation IP.
+- **Pantheon top item = "Pandora's Box (Pantheon Campaign)".** Generic mythology, not the MMO Pantheon.
+
+These are the same kind of false positives we caught in Stage 6b v0 with the alias-library two-layer pattern. **Stage 6c (deferred to Apr 30) will add an AI Bouncer pass** — `classify_ddb_homebrew_results.py` mirroring the Stage 6b classifier — that classifies each captured top item for `is_about_ip` against the alias library. The gold view will then re-score from `confirmed_count` instead of raw count.
+
+For now, the data trail (top item names + adds counts) makes the noise transparent to anyone querying the table.
+
+### Coverage delta
+
+```
+v1 baseline (Apr 28):                    50 / 142 sufficient
+v2 (Stages 6b + 7a-i, Apr 29 morning):   59 / 142 sufficient   +9
+v3 (Stage 6a v1, Apr 29 evening):        62 / 142 sufficient   +12 vs v1
+
+IPs with measurable DDB signal:          21 / 142
+```
+
+### Marquee shifts vs v1 baseline
+
+| IP | v1 | v2 | v3 | DDB sub-score | DDB anchor item |
+|---|---|---|---|---|---|
+| Hollow Knight | 0.70 | 0.84 | **0.83** | 0.92 (28 items) | "Hollow Knight Vessel" |
+| Berserk | 0.90 | 0.83 | **0.85** | 1.0 (38 items) | "Berserker Redux" |
+| Dungeon Crawler Carl | 0.84 | 0.82 | 0.82 | NULL | (no DDB homebrew exists) |
+| Solo Leveling | NULL | 0.80 | **0.71** | 0.19 (1 item) | "Shadow Monarch (Solo Leveling)" |
+| Stranger Things | 0.70 | 0.69 | 0.69 | NULL | (no DDB homebrew) |
+| Invincible | 0.78 | 0.60 | 0.59 | 0.38 (3 items) | "Path of the Invincible" |
+| Spy x Family | 0.25 | 0.28 | 0.28 | NULL | (no DDB homebrew, consistent with negative-fit narrative) |
+| The Boys | NULL | NULL | **0.30** | 0.19 (1 item) | "Order of the E-Boys" |
+| Tyranny | NULL | NULL | NULL | 0.49 (5 items) | "Tyranny Domain" — REAL but thin |
+
+### The Tyranny test, evolving across versions
+
+| Version | Tyranny status | Why |
+|---|---|---|
+| v1 baseline | thin_evidence | 1 measured source, but it's a FALSE forum 0.95 driven by the common English word "tyranny" |
+| v2 (Stage 6b + 7a-i) | modeled_only_low_confidence | n=0 measured sources — both forum AND homebrew correctly NULL after disambiguation |
+| **v3 (Stage 6a)** | **thin_evidence** | n=1 measured source — DDB shows 5 genuine "Tyranny Domain" items with 27 top adds, REAL Obsidian-game homebrew |
+
+The matrix correctly classifies Tyranny as thin_evidence in v3 because the DDB signal is the *only* source with genuine signal — but the signal IS real this time. That's better than v1's false-confident thin_evidence (false-positive forum), and more informative than v2's all-NULL (we now know Tyranny does have *some* genuine D&D-community homebrew presence, just not enough cross-source corroboration to declare a confident composite). The matrix's abstention rule still does the right thing.
+
+### New rescue: The Boys (NULL → 0.30)
+
+The Boys cleared from thin_evidence to sufficient on the strength of DDB Homebrew finding "Order of the E-Boys" — a genuine The-Boys-themed homebrew subclass on D&D Beyond. Combined with another sub-source, the composite now scores. This is exactly the kind of rescue Stage 6a was supposed to surface — IPs that had presence in the native D&D ecosystem but didn't show up in our other v1 sources.
+
+### Cost summary (Stage 6a v1)
+
+```
+Bookmarklet captures:    $0 (browser-side, uses Phil's session cookies)
+Bouncer ingest:          $0 (same Cloud Function)
+TOTAL Stage 6a v1:       $0
+```
+
+Stage 6c (DDB AI Bouncer) will cost ~$0.10-0.20 for ~600 item classifications.
 
 ---
 
