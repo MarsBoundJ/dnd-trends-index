@@ -110,6 +110,16 @@ export function getBookmarklets(): Bookmarklet[] {
         "Drag the pill to your bookmarks bar. Navigate to FFN's D&D crossover hub at /Dungeons-and-Dragons-Crossovers/1116/0/, click through to the IP-specific crossover page (e.g. Lord of the Rings × D&D), then click the bookmark. The bookmarklet derives the story count from FFN's page-of-N pagination + per-page row count.",
       href: readBookmarklet("ffn_bookmarklet.txt"),
     },
+    {
+      id: "ddb-homebrew",
+      name: "DDB Homebrew Capture",
+      targetHost: "dndbeyond.com",
+      description:
+        "Stage 6a of community_reception. BULK MODE (default): land on any dndbeyond.com page, click once, bookmarklet sequentially fetches /homebrew/<section>?filter-name=<IP> for all 40 priority IPs × 5 priority sections = 200 captures using your DDB session cookies (Amazon-bookmarklet pattern). Parses .list-row[data-slug] containers, POSTs each to /system/homebrew/ingest-ddb. ~5-7 minutes per full run. Skips already-captured combinations using server-side timestamps + localStorage sent log. MANUAL MODE: searchable dropdown for ad-hoc one-off captures.",
+      usage:
+        "Drag the pill to your bookmarks bar. Open ANY dndbeyond.com page while signed in (or browse a homebrew section). Click the bookmark. Bulk-mode plan screen shows already-done vs pending counts; click 'Capture pending'. Live progress bar + feed of saved/empty/failed entries. Pause/abort button if you need to stop. When complete, refresh-plan button updates the counts.",
+      href: readBookmarklet("ddb_homebrew_bookmarklet.txt"),
+    },
   ]
   return cached
 }

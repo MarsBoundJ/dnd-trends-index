@@ -188,15 +188,49 @@ WITH
   ),
 
   -- ────────────────────────────────────────────────────────────────────
-  -- Source 6: Homebrew creation intensity (r/UnearthedArcana)
+  -- Source 6: Homebrew creation intensity (combined v1 + v2 sub-streams)
+  --
+  -- Apr 29, 2026 v2 rewire: now reads from homebrew_combined_proxy which
+  -- blends v1 (r/UnearthedArcana classified mentions) with v2 (GMBinder
+  -- + Homebrewery confirmed-5e-homebrew artifacts after two-layer
+  -- disambiguation). Surface column `homebrew_creation_score` retained
+  -- for backwards-compat with the matrix output schema.
   -- ────────────────────────────────────────────────────────────────────
   homebrew_score AS (
     SELECT
       ip_name,
-      homebrew_creation_score,
-      homebrew_mention_count,
-      sample_post_title AS homebrew_sample_title
-    FROM `dnd-trends-index.gold_data.homebrew_creation_proxy`
+      homebrew_combined_score          AS homebrew_creation_score,
+      ua_homebrew_mention_count        AS homebrew_mention_count,
+      ua_sample_post_title             AS homebrew_sample_title,
+      ua_homebrew_score                AS ua_homebrew_score,
+      external_homebrew_score          AS external_homebrew_score,
+      confirmed_5e_homebrew_count      AS confirmed_5e_homebrew_count,
+      gmbinder_confirmed               AS gmbinder_confirmed,
+      homebrewery_confirmed            AS homebrewery_confirmed,
+      -- v2b DDB native (Apr 29 evening)
+      ddb_homebrew_score               AS ddb_homebrew_score,
+      ddb_total_items                  AS ddb_total_items,
+      ddb_subclasses_items             AS ddb_subclasses_items,
+      ddb_spells_items                 AS ddb_spells_items,
+      ddb_monsters_items               AS ddb_monsters_items,
+      ddb_magic_items_items            AS ddb_magic_items_items,
+      ddb_species_items                AS ddb_species_items,
+      ddb_top_item_name                AS ddb_top_item_name,
+      ddb_top_item_section             AS ddb_top_item_section,
+      ddb_top_item_adds                AS ddb_top_item_adds,
+      homebrew_sub_signals_present     AS homebrew_sub_signals_present,
+      -- Stage 6c original — UA depth (Apr 30 evening)
+      ua_total_upvotes                 AS ua_total_upvotes,
+      ua_top_post_upvotes              AS ua_top_post_upvotes,
+      ua_subclass_count                AS ua_subclass_count,
+      ua_race_count                    AS ua_race_count,
+      ua_spell_count                   AS ua_spell_count,
+      ua_item_count                    AS ua_item_count,
+      ua_monster_count                 AS ua_monster_count,
+      ua_sample_post_url               AS ua_sample_post_url,
+      ua_sample_post_type              AS ua_sample_post_type,
+      ua_sample_post_upvotes           AS ua_sample_post_upvotes
+    FROM `dnd-trends-index.gold_data.homebrew_combined_proxy`
   ),
 
   -- ────────────────────────────────────────────────────────────────────
@@ -213,7 +247,19 @@ WITH
       rpgnet_top_hits,
       dragonsfoot_top_hits,
       top_thread_url AS forum_top_thread_url,
-      top_thread_title AS forum_top_thread_title
+      top_thread_title AS forum_top_thread_title,
+      -- Stage 7c — backlash narrative aggregates
+      worldbuilding_endorsement_count,
+      system_design_critique_count,
+      cash_grab_count,
+      tone_mismatch_count,
+      not_dnd_count,
+      pandering_count,
+      constructive_narrative_count,
+      backlash_narrative_count,
+      sample_backlash_url,
+      sample_backlash_evidence,
+      sample_backlash_narratives
     FROM `dnd-trends-index.gold_data.forum_presence_proxy`
   ),
 
@@ -266,6 +312,32 @@ WITH
       hb.homebrew_creation_score,
       hb.homebrew_mention_count,
       hb.homebrew_sample_title,
+      hb.ua_homebrew_score,
+      hb.external_homebrew_score,
+      hb.confirmed_5e_homebrew_count,
+      hb.gmbinder_confirmed,
+      hb.homebrewery_confirmed,
+      hb.ddb_homebrew_score,
+      hb.ddb_total_items,
+      hb.ddb_subclasses_items,
+      hb.ddb_spells_items,
+      hb.ddb_monsters_items,
+      hb.ddb_magic_items_items,
+      hb.ddb_species_items,
+      hb.ddb_top_item_name,
+      hb.ddb_top_item_section,
+      hb.ddb_top_item_adds,
+      hb.homebrew_sub_signals_present,
+      hb.ua_total_upvotes,
+      hb.ua_top_post_upvotes,
+      hb.ua_subclass_count,
+      hb.ua_race_count,
+      hb.ua_spell_count,
+      hb.ua_item_count,
+      hb.ua_monster_count,
+      hb.ua_sample_post_url,
+      hb.ua_sample_post_type,
+      hb.ua_sample_post_upvotes,
       fm.forum_presence_score,
       fm.forum_total_results,
       fm.enworld_top_hits,
@@ -274,6 +346,17 @@ WITH
       fm.dragonsfoot_top_hits,
       fm.forum_top_thread_url,
       fm.forum_top_thread_title,
+      fm.worldbuilding_endorsement_count,
+      fm.system_design_critique_count,
+      fm.cash_grab_count,
+      fm.tone_mismatch_count,
+      fm.not_dnd_count,
+      fm.pandering_count,
+      fm.constructive_narrative_count,
+      fm.backlash_narrative_count,
+      fm.sample_backlash_url,
+      fm.sample_backlash_evidence,
+      fm.sample_backlash_narratives,
       acq.reddit_acquisition_score,
       acq.acquisition_confirmed_mentions
     FROM `dnd-trends-index.dnd_trends_raw.ub_candidate_seeds` s
@@ -559,6 +642,35 @@ SELECT
   w.reddit_confirmed_mentions,
   w.homebrew_mention_count,
   w.homebrew_sample_title,
+  -- v2 homebrew sub-trail (Apr 29 — UA Reddit + external GMBinder/Homebrewery + DDB native)
+  w.ua_homebrew_score,
+  w.external_homebrew_score,
+  w.confirmed_5e_homebrew_count,
+  w.gmbinder_confirmed,
+  w.homebrewery_confirmed,
+  -- Stage 6c original — UA depth (Apr 30)
+  w.ua_total_upvotes,
+  w.ua_top_post_upvotes,
+  w.ua_subclass_count,
+  w.ua_race_count,
+  w.ua_spell_count,
+  w.ua_item_count,
+  w.ua_monster_count,
+  w.ua_sample_post_url,
+  w.ua_sample_post_type,
+  w.ua_sample_post_upvotes,
+  -- v2b DDB native sub-trail (Stage 6a, Apr 29 evening)
+  w.ddb_homebrew_score,
+  w.ddb_total_items,
+  w.ddb_subclasses_items,
+  w.ddb_spells_items,
+  w.ddb_monsters_items,
+  w.ddb_magic_items_items,
+  w.ddb_species_items,
+  w.ddb_top_item_name,
+  w.ddb_top_item_section,
+  w.ddb_top_item_adds,
+  w.homebrew_sub_signals_present,
   w.forum_total_results,
   w.enworld_top_hits,
   w.giantitp_top_hits,
@@ -566,6 +678,19 @@ SELECT
   w.dragonsfoot_top_hits,
   w.forum_top_thread_url,
   w.forum_top_thread_title,
+
+  -- ─── STAGE 7C — BACKLASH NARRATIVES (data trail) ──────────────────────
+  w.worldbuilding_endorsement_count,
+  w.system_design_critique_count,
+  w.cash_grab_count,
+  w.tone_mismatch_count,
+  w.not_dnd_count,
+  w.pandering_count,
+  w.constructive_narrative_count,
+  w.backlash_narrative_count,
+  w.sample_backlash_url,
+  w.sample_backlash_evidence,
+  w.sample_backlash_narratives,
 
   -- ─── HUMAN-READABLE REASONING ─────────────────────────────────────────
   CASE

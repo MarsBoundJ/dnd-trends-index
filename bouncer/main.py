@@ -169,6 +169,10 @@ def bouncer_api(request):
             path = 'system/kickstarter/ingest-projects'
         elif 'fanfic/ingest-crossover-count' in full_path:
             path = 'system/fanfic/ingest-crossover-count'
+        elif 'homebrew/ip-list' in full_path:
+            path = 'system/homebrew/ip-list'
+        elif 'homebrew/ingest-ddb' in full_path:
+            path = 'system/homebrew/ingest-ddb'
         elif 'confidence' in full_path:
             path = 'confidence'
         elif 'articles' in full_path:
@@ -1417,6 +1421,195 @@ def bouncer_api(request):
             })
         errors = client.insert_rows_json(
             'dnd-trends-index.dnd_trends_raw.fanfic_crossover_counts',
+            cleaned,
+            skip_invalid_rows=True,
+            ignore_unknown_values=True,
+        )
+        if errors:
+            return (json.dumps({"error": str(errors)}), 500, headers)
+        return (json.dumps({"inserted": len(cleaned)}), 200, headers)
+
+    elif path == 'system/homebrew/ip-list':
+        # Stage 6a — DDB Homebrew bookmarklet support route.
+        # Returns the priority IP list (40 IPs across 5 cohorts) plus per-IP
+        # per-section sent counts derived from ddb_homebrew_counts. The
+        # bookmarklet panel uses this to render a searchable dropdown with
+        # progress bars + cross-session memory.
+        if request.method != 'GET':
+            return (json.dumps({"error": "GET required"}), 405, headers)
+        ritual_key = request.headers.get('X-Ritual-Key', '')
+        if ritual_key != 'ArcaneLibrarian2026':
+            return (json.dumps({"error": "Unauthorized"}), 403, headers)
+
+        # Priority list — baked here so updates are server-side. 40 IPs
+        # across 5 cohorts (marquee / asymmetry / canary / active / roundout).
+        # All names verified to exist in dnd_trends_raw.ub_candidate_seeds.
+        DDB_PRIORITY_IPS = [
+            # Marquee positives (10) — strongest cross-source positive signals
+            {"ip_name": "Hollow Knight", "cohort": "marquee", "rank": 1},
+            {"ip_name": "Berserk", "cohort": "marquee", "rank": 2},
+            {"ip_name": "Baldur's Gate 3", "cohort": "marquee", "rank": 3},
+            {"ip_name": "Dungeon Crawler Carl", "cohort": "marquee", "rank": 4},
+            {"ip_name": "Solo Leveling", "cohort": "marquee", "rank": 5},
+            {"ip_name": "One Piece", "cohort": "marquee", "rank": 6},
+            {"ip_name": "The Magnus Archives", "cohort": "marquee", "rank": 7},
+            {"ip_name": "Cthulhu Mythos", "cohort": "marquee", "rank": 8},
+            {"ip_name": "Cyberpunk 2077", "cohort": "marquee", "rank": 9},
+            {"ip_name": "The Lord of the Rings", "cohort": "marquee", "rank": 10},
+            # Asymmetry / negative demos (4)
+            {"ip_name": "Stranger Things", "cohort": "asymmetry", "rank": 11},
+            {"ip_name": "Spy x Family", "cohort": "asymmetry", "rank": 12},
+            {"ip_name": "Tyranny", "cohort": "asymmetry", "rank": 13},
+            {"ip_name": "The Boys", "cohort": "asymmetry", "rank": 14},
+            # Disambiguation canaries (5) — common-English-word IPs
+            {"ip_name": "Invincible", "cohort": "canary", "rank": 15},
+            {"ip_name": "Hades", "cohort": "canary", "rank": 16},
+            {"ip_name": "Foundation", "cohort": "canary", "rank": 17},
+            {"ip_name": "Fallout", "cohort": "canary", "rank": 18},
+            {"ip_name": "Pantheon", "cohort": "canary", "rank": 19},
+            # Active-crossover tier (10)
+            {"ip_name": "The Witcher 3", "cohort": "active", "rank": 20},
+            {"ip_name": "Persona 5 Royal", "cohort": "active", "rank": 21},
+            {"ip_name": "Dark Souls", "cohort": "active", "rank": 22},
+            {"ip_name": "Final Fantasy XIV", "cohort": "active", "rank": 23},
+            {"ip_name": "Bloodborne", "cohort": "active", "rank": 24},
+            {"ip_name": "Elden Ring", "cohort": "active", "rank": 25},
+            {"ip_name": "Mistborn", "cohort": "active", "rank": 26},
+            {"ip_name": "Avatar: The Last Airbender", "cohort": "active", "rank": 27},
+            {"ip_name": "Cowboy Bebop", "cohort": "active", "rank": 28},
+            {"ip_name": "Frieren: Beyond Journey's End", "cohort": "active", "rank": 29},
+            # Round-out (11)
+            {"ip_name": "Doctor Who", "cohort": "roundout", "rank": 30},
+            {"ip_name": "Demon Slayer", "cohort": "roundout", "rank": 31},
+            {"ip_name": "Destiny 2", "cohort": "roundout", "rank": 32},
+            {"ip_name": "Genshin Impact", "cohort": "roundout", "rank": 33},
+            {"ip_name": "The Mandalorian", "cohort": "roundout", "rank": 34},
+            {"ip_name": "Goblin Slayer", "cohort": "roundout", "rank": 35},
+            {"ip_name": "Mob Psycho 100", "cohort": "roundout", "rank": 36},
+            {"ip_name": "Sekiro: Shadows Die Twice", "cohort": "roundout", "rank": 37},
+            {"ip_name": "Helldivers 2", "cohort": "roundout", "rank": 38},
+            {"ip_name": "Tower of God", "cohort": "roundout", "rank": 39},
+            {"ip_name": "Tokyo Ghoul", "cohort": "roundout", "rank": 40},
+        ]
+
+        # Priority sections — five mechanically-rich character/play categories.
+        # Apr 29 evening: replaced "races" with "species" (5e 2024 rename;
+        # /homebrew/races returns 404 on DDB, the section moved to /species).
+        DDB_PRIORITY_SECTIONS = [
+            "subclasses",
+            "spells",
+            "monsters",
+            "magic-items",
+            "species",
+        ]
+
+        # Pull sent counts from BQ — one row per (ip_name, ddb_section).
+        # The original contaminated rows from the first bulk run were
+        # DELETE'd Apr 29 evening once the streaming buffer flushed.
+        sent_counts = {}
+        try:
+            sent_query = """
+            SELECT ip_name, ddb_section, MAX(scraped_at) AS last_sent
+            FROM `dnd-trends-index.dnd_trends_raw.ddb_homebrew_counts`
+            GROUP BY ip_name, ddb_section
+            """
+            for row in client.query(sent_query).result():
+                key = (row['ip_name'], row['ddb_section'])
+                sent_counts[key] = row['last_sent'].isoformat() if row['last_sent'] else None
+        except Exception as e:
+            # Table may not exist yet on first deploy — return empty sent map
+            print(f"DEBUG: ddb_homebrew_counts query failed (ok if first run): {e}")
+
+        # Augment each priority IP with per-section status. /classes is
+        # excluded — DDB doesn't host homebrew of full classes (404).
+        all_sections = DDB_PRIORITY_SECTIONS + [
+            "feats", "backgrounds",
+        ]
+        ips_with_status = []
+        for ip in DDB_PRIORITY_IPS:
+            section_status = {}
+            for section in all_sections:
+                key = (ip['ip_name'], section)
+                section_status[section] = sent_counts.get(key)
+            ips_with_status.append({
+                **ip,
+                "sections": section_status,
+            })
+
+        return (json.dumps({
+            "ips": ips_with_status,
+            "priority_sections": DDB_PRIORITY_SECTIONS,
+            "all_sections": all_sections,
+            "ritual_key": ritual_key,  # echo so the bookmarklet can verify it loaded with valid auth
+        }), 200, headers)
+
+    elif path == 'system/homebrew/ingest-ddb':
+        # Stage 6a — DDB Homebrew bookmarklet ingest.
+        # Phil/curator browses to dndbeyond.com/homebrew/<section>, uses
+        # DDB's UI search box to filter to an IP, then clicks the
+        # bookmarklet. The bookmarklet reads .list-row containers from
+        # the DOM and POSTs the parsed structure here.
+        #
+        # Ethics: this is human-wielded UI tooling, not an automated
+        # scraper — same pattern as AO3 / FFN bookmarklets.
+        if request.method != 'POST':
+            return (json.dumps({"error": "POST required"}), 405, headers)
+        ritual_key = request.headers.get('X-Ritual-Key', '')
+        if ritual_key != 'ArcaneLibrarian2026':
+            return (json.dumps({"error": "Unauthorized"}), 403, headers)
+        rows = request.get_json()
+        if not rows:
+            return (json.dumps({"error": "No data"}), 400, headers)
+        if isinstance(rows, dict):
+            rows = [rows]
+        # Apr 29 evening: dropped "races" (rebranded to /species in 5e 2024,
+        # /homebrew/races is 404) and "classes" (DDB doesn't host homebrew
+        # of full classes — 404 on /homebrew/classes).
+        valid_sections = {
+            "subclasses", "spells", "monsters", "magic-items",
+            "species", "feats", "backgrounds",
+        }
+        now_ts = datetime.datetime.utcnow().isoformat() + 'Z'
+        cleaned = []
+        for r in rows:
+            section = (r.get('ddb_section') or '').lower()
+            if section not in valid_sections:
+                return (json.dumps({
+                    "error": f"invalid ddb_section '{section}', must be one of {sorted(valid_sections)}"
+                }), 400, headers)
+            if not r.get('ip_name'):
+                return (json.dumps({"error": "ip_name required"}), 400, headers)
+            # Coerce top_items into the BQ schema shape
+            top_items_in = r.get('top_items') or []
+            top_items_out = []
+            for it in top_items_in[:30]:  # cap to top 30 to bound payload size
+                top_items_out.append({
+                    'name': str(it.get('name', ''))[:300],
+                    'slug': str(it.get('slug', ''))[:200],
+                    'url': str(it.get('url', ''))[:500],
+                    'adds': safe_int(it.get('adds'), 0),
+                    'views': safe_int(it.get('views'), 0),
+                    'comments': safe_int(it.get('comments'), 0),
+                    'rating_points': safe_int(it.get('rating_points'), 0),
+                    'rating_positive': safe_int(it.get('rating_positive'), 0),
+                    'rating_negative': safe_int(it.get('rating_negative'), 0),
+                    'base_class': str(it.get('base_class', ''))[:100],
+                    'author': str(it.get('author', ''))[:200],
+                })
+            cleaned.append({
+                'ip_name': r['ip_name'],
+                'ddb_section': section,
+                'search_query': str(r.get('search_query', ''))[:300],
+                'visible_items_count': safe_int(r.get('visible_items_count'), len(top_items_out)),
+                'pages_count': safe_int(r.get('pages_count'), 1),
+                'estimated_total_count': safe_int(r.get('estimated_total_count'), 0),
+                'top_items': top_items_out,
+                'source_url': str(r.get('source_url', ''))[:1000],
+                'scraped_at': now_ts,
+                'scraped_by': str(r.get('scraped_by', 'ddb_homebrew_bookmarklet'))[:100],
+            })
+        errors = client.insert_rows_json(
+            'dnd-trends-index.dnd_trends_raw.ddb_homebrew_counts',
             cleaned,
             skip_invalid_rows=True,
             ignore_unknown_values=True,
