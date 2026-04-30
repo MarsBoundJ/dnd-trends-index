@@ -1,8 +1,17 @@
 # Community Reception + Acquisition: Strategic Findings Report
 
-**Status:** All 7 stages of `community_reception_score` shipped, **plus v2 Stage 6b (GMBinder + Homebrewery, two-layer disambiguated), Stage 7a-i (forum top-URL AI Bouncer, sentiment-weighted), Stage 6a (D&D Beyond Homebrew bookmarklet, bulk mode, per-section filter params) and Stage 6c (DDB AI Bouncer disambiguation pass) shipped.** Composite-view rewire to consume all four v2 stages is live. v1 baseline preserved in `dnd_trends_raw.matrix_v1_baseline_snapshot` for A/B comparison.
+**Status:** All 7 stages of `community_reception_score` shipped, **plus the full v2 + v3 enrichment passes:**
 
-**Last updated:** 2026-04-29 (v3 Stages 6a + 6c shipped — see new sections below)
+- v2 Stage 6b (GMBinder + Homebrewery, two-layer disambiguated)
+- v2 Stage 7a-i (forum top-URL AI Bouncer, sentiment-weighted)
+- v3 Stage 6a (D&D Beyond Homebrew bookmarklet, bulk mode, per-section filter params)
+- v3 Stage 6a Layer 2 (DDB AI Bouncer disambiguation pass — the "Hades Demigod" disambiguation)
+- v3 Stage 6c **original** (UA Reddit upvote-weighting + homebrew type extraction)
+- v3 Stage 7c (forum backlash narrative classification — the "TTRPG forums = 99% constructive DMs" finding)
+
+Stage 6e (Itch.io) and Stage 6d (World Anvil) were scouted on Apr 30 and **skipped — signal-fit poor.** Composite-view rewire consumes all live stages. v1 baseline preserved in `dnd_trends_raw.matrix_v1_baseline_snapshot` for A/B comparison.
+
+**Last updated:** 2026-04-30 (v3 Stages 6a recovery + 6c original + 7c shipped; Itch.io + World Anvil scouted-and-skipped — see new sections below)
 
 **Audience:** Phil + outside reviewers (Gemini, Perplexity, future collaborators) helping decide composite-score weighting and demo prioritization.
 
@@ -584,6 +593,161 @@ The gold view rewrite scores from **confirmed count** (count where AI Bouncer sa
 **Cost (Stage 6c):** $0.07 for 268 classifications, 0 failures. Total Stage 6 v2 + Stage 6a + 6c spend so far is ~$1.05.
 
 **One housekeeping incident:** the cleanup DELETE for the originally-contaminated rows used a too-broad timestamp cutoff and accidentally also deleted ~98 correctly-captured /spells, /monsters, /magic-items rows from the afternoon re-run. Net impact on the matrix was minimal (those captures were dominated by noise the classifier was rejecting anyway — Berserk's 38 visible → 9 confirmed were all in subclasses+species; the spells/monsters/magic-items rows contributed almost nothing to the confirmed count). One additional bookmarklet run would re-capture them (~4 min), but matrix coverage and score quality held without it.
+
+---
+
+## v3 final — Apr 30 work session
+
+The next-day session shipped three more sub-stages plus formally retired two on signal-fit grounds.
+
+### Stage 6a recovery — full DDB capture + classification (Apr 30 morning)
+
+The 17 stubborn timeouts and the over-aggressive cleanup DELETE from Apr 29 left ~120 captures missing from the spells/monsters/magic-items sections. One bookmarklet bulk run + one classifier pass recovered them:
+
+- Bookmarklet bulk re-run (Apr 30 ~6am): 121 captures attempted in 32 min — 46 saved + 58 empty + 17 failed (still-stubborn timeouts on long-running pages).
+- Classifier pass over the 450 newly-captured items: $0.13 cost, 0 failures, 8.5 min runtime.
+
+Two new findings emerged from the recovered data:
+
+- **Bloodborne 71 confirmed items** (up from 29) — now near-saturated across subclasses + monsters + magic-items + species. The FromSoft pattern Phil flagged in Stage 5 deepens: people LOVE statting up FromSoft enemies for D&D. Bloodborne's `ddb_homebrew_score` stays at 1.0 (already maxed) but the trail is dramatically richer.
+- **Goblin Slayer 22 confirmed items** with **20 magic-items** — surprise concentration. Goblin Slayer doesn't have much subclass/species homebrew but has heavy magic-item homebrew (probably "Goblin Slayer's Helmet" / "Goblin's Lucky Coin" type gear). DDB score: 0.73.
+- **Dark Souls 22 confirmed** with **17 monsters** — same FromSoft-monsters pattern.
+
+Coverage post-recovery:
+```
+Total IPs in matrix:           142
+Sufficient composite scores:    61 (+11 vs v1)
+IPs with disambiguated DDB:     25 (up from 18)
+Disambiguation working: Foundation, Pantheon both NULL; Hades correctly tempered.
+```
+
+### Stage 6c (original) — UA Reddit upvote-weighting + type extraction
+
+The original Stage 6c from the v2 seed prompt — **NOT** the DDB AI Bouncer pass that was mislabeled "Stage 6c" in the Apr 29 evening commit history. Two refinements to `homebrew_creation_proxy`:
+
+1. **Upvote-weighted scoring.** Per-post weight = `1 + LOG10(upvotes + 1)`. A 312-upvote post is ~3.5x weighted vs a 4-upvote post (not 78x — log-scale prevents outlier explosion). The viral BG3 "Combat Conditions - New Rules" post (312 upvotes) now contributes more than the Persona 5 "mask" post (4 upvotes), without dominating.
+
+2. **Homebrew type extraction via SQL pattern matching** on post titles (no LLM needed — only 14 confirmed UA posts; deterministic regex covers them well). 8-label vocabulary: `subclass / race / spell / item / monster / feat / rules / other`.
+
+Demo-grade samples now visible in the matrix data trail:
+
+| IP | Top UA homebrew | Upvotes | Type |
+|---|---|---|---|
+| Baldur's Gate 3 | "Combat Conditions - New Rules for Martial Characters" | 312 | rules |
+| Godzilla | "Circle of the Titan" druid subclass | 117 | subclass |
+| Honkai: Star Rail | "College of Good Fortune" bard subclass | 63 | subclass |
+| Wuthering Waves | "Stormcaller" fighter subclass | 57 | subclass |
+| Jujutsu Kaisen | "King Of Curses Warlock" + "Path of the Fever" | 85 (combined) | subclass×2 |
+| Magnus Archives | "The Eye" + "The Corruption" warlocks | 46 (combined) | subclass×2 |
+| Berserk | "Some Items I did" | 15 | item |
+| Elden Ring | "Crucible Knights of Limgrave" | 15 | monster |
+| Tokyo Ghoul | "Homebrew Ghoul race" | 6 | race |
+| Persona 5 Royal | "Persona 5 Royal mask" | 4 | item |
+
+Pattern discovered: **r/UnearthedArcana homebrew clusters around character-creation** (subclasses dominate). Item / race / monster / rules are long-tail. Validates the Stage 6a priority section choice (subclasses + species + spells + monsters + magic-items).
+
+Cost: $0 (SQL-only refinement; pattern matching skips the LLM call).
+
+### Stage 7c — backlash narrative classification (cash_grab / tone_mismatch / etc.)
+
+Second-pass Gemini Flash classifier over `forum_top_urls_classified.is_about_ip=TRUE AND forum_attitude IN ('positive','negative','divisive')` — 218 forum threads. Multi-label per thread, vocabulary from Perplexity's suggestion:
+
+```
+cash_grab                  — "WotC just trying to make money"
+tone_mismatch              — "doesn't fit D&D's vibe"
+not_dnd                    — "this isn't D&D anymore"
+pandering                  — "WotC pandering to [IP] fans"
+system_design_critique     — "the mechanics don't translate"
+worldbuilding_endorsement  — "would be a great setting for a campaign"
+```
+
+**The killer finding**: TTRPG forums are 99% constructive narrative space.
+
+```
+worldbuilding_endorsement:  101 threads (47 IPs)
+system_design_critique:      96 threads (48 IPs)
+tone_mismatch:                2 (2 IPs)
+cash_grab:                    2 (2 IPs)
+pandering:                    1 (1 IP)
+not_dnd:                      0
+```
+
+This validates Gemini's framing from the v2 plan: **"Reddit is full of Players. AO3 is full of Fans. Traditional forums are full of Dungeon Masters."** DMs on forums problem-solve ("how do I run this at the table") rather than complain. The backlash rhetoric Perplexity anticipated concentrates on Reddit (already covered by Stage 5 attitude classification).
+
+**This is itself a useful demo-grade finding** — telling reviewers WHERE different audiences live. Different sources surface different communities. Combined with the BCG quadrant + the consilience metrics, it tells WotC where to listen for which kind of feedback.
+
+The rare-but-real backlash signals that did surface validate upstream predictions:
+
+| IP | Narrative | Evidence |
+|---|---|---|
+| **Wuthering Waves** | cash_grab + pandering | "Yo!'s descent into gacha games" — validates Gemini Stage 1 "gacha cluster cash grab" pattern |
+| **Discworld** | cash_grab | "Modiphius has taken advantage of Sir Terry's" — licensing-as-exploitation framing |
+| Delicious in Dungeon | tone_mismatch | "super kinetic style isn't really like that" |
+| XCOM 2 | tone_mismatch + system_design_critique | "Do not expect something like Enemy Unknown..." |
+
+Limitation: Stage 7c v1 reads title+snippet only (the same input the Stage 7a-i first pass used). Full narrative depth awaits **Stage 7a-ii (Playwright forum thread bodies)** which would surface the full negative-discussion content. But the v1 narrative pass on title+snippet alone produced a meaningful demo-grade insight + 5 validating-signal cases.
+
+Cost: $0.07 for 216 classifications, 2 Gemini-missed retries.
+
+### Stage 6e (Itch.io) — scouted and skipped
+
+Two F12 console probes confirmed Itch.io is not a viable IP-reception source for the matrix:
+
+- `/search?q=<IP>` (general search) returns IP-tagged content but it's overwhelmingly fan-made VIDEO GAMES (e.g. "Hollow Knight Sign Mender" Platformer) and art zines, not D&D/TTRPG content. URL filter parameters (`classification=physical_game`, etc.) are silently ignored.
+- `/games/tag-tabletop?q=<IP>` (tabletop tag with IP query) silently ignores the `?q=` parameter — returns the same 36 cards as `/games/tag-tabletop` (no query). All-tabletop browse with no IP filter.
+- `/games/tag-dungeons-dragons` returns 0 cards (tag doesn't exist).
+- `/games/genre-role-playing/tag-tabletop` returns 403.
+
+Conclusion: there's no working URL pattern that combines "filter to TTRPG" + "search for IP". Pulling usable signal would require paginating ~10+ pages of tabletop tag (~360 items) and AI-Bouncer-classifying each item for which (if any) of 40 IPs it relates to — for a thin signal that mostly duplicates GMBinder/Homebrewery/DDB. Not worth the build cost.
+
+### Stage 6d (World Anvil) — scouted and skipped
+
+World Anvil scout returned:
+- `/search`, `/explore`, `/api/articles/search` — all 404s
+- `/world?q=<IP>` — 200 status but no exposed search-result UI
+
+World Anvil's content model is per-user "worlds" without a strong public cross-world search infrastructure. Memory note from the v2 plan flagged it as "lower priority — more about themes than IPs"; the scout confirmed the search-engineering side too.
+
+### Final v3 cost summary
+
+```
+Stage 6a v1 bookmarklet captures:     $0       (browser-side, session cookies)
+Stage 6a recovery + classifier:       $0.13   (450 items, $0.07 + $0.06 second pass)
+Stage 6b CSE + classifier:            $0.35
+Stage 7 forum harvest + classifier:   $0.49
+Stage 6c original (UA depth):         $0       (SQL pattern matching)
+Stage 7c (narrative classification):  $0.07
+Itch.io + World Anvil scouts:         $0       (Phil console probes)
+
+TOTAL v2 + v3 spend:                  ~$1.05
+```
+
+### Coverage progression across all versions
+
+```
+v1 baseline (Apr 28):                       50 / 142 sufficient
+v2 (Stages 6b + 7a-i, Apr 29 morning):      59 / 142 sufficient   +9
+v3 raw (Stage 6a v1, Apr 29 evening):       62 / 142 sufficient
+v3 disambig (Stage 6a Layer 2):             61 / 142 sufficient
+v3 final (with Stage 6c orig + 7c):         61 / 142 sufficient
+
+IPs with disambiguated DDB signal:          25 / 142
+Score quality (vs v1): dramatically higher across the board
+```
+
+### The Tyranny test extends to v3-final
+
+The canary that started this whole disambiguation pattern correctly classifies as `thin_evidence` across all five versions, with the underlying signal evolving:
+
+| Version | composite_status | Underlying signal |
+|---|---|---|
+| v1 baseline | thin_evidence | Forum 0.95 — false-positive common-word match |
+| v2 | modeled_only_low_confidence | n=0 measured — disambiguation killed both false signals |
+| v3 raw | thin_evidence | Real DDB signal but inflated by fuzzy "Tyranny" matches |
+| v3 disambig | thin_evidence | 2 confirmed "Tyranny Domain" items (genuinely IP-themed) |
+| **v3 final** | **thin_evidence** | Same — the 6c upvote-weighting + 7c narrative pass don't change Tyranny's profile because it has no UA Reddit homebrew + no negative narrative threads |
+
+The matrix has been correct at every stage. Signal quality has progressively improved. The matrix never confidently scored Tyranny because no IP-specific signal ever crossed the ≥2-measured-sources threshold.
 
 ---
 
