@@ -57,7 +57,18 @@ WITH
       homebrew_mentions_only_count,
       homebrew_divisive_count,
       homebrew_negative_count,
-      sample_post_title      AS ua_sample_post_title
+      sample_post_title      AS ua_sample_post_title,
+      -- v2 (Stage 6c original) — upvote-weighted score + type breakdown
+      homebrew_total_upvotes      AS ua_total_upvotes,
+      homebrew_top_post_upvotes   AS ua_top_post_upvotes,
+      homebrew_subclass_count     AS ua_subclass_count,
+      homebrew_race_count         AS ua_race_count,
+      homebrew_spell_count        AS ua_spell_count,
+      homebrew_item_count         AS ua_item_count,
+      homebrew_monster_count      AS ua_monster_count,
+      sample_post_url             AS ua_sample_post_url,
+      sample_post_type            AS ua_sample_post_type,
+      sample_post_upvotes         AS ua_sample_post_upvotes
     FROM `dnd-trends-index.gold_data.homebrew_creation_proxy`
   ),
 
@@ -112,6 +123,16 @@ WITH
       ua.homebrew_divisive_count,
       ua.homebrew_negative_count,
       ua.ua_sample_post_title,
+      ua.ua_total_upvotes,
+      ua.ua_top_post_upvotes,
+      ua.ua_subclass_count,
+      ua.ua_race_count,
+      ua.ua_spell_count,
+      ua.ua_item_count,
+      ua.ua_monster_count,
+      ua.ua_sample_post_url,
+      ua.ua_sample_post_type,
+      ua.ua_sample_post_upvotes,
       ext.external_homebrew_score,
       ext.external_homebrew_status,
       ext.cse_total_results_estimate,
@@ -199,6 +220,17 @@ SELECT
   COALESCE(j.homebrew_divisive_count, 0)      AS homebrew_divisive_count,
   COALESCE(j.homebrew_negative_count, 0)      AS homebrew_negative_count,
   j.ua_sample_post_title,
+  -- v2 UA depth (Stage 6c original)
+  COALESCE(j.ua_total_upvotes, 0)         AS ua_total_upvotes,
+  COALESCE(j.ua_top_post_upvotes, 0)      AS ua_top_post_upvotes,
+  COALESCE(j.ua_subclass_count, 0)        AS ua_subclass_count,
+  COALESCE(j.ua_race_count, 0)            AS ua_race_count,
+  COALESCE(j.ua_spell_count, 0)           AS ua_spell_count,
+  COALESCE(j.ua_item_count, 0)            AS ua_item_count,
+  COALESCE(j.ua_monster_count, 0)         AS ua_monster_count,
+  j.ua_sample_post_url,
+  j.ua_sample_post_type,
+  COALESCE(j.ua_sample_post_upvotes, 0)   AS ua_sample_post_upvotes,
 
   -- v2a external
   j.external_homebrew_score,
