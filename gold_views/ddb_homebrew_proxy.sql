@@ -61,11 +61,9 @@ WITH
   latest_per_ip_section AS (
     SELECT *
     FROM `dnd-trends-index.dnd_trends_raw.ddb_homebrew_counts`
-    WHERE NOT (
-      scraped_by = 'ddb_homebrew_bookmarklet_bulk'
-      AND ddb_section IN ('spells', 'monsters', 'magic-items')
-      AND scraped_at < TIMESTAMP('2026-04-29T23:00:00Z')
-    )
+    -- The contaminated rows from the original bulk run (wrong filter param
+    -- for spells/monsters/magic-items) were DELETE'd Apr 29 evening once
+    -- the streaming buffer flushed.
     QUALIFY ROW_NUMBER() OVER (
       PARTITION BY ip_name, ddb_section ORDER BY scraped_at DESC
     ) = 1

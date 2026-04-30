@@ -217,13 +217,7 @@ def load_items(bq: bigquery.Client, only_unclassified: bool) -> list[dict]:
     WITH latest_per_capture AS (
       SELECT *
       FROM `{SOURCE_TABLE}`
-      -- Filter contaminated rows (first bulk run, wrong filter param)
-      WHERE NOT (
-        scraped_by = 'ddb_homebrew_bookmarklet_bulk'
-        AND ddb_section IN ('spells','monsters','magic-items')
-        AND scraped_at < TIMESTAMP('2026-04-29T23:00:00Z')
-      )
-      AND ip_name != '__test_smoke__'
+      WHERE ip_name != '__test_smoke__'
       QUALIFY ROW_NUMBER() OVER (
         PARTITION BY ip_name, ddb_section ORDER BY scraped_at DESC
       ) = 1

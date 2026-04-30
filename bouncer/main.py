@@ -1504,22 +1504,13 @@ def bouncer_api(request):
         ]
 
         # Pull sent counts from BQ — one row per (ip_name, ddb_section).
-        # Apr 29 evening: filter OUT contaminated rows from the first bulk
-        # run where the wrong filter param (filter-name vs filter-search)
-        # caused /spells, /monsters, /magic-items to return globally-top
-        # items rather than IP-filtered items. Those rows are pending a
-        # streaming-buffer-flush DELETE; treat them as not-yet-done so the
-        # next bulk run re-captures them with the corrected filter params.
+        # The original contaminated rows from the first bulk run were
+        # DELETE'd Apr 29 evening once the streaming buffer flushed.
         sent_counts = {}
         try:
             sent_query = """
             SELECT ip_name, ddb_section, MAX(scraped_at) AS last_sent
             FROM `dnd-trends-index.dnd_trends_raw.ddb_homebrew_counts`
-            WHERE NOT (
-              scraped_by = 'ddb_homebrew_bookmarklet_bulk'
-              AND ddb_section IN ('spells', 'monsters', 'magic-items')
-              AND scraped_at < TIMESTAMP('2026-04-29T23:00:00Z')
-            )
             GROUP BY ip_name, ddb_section
             """
             for row in client.query(sent_query).result():
