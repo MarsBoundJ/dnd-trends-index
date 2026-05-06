@@ -1,0 +1,205 @@
+{
+  "audit_metadata": {
+    "ua_packet": "UA 2026 Villainous Options 2",
+    "ua_packet_release_date": "2026-04-23",
+    "audit_run_date": "2026-05-04",
+    "days_since_release": 11,
+    "subclasses": ["Path of Lament (Barbarian)", "Warrior of Venom (Monk)", "Primordial Patron (Warlock)"],
+    "classifier_version": "v5 forum-body classifier (six narrative tags)"
+  },
+
+  "coverage": {
+    "reddit": {
+      "threads_found": 25,
+      "threads_classified": 9,
+      "subreddits": ["r/onednd", "r/dndnext", "r/UnearthedArcana", "r/DnD"],
+      "top_comments_extracted": 359,
+      "total_thread_comments_aggregate": 1015
+    },
+    "en_world": {"threads_classified": 1, "replies_extracted": 7},
+    "rpgnet": {
+      "status": "complete",
+      "thread_url": "https://forum.rpg.net/index.php?threads/new-ua-drop-villainous-options.935183/",
+      "thread_total_posts": 83,
+      "vo2_window_posts_extracted": 22,
+      "subclass_coverage": {"Lament": 8, "Venom": 11, "Primordial": 10, "general": 3},
+      "long_form_critiques_count": 4,
+      "max_post_length_chars": 4357,
+      "harvest_date": "2026-05-04"
+    },
+    "giant_in_playground": {
+      "status": "complete",
+      "thread_url": "https://forums.giantitp.com/showthread.php?717528-UA-Villainous-Options-2",
+      "thread_total_posts": 48,
+      "vo2_window_posts_extracted": 48,
+      "subclass_coverage": {"Lament": 11, "Venom": 10, "Primordial": 16, "general": 25},
+      "long_form_critiques_count": 7,
+      "max_post_length_chars": 3199,
+      "harvest_date": "2026-05-04",
+      "harvest_method": "Same-origin bookmarklet (Phil-run, console paste, downloaded JSON)",
+      "note": "Bookmarklet successfully bypassed Cloudflare via authenticated session. 100% extraction success on both pages; zero selector misses.",
+      "tone_mismatch_signal": "Strongest 'not actually villainous' subthread of any forum (Amechra/Arkhios/SharkForce/ClaraTheVillain). Reading: brand-positioning critique not content-rejection — community engages WITH content, disputes the label."
+    },
+    "press_blogs": {"reviews_classified": 6, "outlets": ["Wargamer x2", "The Kind GM", "Dungeon Mister", "ScreenRant", "Bell of Lost Souls"]},
+    "total_items_classified": 442
+  },
+
+  "cross_forum_divergence": {
+    "Path of Lament": {
+      "reddit": {"verdict": "GREEN", "positive_pct": 80, "dominant_tag": "worldbuilding_endorsement"},
+      "rpgnet": {"verdict": "DIVISIVE", "positive_pct": 50, "dominant_tag": "system_design_critique", "note": "La Marche Futilé wrote 4357c 'incredible garbage' L3 critique"},
+      "enworld": {"verdict": "GREEN", "positive_pct": 70, "dominant_tag": "worldbuilding_endorsement"},
+      "gitp": {"verdict": "GREEN", "positive_pct": 70, "dominant_tag": "worldbuilding_endorsement", "note": "T.G. Oskar 3006c long-form analysis is enthusiastic"},
+      "press": {"verdict": "GREEN", "positive_pct": 100, "dominant_tag": "worldbuilding_endorsement"},
+      "interpretation": "Reddit/EN World/GitP/press converge on flavor-positive. RPG.net diverges with strong mechanical critique culture. Triangulation reading: ship as-is for player narrative appeal, address mechanical balance for the optimization audience."
+    },
+    "Warrior of Venom": {
+      "reddit": {"verdict": "GREEN-YELLOW", "positive_pct": 65, "dominant_tag": "system_design_critique"},
+      "rpgnet": {"verdict": "GREEN-YELLOW", "positive_pct": 70, "dominant_tag": "worldbuilding_endorsement"},
+      "enworld": {"verdict": "GREEN-YELLOW", "positive_pct": 60, "dominant_tag": "system_design_critique"},
+      "gitp": {"verdict": "GREEN-YELLOW", "positive_pct": 65, "dominant_tag": "system_design_critique", "note": "GitP confirms Sedative-toxin balance critique with 4 independent voices (Psyren, GooeyChewie, ZRN, Waterdeep Merch)"},
+      "press": {"verdict": "POSITIVE-MIXED", "positive_pct": 80, "dominant_tag": "worldbuilding_endorsement", "note": "ScreenRant flags 'subtly broken' Slowing Toxin"},
+      "interpretation": "Cross-forum consensus: well-received concept with three specific must-fix design issues. Sedative balance critique is the most-triangulated finding (5 independent sources, 4 forums). Forums agree."
+    },
+    "Primordial Patron": {
+      "reddit": {"verdict": "YELLOW-RED", "positive_pct": 35, "dominant_tag": "system_design_critique"},
+      "rpgnet": {"verdict": "YELLOW", "positive_pct": 55, "dominant_tag": "worldbuilding_endorsement", "note": "Older-school Temple-of-Elemental-Evil nostalgia pulls reception higher"},
+      "enworld": {"verdict": "YELLOW", "positive_pct": 50, "dominant_tag": "system_design_critique"},
+      "gitp": {"verdict": "YELLOW", "positive_pct": 50, "dominant_tag": "system_design_critique", "note": "Outliers ClaraTheVillain (loves it) + Evaar (deep critique) bracket the range"},
+      "press": {"verdict": "POSITIVE-CAUTIOUS", "positive_pct": 75, "dominant_tag": "worldbuilding_endorsement"},
+      "interpretation": "MEANINGFUL CROSS-FORUM DIVERGENCE: Reddit reads YELLOW-RED, older forums (RPG.net, GitP) and press read YELLOW-warmer. Reddit's Elemental-Node-friendly-fire critique (+47 ups, top comment) gates the conversation; older forums weight elemental-evil nostalgia higher. Action: ship after node redesign and the elemental-evil framing will pull reception up across all forums."
+    }
+  },
+
+  "per_subclass_stance": {
+    "Path of Lament": {
+      "rate_thread_color_distribution": {"green_dominant": 9, "mixed_green_yellow": 3, "yellow_dominant": 0, "red_dominant": 0},
+      "stance_positive_pct": 80,
+      "stance_divisive_pct": 15,
+      "stance_negative_pct": 5,
+      "verdict": "GREEN",
+      "narrative_tags": {
+        "worldbuilding_endorsement": "HIGH",
+        "system_design_critique": "MEDIUM",
+        "tone_mismatch": "LOW (minority dismissal as emo)",
+        "cash_grab": "ABSENT",
+        "pandering": "ABSENT",
+        "not_dnd": "ABSENT"
+      },
+      "top_endorsements": [
+        {"quote": "Banshee-themed Barbarian is a very inspired concept", "source": "r/onednd lament_rate", "ups": 26},
+        {"quote": "best martial subs I've seen since 5.5 launched", "source": "r/onednd lament_rate", "ups": 24},
+        {"quote": "Lament definitely has the most gripping lore", "source": "Wargamer review"},
+        {"quote": "the flavor on the Barbarian is delicious", "source": "r/dndnext main", "ups": 32}
+      ],
+      "top_design_critiques": [
+        {"theme": "Otherworldly Anguish (L10) underwhelming — instakill threshold rarely matters", "instances": 4},
+        {"theme": "Sorrow Form making creature type Undead is too high-impact for player choice", "instances": 3},
+        {"theme": "Banshee's Wail nested limited-resource feels clunky", "instances": 2}
+      ],
+      "minority_dismissal_quote": "Emo phase."
+    },
+    "Warrior of Venom": {
+      "rate_thread_color_distribution": {"green_dominant": 7, "mixed_green_yellow": 4, "yellow_dominant": 1, "red_dominant": 0},
+      "stance_positive_pct": 65,
+      "stance_divisive_pct": 25,
+      "stance_negative_pct": 10,
+      "verdict": "GREEN-YELLOW",
+      "narrative_tags": {
+        "worldbuilding_endorsement": "MEDIUM-HIGH",
+        "system_design_critique": "HIGH",
+        "tone_mismatch": "LOW (one feels-icky note)",
+        "cash_grab": "ABSENT",
+        "pandering": "ABSENT",
+        "not_dnd": "ABSENT"
+      },
+      "top_endorsements": [
+        {"quote": "poison-themed character finally solved", "source": "r/onednd main", "ups": 306},
+        {"quote": "Reptile Wins", "source": "r/onednd main", "ups": 119},
+        {"quote": "I love the alien acid blood thing going on", "source": "r/onednd venom_rate", "ups": 12},
+        {"quote": "Decent subclass, but one with a lot of small issues", "source": "Kind GM blog"}
+      ],
+      "top_design_critiques": [
+        {"theme": "Hallucinogenic Breath (L17) should be a cone, not single-target", "instances": 6},
+        {"theme": "Envenom Weapon doesn't work on unarmed strikes — too restrictive for Monk identity", "instances": 4},
+        {"theme": "Slowing Toxin auto-applies with no save, scales poorly vs high-CR enemies (ScreenRant: 'subtly broken')", "instances": 4},
+        {"theme": "Toxin Refiner (L11) ambiguity — 'Bag of Rats / Homeopathic Poison' loophole for unbounded healing", "instances": 3}
+      ],
+      "minority_concern_quote": "feels a bit icky"
+    },
+    "Primordial Patron": {
+      "rate_thread_color_distribution": {"green_dominant": 2, "mixed_green_yellow": 5, "yellow_dominant": 4, "red_dominant": 1},
+      "stance_positive_pct": 35,
+      "stance_divisive_pct": 50,
+      "stance_negative_pct": 15,
+      "verdict": "YELLOW-RED",
+      "narrative_tags": {
+        "worldbuilding_endorsement": "LOW-MEDIUM",
+        "system_design_critique": "VERY HIGH",
+        "tone_mismatch": "MEDIUM (not actually villainous)",
+        "cash_grab": "ABSENT",
+        "pandering": "ABSENT",
+        "not_dnd": "ABSENT"
+      },
+      "top_endorsements": [
+        {"quote": "Insanely hyped for primordial warlock", "source": "r/onednd main", "ups": 91},
+        {"quote": "I really loved the vibe of the class", "source": "r/onednd primordial_rate", "ups": 17},
+        {"quote": "spellcaster with a toolset ripped straight from a raid boss", "source": "Wargamer review"}
+      ],
+      "top_design_critiques": [
+        {"theme": "Elemental Node does friendly fire — hits allies and familiar; ruins party tactics", "instances": 8, "top_quote_ups": 47},
+        {"theme": "Subclass weaker than existing warlock options (Fathomless, Genie)", "instances": 5},
+        {"theme": "Node 1d6/save mechanic creates excessive table-time overhead for trivial damage", "instances": 4},
+        {"theme": "Earth spell list comically thin compared to Fire/Water/Air", "instances": 3},
+        {"theme": "Eldritch Invocation Elemental Transmutation strictly better than Sorcerer's Transmuted Spell metamagic — design clash", "instances": 3}
+      ],
+      "tone_mismatch_quotes": [
+        {"quote": "really feel more chaotic neutral than villainous", "source": "r/dndnext main", "ups": 42},
+        {"quote": "Did warlock need a villainous option? xD", "source": "r/dndnext main", "ups": 132}
+      ]
+    }
+  },
+
+  "classifier_signature_comparison": {
+    "ua_villainous_options_2": {
+      "cash_grab_pct": 0,
+      "tone_mismatch_pct": 2,
+      "not_dnd_pct": 0,
+      "pandering_pct": 0,
+      "system_design_critique_pct": 65,
+      "worldbuilding_endorsement_pct": 25,
+      "interpretation": "Engaged-design-audience signature: heavy mechanical critique, near-zero brand-betrayal tags, moderate worldbuilding endorsement. The community is engaging WITH the playtest as designers."
+    },
+    "goblin_slayer_ip_reception": {
+      "cash_grab_pct": 10,
+      "tone_mismatch_pct": 40,
+      "not_dnd_pct": 0,
+      "pandering_pct": 10,
+      "system_design_critique_pct": 60,
+      "worldbuilding_endorsement_pct": 20,
+      "interpretation": "Tone-mismatch dominant: community sees the IP as a poor cultural fit despite mechanical curiosity. Different signature from UA reception."
+    },
+    "hypothetical_ogl_tier_event": {
+      "cash_grab_pct": "60+",
+      "tone_mismatch_pct": "0-10",
+      "not_dnd_pct": "50+",
+      "pandering_pct": "40+",
+      "system_design_critique_pct": "10",
+      "worldbuilding_endorsement_pct": 0,
+      "interpretation": "Brand-betrayal signature: cash_grab + not_dnd + pandering dominate, system_design_critique near-zero. The classifier produces a structurally different fingerprint per event type."
+    }
+  },
+
+  "wotc_actionable_insights": {
+    "for_path_of_lament": "Ship as-is with two specific polish passes: (1) make Otherworldly Anguish L10 instakill threshold scale (4× Barb level instead of 2×); (2) make Sorrow Form's Undead-creature-type opt-in not automatic.",
+    "for_warrior_of_venom": "Ship with three required fixes: (1) Hallucinogenic Breath cone-effect at L17, (2) Envenom Weapon usable on unarmed strikes, (3) Toxin Refiner errata to close the Bag-of-Rats loophole.",
+    "for_primordial_patron": "Significant rework required before ship: (1) Elemental Node MUST exclude allies/chosen creatures, (2) increase node uses or make moving free, (3) rebalance vs existing warlock subclasses, (4) reconcile Elemental Transmutation invocation with Sorcerer metamagic, (5) Earth spell list needs additions."
+  },
+
+  "speed_advantage_demonstration": {
+    "trusight_signal_available_at": "T+11 days (today, 2026-05-04)",
+    "wotc_official_survey_window": "T+0 to T+21 days (closes 2026-05-14)",
+    "wotc_survey_results_published": "Typically T+45 to T+60 days",
+    "competitive_decision_window": "T+11 days vs T+45 days = 34-day head start on directional survey signal"
+  }
+}

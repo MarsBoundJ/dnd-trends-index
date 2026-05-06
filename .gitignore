@@ -19,6 +19,12 @@ antigravity-browser-profile/
 !sage_sample.json
 !tavern_sample.json
 !treantmonk_videos.json
+# Pitch report datasets — point-in-time snapshots tracked for reproducibility
+!pitch/report/ua_audit_classified.json
+!pitch/report/ua_audit_comments.json
+!pitch/report/rpgnet_vo2_posts.json
+!pitch/report/gitp_ua_audit.json
+!pitch/report/package.json
 # Next.js app JSON configs — must be tracked
 !arcane/package.json
 !arcane/tsconfig.json
