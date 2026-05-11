@@ -5,8 +5,8 @@ how each promising IP could be marketed, translated into D&D, and converted
 into specific D&D Beyond product (a la carte or full setting book), plus
 Sigil VTT location ideas and the measured data underneath.
 
-Started May 7 2026. First worked example: **Mistborn**. Template will
-iterate based on feedback to this entry.
+~~Started May 7 2026. First worked example: **Mistborn**. Template will
+iterate based on feedback to this entry.~~
 
 ---
 
@@ -34,7 +34,7 @@ Hollow Knight (2017) and Hollow Knight: Silksong (2025) are Team Cherry's two-pe
 
 ### Marketing angle / D&D-universe niche
 
-Hollow Knight is the canonical Trusight Greenlight: the indie IP a Hollywood-driven licensing pipeline cannot see, with deep community-conversion infrastructure and zero existing tabletop ecosystem to fight. The harvest's killer single artifact is **a 1,161-up Silksong-inspired *"Monk: Way of the Needle"* subclass on r/UnearthedArcana** — the highest community-built D&D-subclass post in this batch. Hallownest's worldbuilding (Charms-as-magic-items, Soul-as-resource, Vessel-class characters) maps cleanly onto 5e mechanics. Niche it fills: a *bug-civilization fallen-kingdom* setting register that 5e doesn't currently have, with unusually clean translation paths. The licensing scope frames the Knight as a powerful NPC and player characters as *other Vessels / other denizens of Hallownest*; focus on monsters, environmental hazards, charms, and locations rather than recreating the lone-protagonist arc.
+Hollow Knight is the canonical Trusight Greenlight: the indie IP a Hollywood-driven licensing pipeline ~~cannot see~~ (might miss), with deep community-conversion infrastructure and zero existing tabletop ecosystem to fight. The harvest's killer single artifact is **a 1,161-up Silksong-inspired *"Monk: Way of the Needle"* subclass on r/UnearthedArcana** — the highest community-built D&D-subclass post in this batch. Hallownest's worldbuilding (Charms-as-magic-items, Soul-as-resource, Vessel-class characters) maps cleanly onto 5e mechanics. Niche it fills: a *bug-civilization fallen-kingdom* setting register that 5e doesn't currently have, with unusually clean translation paths. The licensing scope frames the Knight as a powerful NPC and player characters as *other Vessels / other denizens of Hallownest*; focus on monsters, environmental hazards, charms, and locations rather than recreating the lone-protagonist arc.
 
 ### Translation challenges
 
@@ -77,8 +77,8 @@ The content surface above maps to specific 5e architectural slots. Each major el
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
 | A | **New species** (Vessel) | MID | Full species with canonical traits (Silent, Soul-Touched, Pale-Limbed). Cleanest IP-recognition. Adds a permanent species to the corpus. |
-| B | **Custom Lineage (Tasha's) with Vessel flavor** | **LOWEST** | Use existing Custom Lineage rules; Vessel is pure flavor. Zero new mechanical infrastructure. |
-| C | **Variant Human + Vessel-Heritage feat** | LOW | Vessel as a feat available to Variant Human (and via Tasha's, any species). Slot-bounded; minimal infrastructure. |
+| B | **Custom Lineage with Vessel flavor** | **LOWEST** | Use existing Custom Lineage rules; Vessel is pure flavor. Zero new mechanical infrastructure. |
+| C | **Variant Human + Vessel-Heritage feat** | LOW | Vessel as a feat available to Variant Human or any species. Slot-bounded; minimal infrastructure. |
 
 **Trusight read:** Option A delivers the highest IP-recognition (the 269-add Vessel species is the corpus headline). Option B is the brand-integrity-friendliest path and doesn't preclude players who want to play as a Vessel.
 
@@ -95,7 +95,7 @@ The content surface above maps to specific 5e architectural slots. Each major el
 
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
-| A | **Consumable magic items (potion-shelf variant)** | **LOWEST** | Each Charm is a consumable; grants long-duration buff (1h-8h or until next long rest). ~10-12 named Charms across uncommon/rare/very-rare. Zero new attunement infrastructure. |
+| A | **Consumable magic items (potion~~-shelf~~ variant)** | **LOWEST** | Each Charm is a consumable; grants long-duration buff (1h-8h or until next long rest). ~10-12 named Charms across uncommon/rare/very-rare. Zero new attunement infrastructure. |
 | B | **Standard attuned magic items** | LOW | Charms as standard 5e magic items using existing 3-attunement-slot limit. |
 | C | *New Charm-Notch attunement subsystem* | **HIGH — not recommended** | Invents new rules infrastructure to deliver the same flavor Option A delivers via the potion shelf. |
 
@@ -204,14 +204,14 @@ The content surface above must be curated heavily — 622 community-built monste
 
 ##### Hunter archetype subclass / class-feature — 4 fitting options
 
-Existing 5e starting point: the *Monster Slayer* Ranger subclass from Xanathar's Guide to Everything (2017) already lives in the Hunter-archetype slot. The community sentiment that "Rangers need more love" overlaps with this existing-but-underused subclass — a natural refresh target.
+Existing 5e starting point: the *Monster Slayer* Ranger subclass from Xanathar's Guide to Everything (2017) already lives in the Hunter-archetype slot. The partial community sentiment that "Rangers need more love" overlaps with this existing-but-underused subclass — a natural refresh target.
 
 | # | Approach | Brand-integrity cost | Why it fits | Why it might not |
 |---|---|---|---|---|
-| A | **Update / expand the existing Monster Slayer Ranger subclass** from Xanathar's | **LOWEST** | Builds on existing official content; zero new subclass slot; satisfies the "Rangers need more love" community sentiment by refreshing an underused subclass | Limited to Ranger-class players |
+| A | **Update / expand the existing Monster Slayer Ranger subclass** from Xanathar's | **LOWEST** | Builds on existing official content; zero new subclass slot; satisfies the "Rangers need more love" partial community sentiment by refreshing an underused subclass | Limited to Ranger-class players |
 | B | **Hunter background** with Monster Hunter flavor (proficiencies, signature gear, monster-knowledge feature) | LOW | Standard background slot; any class can take it; pure flavor onto existing background infrastructure | Background-tier feature, less mechanical depth |
-| C | **2-3 Monster Hunter feats** (e.g., *Monster Knowledge*, *Carving Specialist*, *Trap Layer*) | LOW | Feat-tier flavor; any class can take; modular | Flavor-led; not a subclass-tier delivery |
-| D | **New Fighter subclass — Hunter archetype** | MID | Delivers Fighter-class IP-recognition | **Class-identity drift into Ranger territory** — the Monster Slayer Ranger already occupies this fantasy. Plus 5.5e shipped Weapon Mastery for all Fighters, making weapon-based Fighter subclasses less distinctive than they once were |
+| C | **2-3 Monster Hunter feats** (e.g., *Monster Knowledge*, *Harvesting Specialist*, *Trap Layer*) | LOW | Feat-tier flavor; any class can take; modular | Flavor-led; not a subclass-tier delivery |
+| D | **New Fighter subclass — Hunter archetype** | MID | Delivers Fighter-class IP-recognition | **Class-identity drift into Ranger territory** — the Monster Slayer Ranger already occupies this fantasy in 5.5e |
 
 **Trusight read:** Options A + B + C together (Monster Slayer Ranger refresh + Hunter background + 2-3 feats) deliver the IP-recognition across multiple class paths at the brand-integrity-friendliest tier. Option D delivers Fighter-class fit at a meaningful class-drift cost.
 
@@ -232,21 +232,21 @@ The 622-page community Monster Manual ports a full subsystem. The brand-integrit
 
 | # | Approach | Brand-integrity cost | Description |
 |---|---|---|---|
-| A | **Reflavor Tasha's existing crafting rules** with monster-part flavor | **LOWEST** | Each iconic monster has "you can harvest X from this creature; X functions as [existing component] for crafting [existing magic item]." Pure flavor layer; zero new rules. |
+| A | **Reflavor existing crafting rules** with new monster-part angle | **LOWEST** | Each iconic monster has "you can harvest X from this creature; X functions as [existing component] for crafting [existing magic item]." Pure flavor layer; zero new rules. |
 | B | **New magic-item category: Monster-Part Magic Items** (10-12 named) | **LOW** | Named class of magic items where each is crafted from a specific monster's parts. Standard attunement. Delivers the Rathalos-armor-from-Rathalos fantasy through existing magic-item rules. |
-| C | **Hunter Background grants a "Carve" feature** | LOW | Background-tier feature: extract monster parts that function as alchemical/herbalism components per Tasha's rules. |
-| D | **Full Carve-and-Craft as Tasha's-style optional rules variant** | MID | New rules subsystem (opt-in, like Tasha's variants). Closest to community Monster Manual proposal but accepts the brand-integrity cost. |
+| C | **Hunter Background grants a "Carve" feature** | LOW | Background-tier feature: extract monster parts that function as alchemical/herbalism components per crafting rules. |
+| D | **Full Carve-and-Craft as variant crafting rules** | MID | New rules subsystem (opt-in). Closest to community Monster Manual proposal but accepts the brand-integrity cost. |
 | E | *New mandatory gameplay subsystem* | **HIGH — not recommended** | Permanent commitment that conflicts with future books. |
 
 **Trusight read:** Options B + C together (Monster-Part Magic Items as named product surface + Hunter Background as enabling feature) deliver the iconic MH gameplay-fantasy at the brand-integrity-friendliest tier. Option D is the high-fidelity path if WoTC wants the full system.
 
 ##### Felyne / Palico / Palamute companions — 4 fitting options
 
-D&D already has pet/companion infrastructure: Find Familiar, Pact of the Chain Warlock, Beast Master Ranger (with the 5.5e Primal Companion mechanic from Tasha's), Drakewarden Ranger, and Battle Smith Artificer all live in this slot.
+D&D already has pet/companion infrastructure: Find Familiar, Pact of the Chain Warlock, Beast Master Ranger and the 5.5e Primal Companion mechanic, Drakewarden Ranger, and Battle Smith Artificer all live in this slot.
 
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
-| A | **Update Beast Master Ranger's Primal Companion options** to include Palico-type and Palamute-type companions | **LOWEST** | Builds on existing 5.5e Beast Master / Primal Companion infrastructure; adds MH-themed companion variants to a published subclass. Doubly satisfies the "Rangers need more love" sentiment. |
+| A | **Update Beast Master Ranger's Primal Companion options** to include Palico-type and Palamute-type companions | **LOWEST** | Builds on existing 5.5e Beast Master / Primal Companion infrastructure; adds MH-themed companion variants to Beast Master subclass. |
 | B | **Hunter's Companion feat** — grants a Felyne/Palico/Palamute as a Find-Familiar-equivalent with bespoke flavor | LOW | Feat-tier; uses existing familiar infrastructure; any class with a feat slot can take it. |
 | C | **Magic-item summoned companion** — *Palico Whistle* (uncommon) or *Palamute Saddle* (rare) | LOW | Consumable / attuned item summons a tier-appropriate Palico/Palamute as ally for a duration; existing item infrastructure. |
 | D | *New companion subsystem* (Hunter-Companion class feature with bespoke mechanics) | **HIGH — not recommended** | Conflicts with existing Beast Master, Drakewarden, Battle Smith, and Pact of the Chain infrastructure. |
@@ -310,7 +310,7 @@ This is the IP that maps most cleanly onto Sigil's encounter-map paradigm — ev
 
 **Cross-channel reading.** This is the strongest data picture in the breakdowns doc and arguably in the entire corpus. **Five independent channels triangulate on the same pattern**: AO3 proportional rate at 0.78% (near-ORV-territory), 27 D&D-sub strict-filter posts (highest count measured), 38 r/MonsterHunter reverse-funnel posts including a 2,817-up viral DnD-crossover thread, a 622-page community Monster Manual covering every MH game's bestiary, and a community subclass compendium at 137 ups. The off-DDB consolidation pattern (zero DDB items) reads as false-negative — the conversion energy is consolidated on a Reddit-organized Monster Manual project, exactly like the Persona 5e fan project. The version-specific subs (World 6 posts, Wilds 30 posts mostly DM-noise) are minor relative to the umbrella sub's 38; the licensable property is the franchise umbrella, not any single version.
 
-**The Greenlight case.** Six channels of community signal, all strong, all triangulating on the same finding: **the audience has built the licensed product themselves, and they're waiting for an official version.** A WoTC product would likely outsell the Stranger Things Starter Set comparable on the homebrew-velocity comparable alone (122 community-built monster pages × DDB attach rate × Hasbro distribution). Capcom-side licensing complexity is real, but the demand-proof to bring to that negotiation is unusually strong. Recommendation: **Greenlight-tier candidate; pair with the Monster Hunter umbrella license rather than version-specific (World or Wilds) for licensing scope.**
+**The Greenlight case.** Six channels of community signal, all strong, all triangulating on the same finding: **the audience has built the licensed product themselves, and they're waiting for an official version.** Based on the 122 community-built monster pages × DDB attach rate × Hasbro distribution, a WoTC product would likely sell. Capcom-side licensing complexity is real, but the demand-proof to bring to that negotiation is unusually strong. Recommendation: **Greenlight-tier candidate; pair with the Monster Hunter umbrella license rather than version-specific (World or Wilds) for licensing scope.**
 
 ---
 
@@ -326,7 +326,7 @@ Berserk is Kentaro Miura's seinen manga (1989-2021, continued posthumously by Ko
 
 ### Marketing angle / D&D-universe niche
 
-Berserk is the **highest-fit highly-corroborated IP in the corpus** (fit 0.94, reception 0.83, `highly_corroborated: true`). The harvest's killer signal: **1,010 forum results in BQ — the second-largest forum signal in the corpus** (after One Piece) — with the top thread literally being *"D&D 5E (2014) - Guts (BERSERK) Build 5e"*. The 25 DDB items + 227-add Berserker Redux subclass + 12 magic items + the corpus-leading forum signal triangulate cleanly: this is a **dark-fantasy / oversized-weapon / curse-mechanic** licensing target with deep community translation already in motion.
+Berserk is the **highest-fit highly-corroborated IP in the corpus** (fit 0.94, reception 0.83, `highly_corroborated: true`). The harvest's killer signal: **1,010 forum results in BQ — the second-largest forum signal in the corpus** (after One Piece) — with the top thread literally being *"D&D 5.5e (2014) - Guts (BERSERK) Build 5.5e"*. The 25 DDB items + 227-add Berserker Redux subclass + 12 magic items + the corpus-leading forum signal triangulate cleanly: this is a **dark-fantasy / oversized-weapon / curse-mechanic** licensing target with deep community translation already in motion.
 
 Niche it fills: a *grimdark medieval-with-demons* setting register that 5e doesn't fully address (Curse of Strahd is gothic-horror, not dark-fantasy). Mature-tone product with the *Brand of Sacrifice* curse-mechanic, Apostle-tier monster roster, and Berserker Armor-tier legendary-item economy. The audience: dark-fantasy manga readers + Soulslike players + grimdark-tabletop-fans (RPG.net + GitP demographic).
 
@@ -347,10 +347,10 @@ DDB shows **25 confirmed items** across an unusually-balanced spread. **8 subcla
 | **Species** | *Apostle* (transformed-human — for high-tier campaigns or evil NPC PCs), *Branded Mortal* (cursed lineage), *Witch* (Schierke-tier human variant) | 1 species item |
 | **Backgrounds** | *Hawks Mercenary*, *Branded Survivor*, *Witch's Apprentice*, *Holy See Inquisitor*, *Falconia Citizen* | clear gap |
 | **Spells** | *Berserker Roar*, *Brand-of-Sacrifice Beacon* (cursed-summons drawing demons), *Fire Magic* (Schierke-style elemental), *Dimensional Cleave* (Dragonslayer-flavor) | 1 spell item |
-| **Magic items** | **Dragonslayer** (Guts's iconic greatsword — legendary-tier), **Berserker Armor** (transformative cursed armor), **Behelits** (artifact-tier sacrifice items, low-or-high-tier per Behelit), *Skull Knight's Sword* (legendary), *Crimson Behelit* (Griffith's), *Hand-Crossbow*, *Mechanical Arm* (Guts's prosthetic) | **12 magic-item entries** — one of the deepest magic-item ensembles in the breakdown corpus |
+| **Magic items** | **Dragonslayer** (Guts's iconic greatsword — legendary-tier, will have to be designed or renamed to read as distinct from existing 5.5e Dragonslayer weapon), **Berserker Armor** (transformative cursed armor), **Behelits** (artifact-tier sacrifice items, low-or-high-tier per Behelit), *Skull Knight's Sword* (legendary), *Crimson Behelit* (Griffith's), *Hand-Crossbow*, *Mechanical Arm* (Guts's prosthetic) | **12 magic-item entries** — one of the deepest magic-item ensembles in the breakdown corpus |
 | **Mundane items** | Mercenary kit, Hawks-band uniform, alchemical kit (Schierke-flavored), prosthetic-arm mechanism | clear gap |
 | **Monsters** | *Apostles* (CR-variable transformed-humans), *Skull Knight* (CR 22 ally-or-rival NPC), *Femto / Griffith* (CR 25 capstone), *Trolls* (Berserk-style, CR 6-8), *Sea God* (CR 18 oceanic), *Slan / Conrad / Ubik / Void / Femto* (the God Hand — CR 22-26 endgame ensemble), *Mozgus + Holy See Inquisitors* (CR 14 antagonist faction) | 3 monster items + the magic-item-deep ensemble compensates |
-| **Setting** | *Berserk Setting Book* — Midland (canonical kingdom), the Black Swordsman path, Falconia (Griffith's-empire), the Apostle-controlled wilds | **1,010 forum results** — second-largest forum signal in the corpus; **top thread *"D&D 5E (2014) - Guts (BERSERK) Build 5e"*** |
+| **Setting** | *Berserk Setting Book* — Midland (canonical kingdom), the Black Swordsman path, Falconia (Griffith's-empire), the Apostle-controlled wilds | **1,010 forum results** — second-largest forum signal in the corpus; **top thread *"D&D 5.5e (2014) - Guts (BERSERK) Build 5.5e"*** |
 
 #### Slot options — brand-integrity-cost framing
 
@@ -364,7 +364,7 @@ This is the cursed-power-fantasy supply matching the **1,489-up *"Standard Array
 |---|---|---|---|
 | A | **Cursed legendary magic item** (existing 5e cursed-item slot) | **LOWEST** | Single named legendary item (rare or very rare); curse grants power-with-cost. Uses existing cursed-item infrastructure. Direct delivery of the Guts fantasy through standard magic-item rules. |
 | B | **Cursed legendary item with extended attunement mechanics** | LOW | Same as A plus mechanics like HP-cost-when-entering-Berserker-form. Still uses cursed-item infrastructure but adds item-specific rules. |
-| C | *New Cost-of-Power rules subsystem (Tasha's-style)* | **HIGH — not recommended unless system-wide scope** | New rules variant where power-with-cost is recurring. Brand-integrity cost only justifies if WoTC wants the system across multiple future products. |
+| C | *New Cost-of-Power rules subsystem* | **HIGH — not recommended unless system-wide scope** | New rules variant where power-with-cost is recurring. Brand-integrity cost only justifies if WoTC wants the system across multiple future products. |
 
 **Trusight read:** Option A delivers Guts's iconic equipment cleanly at the lowest brand-integrity cost.
 
@@ -436,7 +436,7 @@ Berserk's canon includes content (Eclipse arc sexual violence, Casca trauma arcs
 | Metric | Value | Reading |
 |---|---|---|
 | **FIT — Translation Risk** | | |
-| License Fit Score | **0.94** | **Highest fit in this batch and among the highest in the entire corpus** (only Mistborn's 0.96 + One Piece's 0.95 are higher) |
+| License Fit Score | **0.94** | **Among highest fit in the entire corpus** (only Mistborn's 0.96 + One Piece's 0.95 are higher) |
 | Tier | edge | UB Matrix edge-tier |
 | Measured sources | 4 of 5 channels | Tier 1 |
 | `highly_corroborated` | **true** | The only IP in this batch with `highly_corroborated: true` flagged in BQ |
@@ -452,7 +452,7 @@ Berserk's canon includes content (Eclipse arc sexual violence, Casca trauma arcs
 | **ACQUISITION — Demand Risk** | | |
 | Reddit D&D-subs (strict filter) | 15 raw matches → mostly *"berserker"* class-name false positives | Genuine: 22-up *"My dnd character inspired by guts"*, 11-up *"Magic Items: The Struggler's Slab"*, 11-up *"Created a Grunbeld stat block"* |
 | Reddit r/Berserk reverse-funnel | 17 D&D-context posts | Modest count; genuine D&D-conversion content thin |
-| Forum total results | **1,010** | **Second-largest forum signal in the corpus**; top thread *"D&D 5E (2014) - Guts (BERSERK) Build 5e"* |
+| Forum total results | **1,010** | **Second-largest forum signal in the corpus**; top thread *"D&D 5.5e (2014) - Guts (BERSERK) Build 5.5e"* |
 | Acquisition confirmed mentions | 2 | — |
 | **COMMERCIAL — Revenue Risk** | | |
 | BGG proxy score | 0.71 | Solid |
@@ -554,7 +554,7 @@ The "E → D → C → B → A → S rank" Hunter-License progression is one of 
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
 | A | **Awakened Human species** (variant human with awakening-trigger ability) | LOW | New species at MID-cost; mechanical-advantage at gate-encounters |
-| B | **Custom Lineage (Tasha's)** with Awakened flavor | **LOWEST** | Use existing Custom Lineage rules; Awakened is pure flavor |
+| B | **Custom Lineage** with Awakened flavor | **LOWEST** | Use existing Custom Lineage rules; Awakened is pure flavor |
 | C | **Variant Human + Awakening feat** | LOW | Single feat substitutes for race feature; slot-bounded |
 
 **Trusight read:** Option B is the brand-integrity-friendliest path — Solo Leveling's Hunter fantasy is more about awakening-event than racial features.
@@ -604,7 +604,7 @@ Igris (CR 18), Beru (CR 19), Kamish (CR 25), Iron-clad Knight (CR 12), Stone Gol
 | Reddit r/sololeveling reverse-funnel | 3 D&D-context posts | Small count, **high engagement**: *"DM: They're just villagers. Players: Not for long."* (126 ups), *"Solo leveling adventure part 1"* (61 ups, 54 comments), *"Choose your own solo leveling adventure day 7.5"* (23 ups) |
 | Forum total results | 85 | Mid-tier forum signal — top thread *"Seeking Solo Leveling Warrior inspired game for PF1 (GM needed)"* (Pathfinder side, but converter pattern present) |
 | **COMMERCIAL — Revenue Risk** | | |
-| BGG proxy score | — | No board-game comparable |
+| BGG proxy score | — | No board-game comparable yet (a *Solo Leveling: ARISE* mobile game launched 2024 but no board-game tabletop product) |
 | **Mobile-game proxy** (manual signal, pending pipeline) | **broad_durable_hit signal with momentum-decay caveat** | *Solo Leveling: ARISE* (Netmarble, May 2024) — **50M+ installs / $139M revenue in first six months** (peak month $58.9M, per public industry reporting); **4.6-4.7 App Store / Play Store ratings** on hundreds of thousands of reviews; top markets Korea / Japan / US. Revenue declined month-on-month post-launch — momentum-decay caveat applies, but rating durability indicates no major P2W backlash (**Whale-to-Minnow Disconnect flag does not fire**). **Mobile success ≠ tabletop compatibility caveat applies** — this signal demonstrates strong commercial appetite for the IP in tabletop-adjacent paid-content format, *not* predicts D&D tabletop conversion. Tabletop-conversion signal remains thin (per AO3 0.31% + 6 D&D-sub strict-filter posts elsewhere in this entry). |
 | DMs Guild + DTRPG confirmed products | **0** | **No third-party 5e or other-system Solo Leveling content on either marketplace.** Clean lane — WoTC would be first to market. |
 | Catalog signal | clean — no competing TTRPG | Negotiation-leverage point: the licensor cannot anchor advance demands to a comparable existing product, because there isn't one |
@@ -667,7 +667,7 @@ The community 3-rulebook project includes a "difficulty" layer that bumps CR, lo
 
 | # | Approach | Brand-integrity cost | Description |
 |---|---|---|---|
-| A | **Optional rules variant** (Tasha's-style "Souls-difficulty" opt-in module) | **LOW-MID** | Single opt-in rules variant; bumps monster CR, lowers AC thresholds, increases resource cost on actions. Existing Tasha's-variant infrastructure |
+| A | **Optional rules variant** ("Souls-difficulty" opt-in module) | **LOW-MID** | Single opt-in rules variant; bumps monster CR, lowers AC thresholds, increases resource cost on actions. |
 | B | **Per-monster "Mythic Souls-Tier" variants** baked into each boss stat block | LOW | Each demigod boss has a *Standard* and *Mythic Souls-Tier* stat block; players choose at table-setup. Standard infrastructure |
 | C | *New "Souls-Mode" rules subsystem* (mandatory in Elden Ring campaigns; rewrites encounter math) | **HIGH — not recommended** | Permanent commitment that conflicts with future books |
 
@@ -779,7 +779,7 @@ Omniscient Reader's Viewpoint is a Korean meta-fictional progression-fantasy by 
 
 ### Marketing angle / D&D-universe niche
 
-ORV is one of the highest-fit IPs in the corpus (0.93) and the harvest's killer finding from the main report was the AO3 proportional-conversion rate: **13 D&D-crossover works against 1,316 total = 0.99% rate** — meaningfully higher than any other large-fanbase IP measured (vs HotD's 0.13%, Mistborn's 0.29%, P5's 0.081%). The fanbase is small in absolute terms but converting at unusually high proportional intensity — exactly the *early-signal sleeper* pattern that Trusight's framework is built to surface.
+ORV is one of the highest-fit IPs in the corpus (0.93) and the harvest's killer finding from the main report was the AO3 proportional-conversion rate: **13 D&D-crossover works against 1,316 total = 0.99% rate** — meaningfully higher than any other large-fanbase IP measured (vs HotD's 0.13%, Mistborn's 0.29%, P5's 0.081%). The fanbase is small in absolute terms but converting at unusually high proportional intensity — exactly the *early-signal sleeper* pattern that Trusight's framework is built to surface. **Note: Consider negotiating a rename for WoTC crossover title to "Omniscient", "ORV", or something else.**
 
 The licensing pitch: a *meta-fictional progression-fantasy* setting where the *Star Stream* is the patron-cosmology for a Warlock-led campaign. Scenarios-as-adventure-modules and Constellations-as-Warlock-patrons map onto 5e's existing Warlock-pact-as-campaign-frame structure with unusual cleanliness. The niche this fills: a *broadcast-cosmology / observer-as-narrator* setting register that 5e doesn't currently have — distinct from Theros's mythological gods and Eberron's industrial fantasy. The audience: Korean-webtoon and isekai fans, demographically younger and more international than the existing D&D player base, with anime-driven momentum at peak cultural attention. **Net-new audience acquisition** in the cannibalization frame.
 
@@ -839,7 +839,7 @@ ORV's *Skills* — *Fourth Wall*, *Bullet Time*, *Probability Manipulation*, *In
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
 | A | **New species** (*Awakened Incarnation*) | MID | Variant-human-shape with Star Stream marks granting a tier-1 boon; full species commitment |
-| B | **Custom Lineage (Tasha's) with Awakened-Incarnation flavor** | **LOWEST** | Use existing Custom Lineage rules; Awakened-Incarnation is pure flavor with player-choice feat |
+| B | **Custom Lineage with Awakened-Incarnation flavor** | **LOWEST** | Use existing Custom Lineage rules; Awakened-Incarnation is pure flavor with player-choice feat |
 | C | **Background-tier delivery** (Scenario Survivor / Pre-Scenario Office Worker background granting the awakening flavor) | LOW | Background slot; not a species feature |
 
 **Trusight read:** Option B is the brand-integrity-friendliest path. The ORV "awakening" fantasy is more event-driven than racial; Custom Lineage delivers it cleanly.
@@ -979,7 +979,7 @@ Bloodborne's *Insight* governs Madness-and-Great-One-visibility. The harvest's *
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
 | A | **Reflavor Theros's Piety mechanic** as Insight | **LOWEST** | Mythic Odysseys of Theros's Piety system maps cleanly; existing rules infrastructure. Players gain Insight rank as they pursue cosmic-horror knowledge; rank unlocks Eldritch-knowledge-tied subclass features |
-| B | **Optional rules variant (Insight Track)** — Tasha's-style opt-in module | LOW | New opt-in subsystem; bounded by opt-in nature |
+| B | **Optional rules variant (Insight Track)** | LOW | New opt-in subsystem; bounded by opt-in nature |
 | C | *New mandatory Insight subsystem* | **HIGH — not recommended** | Permanent commitment that conflicts with future books |
 
 **Trusight read:** Option A is the brand-integrity-friendliest path — Theros's Piety mechanic is the closest existing 5e infrastructure for a tier-progression-faith-tracker, and reflavoring it is a refresh-existing-content path that satisfies the "Theros has under-used content" sentiment.
@@ -1095,7 +1095,7 @@ DDB-homebrew evidence backs every category below: the corpus already shows 12 su
 | **Monsters** | *Steel Inquisitor* (boss, CR 15-18), *Koloss* (warrior race, CR 5-8), *Mistwraith* / *Kandra* (shapeshifter, CR varies), *Pewterarm* (elite Allomancer), *Lord Ruler* (legendary, CR 25+) | 20 monster items live — the deepest conversion category |
 | **Setting book** | *The Final Empire* hardcover — Era 1 setting, Luthadel city sourcebook, Lord Ruler campaign arc | Forum thread "Allomancer (Mistborn Series by Brandon Sanderson) Homebrew..." is the canonical converter signal |
 
-The natural product structure: **a la carte first** (release the canonical Mistborn subclass + Misting variants as a $4.99 mini-pack, gauge attach rate), **full setting book second** if the a la carte hits a target threshold. That sequencing de-risks the deal — the licensee doesn't commit to a full book until the audience signal is empirical.
+A potential product structure: **a la carte first** (release the canonical Mistborn subclass + Misting variants as a $4.99 mini-pack, gauge attach rate), **full setting book second** if the a la carte hits a target threshold. That sequencing de-risks the deal — the licensee doesn't commit to a full book until the audience signal is empirical.
 
 #### Slot options — brand-integrity-cost framing
 
@@ -1211,174 +1211,7 @@ Mistborn's secondary magic systems can be scoped in or out:
 
 ---
 
-## 9. Pillars of Eternity + Pillars of Eternity II: Deadfire  ·  Obsidian Entertainment  ·  video game  ·  paired entry
-
-*[thumbnail placeholder — Watcher of Caed Nua + Eothas key art, or a side-by-side of the Dyrwood/Defiance Bay (PoE1) and the Deadfire Archipelago/Neketaka (PoE2)]*
-
-### Versioning note
-
-Pillars of Eternity (2015) and Pillars of Eternity II: Deadfire (2018) are paired entries from Obsidian Entertainment. AO3 keeps them as a single canonical *Pillars of Eternity* fandom (930 combined works), and r/projecteternity is the umbrella subreddit covering both games — the conversion conversation is umbrella-shaped, with the killer single artifact (the 472-up *"Fan map of Eora I made for a TTRPG campaign"*) explicitly framing Eora as the licensable world rather than either game's specific map. PoE1 and PoE2 are mechanically distinct in scope (stronghold-management vs ship-and-archipelago), introduce different companion casts, and feature different signature locations — both surfaces are surfaced in *Translation possibilities* and *Sigil VTT* below. BQ measures Deadfire specifically (Tier 2, fit 0.88); PoE1 isn't in BQ but the umbrella harvest covers it.
-
-### Quick description
-
-Pillars of Eternity (2015) and Pillars of Eternity II: Deadfire (2018) are Obsidian Entertainment's flagship modern CRPGs, explicitly built as spiritual successors to the Infinity Engine games (Baldur's Gate I/II, Icewind Dale, Planescape: Torment) by veterans of those exact studios. Setting: Eora — a renaissance-era fantasy world with explicit *animancy* (soul-magic) cosmology, mature theological politics across eleven gods (Eothas / Berath / Magran / Hylea / Wael / Skaen / Galawain / Ondra / Rymrgand / Woedica / Abydon), and a discrete history of soul-cycles and divine intervention. **Pillars I** covers the Watcher's investigation of soul-disturbances in the Dyrwood — a frontier-colonial region of Eora, anchored by the Watcher's inherited stronghold of Caed Nua and the politically-fractious capital Defiance Bay. Companions: Aloth (cipher-or-wizard), Eder (fighter), Pallegina (paladin), Durance (cleric), Hiravias (druid), Kana (chanter), Sagani (ranger), Grieving Mother (cipher). **Pillars II: Deadfire** follows the Watcher to the Deadfire Archipelago — a tropical-pirate-fantasy region — to pursue the awakened god Eothas, with ship-captaincy as the new stronghold-equivalent and naval-combat as a new gameplay layer. Companions: Maia (ranger), Tekehu (chanter/druid), Xoti (priest/monk), Serafen (cipher/barbarian), and the returning Aloth/Eder/Pallegina from PoE1. Combined sales across the series ~3M+; the IP is one of the most mechanically-respected modern CRPGs alongside Baldur's Gate 3 and Divinity: Original Sin 2. **Pillars's design DNA is direct-line D&D** — the developers are *literally* the people who designed Baldur's Gate I/II.
-
-### Marketing angle / D&D-universe niche
-
-This is the IP in the doc with the cleanest pedigree-fit to D&D — and the harvest's killer single artifact reflects that: a **472-up *"Fan map of Eora I made for a TTRPG campaign"*** post on r/projecteternity, plus *"Running PoE1 as a tabletop campaign"* (6 ups, 16 comments) and *"Deadfire TTRPG narrative advice?"* (15 ups, 5 comments). **Pillars fans run their PoE campaigns AS tabletop.**
-
-The marketing pitch: a *mature-political-fantasy* setting with explicit theological and animancy cosmology, designed by the people who designed D&D's most-loved CRPGs. Niche it fills: the *theologically-thick / political-fantasy* register that 5e currently undersupplies — adjacent to Eberron's pulp-and-political register but distinct. The audience this brings: **CRPG fans who already speak D&D's vocabulary fluently.** This isn't audience-acquisition; it's audience-reactivation — Baldur's-Gate-veteran players who are exactly WoTC's core demographic.
-
-### Translation challenges
-
-1. **Pillars's eleven-god pantheon overlaps with Faerûn's Forgotten Realms pantheon and the Theros pantheon.** The Eora cosmology is distinct enough to merit its own treatment, but a licensing call has to acknowledge: D&D has plenty of gods. The 5e-shaped answer: the Pillars pantheon is the *philosophical specificity* layer — these aren't "fantasy gods of fire and harvest," they're characterized by Obsidian's particular take on mortality, soul-cycles, and divine accountability. The licensing distinguisher is the Pillars pantheon's *characterization*, not the existence of gods.
-2. **Animancy (soul-magic) as a parallel magic system.** Pillars's animancy is a separate magic register from arcane/divine D&D magic — it's *applied science* operating on souls. The 5e-shaped answer: a new *Animancer* arcane tradition (Wizard subclass) plus *Cipher* (psionic-adjacent class — already canonical in Pillars and adjacent to D&D's psionics) plus *Chanter* (Bard variant — invocation-and-soul-binding flavor). The Pillars classes that don't exist in D&D get specific subclass treatment.
-3. **No off-DDB community fan-project; conversion is happening but distributed.** Unlike Persona 5 or Monster Hunter where a single coordinated fan project consumed conversion energy, Pillars conversion is happening on individual TTRPG-campaign-runner posts. The 472-up *"Fan map of Eora"* is the most-engaged single artifact, but it's a campaign-prep tool, not a rules-conversion project. WoTC's licensed product would consolidate the demand without displacing an existing fan project.
-4. **No existing licensed Pillars TTRPG.** Clean lane.
-
-### Translation possibilities (DDB product surface)
-
-DDB shows zero confirmed Pillars items, but the harvest reveals active fan-tabletop activity that DDB hasn't captured. The product surface is unusually class-deep because Pillars's class lineup includes original archetypes (Cipher, Chanter, Sage) that aren't in 5e canon.
-
-| Category | Specific examples | DDB-homebrew evidence |
-|---|---|---|
-| **Subclasses** | *Cipher* (psionic class — already in Pillars, adjacent to D&D psionics; Cipher Build threads on r/projecteternity confirm fan interest); *Chanter* (Bard variant — Pillars's invocation-singing class); *Animancer Wizard* (soul-magic arcane tradition); *Sage* (martial+arcane hybrid — Pillars-original); *Gun Mage Wizard* (Pillars's gun-and-spells fusion — referenced in *"Gun mage. Wizard, or Chanter?"* harvest post, 13 ups, 28 comments) | 0 DDB items; *Cipher Build* discussion post on r/projecteternity (28 ups, 8 comments); *Gun mage. Wizard, or Chanter?* (13 ups, 28 comments) |
-| **Species** | *Aumaua* (large-statured human-derivative), *Orlan* (small-statured, agility-focused), *Godlike* (born-marked-by-divinity, four sub-races: Death Godlike / Fire Godlike / Moon Godlike / Nature Godlike — playable archetypes already speced in Pillars) | clear gap — Godlike sub-races are ready-to-port |
-| **Backgrounds** | *Watcher of Caed Nua* (PoE1 protagonist background — soul-sight flavor), *Defiance Bay Politician* (PoE1), *White March Frontiersman* (PoE1 expansion), *Deadfire Captain* (PoE2), *Old Vailia Scholar*, *Huana Tribesfolk* (PoE2 — Deadfire-native), *Animancer Apprentice* | clear gap |
-| **Spells** | *Animancy* spell suite (soul-shock, soul-bind, soul-trap), *Eothas's Restoration*, *Berath's Doom* (death-domain spells), *Soul Whip* (Cipher signature), *Chanter invocations* (sustained-duration buff suite — different mechanically from 5e Bard inspiration) | clear gap |
-| **Magic items** | *Soul-bound weapons* (Pillars's signature mechanic — weapons that level up with the wielder; introduced PoE1, expanded PoE2), *Pallegina's Wing* (PoE1 paladin armor), *Engwithan ruins relics* (PoE1 — ancient civilization), *Magran's Fiery Trials* relic suite (PoE1 White March), *Modwyr* (PoE2 talking soulbound sword), *Captain's hat / Wahaki idol* (PoE2 Deadfire-themed), naval-themed magic items (PoE2) | clear gap |
-| **Mundane items** | Pillars-style firearms (arquebus, blunderbuss, pistol — already canonical in Pillars, fits the Renaissance-tech setting), Animancer's tools, soul-meditation incense | clear gap |
-| **Monsters** | *Engwithan constructs* (PoE1 + PoE2, CR 10-18 boss-tier ancient-civilization automatons), *Adragans* (gorgon-petrification, CR 12), *Eyeless* (PoE2 cursed Eothas-priests, CR varies), *Death Godlike NPC encounters*, *Sea Cave drakes* (PoE2 Deadfire-aquatic), *Oracle of Wael* (CR 16 lore-keeper boss), *Concelhaut* (PoE1 endboss-arch-lich, CR 22), *Eothas-as-titan* (PoE2 walking-god encounter, CR 25+ if treated as full god, or environmental-set-piece) | clear gap |
-| **Setting** | *Eora Setting Book* — multi-region world-bible covering both games' geography: **PoE1 regions** (Dyrwood, Defiance Bay, Twin Elms, the Eastern Reach, the White March DLC), **PoE2 regions** (Deadfire Archipelago, Neketaka, Magran's Teeth, the Black Isles), with *Old Vailia* and *Aedyr* as background-civilizations referenced across both. Soul-cycle theology and divine politics as throughline. Map already exists at fan-quality on r/projecteternity (the 472-up *"Fan map of Eora"*). The licensing scope: full Eora world-bible, with PoE1 and PoE2 regions as discrete adventure-arcs within it | 39 forum results in BQ; *"Pillars of Eternity II: Deadfire (spoilers contained within) - RPGnet"* top thread |
-
-#### Slot options — brand-integrity-cost framing
-
-Pillars's signature challenge is the opposite of Solo Leveling's: the IP has *too much* class diversity (Cipher, Chanter, Sage are Pillars-original archetypes) and a parallel-magic-system (animancy = soul-magic, distinct from arcane/divine). The brand-integrity discipline asks which existing 5e slots deliver each Pillars-distinctive archetype at lowest cost. The Obsidian / Baldur's Gate pedigree-fit is a marketing-side advantage that supports a brand-integrity-friendly approach.
-
-##### Pillars-original archetypes (Cipher, Chanter, Sage) — 4 fitting options
-
-These are the most-mechanically-novel Pillars elements. How they fit:
-
-| # | Approach | Brand-integrity cost | Description |
-|---|---|---|---|
-| A | **Cipher as Wizard subclass (Psionic tradition)** + **Chanter as Bard subclass (Invocation singer)** | **LOW** | Subclass-tier delivery; uses existing parent-class infrastructure; psionic-Wizard is established 5.5e direction. Each fits a distinct existing class identity |
-| B | **Cipher + Chanter as one consolidated Pillars subclass per parent class** (delivers both archetypes via dual-subclass approach) | LOW | 2 subclasses total within typical envelope |
-| C | **Refresh existing subclasses** (e.g., College of Eloquence Bard with Chanter-flavored options; Soulknife Rogue with Cipher-flavored options) | **LOWEST** | Zero new subclass slot; layers IP-recognition onto under-used 5.5e content |
-| D | *Full Pillars class-lineup port (Cipher / Chanter / Sage / Gun Mage as separate classes or subclasses)* | **HIGH — not recommended** | Brand-dilution; too many new subclasses |
-
-**Trusight read:** Option A is the cleanest IP-recognition path (Cipher as psionic-Wizard subclass + Chanter as invocation-Bard subclass). Option C is the lowest-cost alternative; Soulknife Rogue is mechanically very close to Cipher's soul-piercing fantasy and could absorb it with refresh flavor.
-
-##### Animancy (soul-magic) — 3 fitting options
-
-Animancy is Pillars's parallel magic system — *applied science* operating on souls. Distinct from arcane/divine but mechanically adjacent.
-
-| # | Slot | Brand-integrity cost | Description |
-|---|---|---|---|
-| A | **Wizard arcane tradition (Animancer)** with soul-themed spell list | **LOW** | Subclass-tier delivery using existing Wizard infrastructure; soul-themed spells (soul-shock, soul-bind, soul-trap) live in existing spell-school taxonomy |
-| B | **Cleric Domain (Soul-Cycle)** as alternative animancy path | LOW | Domain-tier delivery; theological-investigation flavor |
-| C | *New parallel magic system (Animancy as separate magic-axis from arcane/divine)* | **HIGH — not recommended** | Permanent brand commitment; conflicts with 5e's existing arcane/divine taxonomy |
-
-**Trusight read:** Option A is the cleanest path; Option B for the theological-investigation flavor without adding to Wizard's subclass shelf.
-
-##### Soulbound weapons — 2 fitting options
-
-Pillars's signature magic-item mechanic — weapons that level up with the wielder — is mechanically novel for 5e.
-
-| # | Slot | Brand-integrity cost | Description |
-|---|---|---|---|
-| A | **New magic-item category: Soulbound Weapons** (3-5 named weapons that gain properties as wielder advances) | **LOW-MID** | New magic-item category with scaling-with-level mechanic. Could carry into other licensed products (Berserk's Dragonslayer, Elden Ring's iconic weapons, Hollow Knight's Pure Vessel sword). Cross-IP applicability justifies the brand-integrity cost |
-| B | **Standard legendary/very-rare magic items without scaling mechanic** | **LOWEST** | Each soulbound weapon as standard legendary with fixed properties; loses the scaling fantasy but uses existing rarity infrastructure |
-
-**Trusight read:** Option A is the higher-cost path that creates a new mechanical-category WoTC could reuse across multiple future licensed products. Option B is the brand-integrity-friendliest single-product path.
-
-##### Eora species (Aumaua, Orlan, Godlike) — 3 fitting options
-
-| # | Slot | Brand-integrity cost | Description |
-|---|---|---|---|
-| A | **3 new species** (Aumaua, Orlan, Godlike with 4 sub-races) | MID | Within Spelljammer-envelope (6 new species). Godlike sub-races (Death / Fire / Moon / Nature) are the distinctive Pillars element |
-| B | **2 species + Godlike as background-tier** (Aumaua + Orlan as full species; Godlike as variant-Human feat with elemental flavor) | **LOW** | Reduces species-shelf expansion; Godlike-Heritage feat captures the divinity-marked flavor |
-| C | **1 Eoran species** with subraces for Aumaua / Orlan / Godlike-variants | **LOWEST** | Single canonical species with subraces inside; mirrors elf-subrace pattern |
-
-**Trusight read:** Option A delivers the most IP-recognition (the Godlike sub-races are ready-to-port and distinctive). Option B is the brand-integrity-friendly compromise if shelf-expansion is a concern.
-
-##### Renaissance-tech firearms — 2 fitting options
-
-Pillars features firearms (arquebus, blunderbuss, pistol) canonically. 5e already has firearm rules (Tasha's optional rules; Spelljammer-era confirmation).
-
-| # | Slot | Brand-integrity cost | Description |
-|---|---|---|---|
-| A | **Reflavor existing Tasha's firearm rules** with Pillars-flavored arquebus / blunderbuss / pistol stats | **LOWEST** | Zero new mechanics; pure flavor layer over existing optional firearm rules |
-| B | **Gun Mage Wizard subclass** (Pillars-original combining firearms with spellcasting) | LOW | Subclass slot; mechanically novel; cited in community harvest (13-up *"Gun mage. Wizard, or Chanter?"* on r/projecteternity) |
-
-**Trusight read:** Option A handles the firearm-presence baseline. Option B adds the Gun-Mage IP-recognition through a single subclass.
-
-##### Engwithan ruins bestiary — 1 fitting option
-
-Engwithan constructs (CR 10-18), Adragans, Eyeless, Sea Cave drakes, Oracle of Wael, Concelhaut (CR 22 endboss-arch-lich), Eothas-as-titan. All standard creature types (Construct / Aberration / Fiend / Monstrosity). Mythic Action infrastructure for boss-tier monsters.
-
-**Brand-integrity cost: LOW.** Existing taxonomy + Mythic Actions.
-
-##### Other content categories — standard infrastructure
-
-| Element | Brand-integrity cost | Note |
-|---|---|---|
-| Backgrounds (Watcher of Caed Nua, Defiance Bay Politician, Deadfire Captain, Huana Tribesfolk, White March Frontiersman) | LOW | Standard background infrastructure; multiple backgrounds within typical envelope |
-| Spells (Animancy suite, Eothas's Restoration, Berath's Doom, Soul Whip, Chanter invocations) | LOW | Standard spell slots; existing schools |
-| Mundane items (firearms via Tasha's, Animancer's tools, soul-meditation incense) | LOW | Equipment chapter |
-| Setting book (Eora world-bible, PoE1 + PoE2 regions as adventure-arcs) | LOW | Within Wildemount / Theros setting-book envelope |
-
-### Potential Sigil VTT locations
-
-**Pillars I:**
-- **Caed Nua** — the Watcher's inherited stronghold-keep, recurring base map and the canonical PoE1 hub.
-- **Defiance Bay** — PoE1 capital city, multi-district urban encounter map with political-faction tension (House Doemenel / Crucible Knights / Dozens).
-- **The Endless Paths of Od Nua** — PoE1's signature mega-dungeon, ~15 floors descending under Caed Nua.
-- **Twin Elms** — PoE1 endgame elven-canopy city, theological-investigation set-piece.
-- **The White March** — PoE1 expansion's snow-and-ice DLC region; Stalwart village + Durgan's Battery dwarf-fortress dungeon.
-
-**Pillars II Deadfire:**
-- **Neketaka** — PoE2 Deadfire capital, multi-tiered island city, the largest single map in either game.
-- **Magran's Teeth / Cinder Cliffs** — volcanic island-chain naval-encounter map (Deadfire-specific).
-- **Ashfall** — animancy-laboratory setpiece map.
-- **The Black Isles / Ukaizo** — PoE2 endgame archipelago + Eothas-titan confrontation arena.
-- **Captaincy ship-deck maps** — the Defiant (Watcher's PoE2 ship) deck plans for naval-combat encounters.
-
-**Both games:**
-- **Engwithan ruins** (procedurally-generated ancient-civilization dungeons — both games include them, would translate as a recurring location-template for Sigil).
-
-### Measured data — grouped by 4-Risk UB Matrix dimension
-
-| Metric | Value | Reading |
-|---|---|---|
-| **FIT — Translation Risk** | | |
-| License Fit Score (Deadfire) | **0.88** | High — Obsidian's design DNA is direct-line D&D (same studio veterans built Baldur's Gate I/II and Icewind Dale) |
-| Tier | edge | UB Matrix edge-tier |
-| Measured sources | 2 of 5 channels | Tier 2 in BQ — manual harvest below thickens to Tier 1 effective |
-| DDB total items | 0 | Clear gap — conversion is on per-campaign-runner posts, not coordinated fan project |
-| **RECEPTION — Community Risk** | | |
-| Reception (weighted) | 0.61 | Solid — fit/reception gap is moderate (similar to HotD's structural-fit-vs-reception pattern) |
-| Backlash flags | none | low Community Risk |
-| Engagement-only flag | false | Conversion is real and active |
-| AO3 total works (umbrella) | 930 | Mid-size fanbase |
-| AO3 D&D-crossover works (umbrella) | 5 | — |
-| AO3 proportional crossover rate | **0.54%** | **~4× HotD's 0.13%; above the calibration cluster** (Mistborn 0.29%, SL 0.31%, Hades 0.28%); below ORV's 0.99% |
-| **ACQUISITION — Demand Risk** | | |
-| Reddit D&D-subs (strict filter, last 12mo) | **4 confirmed posts** | Modest. *"Game Hierarchies: Creating Plot-Heavy D&D Campaigns Without Railroading Players"* (r/DnD) — references PoE narrative design as exemplar |
-| Reddit r/projecteternity reverse-funnel | **11 D&D-context posts** | **Killer single artifact: 472-up *"Fan map of Eora I made for a TTRPG campaign"*** (30 comments). Plus *"Running PoE1 as a tabletop campaign"* (6 ups, 16 comments — direct-conversion campaign), *"Deadfire TTRPG narrative advice?"* (15 ups, 5 comments — direct conversion question), *"Feeling bored... What would your tabletop OC be?"* (14 ups, 8 comments — Pillars character → tabletop OC migration), *"Gun mage. Wizard, or Chanter?"* (13 ups, 28 comments — class-conversion discussion), *"Cipher Build"* (28 ups, 8 comments) |
-| Forum total results | 39 | Mid-tier — top thread *"Pillars of Eternity II: Deadfire (spoilers contained within) - RPGnet"* (TTRPG-discussion-side conversation) |
-| **COMMERCIAL — Revenue Risk** | | |
-| BGG proxy score | NULL | No Pillars board game |
-| DMs Guild + DTRPG confirmed products | **0** | Clean lane — no third-party Pillars TTRPG content |
-| External licensed product | **none** | Obsidian/Microsoft-Bethesda has not licensed Pillars for tabletop. Clean lane. |
-| Catalog signal | clean lane / first to market | Negotiation-leverage point — no competing TTRPG to anchor advances against |
-
-**Cross-channel reading.** Pillars is a **pedigree-and-conversion-aligned** case — high fit (0.88) reflects the literal-direct-lineage from Obsidian veterans to D&D's classic CRPGs; the 472-up Eora-map artifact and the active "Running PoE1 as a tabletop campaign" / "Deadfire TTRPG narrative advice" threads on r/projecteternity confirm fans run their PoE campaigns as tabletop already. The AO3 proportional rate (0.54%) is meaningfully above the calibration cluster, suggesting genuine D&D-conversion intent in the fanbase. The data-shape is *modest in raw volume but unusually concentrated in conversion-quality signals* — fewer artifacts than Monster Hunter, but each artifact is direct-conversion (campaign maps, narrative-advice questions, class-conversion build discussions).
-
-**The pedigree pitch.** This is the unique licensing angle. Obsidian's senior staff *literally designed Baldur's Gate I/II*. A Pillars D&D product carries the implicit endorsement of "the people who built D&D's most-loved CRPGs are the people whose IP we're licensing into D&D." That's a marketing register no other IP in this doc can replicate. **Recommendation: a strong cross-portfolio fit even with modest volume signals; the fit-score precision and pedigree-alignment make this a credible greenlight candidate for the *theologically-thick fantasy* niche specifically.**
-
----
-
-## 10. Deep Rock Galactic  ·  Ghost Ship Games  ·  video game
+## 9. Deep Rock Galactic  ·  Ghost Ship Games  ·  video game
 
 *[thumbnail placeholder — the four-Hunter dwarf squad on Hoxxes IV, Glyphid Praetorian in foreground]*
 
@@ -1396,7 +1229,7 @@ The harvest's interesting commercial corroboration: a **DRG board game already e
 
 1. **Co-op-shooter session loop is hostile to D&D campaign structure.** DRG missions are 20-40 minute one-shots with discrete extraction-and-XP loops. The 5e-shaped answer: campaign frame as *Mining Commissions* — episodic mission-of-the-week with a long-arc Heart of Hoxxes endgame. Same shape as the Monster Hunter Guild-commissions pattern.
 2. **Industrial-corporate dwarves are tonally distinct from D&D's traditional Mountain/Hill dwarves.** The 5e-shaped answer: a *Deep Rock Galactic* setting variant — the corporate-industrial flavor is part of the licensing distinction. Players can run DRG-flavored campaigns without needing to match traditional D&D dwarf fluff.
-3. **Sci-fi weapons (gunner / scout / engineer / driller toolkits) require Spelljammer-style sci-fi-fantasy rules.** The 5e-shaped answer: lean on the Spelljammer ruleset precedent. Modern firearms via Tasha's optional rules; mining-tools and platforms as gear; Bosco-as-drone-companion as a Familiar variant.
+3. **Sci-fi weapons (gunner / scout / engineer / driller toolkits) require Spelljammer-style sci-fi-fantasy rules.** The 5e-shaped answer: lean on the Spelljammer ruleset precedent. Mining-tools and platforms as gear; Bosco-as-drone-companion as a Familiar variant.
 4. **DRG has a board game but no licensed RPG.** Honest caveat: Mood Publishing's board game establishes that Ghost Ship Games is willing to license *and* that the IP has tabletop commercial appetite. The 5e licensing call doesn't compete with the board game (different product category) but may share licensing-process precedent.
 
 ### Translation possibilities (DDB product surface)
@@ -1521,7 +1354,7 @@ DRG is *built around* procedural cave-encounter maps — natural fit for Sigil's
 
 ---
 
-## 11. One Piece  ·  Eiichiro Oda / Toei Animation / Shueisha  ·  anime / manga
+## 10. One Piece  ·  Eiichiro Oda / Toei Animation / Shueisha  ·  anime / manga
 
 *[thumbnail placeholder — Straw Hat Crew composite, the Going Merry / Thousand Sunny ships, or Luffy Gear 5]*
 
@@ -1589,7 +1422,7 @@ Haki is the OP parallel power-system (Observation / Armament / Conqueror). How i
 
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
-| A | **Monk subclass (Way of Haki)** with three Haki paths as subclass-feature progression | LOW | Subclass-tier delivery; Ki-as-resource maps to Haki energy; existing Monk infrastructure |
+| A | **Monk subclass (Way of Haki)** with three Haki paths as subclass-feature progression | LOW | Subclass-tier delivery; Monk Focus Points as resource maps to Haki energy; existing Monk infrastructure |
 | B | **2-3 named feats** (Observation Haki / Armament Haki / Conqueror's Haki feats grant tier-appropriate abilities) | **LOWEST** | Feat-tier; modular; any class can pick up Haki paths through feats |
 | C | *New stand-alone Haki magic-system* | **HIGH — not recommended** | New parallel power-system conflicts with existing Devil-Fruit subclass + base 5e magic |
 
@@ -1657,7 +1490,7 @@ Sea Kings (CR-variable ocean megafauna), Marine Vice Admirals (Garp CR 25, Kizar
 | Engagement-only flag | false | Conversion is real and viral-engagement-scale |
 | AO3 total works | **94,966** | **Largest AO3 fanbase of any IP measured** |
 | AO3 D&D-crossover works | 46 | — |
-| AO3 proportional crossover rate | **0.048%** | **Lowest of any IP measured.** AO3 channel is heavily ship-fic-dominated for One Piece — the proportional rate underestimates conversion. **Methodological note: the AO3 proportional rate is unreliable for ship-fic-dominated fandoms.** Reddit + DDB are the load-bearing channels here |
+| AO3 proportional crossover rate | **0.048%** | **Lowest of any IP measured.** AO3 channel is heavily ship-fic-dominated for One Piece — the proportional rate underestimates conversion. **Methodological note: the AO3 proportional rate is unreliable for naval ship-fic-dominated fandoms.** Reddit + DDB are the load-bearing channels here |
 | **ACQUISITION — Demand Risk** | | |
 | Reddit D&D-subs (strict filter) | 12 confirmed posts | Modest count but substantial single-IP-anchored hits |
 | Reddit r/OnePiece reverse-funnel | **52 D&D-context posts** | Strong. **Killer hit: 4,130-up *"Cover art for our One Piece DND campaign"*** (125 comments — viral campaign-art post). Plus 427-up *"DND x OP Mashup: Cleric Kuma and Chronomancer Wizard Bonney"*, 290-up *"Current progress of my DND x OP Warlords"*, 246-up *"My One-piece OC for a DND session I joined"* |
@@ -1673,7 +1506,7 @@ Sea Kings (CR-variable ocean megafauna), Marine Vice Admirals (Garp CR 25, Kizar
 
 ---
 
-## 12. Dwarf Fortress  ·  Bay 12 Games (Tarn + Zach Adams)  ·  video game
+## 11. Dwarf Fortress  ·  Bay 12 Games (Tarn + Zach Adams)  ·  video game
 
 *[thumbnail placeholder — ASCII fortress cross-section, or premium-edition's tile-art dwarven kitchen with magma forge]*
 
@@ -1691,7 +1524,7 @@ The audience this brings: the deep-simulation / sandbox / procgen player demogra
 
 1. **Dwarf Fortress's defining feature is procedural generation — the IP isn't a fixed world, it's a world-generation engine.** The 5e-shaped answer: license a *specific generated world* as the canonical Dwarf Fortress D&D setting (worldgen seed-and-output published as the official map), with rules variants for procedural-generation-based campaigns. Or: license the *fortress-management gameplay loop* as a campaign structure, decoupled from any specific worldgen output.
 2. **The community's celebrated emergent stories (Boatmurdered) are the IP's value, not the procedural engine itself.** The 5e-shaped answer: lean on the *succession game* structure as the campaign frame. Multiple players take turns DM-ing or co-managing a single fortress across generations of dwarves. This is genuinely innovative for a 5e product line and would distinguish a DF book from any prior WoTC release.
-3. **Bay 12 Games is a two-person studio — Tarn and Zach Adams.** Honest framing: this is the most independent licensor we'd be negotiating with. Direct creator-relationship licensing, likely with Tarn Adams personally on the deal. That's a profoundly different negotiation than Capcom or Sony or Microsoft. Lower legal complexity, but the Adams brothers have famously declined commercial offers for years; the licensing call would have to align with their values around DF's longevity and culture.
+3. **Bay 12 Games is a two-person studio — Tarn and Zach Adams.** Honest framing: this is the most independent licensor to negotiate with. Direct creator-relationship licensing, likely with Tarn Adams personally on the deal. That's a profoundly different negotiation than Capcom or Sony or Microsoft. Lower legal complexity, but the Adams brothers have famously declined commercial offers for years; the licensing call would have to align with their values around DF's longevity and culture.
 4. **No existing licensed Dwarf Fortress TTRPG.** Clean lane. The Steam premium edition's tile-art is the only commercial extension; everything else is community modding (DFHack, mods, fan-art).
 
 ### Translation possibilities (DDB product surface)
@@ -1719,8 +1552,8 @@ This is the IP's killer mechanic — procedurally-generated legendary items with
 
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
-| A | **Pre-generated table of ~30-50 Strange Mood Artifacts** as named legendary magic items (each with a generated description and random property profile) | **LOWEST** | Standard legendary magic-item slot; the procedural-feel is delivered through *each item's flavor description* and the published-table-of-many pattern (mirrors *Vecna: Eve of Ruin*'s 50+ magic-item appendix; Tasha's Magical Cattle table). Zero new rules infrastructure |
-| B | **Tasha's-style optional rules: Strange Mood generator** — a procedural-generation table DMs can use to create unique artifacts at table | LOW-MID | Adds a procedural-generation table system (similar to *Xanathar's*' Trinket table or wild magic surge tables); opt-in; bounded |
+| A | **Pre-generated table of ~30-50 Strange Mood Artifacts** as named legendary magic items (each with a generated description and random property profile) | **LOWEST** | Standard legendary magic-item slot; the procedural-feel is delivered through *each item's flavor description* and the published-table-of-many pattern (mirrors *Vecna: Eve of Ruin*'s 50+ magic-item appendix. Zero new rules infrastructure |
+| B | **Optional rules: Strange Mood generator** — a procedural-generation table DMs can use to create unique artifacts at table | LOW-MID | Adds a procedural-generation table system (similar to *PHB* Trinket table or wild magic surge tables); opt-in; bounded |
 
 **Trusight read:** Option A is the brand-integrity-friendliest path and delivers the Strange Mood IP-recognition through standard magic-item infrastructure. Option B adds the generator system for tables that want truly-procedural artifacts; both can ship together (the published table is the curated subset of what the generator can produce).
 
@@ -1730,7 +1563,7 @@ DF's tradition: multiple players collaboratively run the same fortress across ge
 
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
-| A | **Optional rules variant: Succession Mode** (Tasha's-style opt-in — multi-DM-rotation framework with shared fortress sheet, character-handoff rules, generational-event tables) | LOW-MID | New opt-in rules variant; bounded by opt-in; genuinely novel for 5e and a meaningful product differentiator |
+| A | **Optional rules variant: Succession Mode** ( opt-in — multi-DM-rotation framework with shared fortress sheet, character-handoff rules, generational-event tables) | LOW-MID | New opt-in rules variant; bounded by opt-in; genuinely novel for 5e and a meaningful product differentiator |
 | B | **Campaign-frame guidance chapter (no rules infrastructure)** | **LOWEST** | Pure DM-advice chapter; describes the succession-game approach as a play-style suggestion without formal rules. Zero new infrastructure |
 
 **Trusight read:** Option A is the high-fidelity path that delivers Succession Mode as a meaningful product distinguisher; Option B is the brand-integrity-friendliest if the goal is "introduce the concept without committing to rules infrastructure."
@@ -1741,7 +1574,7 @@ Forgotten Beasts are procedurally-generated CR-variable encounters (every fortre
 
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
-| A | **Forgotten Beast generation table** (modular-stat-block infrastructure: pick body-plan + material + special-attack + size from rolling-tables) | LOW-MID | New procedural-bestiary table; similar to Tasha's Sidekick-builder pattern. Genuinely novel and meaningful product differentiator |
+| A | **Forgotten Beast generation table** (modular-stat-block infrastructure: pick body-plan + material + special-attack + size from rolling-tables) | LOW-MID | New procedural-bestiary table; a genuinely novel and meaningful product differentiator |
 | B | **15-20 pre-generated Forgotten Beasts** as named legendary creatures (curated subset of what the generator could produce) | **LOWEST** | Standard creature-statblock infrastructure; same approach as Strange Mood Artifacts Option A |
 
 **Trusight read:** Same dual-track as Strange Mood — Option B for curated published bestiary (LOWEST cost), Option A for the procedural-generator (LOW-MID cost; both can coexist).
@@ -1818,7 +1651,7 @@ DF is *built around* fortress maps — natural Sigil fit. Each succession-game's
 
 ---
 
-## 13. Demon Slayer  ·  Koyoharu Gotouge / Ufotable / Shueisha  ·  manga / anime / film
+## 12. Demon Slayer  ·  Koyoharu Gotouge / Ufotable / Shueisha  ·  manga / anime / film
 
 *[thumbnail placeholder — Tanjiro + Nezuko + Hashira composite, or the Infinity Castle climax key art]*
 
@@ -1904,7 +1737,7 @@ Lower Moon demons (CR 8-14 — Rui, Enmu, Akaza-pre-Moon), Upper Moon demons (CR
 |---|---|---|---|
 | A | **2-3 new species** (Demon Slayer Corps Recruit as variant human, Hashira-blooded as rare lineage, Demon as PC option for unusual campaigns) | MID | Within Spelljammer-envelope |
 | B | **Variant Human + Breathing-Style-Heritage feat** | **LOWEST** | Variant Human path with feat-tier lineage delivery |
-| C | **Custom Lineage (Tasha's)** with Hashira-Aspirant flavor | LOW | Existing Custom Lineage rules; pure flavor |
+| C | **Custom Lineage** with Hashira-Aspirant flavor | LOW | Existing Custom Lineage rules; pure flavor |
 
 **Trusight read:** Option B or C is the brand-integrity-friendliest path; the Hashira-aspirant fantasy is more training-trajectory than racial.
 
@@ -1966,6 +1799,173 @@ Period-Japan demonic-violence + Hashira self-sacrifice arcs are present in canon
 
 ---
 
+## 13. Pillars of Eternity + Pillars of Eternity II: Deadfire  ·  Obsidian Entertainment  ·  video game  ·  paired entry
+
+*[thumbnail placeholder — Watcher of Caed Nua + Eothas key art, or a side-by-side of the Dyrwood/Defiance Bay (PoE1) and the Deadfire Archipelago/Neketaka (PoE2)]*
+
+### Versioning note
+
+Pillars of Eternity (2015) and Pillars of Eternity II: Deadfire (2018) are paired entries from Obsidian Entertainment. AO3 keeps them as a single canonical *Pillars of Eternity* fandom (930 combined works), and r/projecteternity is the umbrella subreddit covering both games — the conversion conversation is umbrella-shaped, with the killer single artifact (the 472-up *"Fan map of Eora I made for a TTRPG campaign"*) explicitly framing Eora as the licensable world rather than either game's specific map. PoE1 and PoE2 are mechanically distinct in scope (stronghold-management vs ship-and-archipelago), introduce different companion casts, and feature different signature locations — both surfaces are surfaced in *Translation possibilities* and *Sigil VTT* below. BQ measures Deadfire specifically (Tier 2, fit 0.88); PoE1 isn't in BQ but the umbrella harvest covers it.
+
+### Quick description
+
+Pillars of Eternity (2015) and Pillars of Eternity II: Deadfire (2018) are Obsidian Entertainment's flagship modern CRPGs, explicitly built as spiritual successors to the Infinity Engine games (Baldur's Gate I/II, Icewind Dale, Planescape: Torment) by veterans of those exact studios. Setting: Eora — a renaissance-era fantasy world with explicit *animancy* (soul-magic) cosmology, mature theological politics across eleven gods (Eothas / Berath / Magran / Hylea / Wael / Skaen / Galawain / Ondra / Rymrgand / Woedica / Abydon), and a discrete history of soul-cycles and divine intervention. **Pillars I** covers the Watcher's investigation of soul-disturbances in the Dyrwood — a frontier-colonial region of Eora, anchored by the Watcher's inherited stronghold of Caed Nua and the politically-fractious capital Defiance Bay. Companions: Aloth (cipher-or-wizard), Eder (fighter), Pallegina (paladin), Durance (cleric), Hiravias (druid), Kana (chanter), Sagani (ranger), Grieving Mother (cipher). **Pillars II: Deadfire** follows the Watcher to the Deadfire Archipelago — a tropical-pirate-fantasy region — to pursue the awakened god Eothas, with ship-captaincy as the new stronghold-equivalent and naval-combat as a new gameplay layer. Companions: Maia (ranger), Tekehu (chanter/druid), Xoti (priest/monk), Serafen (cipher/barbarian), and the returning Aloth/Eder/Pallegina from PoE1. Combined sales across the series ~3M+; the IP is one of the most mechanically-respected modern CRPGs alongside Baldur's Gate 3 and Divinity: Original Sin 2. **Pillars's design DNA is direct-line D&D** — the developers are *literally* the people who designed Baldur's Gate I/II.
+
+### Marketing angle / D&D-universe niche
+
+This is the IP in the doc with the cleanest pedigree-fit to D&D — and the harvest's killer single artifact reflects that: a **472-up *"Fan map of Eora I made for a TTRPG campaign"*** post on r/projecteternity, plus *"Running PoE1 as a tabletop campaign"* (6 ups, 16 comments) and *"Deadfire TTRPG narrative advice?"* (15 ups, 5 comments). **Pillars fans run their PoE campaigns AS tabletop.**
+
+The marketing pitch: a *mature-political-fantasy* setting with explicit theological and animancy cosmology, designed by the people who designed D&D's most-loved CRPGs. Niche it fills: the *theologically-thick / political-fantasy* register that 5.5e currently undersupplies — adjacent to Eberron's pulp-and-political register but distinct. The audience this brings: **CRPG fans who already speak D&D's vocabulary fluently.** This isn't audience-acquisition; it's audience-reactivation — Baldur's-Gate-veteran players who are exactly WoTC's core demographic.
+
+### Translation challenges
+
+1. **Pillars's eleven-god pantheon overlaps with Faerûn's Forgotten Realms pantheon and the Theros pantheon.** The Eora cosmology is distinct enough to merit its own treatment, but a licensing call has to acknowledge: D&D has plenty of gods. The 5.5e-shaped answer: the Pillars pantheon is the *philosophical specificity* layer — these aren't "fantasy gods of fire and harvest," they're characterized by Obsidian's particular take on mortality, soul-cycles, and divine accountability. The licensing distinguisher is the Pillars pantheon's *characterization*, not the existence of gods.
+2. **Animancy (soul-magic) as a parallel magic system.** Pillars's animancy is a separate magic register from arcane/divine D&D magic — it's *applied science* operating on souls. The 5.5e-shaped answer: a new *Animancer* arcane tradition (Wizard subclass) plus *Cipher* (psionic-adjacent class — already canonical in Pillars and adjacent to D&D's psionics) plus *Chanter* (Bard variant — invocation-and-soul-binding flavor). The Pillars classes that don't exist in D&D get specific subclass treatment.
+3. **No off-DDB community fan-project; conversion is happening but distributed.** Unlike Persona 5 or Monster Hunter where a single coordinated fan project consumed conversion energy, Pillars conversion is happening on individual TTRPG-campaign-runner posts. The 472-up *"Fan map of Eora"* is the most-engaged single artifact, but it's a campaign-prep tool, not a rules-conversion project. WoTC's licensed product would consolidate the demand without displacing an existing fan project.
+4. **No existing licensed Pillars TTRPG.** Clean lane.
+
+### Translation possibilities (DDB product surface)
+
+DDB shows zero confirmed Pillars items, but the harvest reveals active fan-tabletop activity that DDB hasn't captured. The product surface is unusually class-deep because Pillars's class lineup includes original archetypes (Cipher, Chanter, Sage) that aren't in 5.5e canon.
+
+| Category | Specific examples | DDB-homebrew evidence |
+|---|---|---|
+| **Subclasses** | *Cipher* (psionic class — already in Pillars, adjacent to D&D psionics; Cipher Build threads on r/projecteternity confirm fan interest); *Chanter* (Bard variant — Pillars's invocation-singing class); *Animancer Wizard* (soul-magic arcane tradition); *Sage* (martial+arcane hybrid — Pillars-original); *Gun Mage Wizard* (Pillars's gun-and-spells fusion — referenced in *"Gun mage. Wizard, or Chanter?"* harvest post, 13 ups, 28 comments) | 0 DDB items; *Cipher Build* discussion post on r/projecteternity (28 ups, 8 comments); *Gun mage. Wizard, or Chanter?* (13 ups, 28 comments) |
+| **Species** | *Aumaua* (large-statured human-derivative), *Orlan* (small-statured, agility-focused), *Godlike* (born-marked-by-divinity, four sub-races: Death Godlike / Fire Godlike / Moon Godlike / Nature Godlike — playable archetypes already speced in Pillars) | clear gap — Godlike sub-races are ready-to-port |
+| **Backgrounds** | *Watcher of Caed Nua* (PoE1 protagonist background — soul-sight flavor), *Defiance Bay Politician* (PoE1), *White March Frontiersman* (PoE1 expansion), *Deadfire Captain* (PoE2), *Old Vailia Scholar*, *Huana Tribesfolk* (PoE2 — Deadfire-native), *Animancer Apprentice* | clear gap |
+| **Spells** | *Animancy* spell suite (soul-shock, soul-bind, soul-trap), *Eothas's Restoration*, *Berath's Doom* (death-domain spells), *Soul Whip* (Cipher signature), *Chanter invocations* (sustained-duration buff suite — different mechanically from 5.5e Bard inspiration) | clear gap |
+| **Magic items** | *Soul-bound weapons* (Pillars's signature mechanic — weapons that level up with the wielder; introduced PoE1, expanded PoE2), *Pallegina's Wing* (PoE1 paladin armor), *Engwithan ruins relics* (PoE1 — ancient civilization), *Magran's Fiery Trials* relic suite (PoE1 White March), *Modwyr* (PoE2 talking soulbound sword), *Captain's hat / Wahaki idol* (PoE2 Deadfire-themed), naval-themed magic items (PoE2) | clear gap |
+| **Mundane items** | Pillars-style firearms (arquebus, blunderbuss, pistol — already canonical in Pillars, fits the Renaissance-tech setting), Animancer's tools, soul-meditation incense | clear gap |
+| **Monsters** | *Engwithan constructs* (PoE1 + PoE2, CR 10-18 boss-tier ancient-civilization automatons), *Adragans* (gorgon-petrification, CR 12), *Eyeless* (PoE2 cursed Eothas-priests, CR varies), *Death Godlike NPC encounters*, *Sea Cave drakes* (PoE2 Deadfire-aquatic), *Oracle of Wael* (CR 16 lore-keeper boss), *Concelhaut* (PoE1 endboss-arch-lich, CR 22), *Eothas-as-titan* (PoE2 walking-god encounter, CR 25+ if treated as full god, or environmental-set-piece) | clear gap |
+| **Setting** | *Eora Setting Book* — multi-region world-bible covering both games' geography: **PoE1 regions** (Dyrwood, Defiance Bay, Twin Elms, the Eastern Reach, the White March DLC), **PoE2 regions** (Deadfire Archipelago, Neketaka, Magran's Teeth, the Black Isles), with *Old Vailia* and *Aedyr* as background-civilizations referenced across both. Soul-cycle theology and divine politics as throughline. Map already exists at fan-quality on r/projecteternity (the 472-up *"Fan map of Eora"*). The licensing scope: full Eora world-bible, with PoE1 and PoE2 regions as discrete adventure-arcs within it | 39 forum results in BQ; *"Pillars of Eternity II: Deadfire (spoilers contained within) - RPGnet"* top thread |
+
+#### Slot options — brand-integrity-cost framing
+
+Pillars's signature challenge is the opposite of Solo Leveling's: the IP has *too much* class diversity (Cipher, Chanter, Sage are Pillars-original archetypes) and a parallel-magic-system (animancy = soul-magic, distinct from arcane/divine). The brand-integrity discipline asks which existing 5.5e slots deliver each Pillars-distinctive archetype at lowest cost. The Obsidian / Baldur's Gate pedigree-fit is a marketing-side advantage that supports a brand-integrity-friendly approach.
+
+##### Pillars-original archetypes (Cipher, Chanter, Sage) — 4 fitting options
+
+These are the most-mechanically-novel Pillars elements. How they fit:
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Cipher as Wizard subclass (Psionic tradition)** + **Chanter as Bard subclass (Invocation singer)** | **LOW** | Subclass-tier delivery; uses existing parent-class infrastructure; psionic-Wizard is established 5.5e direction. Each fits a distinct existing class identity |
+| B | **Cipher + Chanter as one consolidated Pillars subclass per parent class** (delivers both archetypes via dual-subclass approach) | LOW | 2 subclasses total within typical envelope |
+| C | **Refresh existing subclasses** (e.g., College of Eloquence Bard with Chanter-flavored options; Soulknife Rogue with Cipher-flavored options) | **LOWEST** | Zero new subclass slot; layers IP-recognition onto under-used 5.5e content |
+| D | *Full Pillars class-lineup port (Cipher / Chanter / Sage / Gun Mage as separate classes or subclasses)* | **HIGH — not recommended** | Brand-dilution; too many new subclasses |
+
+**Trusight read:** Option A is the cleanest IP-recognition path (Cipher as psionic-Wizard subclass + Chanter as invocation-Bard subclass). Option C is the lowest-cost alternative; Soulknife Rogue is mechanically very close to Cipher's soul-piercing fantasy and could absorb it with refresh flavor.
+
+##### Animancy (soul-magic) — 3 fitting options
+
+Animancy is Pillars's parallel magic system — *applied science* operating on souls. Distinct from arcane/divine but mechanically adjacent.
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Wizard arcane tradition (Animancer)** with soul-themed spell list | **LOW** | Subclass-tier delivery using existing Wizard infrastructure; soul-themed spells (soul-shock, soul-bind, soul-trap) live in existing spell-school taxonomy |
+| B | **Cleric Domain (Soul-Cycle)** as alternative animancy path | LOW | Domain-tier delivery; theological-investigation flavor |
+| C | *New parallel magic system (Animancy as separate magic-axis from arcane/divine)* | **HIGH — not recommended** | Permanent brand commitment; conflicts with 5.5e's existing arcane/divine taxonomy |
+
+**Trusight read:** Option A is the cleanest path; Option B for the theological-investigation flavor without adding to Wizard's subclass shelf.
+
+##### Soulbound weapons — 2 fitting options
+
+Pillars's signature magic-item mechanic — weapons that level up with the wielder — is mechanically novel for 5.5e.
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **New magic-item category: Soulbound Weapons** (3-5 named weapons that gain properties as wielder advances) | **LOW-MID** | New magic-item category with scaling-with-level mechanic. Could carry into other licensed products (Berserk's Dragonslayer, Elden Ring's iconic weapons, Hollow Knight's Pure Vessel sword). Cross-IP applicability justifies the brand-integrity cost |
+| B | **Standard legendary/very-rare magic items without scaling mechanic** | **LOWEST** | Each soulbound weapon as standard legendary with fixed properties; loses the scaling fantasy but uses existing rarity infrastructure |
+
+**Trusight read:** Option A is the higher-cost path that creates a new mechanical-category WoTC could reuse across multiple future licensed products. Option B is the brand-integrity-friendliest single-product path.
+
+##### Eora species (Aumaua, Orlan, Godlike) — 3 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **3 new species** (Aumaua, Orlan, Godlike with 4 sub-races) | MID | Within Spelljammer-envelope (6 new species). Godlike sub-races (Death / Fire / Moon / Nature) are the distinctive Pillars element |
+| B | **2 species + Godlike as background-tier** (Aumaua + Orlan as full species; Godlike as variant-Human feat with elemental flavor) | **LOW** | Reduces species-shelf expansion; Godlike-Heritage feat captures the divinity-marked flavor |
+| C | **1 Eoran species** with subraces for Aumaua / Orlan / Godlike-variants | **LOWEST** | Single canonical species with subraces inside; mirrors elf-subrace pattern |
+
+**Trusight read:** Option A delivers the most IP-recognition (the Godlike sub-races are ready-to-port and distinctive). Option B is the brand-integrity-friendly compromise if shelf-expansion is a concern.
+
+##### Renaissance-tech firearms — 2 fitting options
+
+Pillars features firearms (arquebus, blunderbuss, pistol) canonically. 5.5e already has firearm rules.
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Reflavor existing firearm rules** with Pillars-flavored arquebus / blunderbuss / pistol stats | **LOWEST** | Zero new mechanics; pure flavor layer over existing optional firearm rules |
+| B | **Gun Mage Wizard subclass** (Pillars-original combining firearms with spellcasting) | LOW | Subclass slot; mechanically novel; cited in community harvest (13-up *"Gun mage. Wizard, or Chanter?"* on r/projecteternity) |
+
+**Trusight read:** Option A handles the firearm-presence baseline. Option B adds the Gun-Mage IP-recognition through a single subclass.
+
+##### Engwithan ruins bestiary — 1 fitting option
+
+Engwithan constructs (CR 10-18), Adragans, Eyeless, Sea Cave drakes, Oracle of Wael, Concelhaut (CR 22 endboss-arch-lich), Eothas-as-titan. All standard creature types (Construct / Aberration / Fiend / Monstrosity). Mythic Action infrastructure for boss-tier monsters.
+
+**Brand-integrity cost: LOW.** Existing taxonomy + Mythic Actions.
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Backgrounds (Watcher of Caed Nua, Defiance Bay Politician, Deadfire Captain, Huana Tribesfolk, White March Frontiersman) | LOW | Standard background infrastructure; multiple backgrounds within typical envelope |
+| Spells (Animancy suite, Eothas's Restoration, Berath's Doom, Soul Whip, Chanter invocations) | LOW | Standard spell slots; existing schools |
+| Mundane items (firearms, Animancer's tools, soul-meditation incense) | LOW | Equipment chapter |
+| Setting book (Eora world-bible, PoE1 + PoE2 regions as adventure-arcs) | LOW | Within Wildemount / Theros setting-book envelope |
+
+### Potential Sigil VTT locations
+
+**Pillars I:**
+- **Caed Nua** — the Watcher's inherited stronghold-keep, recurring base map and the canonical PoE1 hub.
+- **Defiance Bay** — PoE1 capital city, multi-district urban encounter map with political-faction tension (House Doemenel / Crucible Knights / Dozens).
+- **The Endless Paths of Od Nua** — PoE1's signature mega-dungeon, ~15 floors descending under Caed Nua.
+- **Twin Elms** — PoE1 endgame elven-canopy city, theological-investigation set-piece.
+- **The White March** — PoE1 expansion's snow-and-ice DLC region; Stalwart village + Durgan's Battery dwarf-fortress dungeon.
+
+**Pillars II Deadfire:**
+- **Neketaka** — PoE2 Deadfire capital, multi-tiered island city, the largest single map in either game.
+- **Magran's Teeth / Cinder Cliffs** — volcanic island-chain naval-encounter map (Deadfire-specific).
+- **Ashfall** — animancy-laboratory setpiece map.
+- **The Black Isles / Ukaizo** — PoE2 endgame archipelago + Eothas-titan confrontation arena.
+- **Captaincy ship-deck maps** — the Defiant (Watcher's PoE2 ship) deck plans for naval-combat encounters.
+
+**Both games:**
+- **Engwithan ruins** (procedurally-generated ancient-civilization dungeons — both games include them, would translate as a recurring location-template for Sigil).
+
+### Measured data — grouped by 4-Risk UB Matrix dimension
+
+| Metric | Value | Reading |
+|---|---|---|
+| **FIT — Translation Risk** | | |
+| License Fit Score (Deadfire) | **0.88** | High — Obsidian's design DNA is direct-line D&D (same studio veterans built Baldur's Gate I/II and Icewind Dale) |
+| Tier | edge | UB Matrix edge-tier |
+| Measured sources | 2 of 5 channels | Tier 2 in BQ — manual harvest below thickens to Tier 1 effective |
+| DDB total items | 0 | Clear gap — conversion is on per-campaign-runner posts, not coordinated fan project |
+| **RECEPTION — Community Risk** | | |
+| Reception (weighted) | 0.61 | Solid — fit/reception gap is moderate (similar to HotD's structural-fit-vs-reception pattern) |
+| Backlash flags | none | low Community Risk |
+| Engagement-only flag | false | Conversion is real and active |
+| AO3 total works (umbrella) | 930 | Mid-size fanbase |
+| AO3 D&D-crossover works (umbrella) | 5 | — |
+| AO3 proportional crossover rate | **0.54%** | **~4× HotD's 0.13%; above the calibration cluster** (Mistborn 0.29%, SL 0.31%, Hades 0.28%); below ORV's 0.99% |
+| **ACQUISITION — Demand Risk** | | |
+| Reddit D&D-subs (strict filter, last 12mo) | **4 confirmed posts** | Modest. *"Game Hierarchies: Creating Plot-Heavy D&D Campaigns Without Railroading Players"* (r/DnD) — references PoE narrative design as exemplar |
+| Reddit r/projecteternity reverse-funnel | **11 D&D-context posts** | **Killer single artifact: 472-up *"Fan map of Eora I made for a TTRPG campaign"*** (30 comments). Plus *"Running PoE1 as a tabletop campaign"* (6 ups, 16 comments — direct-conversion campaign), *"Deadfire TTRPG narrative advice?"* (15 ups, 5 comments — direct conversion question), *"Feeling bored... What would your tabletop OC be?"* (14 ups, 8 comments — Pillars character → tabletop OC migration), *"Gun mage. Wizard, or Chanter?"* (13 ups, 28 comments — class-conversion discussion), *"Cipher Build"* (28 ups, 8 comments) |
+| Forum total results | 39 | Mid-tier — top thread *"Pillars of Eternity II: Deadfire (spoilers contained within) - RPGnet"* (TTRPG-discussion-side conversation) |
+| **COMMERCIAL — Revenue Risk** | | |
+| BGG proxy score | NULL | No Pillars board game |
+| DMs Guild + DTRPG confirmed products | **0** | Clean lane — no third-party Pillars TTRPG content |
+| External licensed product | **none** | Obsidian/Microsoft-Bethesda has not licensed Pillars for tabletop. Clean lane. |
+| Catalog signal | clean lane / first to market | Negotiation-leverage point — no competing TTRPG to anchor advances against |
+
+**Cross-channel reading.** Pillars is a **pedigree-and-conversion-aligned** case — high fit (0.88) reflects the literal-direct-lineage from Obsidian veterans to D&D's classic CRPGs; the 472-up Eora-map artifact and the active "Running PoE1 as a tabletop campaign" / "Deadfire TTRPG narrative advice" threads on r/projecteternity confirm fans run their PoE campaigns as tabletop already. The AO3 proportional rate (0.54%) is meaningfully above the calibration cluster, suggesting genuine D&D-conversion intent in the fanbase. The data-shape is *modest in raw volume but unusually concentrated in conversion-quality signals* — fewer artifacts than Monster Hunter, but each artifact is direct-conversion (campaign maps, narrative-advice questions, class-conversion build discussions).
+
+**The pedigree pitch.** This is the unique licensing angle. Obsidian's senior staff *literally designed Baldur's Gate I/II*. A Pillars D&D product carries the implicit endorsement of "the people who built D&D's most-loved CRPGs are the people whose IP we're licensing into D&D." That's a marketing register no other IP in this doc can replicate. **Recommendation: a strong cross-portfolio fit even with modest volume signals; the fit-score precision and pedigree-alignment make this a credible greenlight candidate for the *theologically-thick fantasy* niche specifically.**
+
+---
+
 ## 14. Dark Souls  ·  FromSoftware  ·  video game series
 
 #### Strategic positioning note
@@ -1985,7 +1985,7 @@ Dark Souls is FromSoftware's genre-defining action-RPG trilogy: Dark Souls (2011
 
 ### Marketing angle / D&D-universe niche
 
-This is the breakdown that maps directly to the optimization-and-system-mastery half of the D&D player base — the half that buys Tasha's, runs Treantmonk's character builds, plays at a tactically demanding table, and has spent a decade saying 5e is too easy by default. *The Dark Souls IP is that desire monetized.* The marketing line is: a licensed Dark Souls 5e setting positions itself as the **harder, optimization-rewarding** D&D variant, with a Tasha's-style optional rules variant for "Souls-difficulty" combat. The forum-thread evidence makes this empirical: the top GitP/RPG.net Dark Souls thread is *"Ruminating on a Stamina System implementation"* — the community is already building exactly this rules variant. The most-engaged D&D-sub crossover discussion is *"Could I get some advice or feedback on my HB rules of my upcoming souls campaign?"* Dark Souls is what the homebrew community converts to when 5e baseline isn't tactical enough.
+This is the breakdown that maps directly to the optimization-and-system-mastery half of the D&D player base — the half that runs Treantmonk's character builds, plays at a tactically demanding table, and has spent a decade saying 5.5e is too easy by default. *The Dark Souls IP is that desire monetized.* The marketing line is: a licensed Dark Souls 5.5e setting positions itself as the **harder, optimization-rewarding** D&D variant, with an optional rules variant for "Souls-difficulty" combat. The forum-thread evidence makes this empirical: the top GitP/RPG.net Dark Souls thread is *"Ruminating on a Stamina System implementation"* — the community is already building exactly this rules variant. The most-engaged D&D-sub crossover discussion is *"Could I get some advice or feedback on my HB rules of my upcoming souls campaign?"* Dark Souls is what the homebrew community converts to when 5e baseline isn't tactical enough.
 
 ### Translation challenges
 
@@ -2019,7 +2019,7 @@ Mirror of the Elden Ring options (Section 5) but DS-native:
 | # | Approach | Brand-integrity cost | Description |
 |---|---|---|---|
 | A | **Per-monster Mythic Souls-Tier stat-block variants** baked into each boss (Standard / Souls-Tier variants for Ornstein, Smough, Artorias, etc.) | **LOW** | Standard stat-block infrastructure; opt-in at table-setup. Same pattern as Elden Ring entry — cross-IP consistency |
-| B | **Tasha's-style optional rules module ("Souls-Mode")** with stamina-cost-per-action + bumped CR | LOW-MID | Wider opt-in scope; one rules module covers both DS and ER licensing |
+| B | **Optional rules module ("Souls-Mode")** with stamina-cost-per-action + bumped CR | LOW-MID | Wider opt-in scope; one rules module covers both DS and ER licensing |
 | C | *New mandatory Souls-Mode subsystem* | **HIGH — not recommended** | Permanent commitment; conflicts with existing Saltmarsh / Spelljammer naval rules baseline |
 
 **Trusight read:** Option A delivers difficulty through standard stat-blocks; Option B if WoTC wants a cross-IP rules module that applies to both DS and ER licensed products.
@@ -2051,7 +2051,7 @@ The DS hollowing mechanic is the IP's signature character-condition (the main *T
 |---|---|---|---|
 | A | **Cursed-item (Darksign) with periodic respawn-at-bonfire mechanic** | **LOWEST** | Item-tier delivery; uses cursed-item infrastructure; the respawn-at-bonfire mechanic ties to long-rest rules |
 | B | **New "Hollowing" condition** with cumulative penalties; humanity-as-resource to restore | MID | Adds to 5e's condition list; carries into future books |
-| C | **Tasha's-style optional rules ("Hollow-Mode")** — death-respawn variant where character HP/level persist but abilities decay until bonfire-rest | LOW-MID | Opt-in rules variant; bounded |
+| C | **Optional rules ("Hollow-Mode")** — death-respawn variant where character HP/level persist but abilities decay until bonfire-rest | LOW-MID | Opt-in rules variant; bounded |
 
 **Trusight read:** Option A is the brand-integrity-friendliest path; Option C for the broader respawn-loop rules variant if WoTC wants the Souls fantasy at full fidelity.
 
@@ -2196,7 +2196,7 @@ The Hades cast spans 12 Olympians + Hades II's Hecate witchcraft tradition. Mult
 |---|---|---|---|
 | A | **Short-rest patron-bond mechanic baked into Warlock subclass features** | **LOWEST** | Existing Warlock-pact infrastructure; per-rest boon-negotiation as subclass feature; zero new rules |
 | B | **Boon-rings as attuned magic items** (slot grants one Boon-per-ring; can attune multiple per the standard 3-slot limit) | LOW | Item-tier delivery; existing magic-item attunement |
-| C | *New "Boon-Pact" rules subsystem* (Tasha's-style optional rules variant) | LOW-MID | Opt-in rules variant; bounded |
+| C | *New "Boon-Pact" rules subsystem* | LOW-MID | Opt-in rules variant; bounded |
 
 **Trusight read:** Option A delivers the per-encounter-Boon fantasy through subclass features; Option B adds a magic-item layer for cross-character flexibility.
 
@@ -2301,10 +2301,10 @@ The Persona 5 niche in the D&D portfolio is **modern-urban-fantasy with a Jungia
 
 ### Translation challenges
 
-1. **Modern-Tokyo setting is unusual for D&D.** Standard 5e is medieval-fantasy by default; the Phantom Thieves carry rapiers and modern guns, fight with Personas in cognitive dungeons, and live ordinary high-school lives between heists. The 5e-shaped answer: position the licensed product as a *Modern Persona* setting variant, similar in shape to Eberron's stand-alone treatment. Modern firearms are already in 5e via Tasha's optional rules; the Persona-summon mechanic resolves the magic question without forcing the entire 5e magic system into a Tokyo register.
+1. **Modern-Tokyo setting is unusual for D&D.** Standard 5e is medieval-fantasy by default; the Phantom Thieves carry rapiers and modern guns, fight with Personas in cognitive dungeons, and live ordinary high-school lives between heists. The 5e-shaped answer: position the licensed product as a *Modern Persona* setting variant, similar in shape to Eberron's stand-alone treatment. Firearms are already in 5.5e; modern ones are therefore possible; the Persona-summon mechanic resolves the magic question without forcing the entire 5e magic system into a Tokyo register.
 2. **One-character-can-have-many-Personas.** Joker (the protagonist) is the Wild Card who collects and switches between dozens of Personas; everyone else has one. The 5e-shaped answer: a *Wild Card Warlock* subclass available only as a single-PC option (one per party) with limited Persona-fusion mechanics; standard players take a *Persona-User* subclass tied to a single signature Persona (Carmen, Goemon, Captain Kidd, Necronomicon, Milady). This mirrors the canon — Joker is unique; the rest of the Phantom Thieves each have one signature Persona.
 3. **The Confidant / Social Link mechanic doesn't have a 5e analog.** Persona 5's calendar-driven relationship-building system is one of its signatures. The 5e-shaped answer: a *Confidant* background-relationship rules variant (similar in spirit to the Bonds + Inspiration mechanics) where players build long-term NPC bonds across a campaign that grant scaling benefits. Optional rules variant; doesn't break a non-Persona campaign.
-4. **No existing licensed Persona TTRPG, but a fan-made 5e Persona is in active community development.** Our harvest surfaced *"Introducing... Persona 5e (Pre-Alpha)"* on r/Persona5 (217 ups, 39 comments) and *"PERSONA 5E (RELOAD CHARACTER SHEET V2)"* (69 ups). This is the "community-is-already-doing-the-work" pattern but unusually concentrated — the fan project is a coordinated rules variant rather than a scattering of subclass artifacts. That's why DDB shows zero items: the conversion energy is consolidated on a Reddit-organized homebrew project. Honest framing: WoTC's licensed product would supersede the fan project (which would migrate into community add-on content for the official release).
+4. **No existing licensed Persona TTRPG, but a fan-made 5e Persona is in active community development.** Our harvest surfaced *"Introducing... Persona 5e (Pre-Alpha)"* on r/Persona5 (217 ups, 39 comments) and *"PERSONA 5.5e (RELOAD CHARACTER SHEET V2)"* (69 ups). This is the "community-is-already-doing-the-work" pattern but unusually concentrated — the fan project is a coordinated rules variant rather than a scattering of subclass artifacts. That's why DDB shows zero items: the conversion energy is consolidated on a Reddit-organized homebrew project. Honest framing: WoTC's licensed product would supersede the fan project (which would migrate into community add-on content for the official release).
 
 ### Translation possibilities (DDB product surface)
 
@@ -2347,7 +2347,7 @@ P5's calendar-driven relationship-building system has no direct 5e analog. The h
 |---|---|---|---|
 | A | **Background-tier "Confidant" mechanic** — each Confidant is an NPC background-relationship that grants scaling roleplay benefits, similar to expanded Bonds | **LOWEST** | Background slot; modular; can scale across the campaign without rules infrastructure |
 | B | **Inspiration variant rules** — Confidant bonds grant Inspiration on emotional-beat triggers | LOW | Existing Inspiration mechanic reflavored; opt-in flavor layer |
-| C | *Optional rules variant (Confidant Track)* — Tasha's-style opt-in subsystem with structured 1-10 rank progression per relationship | **MID** | New rules subsystem; could carry into future books (Stardew-Valley-flavored cozy-fantasy products) but adds a permanent mechanic |
+| C | *Optional rules variant (Confidant Track)* — an opt-in subsystem with structured 1-10 rank progression per relationship | **MID** | New rules subsystem; could carry into future books (Stardew-Valley-flavored cozy-fantasy products) but adds a permanent mechanic |
 
 **Trusight read:** Options A + B together deliver the Confidant fantasy through existing mechanics. Option C is the higher-fidelity path if WoTC sees Confidants-as-a-mechanic having cross-IP applicability.
 
@@ -2357,8 +2357,8 @@ The Persona 5 setting is genre-distant from 5e's medieval-fantasy default.
 
 | # | Approach | Brand-integrity cost | Description |
 |---|---|---|---|
-| A | **Modern Persona** standalone setting variant (Eberron-style stand-alone treatment with modern-urban-fantasy rules) | LOW-MID | Within Eberron / Spelljammer setting-variant envelope. Modern firearms via Tasha's optional rules. Metaverse / cognitive-Palace cosmology as setting-distinctive mechanic |
-| B | **Reflavor existing Modern-Magic frameworks** (e.g., Strixhaven's modern-academia setting; bring in Tasha's firearm rules) | **LOWEST** | Zero new setting infrastructure; pure flavor layer over existing modern-D&D content |
+| A | **Modern Persona** standalone setting variant (Eberron-style stand-alone treatment with modern-urban-fantasy rules) | LOW-MID | Within Eberron / Spelljammer setting-variant envelope. Modern firearms. Metaverse / cognitive-Palace cosmology as setting-distinctive mechanic |
+| B | **Reflavor existing Modern-Magic frameworks** (e.g., Strixhaven's modern-academia setting; bring in firearm rules) | **LOWEST** | Zero new setting infrastructure; pure flavor layer over existing modern-D&D content |
 
 **Trusight read:** Option A delivers the IP-recognition for a P5-anchored setting book. Option B is the lowest-cost path if the setting is treated as adventure-module flavor rather than full setting.
 
@@ -2392,7 +2392,7 @@ Shadows (CR-variable general bestiary) + Palace Rulers as boss-tier (Kamoshida C
 |---|---|---|
 | Persona-themed spells (Eiha/Agi/Bufu/Garu/Zio/Psi/Diarama) | LOW | Small surface; existing schools (Evocation / Necromancy / Conjuration); each element-spell maps to existing damage types |
 | Backgrounds (Phantom Thief, Shujin Student, Cafe Worker, Detective) | LOW | Multiple backgrounds within typical envelope |
-| Mundane items (calling cards, Phantom-Thief masks, school uniforms, modern firearms via Tasha's) | LOW | Equipment chapter |
+| Mundane items (calling cards, Phantom-Thief masks, school uniforms, modern firearms) | LOW | Equipment chapter |
 | Setting book | LOW-MID | See *Modern-Tokyo setting* options above |
 
 ### Potential Sigil VTT locations
@@ -2429,7 +2429,7 @@ Each Palace is a complete dungeon set-piece — the IP is *built around* dungeon
 | AO3 proportional crossover rate | **0.081%** | **Lower than HotD's 0.13%.** High-volume engagement, low D&D-conversion proportional intent — the AO3 fanbase is romance/relationship-driven (Confidant-system fan content), not crossover-driven |
 | **ACQUISITION — Demand Risk** | | |
 | Reddit D&D-subs (strict filter, last 12mo) | **5 confirmed posts** | Direct conversion-questions: *"Quick question. If I wanted to make a campaign based on Persona 5 with the DnD system, does that mean all the characters should be warlocks?"* (r/DnD, 8 comments), *"I want to create a master thief in a high magic world, builds"* (9 comments), *"Looking for tips and suggestions for a Warlock build"* (Persona-themed) |
-| Reddit r/Persona5 reverse-funnel | **12 D&D-context posts** | **High-engagement: *"The Phantom Thieves in DND"* — 227 ups, 42 comments; *"Introducing... Persona 5e (Pre-Alpha)"* — 217 ups, 39 comments (community-built fan 5e conversion in active development); *"PERSONA 5E (RELOAD CHARACTER SHEET V2)"* — 69 ups, 13 comments (iterating)** |
+| Reddit r/Persona5 reverse-funnel | **12 D&D-context posts** | **High-engagement: *"The Phantom Thieves in DND"* — 227 ups, 42 comments; *"Introducing... Persona 5e (Pre-Alpha)"* — 217 ups, 39 comments (community-built fan 5e conversion in active development); *"PERSONA 5.5e (RELOAD CHARACTER SHEET V2)"* — 69 ups, 13 comments (iterating)** |
 | Reddit r/Persona5Royal reverse-funnel | **0 D&D-context posts** | **The asymmetry is itself the finding.** D&D-conversion engagement happens on the base-game sub, not the Royal-specific sub — Royal-sub fans are focused on Royal-exclusive content (Kasumi, Maruki, third semester) |
 | Forum total results | 7 | Mid-tier; top thread *"Persona 5 Royal | Video Games Open | RPGnet"* |
 | **COMMERCIAL — Revenue Risk** | | |
@@ -2491,7 +2491,7 @@ This is the single most-important element — two of four D&D-sub strict-filter 
 | # | Approach | Brand-integrity cost | Description |
 |---|---|---|---|
 | A | **Refresh Ghosts of Saltmarsh's naval-combat rules** with SoT-anchored expansion (ship classes — Galleon / Brigantine / Sloop — as updated stat blocks; faction-color sails as flavor) | **LOWEST** | Builds on existing Saltmarsh content; satisfies the "Saltmarsh is aging" community sentiment; zero new rules infrastructure beyond stat-block-tier additions |
-| B | **Optional rules variant (Tasha's-style "Naval Encounters" module)** — opt-in expanded ship-vs-ship rules with morale, boarding, plunder mechanics | LOW-MID | New rules variant within Tasha's-precedent. Adds infrastructure but bounded by opt-in |
+| B | **Optional rules variant** — opt-in expanded ship-vs-ship rules with morale, boarding, plunder mechanics | LOW-MID | New rules variant within game rule precedent. Adds infrastructure but bounded by opt-in |
 | C | *New mandatory naval-combat subsystem* | **HIGH — not recommended** | Permanent commitment that conflicts with existing Saltmarsh / Spelljammer naval rules |
 
 **Trusight read:** Option A is the brand-integrity-friendliest path and aligns with the community's articulated demand (*"better naval-combat ruleset, not a new subsystem"*).
@@ -2808,7 +2808,7 @@ The IP's narrative engine is faction-politics. Per main entry *Translation chall
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
 | A | **Reflavor existing Faction Renown** (DMG infrastructure) with Westerosi house-loyalty mechanic | **LOWEST** | Zero new rules; pure flavor over existing DMG Faction Renown rules |
-| B | **Optional rules variant: Dynastic Politics** (Tasha's-style opt-in for court-intrigue, slow-burn-conflict, succession-event tracking) | MID | New rules subsystem; **per main entry's negotiation-leverage paragraph: this is a co-development funding lever — the engine-question means inventing this subsystem is significant rules-design work the licensor should share funding for** |
+| B | **Optional rules variant: Dynastic Politics** Court-intrigue, slow-burn-conflict, succession-event tracking) | MID | New rules subsystem; **per main entry's negotiation-leverage paragraph: this is a co-development funding lever — the engine-question means inventing this subsystem is significant rules-design work the licensor should share funding for** |
 | C | *New mandatory faction-politics subsystem* | **HIGH — not recommended** | Permanent commitment that conflicts with future books |
 
 **Trusight read:** Option A is the brand-integrity-friendliest baseline path. Option B is the high-fidelity path that captures HotD's narrative-engine — and a term-sheet negotiation lever per the main entry's framing.
@@ -2900,11 +2900,11 @@ Valyrian steel weapons are generations-old named blades. **Slots into the same n
 | 6 | Omniscient Reader's Viewpoint | Early-signal sleeper — 0.99% AO3 proportional rate (corpus-leading proportional); peak 2025 cultural momentum (anime + film) |
 | 7 | Bloodborne | Deep-data sleeper (5 sources, 71 DDB items); fills gothic-cosmic-horror gap; Sony IP-complexity is the honest caveat |
 | 8 | Mistborn | Highest fit (0.96 — top in corpus); Sanderson's pedigree; Brotherwise Cosmere RPG ecosystem-trap as honest caveat |
-| 9 | Pillars of Eternity + Deadfire | Pedigree pitch — Obsidian veterans literally built Baldur's Gate I/II; 472-up Eora map artifact |
-| 10 | Deep Rock Galactic | Commercial-precedent-led — existing Mood Publishing board game; 2.99% AO3 rate; Spelljammer-adjacent sci-fi-fantasy |
-| 11 | One Piece | Largest AO3 fanbase (94,966) + corpus-leading forum signal (6,200); net-new-audience pitch (acquisition score 0.87) |
-| 12 | Dwarf Fortress | Highest AO3 rate (4.11%) on tiny volume; prestige/innovation play; Strange Mood Artifacts as genuinely novel mechanic |
-| 13 | Demon Slayer | Corpus-leading single-character DDB engagement (718-add Blood Hunter); passionate-subset pattern; thin reverse-funnel |
+| 9 | Deep Rock Galactic | Commercial-precedent-led — existing Mood Publishing board game; 2.99% AO3 rate; Spelljammer-adjacent sci-fi-fantasy |
+| 10 | One Piece | Largest AO3 fanbase (94,966) + corpus-leading forum signal (6,200); net-new-audience pitch (acquisition score 0.87) |
+| 11 | Dwarf Fortress | Highest AO3 rate (4.11%) on tiny volume; prestige/innovation play; Strange Mood Artifacts as genuinely novel mechanic |
+| 12 | Demon Slayer | Corpus-leading single-character DDB engagement (718-add Blood Hunter); passionate-subset pattern; thin reverse-funnel |
+| 13 | Pillars of Eternity + Deadfire | **Repositioned per strategic-timing note.** Pedigree pitch (Obsidian veterans literally built Baldur's Gate I/II) + 472-up Eora map artifact, but PoE1 (2015) / Deadfire (2018) are past commercial peak. See *Strategic positioning note* in the entry |
 | 14 | Dark Souls | **Repositioned per strategic-timing note.** Strong community signal but IP cultural-peak was a decade ago; better read as grimdark-genre-appetite measure than current acquisition case. See *Strategic positioning note* in the entry |
 | 15 | Hades + Hades II | Reception 0.35 explained — structural difficulty + Theros overlap, not community rejection; items-led conversion direction (309-up Aspect axe) |
 | 16 | Persona 5 + Persona 5 Royal | Off-DDB consolidation pattern; 0.081% AO3 rate but 217-up fan 5e Persona project; the convergence-threshold methodology IP |
