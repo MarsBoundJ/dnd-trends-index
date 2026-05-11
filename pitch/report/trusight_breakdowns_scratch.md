@@ -2808,7 +2808,7 @@ The IP's narrative engine is faction-politics. Per main entry *Translation chall
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
 | A | **Reflavor existing Faction Renown** (DMG infrastructure) with Westerosi house-loyalty mechanic | **LOWEST** | Zero new rules; pure flavor over existing DMG Faction Renown rules |
-| B | **Optional rules variant: Dynastic Politics** Court-intrigue, slow-burn-conflict, succession-event tracking) | MID | New rules subsystem; **per main entry's negotiation-leverage paragraph: this is a co-development funding lever — the engine-question means inventing this subsystem is significant rules-design work the licensor should share funding for** |
+| B | **Optional rules variant: Dynastic Politics** (Court-intrigue, slow-burn-conflict, succession-event tracking) | MID | New rules subsystem; **per main entry's negotiation-leverage paragraph: this is a co-development funding lever — the engine-question means inventing this subsystem is significant rules-design work the licensor should share funding for** |
 | C | *New mandatory faction-politics subsystem* | **HIGH — not recommended** | Permanent commitment that conflicts with future books |
 
 **Trusight read:** Option A is the brand-integrity-friendliest baseline path. Option B is the high-fidelity path that captures HotD's narrative-engine — and a term-sheet negotiation lever per the main entry's framing.
