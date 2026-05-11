@@ -436,6 +436,80 @@ DDB shows zero confirmed Persona-tied items — interesting given the Reddit con
 | **Monsters** | *Shadows* (general bestiary — Vanillas, Fortunes, Kingbabies, etc.), *Palace Rulers* as boss-tier (Kamoshida CR 8, Madarame CR 10, Kaneshiro CR 12, Futaba's Sphinx CR 14, Okumura CR 16, Niijima CR 18, Shido CR 20, Yaldabaoth CR 25), *Reaper* (recurring superboss, CR 22) | 0 — high-tier boss roster opportunity |
 | **Setting** | *Tokyo, Persona 5* — modern-urban-fantasy sourcebook; Mementos as procedurally-generated dungeon system; the eight Palaces as set-piece adventures; the Velvet Room as cross-campaign hub | 7 forum results, top thread *"Persona 5 Royal | Video Games Open | RPGnet"* — RPG-discussion-side conversation |
 
+#### Slot options — brand-integrity-cost framing
+
+P5's signature challenges: the protagonist Joker is the Wild Card who collects and switches between dozens of Personas (a one-protagonist-only mechanic by canon), the Confidant/Social Link system has no direct 5e analog, and the modern-Tokyo setting requires Spelljammer-style genre-translation. The community fan 5e Persona project (217 ups, Pre-Alpha) is the empirical anchor for an active conversion direction. Clean-lane positioning (no licensed Persona TTRPG; Atlus IP-conservatism is the licensing-process consideration).
+
+##### Wild Card / Persona-User subclass — 5 fitting options
+
+The Wild Card mechanic is the IP's signature — Joker can collect and switch between dozens of Personas; the rest of the Phantom Thieves each have one signature Persona. The brand-integrity-friendly answer needs to handle both archetypes.
+
+| # | Approach | Brand-integrity cost | Why it fits | Why it might not |
+|---|---|---|---|---|
+| A | **Persona-User Warlock subclass (Velvet Room Patron)** — one signature Persona per player; pact mechanics deliver the patron-summon fantasy | **LOW** | Cleanest IP-recognition for the Phantom-Thief party members; existing Warlock-pact infrastructure delivers the Persona-summon mechanic | Adds another Warlock pact to an already-rich shelf |
+| B | **Wild Card as Warlock multi-patron variant** (one-per-party limit, switch-between-patrons mechanic as subclass-feature) | MID | Delivers the Joker fantasy; requires a switch-between-patrons subclass-feature that's mechanically novel | Single-PC-per-party limit is awkward in published rules |
+| C | **Refresh existing Warlock patron** (e.g., Pact of the Fiend) with Persona-flavored switch-between-aspects options | **LOWEST** | Zero new subclass slot; layers Persona-recognition onto existing Pact-of-the-Fiend; *Pact aspects* could substitute for *Persona stocks* | Limits IP-recognition surface |
+| D | **Sorcerer subclass (Awakened Persona origin)** | LOW | Sorcerous origin matches "you awoke a Persona at age 16" narrative; spell-slot economy maps to SP/MP | Loses the patron-summon flavor |
+| E | *New base class — "Persona-User"* | **HIGH — not recommended** | Maximum IP-fidelity | New base class is a permanent commitment; rare in WoTC catalog |
+
+**Trusight read:** Option A is the cleanest IP-recognition path. Option C is the lowest-cost alternative — Pact of the Fiend already has the "stock multiple aspects" mechanical bones (sub-Fiend bargains) that could refresh into Persona stocks.
+
+##### Confidant / Social Link system — 3 fitting options
+
+P5's calendar-driven relationship-building system has no direct 5e analog. The harvest's *Translation challenges* section proposed an optional rules variant; the brand-integrity discipline asks if a slot-bounded alternative delivers the same flavor.
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Background-tier "Confidant" mechanic** — each Confidant is an NPC background-relationship that grants scaling roleplay benefits, similar to expanded Bonds | **LOWEST** | Background slot; modular; can scale across the campaign without rules infrastructure |
+| B | **Inspiration variant rules** — Confidant bonds grant Inspiration on emotional-beat triggers | LOW | Existing Inspiration mechanic reflavored; opt-in flavor layer |
+| C | *Optional rules variant (Confidant Track)* — Tasha's-style opt-in subsystem with structured 1-10 rank progression per relationship | **MID** | New rules subsystem; could carry into future books (Stardew-Valley-flavored cozy-fantasy products) but adds a permanent mechanic |
+
+**Trusight read:** Options A + B together deliver the Confidant fantasy through existing mechanics. Option C is the higher-fidelity path if WoTC sees Confidants-as-a-mechanic having cross-IP applicability.
+
+##### Modern-Tokyo / Metaverse setting — 2 fitting options
+
+The Persona 5 setting is genre-distant from 5e's medieval-fantasy default.
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Modern Persona** standalone setting variant (Eberron-style stand-alone treatment with modern-urban-fantasy rules) | LOW-MID | Within Eberron / Spelljammer setting-variant envelope. Modern firearms via Tasha's optional rules. Metaverse / cognitive-Palace cosmology as setting-distinctive mechanic |
+| B | **Reflavor existing Modern-Magic frameworks** (e.g., Strixhaven's modern-academia setting; bring in Tasha's firearm rules) | **LOWEST** | Zero new setting infrastructure; pure flavor layer over existing modern-D&D content |
+
+**Trusight read:** Option A delivers the IP-recognition for a P5-anchored setting book. Option B is the lowest-cost path if the setting is treated as adventure-module flavor rather than full setting.
+
+##### Phantom Thief outfits & Persona items — 2 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Phantom Thief outfits as wearable magic items** (themed-armor with signature-Persona-aligned bonuses) | **LOW** | Standard magic-item slot; each named outfit grants a different mechanical benefit |
+| B | **Persona-stock items as consumables (Skill Manual books)** — single-use items grant spell-like effect | LOW | Standard magic-item rarity; analogous to ORV's Skill Manual concept |
+
+**Trusight read:** Both options layer cleanly into magic-item infrastructure. Option A for the iconic Phantom-Thief-costume fantasy; Option B for the Persona-stocking mechanic at consumable scale.
+
+##### Persona summon mechanic — 2 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Pact-of-the-Chain Warlock variant** (Persona as Familiar-equivalent with combat presence) | **LOWEST** | Existing Chain Pact infrastructure; Persona-summoning delivered through familiar slot |
+| B | **Pact-of-the-Genie Warlock variant** (Persona as Vessel-bound spirit with summon-from-within mechanic) | LOW | Pact of the Genie's bottle-as-vessel mechanic maps to Persona-as-inner-spirit; existing pact-feature infrastructure |
+
+**Trusight read:** Option B better captures the Persona-from-within-mask fantasy and uses Pact of the Genie's existing inner-vessel mechanic.
+
+##### Shadow / Palace Ruler bestiary — 1 fitting option
+
+Shadows (CR-variable general bestiary) + Palace Rulers as boss-tier (Kamoshida CR 8 → Yaldabaoth CR 25) + Reaper (CR 22 recurring superboss). All standard creature types (Aberration / Fiend depending on Shadow alignment). Mythic Action infrastructure for Palace-Ruler boss fights.
+
+**Brand-integrity cost: LOW.** Standard creature taxonomy + Mythic Actions for boss-tier encounters with phase-transitions (Palace Ruler → Shadow form transformation maps cleanly to Mythic-Action precedent).
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Persona-themed spells (Eiha/Agi/Bufu/Garu/Zio/Psi/Diarama) | LOW | Small surface; existing schools (Evocation / Necromancy / Conjuration); each element-spell maps to existing damage types |
+| Backgrounds (Phantom Thief, Shujin Student, Cafe Worker, Detective) | LOW | Multiple backgrounds within typical envelope |
+| Mundane items (calling cards, Phantom-Thief masks, school uniforms, modern firearms via Tasha's) | LOW | Equipment chapter |
+| Setting book | LOW-MID | See *Modern-Tokyo setting* options above |
+
 ### Potential Sigil VTT locations
 
 Each Palace is a complete dungeon set-piece — the IP is *built around* dungeon design, which makes it unusually well-suited to Sigil VTT.
@@ -771,6 +845,71 @@ DDB shows zero confirmed Sea of Thieves items — and unlike the off-DDB-consoli
 | **Monsters** | *Skeleton Captain* (CR 10), *Megalodon* (CR 12), *The Kraken* (CR 18), *Ashen Lord* (CR 14), *Ghost Ship* (vehicle-creature, CR 15), *Ocean Crawler* (low-tier minion), *Phantom Crew* (skeletal pirate ensemble) | 0 — opportunity for nautical bestiary |
 | **Setting + naval ruleset** | *The Sea of Thieves Setting Book + Naval Combat Rules Variant* — this is the canonical product. Replaces or complements Ghosts of Saltmarsh's naval rules. Tall Tales as included one-shot adventures | 0 — and **this is the market-aligned product opportunity**: the D&D-sub harvest specifically asks for a better naval-combat ruleset |
 
+#### Slot options — brand-integrity-cost framing
+
+Sea of Thieves is the *market-opportunity-led* case — the licensing pitch is "WoTC replaces aging Ghosts of Saltmarsh naval-combat rules with a SoT-anchored book." The brand-integrity discipline applies to *each element* of that product, with extra weight on the naval-combat-rules layer (the single most-asked-for element from the demand harvest).
+
+##### Naval combat rules — 3 fitting options
+
+This is the single most-important element — two of four D&D-sub strict-filter hits in the breakdown harvest are direct naval-rules questions (*"Naval combat: worth buying Saltmarsh for, or is there a better 3rd party set of rules?"*).
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Refresh Ghosts of Saltmarsh's naval-combat rules** with SoT-anchored expansion (ship classes — Galleon / Brigantine / Sloop — as updated stat blocks; faction-color sails as flavor) | **LOWEST** | Builds on existing Saltmarsh content; satisfies the "Saltmarsh is aging" community sentiment; zero new rules infrastructure beyond stat-block-tier additions |
+| B | **Optional rules variant (Tasha's-style "Naval Encounters" module)** — opt-in expanded ship-vs-ship rules with morale, boarding, plunder mechanics | LOW-MID | New rules variant within Tasha's-precedent. Adds infrastructure but bounded by opt-in |
+| C | *New mandatory naval-combat subsystem* | **HIGH — not recommended** | Permanent commitment that conflicts with existing Saltmarsh / Spelljammer naval rules |
+
+**Trusight read:** Option A is the brand-integrity-friendliest path and aligns with the community's articulated demand (*"better naval-combat ruleset, not a new subsystem"*).
+
+##### Trading Company subclasses — 4 fitting options
+
+The 5 Trading Companies (Gold Hoarders / Merchant Alliance / Order of Souls / Athena's Fortune / Reaper's Bones) are the IP's natural faction-mechanic. Multiple parent-class options:
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **2-3 selected Trading Company subclasses across existing classes** (Order of Souls as Warlock Patron, Tall-Tales-Bard as Bard subclass, Naval Officer as Fighter subclass) | LOW | Subclass-tier delivery; within typical envelope; faction-anchored |
+| B | **Trading Companies as Background-tier mechanic** (each Company as a Background granting faction-reputation + proficiencies) | **LOWEST** | Background slot; multiple backgrounds within envelope; standard infrastructure |
+| C | **Refresh existing faction-mechanic subclasses** (e.g., Oath of the Crown Paladin with Trading-Company-flavored options) | **LOW** | Zero new subclass slot |
+| D | *Full 5-Company subclass expansion* | **HIGH — not recommended** | Brand-dilution; 5 subclasses violates typical envelope |
+
+**Trusight read:** Option B (Backgrounds for the 5 Companies) + Option A (1-2 selected subclasses for the most-mechanically-distinctive ones — Order of Souls as Warlock; Tall-Tales-Bard for the bardic flavor) deliver the faction-fantasy through standard infrastructure.
+
+##### Tall Tales as adventure modules — 1 fitting option
+
+SoT's Tall Tales (story-driven content arcs) ship as one-shot adventure modules within the setting book. Each Tall Tale is a discrete 2-4 hour adventure, mirroring Tales from the Yawning Portal / Candlekeep Mysteries format.
+
+**Brand-integrity cost: LOW.** Standard adventure-anthology infrastructure.
+
+##### Sea-cursed / pirate species — 3 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **New species** (Sea-Cursed Pirate, Skeleton-cursed) | MID | 2 species; within Spelljammer-envelope |
+| B | **Background-tier delivery** (Sea-Cursed Pirate as background-flavor variant; Skeleton-Cursed as cursed-item or feat option) | **LOWEST** | Standard background infrastructure |
+| C | **Variant Human + Sea-Cursed-Heritage feat** | LOW | Variant Human path; single feat substitutes for race feature |
+
+**Trusight read:** Option B is the brand-integrity-friendliest path for a pirate-themed setting that doesn't need a distinctive PC species to deliver IP-recognition.
+
+##### Cursed treasures & legendary items — 1 fitting option
+
+Cursed Treasures (per-Tall-Tale legendary items), Athena's Fortune chest, Ashen Lord weapons, Spyglass of Truesight. Standard legendary / very-rare magic items using existing rarity infrastructure.
+
+**Brand-integrity cost: LOW.** Existing magic-item slots; the per-Tall-Tale-legendary-item pattern mirrors Candlekeep Mysteries' adventure-tied artifact pattern.
+
+##### Nautical bestiary — 1 fitting option
+
+Skeleton Captain (CR 10), Megalodon (CR 12), The Kraken (CR 18 — existing 5e monster, refresh-able), Ashen Lord (CR 14), Ghost Ship (CR 15), Phantom Crew. Standard creature types (Undead / Beast / Monstrosity / Elemental). Existing 5e Kraken refresh-target is the cleanest fit.
+
+**Brand-integrity cost: LOW.** Existing creature taxonomy; the Kraken-refresh is itself brand-integrity-friendly.
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Spells (Cursed Cannonball, Mermaid's Call, Treasure Detection, Kraken's Tendril) | LOW | Small surface; existing schools (Evocation, Divination, Conjuration) |
+| Mundane items (compass, spyglass, sea-charts, hardtack, pirate flags, grog) | LOW | Equipment chapter — gear-focused |
+| Backgrounds | LOW | See Trading Company options above |
+
 ### Potential Sigil VTT locations
 
 - **The Tavern of the Damned** — recurring tavern hub map (faction-neutral meeting space).
@@ -1016,6 +1155,68 @@ DDB shows zero DRG items in BQ. The fan-conversion energy in our harvest is real
 | **Mundane items** | Mineral-trade currencies (Morkite, Bismor, Croppa, Magnite, Umanite, Enor Pearl, Jadiz), Mining tools, Platforms, Beacons | clear gap |
 | **Monsters** | *Glyphid Grunt* (CR 1/2 — minion swarm), *Glyphid Praetorian* (CR 5), *Bulk Detonator* (CR 12 elite), *Dreadnought* (CR 16 boss-tier), *Hiveguard* (CR 14), *Caretaker* (CR 18 final-boss), *Nemesis* (CR 17 stalker), *Mactera Spawn* (flying CR 4), *Naedocyte* (parasite CR 3) | 0 — bestiary opportunity |
 | **Setting** | *Hoxxes IV Setting Book* — the planet's six biomes (Crystalline Caverns / Salt Pits / Fungus Bogs / Radioactive Exclusion Zone / Dense Biozone / Glacial Strata / Magma Core / Hollow Bough / Azure Weald). Mission-Control-as-narrator-frame. | 17 forum results in BQ; commercial board-game precedent |
+
+#### Slot options — brand-integrity-cost framing
+
+DRG's signature challenge is the 4 Mission Classes (Gunner / Driller / Engineer / Scout) — too many to ship as 4 separate subclasses, but each is mechanically distinct in canon. The brand-integrity discipline asks how to deliver the Mission-Class fantasy at lowest cost. Spelljammer-adjacent genre-fit means sci-fi-fantasy rules baseline is already established in 5e canon. The existing DRG board game establishes Ghost Ship Games' licensing posture as friendly.
+
+##### Mission Classes (Gunner / Driller / Engineer / Scout) — 4 fitting options
+
+The 4 Mission Classes are the IP's signature delivery vector. Multiple parent-class options:
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **2 selected Mission-Class subclasses** (Engineer as Artificer subclass — sentry-and-platform deployment fits Artificer infrastructure; Scout as Ranger subclass — grappling-hook traversal + Spelljammer-precedent) | LOW | 2 subclasses within typical envelope; each anchored to existing-class identity |
+| B | **Mission Class as 4 Backgrounds** (Gunner / Driller / Engineer / Scout backgrounds granting proficiencies + signature tool) | **LOWEST** | Standard background slot; modular; players combine any class with Mission-Class background |
+| C | **Refresh existing Artificer subclasses** (e.g., Battle Smith with DRG-Engineer flavor; Armorer with Gunner-shield-generator flavor) | LOW | Zero new subclass slot |
+| D | *4 separate Mission-Class subclasses across 4 classes* | **HIGH — not recommended** | Brand-dilution; 4 subclasses per book exceeds typical envelope for a single-IP book |
+
+**Trusight read:** Option B + A combo (4 Backgrounds for full IP-recognition across all four Mission Classes + 1-2 subclasses for the most-mechanically-distinctive ones like Engineer-as-Artificer and Scout-as-Ranger) deliver the Mission-Class fantasy at the brand-integrity-friendliest tier.
+
+##### Mining-equipment magic items — 2 fitting options
+
+The Plasma Cannon, Cryo Cannon, Flamethrower, Power Drill, Sentry Turret, etc. are weapon-and-equipment-tier items.
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **5-8 named legendary / very-rare magic items** (sci-fi weapons reflavored as magic items using Spelljammer firearm precedent + existing magic-weapon infrastructure) | **LOW** | Standard magic-item slot; each weapon-class becomes a signature item; existing rarity infrastructure |
+| B | **New magic-item category: Mining Tech (deployable / chargeable mechanic)** | MID | New mechanic category for sentry-and-platform deployables; could carry into future books with similar deployable-companion concepts |
+
+**Trusight read:** Option A delivers the IP-recognition at lowest cost; Option B for the deployable-mechanic novelty.
+
+##### Bosco the drone companion — 3 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Pact of the Chain Warlock variant** (Bosco as Familiar-equivalent) | **LOWEST** | Existing Chain Pact infrastructure; drone-as-Familiar reflavor |
+| B | **Battle Smith Artificer's Mechanical Companion** (refresh with Bosco-flavored options) | **LOWEST** | Zero new subclass slot; layers DRG-recognition onto existing Battle Smith content |
+| C | **Find Familiar reflavor** (cantrip-tier drone summoning) | LOW | Spell-tier delivery; minimal infrastructure |
+
+**Trusight read:** Option B is the brand-integrity-friendliest path — Battle Smith Artificer's existing Mechanical Companion infrastructure delivers the Bosco fantasy through a refresh rather than new content.
+
+##### Industrial Dwarf species — 2 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **New species (Industrial Dwarf)** with mechanical-tool-handling racial | LOW-MID | New species; tool-mastery feature is novel-but-bounded |
+| B | **Refresh existing Mountain Dwarf** with Industrial-Dwarf-flavored subrace options | **LOWEST** | Zero new species slot; layers DRG-recognition onto existing Mountain Dwarf canonical lineage |
+
+**Trusight read:** Option B is the brand-integrity-friendly path; Option A for the more-distinctive industrial-corporate-dwarf species identity.
+
+##### Glyphid bestiary — 1 fitting option
+
+Glyphid Grunt (CR 1/2 swarm), Glyphid Praetorian (CR 5), Bulk Detonator (CR 12 elite), Dreadnought (CR 16 boss), Hiveguard (CR 14), Caretaker (CR 18 final-boss), Nemesis (CR 17 stalker), Mactera Spawn (CR 4 flying), Naedocyte (CR 3 parasite). Standard creature types (Monstrosity / Aberration). Mythic Action infrastructure for Caretaker boss fight.
+
+**Brand-integrity cost: LOW.** The Glyphid bestiary fills a *bug-and-swarm-monster gap* similar to Hollow Knight's — these are mechanically-distinct insectoid-CR-tiered monsters in a sci-fi context (vs HK's fantasy context). The combined HK + DRG bestiaries could anchor a sustained "insectoid-monstrosity slot expansion" across two licensed products.
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Backgrounds (DRG Miner, Mission Control Officer, Promotion-Tier Veteran, Salvage Specialist) | LOW | Multiple backgrounds within typical envelope |
+| Spells (small surface — Conjure Drone, Promotion Beam) | LOW | Limited spell-surface by IP design |
+| Mundane items (mineral-trade currencies, mining tools, platforms, beacons) | LOW | Equipment chapter — gear-focused, fits a Mining Equipment Compendium chapter |
+| Setting book | LOW | Within Spelljammer setting-book envelope; per-biome adventure-arc structure |
 
 ### Potential Sigil VTT locations
 
@@ -1537,6 +1738,81 @@ DDB shows **71 confirmed items** — the deepest measured DDB ensemble outside M
 | **Monsters** | *Father Gascoigne* (CR 10), *Vicar Amelia* (CR 13 beastform), *Blood-starved Beast* (CR 12), *Witch of Hemwick* (CR 14), *Shadow of Yharnam* (CR 15 trio), *Rom the Vacuous Spider* (CR 16), *Mergo's Wet Nurse* (CR 18), *Lady Maria* (CR 20 capstone DLC), *Ludwig the Holy Blade* (CR 18), *Ebrietas, Daughter of the Cosmos* (CR 22), *Orphan of Kos* (CR 24 endgame DLC) | **20 monster items** |
 | **Setting** | *Yharnam Setting Book* — Cathedral Ward / Old Yharnam / Hemwick Charnel Lane / Forsaken Cainhurst Castle / Forbidden Woods / Yahar'gul / Mergo's Loft / Hunter's Dream + Old Hunters' Research Hall + Fishing Hamlet | **330 forum results** in BQ; **top forum thread: *"System for Bloodborne? | Tabletop Roleplaying Open - RPGnet"*** — direct conversion-question evidence |
 
+#### Slot options — brand-integrity-cost framing
+
+Bloodborne is the deep-data Sleeper — 5 measured sources, 71 DDB items (20 subclasses / 20 monsters / 20 magic items / 9 species / 2 spells), 213-add canonical Bloodborne Hunter subclass, 330 forum results with top thread literally asking *"System for Bloodborne?"*. The brand-integrity discipline here is unusually well-supported by community signal — fans have done much of the conversion work and the slot-options layer largely confirms the existing community direction.
+
+##### Hunter subclass — 4 fitting options
+
+The 213-add Bloodborne Hunter is the community canonical. Multiple parent-class options:
+
+| # | Parent class | Brand-integrity cost | Why it fits | Why it might not |
+|---|---|---|---|---|
+| A | **Fighter (Hunter — Trick-Weapon Master)** | **LOW** | The 213-add community subclass is the canonical fit; trick-weapon master fits Fighter's weapon-mastery infrastructure (5.5e Weapon Mastery extends this naturally) | Less iconic-distinction than a dedicated class |
+| B | **Ranger (Hunter of the Old Blood — refresh Monster Slayer)** | **LOWEST** | Refresh existing Monster Slayer Ranger subclass with Bloodborne-flavored options; satisfies "Rangers need more love" sentiment; zero new subclass slot | Limits IP-recognition surface |
+| C | **Paladin (League Hunter)** | LOW | Paladin's oath-mechanic delivers the *League Hunter* covenant fantasy; existing Oath infrastructure | Less mechanically distinctive than Fighter or Ranger paths |
+| D | *New base class — "Hunter"* | **HIGH — not recommended** | Maximum IP-fidelity | New base class is a permanent commitment; the Hunter fantasy delivers through subclass infrastructure |
+
+**Trusight read:** Option A is community-signal-matched and the brand-integrity-friendly path with full IP-recognition. Option B is the lowest-cost alternative leveraging the Monster Slayer Ranger refresh pattern.
+
+##### Trick Weapons — 3 fitting options
+
+Bloodborne's signature mechanic: paired-form magic weapons that transform between two distinct combat patterns. Three slot options:
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **New magic-item category: Trick Weapons (paired-form magic-weapon variant)** with action-economy transform mechanic | **LOW-MID** | New magic-item category with transform-between-forms feature; could carry into other licensed products (Elden Ring's iconic weapons, Hollow Knight's Pure Vessel sword). Cross-IP applicability justifies brand-integrity cost |
+| B | **Standard legendary magic weapons with multiple modes** (Saw Cleaver / Hunter Axe / Kirkhammer / Ludwig's Holy Blade etc. each as named legendary using existing dual-mode mechanic precedent like Sword of Sharpness or Vorpal Sword) | **LOWEST** | Existing magic-item rarity infrastructure; transform mechanic delivered through item-specific descriptions |
+| C | *New "Trick Weapon" rules subsystem* | **HIGH — not recommended** | New rules subsystem for transform mechanic; conflicts with future books that have similar weapons |
+
+**Trusight read:** Option A creates a new mechanic-category WoTC could reuse across multiple licensed products (Elden Ring, Berserk's Dragonslayer, HK's Charm-augmented weapons). Option B is the brand-integrity-friendliest single-product path.
+
+##### Insight resource — 3 fitting options
+
+Bloodborne's *Insight* governs Madness-and-Great-One-visibility. The harvest's *Translation challenges* section proposed a Sanity-variant rules system; brand-integrity-friendly alternatives:
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Reflavor Theros's Piety mechanic** as Insight | **LOWEST** | Mythic Odysseys of Theros's Piety system maps cleanly; existing rules infrastructure. Players gain Insight rank as they pursue cosmic-horror knowledge; rank unlocks Eldritch-knowledge-tied subclass features |
+| B | **Optional rules variant (Insight Track)** — Tasha's-style opt-in module | LOW | New opt-in subsystem; bounded by opt-in nature |
+| C | *New mandatory Insight subsystem* | **HIGH — not recommended** | Permanent commitment that conflicts with future books |
+
+**Trusight read:** Option A is the brand-integrity-friendliest path — Theros's Piety mechanic is the closest existing 5e infrastructure for a tier-progression-faith-tracker, and reflavoring it is a refresh-existing-content path that satisfies the "Theros has under-used content" sentiment.
+
+##### Blood-vial healing economy — 2 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Refresh existing Healing Potion infrastructure** with Bloodborne-flavored Blood Vials | **LOWEST** | Zero new rules; pure flavor layer over existing potion shelf |
+| B | **New consumable category: Blood Vials (named tier hierarchy)** | LOW | Standard magic-item rarity (uncommon / rare / very rare); each tier with bloodborne-flavored backstory |
+
+**Trusight read:** Option A is the brand-integrity-friendliest path; Option B for the named-tier-hierarchy IP-recognition.
+
+##### Yharnamite / Beast-cursed species — 3 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **3 new species** (Yharnamite, Pthumerian, Cainhurst-blooded with sub-variants) | MID | Within Spelljammer-envelope; the Pthumerian-as-ancient-labyrinth-dweller is mechanically distinctive |
+| B | **1 species (Yharnamite)** with 3 subraces (standard / Cainhurst-blooded / Beast-cursed) | **LOW** | Single canonical species with subraces; mirrors elf-subrace pattern |
+| C | **Variant Human + Yharnamite-Heritage feat** | **LOWEST** | Variant Human path; single feat substitutes for species choice |
+
+**Trusight read:** Option B is the brand-integrity-friendliest path with full lineage variety.
+
+##### Boss bestiary — 1 fitting option
+
+Father Gascoigne (CR 10), Vicar Amelia (CR 13 beastform), Blood-starved Beast (CR 12), Witch of Hemwick (CR 14), Shadow of Yharnam (CR 15 trio), Rom the Vacuous Spider (CR 16), Mergo's Wet Nurse (CR 18), Lady Maria (CR 20 DLC capstone), Ludwig the Holy Blade (CR 18), Ebrietas Daughter of the Cosmos (CR 22), Orphan of Kos (CR 24 DLC endgame). Standard creature types (Aberration / Fiend / Beast for beastform variants). Mythic Action infrastructure for multi-phase boss fights.
+
+**Brand-integrity cost: LOW.** Existing creature taxonomy + Mythic Actions; the multi-phase beast-transformation pattern fits cleanly.
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Spells (Beast Roar, Augur of Ebrietas, A Call Beyond, Old Hunter's Bone, Tiny Tonitrus, Choir Bell, Executioner's Gloves) | LOW | 5-8 named spells; existing schools (Evocation, Conjuration, Necromancy for the cosmic-horror surface) |
+| Backgrounds (Hunter, Choir Acolyte, Cainhurst Servant, Mensis Mentor, Yahar'gul Captive, Fishing Hamlet Native) | LOW | Multiple backgrounds within typical envelope |
+| Mundane items (blood vials handled above, Quicksilver bullets, Pebble, Madman's Knowledge, Ritual blood, Hunter's Dream tokens) | LOW | Equipment chapter |
+| Setting book (Yharnam + Old Hunters DLC regions) | LOW-MID | Within Wildemount / Theros setting-book envelope; the gothic-cosmic-horror tonal-register fills a documented gap (current 5e: Curse of Strahd is gothic, Van Richten's is specialist; Yharnam adds Victorian-medical body-horror specifically) |
+
 ### Potential Sigil VTT locations
 
 - **Cathedral Ward** — central Yharnam map; vicar-level boss arena.
@@ -1611,6 +1887,81 @@ One Piece is the **net-new-audience** Trusight Greenlight — the IP whose audie
 | **Mundane items** | Berries (currency), wanted posters, sea-faring equipment, Going-Merry / Thousand-Sunny ship layouts, Sea Stone (Devil-Fruit-suppressing material) | clear gap |
 | **Monsters** | *Sea Kings* (CR-variable ocean megafauna), Marine Vice Admirals (Garp CR 25, Kizaru CR 24, Aokiji CR 22), *Yonko* (Kaido CR 26, Big Mom CR 25, Blackbeard CR 23), *Buster Call* armada (encounter event), *Pacifista* cyborgs (Kuma CR 18) | 2 DDB monster items — high-tier expansion opportunity |
 | **Setting** | *Grand Line Setting Book* — East Blue → Reverse Mountain → Grand Line → New World pacing structure. World map (the four Blues, the Red Line, Mariejois at the top of the world). Per-Saga adventure modules | **6,200 forum results** — corpus-leading; top thread *"One Piece Characters as D and D 5e Characters"* |
+
+#### Slot options — brand-integrity-cost framing
+
+One Piece's signature challenges: 1,100+ chapters cannot fit in one sourcebook (saga-scoping is mandatory), Devil Fruits are superpowers without a clean 5e analog, and Haki is a parallel power-system overlaying the Devil Fruit mechanic. The brand-integrity discipline asks how to deliver IP-recognition through curated saga-anchored content rather than wholesale franchise port. Clean-lane positioning on 5e (no licensed Western OP TTRPG). Acquisition score 0.87 (gold_mine quadrant) is among the corpus-highest — net-new-audience-import potential is the strategic anchor.
+
+##### Saga scoping — 2 fitting options
+
+The licensing-scope question shapes the entire product surface.
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **East Blue + Alabasta saga (~120 chapters of source material)** as first-product canonical setting | **LOWEST** | Within typical setting-book envelope; covers the introduction-and-first-arc most-broadly-recognized to mainstream-anime-audience |
+| B | **Skypiea + Water 7 / Marineford** (mid-saga) as alternate first-product scope | LOW | Bigger commercial-attention sagas; tonally distinct (sky-island + war-summit) |
+
+**Trusight read:** Option A is the canonical introduction; later sagas become expansion books. Mirrors the Hollow Knight → Silksong second-product pattern.
+
+##### Devil Fruit User subclass family — 5 fitting options
+
+Devil Fruits split into 3 canonical types (Paramecia / Logia / Zoan). The community has built 5 DDB subclass items + 20 DDB species items (corpus-leading species count) — the canonical conversion direction is *Devil Fruit as superpower mechanic, type as subclass*.
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **3 Sorcerer subclasses keyed to Devil Fruit type** (Paramecia / Logia / Zoan as sorcerous origins) | LOW | Within typical envelope; each type is mechanically distinct (Paramecia = body-modification; Logia = elemental-transformation; Zoan = animal-form). Sorcerous origin matches "you ate a Devil Fruit at age 7" narrative |
+| B | **2 Sorcerer subclasses (Paramecia + Logia) + 1 Druid subclass (Zoan as Wild-Shape variant)** | LOW | Zoan-as-Druid better captures animal-transformation; cleaner mechanical fit |
+| C | **1 Devil Fruit Warlock subclass** (Devil Fruit as Pact patron with type-variant invocations) | LOW | Single subclass with type-variant pact-features; brand-integrity-cleaner |
+| D | **Refresh existing Sorcerer origins** (e.g., Wild Magic with Paramecia-flavored options; Storm Sorcery with Logia-flavored options) | **LOWEST** | Zero new subclass slot; layers OP-recognition onto existing sorcerous origins |
+| E | *14-Devil-Fruit-type subclass expansion* | **HIGH — not recommended** | Brand-dilution; the source material has 100+ named Devil Fruits but mapping each to a subclass exceeds typical envelope |
+
+**Trusight read:** Option B (2 Sorcerer subclasses for Paramecia/Logia + Druid subclass for Zoan) delivers the cleanest mechanical-fit at typical-envelope slot count. Option D is the lowest-cost refresh path.
+
+##### Haki — 3 fitting options
+
+Haki is the OP parallel power-system (Observation / Armament / Conqueror). How it fits:
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Monk subclass (Way of Haki)** with three Haki paths as subclass-feature progression | LOW | Subclass-tier delivery; Ki-as-resource maps to Haki energy; existing Monk infrastructure |
+| B | **2-3 named feats** (Observation Haki / Armament Haki / Conqueror's Haki feats grant tier-appropriate abilities) | **LOWEST** | Feat-tier; modular; any class can pick up Haki paths through feats |
+| C | *New stand-alone Haki magic-system* | **HIGH — not recommended** | New parallel power-system conflicts with existing Devil-Fruit subclass + base 5e magic |
+
+**Trusight read:** Option B delivers Haki at the brand-integrity-friendliest tier — feat-based modular pickup matches the "anyone can train Haki" narrative.
+
+##### Devil Fruits as items — 1 fitting option
+
+| Slot | Brand-integrity cost | Description |
+|---|---|---|
+| **Legendary consumable magic items** (each grants permanent subclass-level transformation; cursed-item rules apply: can't swim once consumed, can't be removed) | **LOW** | Standard magic-item rarity + cursed-item mechanics; each Devil Fruit is a named legendary consumable that delivers the "ate-a-Devil-Fruit" transformation through item-tier infrastructure |
+
+##### Cyborg / Fishman / Mink / Skypiean species — 3 fitting options
+
+The 20 DDB species items is corpus-leading. How to ship:
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **4-5 new species** (Cyborg, Fishman, Mink, Skypiean, Giant) | MID | Within Spelljammer-envelope (6 new species). Each anchored to a distinct canonical OP fanbase identity |
+| B | **2 species** (Cyborg with 75-add canonical signal + Fishman/Mink as combined Aquatic-Lineage species with subraces) | **LOW** | Single canonical species + multi-subrace species delivers the variety at lower slot cost |
+| C | **Variant Human + per-lineage feat** (Cyborg-Heritage, Fishman-Heritage, etc.) | **LOWEST** | Feat-based delivery |
+
+**Trusight read:** Option B (Cyborg + Aquatic-Lineage with subraces) is the brand-integrity-friendliest path with high-fidelity IP-recognition.
+
+##### High-tier boss roster — 1 fitting option
+
+Sea Kings (CR-variable ocean megafauna), Marine Vice Admirals (Garp CR 25, Kizaru CR 24, Aokiji CR 22), Yonko (Kaido CR 26, Big Mom CR 25, Blackbeard CR 23), Buster Call (encounter event), Pacifista (CR 18). Standard creature types (Humanoid for Marines/Yonko; Beast/Monstrosity for Sea Kings). Mythic Action infrastructure for boss-tier encounters.
+
+**Brand-integrity cost: LOW.** Existing creature taxonomy + Mythic Actions. The Yonko-tier CR 25-26 fills the high-CR-humanoid-boss slot (currently saturated by demon-princes/archdevils but thinner on flesh-and-blood-superhuman archetype).
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Iconic weapons (Black Blade-grade Meito swords — Yoru, Wado Ichimonji) | LOW | Standard legendary magic weapons; existing rarity infrastructure |
+| Mundane items (Berries currency, wanted posters, sea-faring gear, Sea Stone as Devil-Fruit-suppressing material) | LOW | Equipment chapter |
+| Spells (small surface — Devil-Fruit-tied + Haki-derived) | LOW | Existing schools; Devil-Fruit spells deliver flavor through standard spell-slot economy |
+| Backgrounds (Marine Recruit, Pirate Crew Member, Cipher Pol Operative, Revolutionary Army, Bounty Hunter, Wano Samurai) | LOW | Multiple backgrounds within typical envelope |
+| Setting book (Grand Line / per-Saga adventure modules) | LOW-MID | Within Wildemount / Theros setting-book envelope; per-Saga adventure-module structure mirrors Candlekeep Mysteries |
 
 ### Potential Sigil VTT locations
 
