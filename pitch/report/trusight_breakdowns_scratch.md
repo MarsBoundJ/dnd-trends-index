@@ -377,6 +377,74 @@ DDB shows zero confirmed Monster Hunter items — the third instance of the "off
 | **Monsters** | *Rathalos* (CR 10 flagship), *Tigrex* (CR 12), *Diablos* (CR 11), *Zinogre* (CR 13 thunder-wolf), *Nergigante* (CR 18 elder-dragon-killer), *Magnamalo* (CR 14), *Velkhana* (CR 17), *Fatalis* (CR 25 capstone), *Alatreon* (CR 22 elemental hybrid). Plus all minor-monster ecology (Aptonoth herd-prey, Jagras pack, Velocidrome small-fry). World-specific bestiary + Wilds-specific bestiary as expansion lines. | **The 622-page community Monster Manual is the empirical anchor.** Top item *"OC | D&D 5e2014 Monster Hunter Monster Manual Update | Now 622 Pages | Every Monster From Every Mainline Game"* — 199 ups on r/MonsterHunter, 150 ups on r/dndnext |
 | **Setting** | *The Hunters' Guild Setting Book* — covers New World (World), Old World (mainline), Forbidden Lands (Wilds). Multi-region world-bible with discrete biomes (Ancient Forest, Wildspire Waste, Coral Highlands, Rotted Vale, Elder's Recess, Hoarfrost Reach, Guiding Lands; plus Wilds: Windward Plains, Scarlet Forest, Oilwell Basin, Iceshard Cliffs). Each biome a campaign-arc anchor. | 7 forum results; top thread *"Monster Hunter Now: Gamers with a Walking Problem - RPGnet"* — Pokemon-Go-style mobile spinoff context |
 
+#### Slot options — brand-integrity-cost framing
+
+The content surface above must be curated heavily — 622 community-built monsters is far beyond any sourcebook envelope. Curation discipline (15 of 622) is itself the brand-integrity demonstration. Each major element gets ranked options below.
+
+##### Curated bestiary — 1 fitting option
+
+15 monsters drawn from the community Monster Manual's iconic-tier: *Rathalos, Diablos, Tigrex, Nargacuga, Zinogre, Nergigante, Magnamalo, Velkhana, Fatalis, Alatreon, Bazelgeuse, Deviljho, Anjanath, Glavenus, Rey Dau* (Wilds-anchor). All standard creature types (Beast / Monstrosity / Dragon).
+
+**Brand-integrity cost: LOW.** Curation from 622 to 15 is the discipline the community Monster Manual implicitly already performed — they ranked their own work. The slide should explicitly read *"15 monsters, not 622. The community has already done the curation work — we ship what matters."*
+
+##### Hunter archetype subclass / class-feature — 4 fitting options
+
+Existing 5e starting point: the *Monster Slayer* Ranger subclass from Xanathar's Guide to Everything (2017) already lives in the Hunter-archetype slot. The community sentiment that "Rangers need more love" overlaps with this existing-but-underused subclass — a natural refresh target.
+
+| # | Approach | Brand-integrity cost | Why it fits | Why it might not |
+|---|---|---|---|---|
+| A | **Update / expand the existing Monster Slayer Ranger subclass** from Xanathar's | **LOWEST** | Builds on existing official content; zero new subclass slot; satisfies the "Rangers need more love" community sentiment by refreshing an underused subclass | Limited to Ranger-class players |
+| B | **Hunter background** with Monster Hunter flavor (proficiencies, signature gear, monster-knowledge feature) | LOW | Standard background slot; any class can take it; pure flavor onto existing background infrastructure | Background-tier feature, less mechanical depth |
+| C | **2-3 Monster Hunter feats** (e.g., *Monster Knowledge*, *Carving Specialist*, *Trap Layer*) | LOW | Feat-tier flavor; any class can take; modular | Flavor-led; not a subclass-tier delivery |
+| D | **New Fighter subclass — Hunter archetype** | MID | Delivers Fighter-class IP-recognition | **Class-identity drift into Ranger territory** — the Monster Slayer Ranger already occupies this fantasy. Plus 5.5e shipped Weapon Mastery for all Fighters, making weapon-based Fighter subclasses less distinctive than they once were |
+
+**Trusight read:** Options A + B + C together (Monster Slayer Ranger refresh + Hunter background + 2-3 feats) deliver the IP-recognition across multiple class paths at the brand-integrity-friendliest tier. Option D delivers Fighter-class fit at a meaningful class-drift cost.
+
+##### 14 weapon classes — 2 fitting options
+
+Monster Hunter's 14 weapon classes (Great Sword, Long Sword, Dual Blades, Hammer, Hunting Horn, Lance, Gunlance, Switch Axe, Charge Blade, Insect Glaive, Bow, Light Bowgun, Heavy Bowgun, Sword & Shield) don't fit subclasses cleanly in 5.5e (WoTC ships Weapon Mastery for all Fighters now). Two viable options:
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Weapon-style backgrounds** (one per weapon-class, or grouped into 3-4 weapon-style backgrounds) | **LOW** | Each background grants proficiencies + flavor tied to a weapon-style; layers onto existing background infrastructure. |
+| B | **New species (e.g., *Wyverian*) with a single-weapon-mastery feature** | **LOW-MID** | Species racial trait grants extra Mastery in one chosen weapon. Single-mastery (vs Fighter's full Mastery kit) keeps power level balanced and gives the species a distinctive hunter-flavor. |
+
+**Trusight read:** Option B (Wyverian species with single-weapon-mastery) is mechanically novel without being overpowered and could become a broadly-loved species addition; Option A is the simplest path.
+
+##### Carve-and-Craft loop — 5 fitting options at different brand-integrity tiers
+
+The 622-page community Monster Manual ports a full subsystem. The brand-integrity discipline asks: how much of that fantasy can we deliver through existing 5e rules?
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Reflavor Tasha's existing crafting rules** with monster-part flavor | **LOWEST** | Each iconic monster has "you can harvest X from this creature; X functions as [existing component] for crafting [existing magic item]." Pure flavor layer; zero new rules. |
+| B | **New magic-item category: Monster-Part Magic Items** (10-12 named) | **LOW** | Named class of magic items where each is crafted from a specific monster's parts. Standard attunement. Delivers the Rathalos-armor-from-Rathalos fantasy through existing magic-item rules. |
+| C | **Hunter Background grants a "Carve" feature** | LOW | Background-tier feature: extract monster parts that function as alchemical/herbalism components per Tasha's rules. |
+| D | **Full Carve-and-Craft as Tasha's-style optional rules variant** | MID | New rules subsystem (opt-in, like Tasha's variants). Closest to community Monster Manual proposal but accepts the brand-integrity cost. |
+| E | *New mandatory gameplay subsystem* | **HIGH — not recommended** | Permanent commitment that conflicts with future books. |
+
+**Trusight read:** Options B + C together (Monster-Part Magic Items as named product surface + Hunter Background as enabling feature) deliver the iconic MH gameplay-fantasy at the brand-integrity-friendliest tier. Option D is the high-fidelity path if WoTC wants the full system.
+
+##### Felyne / Palico / Palamute companions — 4 fitting options
+
+D&D already has pet/companion infrastructure: Find Familiar, Pact of the Chain Warlock, Beast Master Ranger (with the 5.5e Primal Companion mechanic from Tasha's), Drakewarden Ranger, and Battle Smith Artificer all live in this slot.
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Update Beast Master Ranger's Primal Companion options** to include Palico-type and Palamute-type companions | **LOWEST** | Builds on existing 5.5e Beast Master / Primal Companion infrastructure; adds MH-themed companion variants to a published subclass. Doubly satisfies the "Rangers need more love" sentiment. |
+| B | **Hunter's Companion feat** — grants a Felyne/Palico/Palamute as a Find-Familiar-equivalent with bespoke flavor | LOW | Feat-tier; uses existing familiar infrastructure; any class with a feat slot can take it. |
+| C | **Magic-item summoned companion** — *Palico Whistle* (uncommon) or *Palamute Saddle* (rare) | LOW | Consumable / attuned item summons a tier-appropriate Palico/Palamute as ally for a duration; existing item infrastructure. |
+| D | *New companion subsystem* (Hunter-Companion class feature with bespoke mechanics) | **HIGH — not recommended** | Conflicts with existing Beast Master, Drakewarden, Battle Smith, and Pact of the Chain infrastructure. |
+
+**Trusight read:** Option A is the brand-integrity-friendliest path — refreshes existing Beast Master / Primal Companion infrastructure and satisfies the "Rangers need more love" community sentiment at the same time. Options B and C are layered backup paths.
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Spells | LOW | Small surface; element-coating + ecology-detection flavored cantrips/1st-level. Existing schools. |
+| Setting book | LOW | Within Spelljammer / Wildemount envelope. Per-biome adventure-arc structure. |
+
 ### Potential Sigil VTT locations
 
 This is the IP that maps most cleanly onto Sigil's encounter-map paradigm — every biome is already designed as a tactical-encounter map.
@@ -1056,6 +1124,59 @@ DDB shows **50 confirmed items** in BQ — a deeply-converted IP with real ensem
 | **Monsters** | *Mantis Lord* (CR 8), *False Knight* (CR 5), *Hornet* (CR 14 NPC-or-boss), *Soul Master* (CR 10), *Watcher Knights* (CR 12 squad), *Nightmare King Grimm* (CR 18), *Radiance* (CR 22 endgame), *Pale Lurker* (CR 7), plus the *Hollow Knight* itself (CR 16 boss-tier or NPC patron) | **20 DDB monster items**. Plus 355-up + 219-up *"Hollow Knight X DnD Fusion"* boss-mashup community series |
 | **Setting** | *Hallownest Setting Book* — the kingdom map (King's Pass / Forgotten Crossroads / Greenpath / Fungal Wastes / City of Tears / Crystal Peak / Resting Grounds / Deepnest / Ancient Basin / Kingdom's Edge / White Palace / Abyss). Silksong as expansion: Pharloom + Hornet's pilgrimage | 0 forum results in BQ; 240-up *"What DnD class would the Shade Lord be?"* in r/HollowKnight |
 
+#### Slot options — brand-integrity-cost framing
+
+The content surface above maps to specific 5e architectural slots. Each major element offers 2-4 options ranked by brand-integrity cost; the lowest-cost option that delivers the IP-recognition value is the default unless a specific reason supports a higher-cost path. Total footprint constrained to typical crossover-sourcebook envelope.
+
+##### Hallownest-themed martial subclass — 3 fitting options
+
+| # | Parent class | Brand-integrity cost | Why it fits | Why it might not |
+|---|---|---|---|---|
+| A | **Monk (Way of the Needle)** | LOW | 1,161-up community subclass validates the Monk path; *"bind, slash, dance"* kinetic-mobility fantasy aligns with Ki-as-resource | Risks adding to an already-rich Monk subclass shelf |
+| B | **Rogue (Hornet's Style / Soul-Wielder)** | LOW | Bonus-action mobility + Sneak-Attack-as-Soul-resource is mechanically clean | Loses the agile-melee dance flavor |
+| C | **Existing-subclass refresh** — update an existing Monk subclass (e.g., Way of the Open Hand) with Hornet-flavored options | **LOWEST** | Zero new subclass slot; layers IP-recognition onto existing 5.5e Monk content | Limits the IP-recognition surface |
+
+**Trusight read:** Option A best matches community signal (1,161-up homebrew). Option C is the brand-integrity-friendliest alternative if WoTC's design team prefers to refresh existing content rather than expand the Monk subclass shelf.
+
+##### Vessel as playable archetype — 3 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **New species** (Vessel) | MID | Full species with canonical traits (Silent, Soul-Touched, Pale-Limbed). Cleanest IP-recognition. Adds a permanent species to the corpus. |
+| B | **Custom Lineage (Tasha's) with Vessel flavor** | **LOWEST** | Use existing Custom Lineage rules; Vessel is pure flavor. Zero new mechanical infrastructure. |
+| C | **Variant Human + Vessel-Heritage feat** | LOW | Vessel as a feat available to Variant Human (and via Tasha's, any species). Slot-bounded; minimal infrastructure. |
+
+**Trusight read:** Option A delivers the highest IP-recognition (the 269-add Vessel species is the corpus headline). Option B is the brand-integrity-friendliest path and doesn't preclude players who want to play as a Vessel.
+
+##### Bug-people lineage variety — 2 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **3-4 new species** (Mantis Tribe, Mothkin, Hivebee, Grimmkin) | MID | Within Theros (2 new species) / Spelljammer (6 new species) precedent envelope. |
+| B | **1 species (Hallownest-blooded)** with 3-4 subraces | **LOW** | Single canonical species with subraces inside; mirrors elf-subrace pattern (high / wood / drow). Brand-integrity-friendlier. |
+
+**Trusight read:** Option B preserves the bug-people lineage variety from the content surface while consolidating into a single species slot. The 749-up *"Hollow Knight inspired Races for dnd"* community signal demonstrates demand for multiple bug-people archetypes; subraces inside one species deliver that variety at lower brand-integrity cost.
+
+##### Charms — 3 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Consumable magic items (potion-shelf variant)** | **LOWEST** | Each Charm is a consumable; grants long-duration buff (1h-8h or until next long rest). ~10-12 named Charms across uncommon/rare/very-rare. Zero new attunement infrastructure. |
+| B | **Standard attuned magic items** | LOW | Charms as standard 5e magic items using existing 3-attunement-slot limit. |
+| C | *New Charm-Notch attunement subsystem* | **HIGH — not recommended** | Invents new rules infrastructure to deliver the same flavor Option A delivers via the potion shelf. |
+
+**Trusight read:** Option A delivers the modular-loadout fantasy at the lowest brand-integrity cost. The Charm-name list (Quick Slash, Mark of Pride, Spell Twister, Shaman Stone, etc.) ships as consumables.
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Bug-monster bestiary | LOW | Standard creature types (Beast / Monstrosity / Fiend / Aberration); fills a documented Beast/Monstrosity insectoid gap |
+| Multi-phase boss design (Radiance, Nightmare King Grimm) | ZERO | Use existing Mythic Action infrastructure (Theros precedent) and Legendary Actions |
+| Spells | LOW | 2-3 named spells (*Vengeful Spirit*, *Howling Wraiths*, *Desolate Dive*); existing schools, no new damage types |
+| Backgrounds | LOW | 1-2 backgrounds (*Wanderer of Hallownest*, *City of Tears Citizen*); standard background infrastructure |
+| Setting book | LOW | Within Theros / Wildemount / Spelljammer setting-book envelope |
+
 ### Potential Sigil VTT locations
 
 - **Forgotten Crossroads** — early-tier dungeon-grid map.
@@ -1445,6 +1566,74 @@ DDB shows **25 confirmed items** across an unusually-balanced spread. **8 subcla
 | **Mundane items** | Mercenary kit, Hawks-band uniform, alchemical kit (Schierke-flavored), prosthetic-arm mechanism | clear gap |
 | **Monsters** | *Apostles* (CR-variable transformed-humans), *Skull Knight* (CR 22 ally-or-rival NPC), *Femto / Griffith* (CR 25 capstone), *Trolls* (Berserk-style, CR 6-8), *Sea God* (CR 18 oceanic), *Slan / Conrad / Ubik / Void / Femto* (the God Hand — CR 22-26 endgame ensemble), *Mozgus + Holy See Inquisitors* (CR 14 antagonist faction) | 3 monster items + the magic-item-deep ensemble compensates |
 | **Setting** | *Berserk Setting Book* — Midland (canonical kingdom), the Black Swordsman path, Falconia (Griffith's-empire), the Apostle-controlled wilds | **1,010 forum results** — second-largest forum signal in the corpus; **top thread *"D&D 5E (2014) - Guts (BERSERK) Build 5e"*** |
+
+#### Slot options — brand-integrity-cost framing
+
+Berserk's content surface concentrates on three signature elements: the Berserker Armor (single iconic legendary item), the Berserker subclass fantasy (Path of the Possessed), and the Apostle bestiary with Brand-of-Sacrifice cursed mechanic. Each gets ranked options below. Mature-content scope-definition is treated as a separate dimension.
+
+##### Berserker Armor — 3 fitting options
+
+This is the cursed-power-fantasy supply matching the **1,489-up *"Standard Array is too low"* Reddit thread that explicitly cites Guts** as exemplar of "the character D&D doesn't let me build."
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Cursed legendary magic item** (existing 5e cursed-item slot) | **LOWEST** | Single named legendary item (rare or very rare); curse grants power-with-cost. Uses existing cursed-item infrastructure. Direct delivery of the Guts fantasy through standard magic-item rules. |
+| B | **Cursed legendary item with extended attunement mechanics** | LOW | Same as A plus mechanics like HP-cost-when-entering-Berserker-form. Still uses cursed-item infrastructure but adds item-specific rules. |
+| C | *New Cost-of-Power rules subsystem (Tasha's-style)* | **HIGH — not recommended unless system-wide scope** | New rules variant where power-with-cost is recurring. Brand-integrity cost only justifies if WoTC wants the system across multiple future products. |
+
+**Trusight read:** Option A delivers Guts's iconic equipment cleanly at the lowest brand-integrity cost.
+
+##### Berserker subclass — 4 fitting options
+
+The 88-up *Path of the Possessed* Barbarian homebrew is the community canonical fit. But the Berserk fantasy can sit in multiple parent classes:
+
+| # | Parent class | Brand-integrity cost | Why it fits | Notes |
+|---|---|---|---|---|
+| A | **Barbarian (Path of the Possessed)** | LOW | Rage-as-resource maps to Berserker-trance; *friend-and-foe* damage roll is the canonical fan mechanic; community has organically chosen this | Risks adding to Barbarian's shelf |
+| B | **Fighter (Black Swordsman — oversized-2H martial)** | LOW | Pure martial register; fits Guts's Black-Swordsman-era career; existing Champion / Battle Master frameworks adjacent | Loses the trance / possession flavor |
+| C | **Paladin (Oath of the Branded — vengeance variant)** | LOW | Brand-of-Sacrifice fits oath-as-curse fantasy; existing Oath of Vengeance is mechanically adjacent | Tonal-conflict risk with Paladin's lawful-good default register |
+| D | **Warlock (Pact of the Apostle)** | MID | New pact-type delivers Brand-of-Sacrifice-as-pact mechanic; broader pact-system commitment | Adds new pact-mechanic infrastructure |
+
+**Trusight read:** Option A is community-signal-matched. Options B and C deliver different facets of the Berserk fantasy.
+
+##### Apostle bestiary — 3 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Standard Fiend-type monsters with phase-transition** (existing Mythic Action infrastructure) | **LOW** | Apostles as standard 5e Fiends with two stat blocks (humanoid form / Apostle form). Existing legendary-action and Mythic-Action mechanics (Theros precedent). |
+| B | **New "Apostle" creature subtype tag** | MID | Adds a tag/subtype with shared rules (Brand-attraction proximity). Larger commitment. |
+| C | **Apostle Template** (modular augmentation applicable to any humanoid) | MID | Template system; similar to community Monster Hunter's Guardian template. Reusable across future books but adds a permanent template-system. |
+
+**Trusight read:** Option A keeps it slot-bounded with existing infrastructure.
+
+##### Brand-of-Sacrifice cursed condition — 2 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Magic item (Brand-marked) with periodic encounter trigger** | **LOWEST** | Item-tier mechanic; periodically attracts Apostle / Fiend encounters when attuned. Zero new condition/curse infrastructure. |
+| B | New condition (Branded) with passive Fiend-attraction | MID | Adds to 5e's existing condition list; carries into future books. |
+
+**Trusight read:** Option A keeps it slot-bounded.
+
+##### Mature-content scope-definition — 2 fitting options
+
+Berserk's canon includes content (Eclipse arc sexual violence, Casca trauma arcs) that WoTC's brand register can't include. Scope-definition options:
+
+| # | Approach | Notes |
+|---|---|---|
+| A | **"Golden Age post-Eclipse forward"** with mature themes via implication, not depiction | Mature themes present in worldbuilding (the Hawks fell, the Brand is a curse) but explicit content excluded. Wildemount-tonal-precedent. |
+| B | **"Black Swordsman era only"** — Guts-as-Apostle-hunter, no pre-Eclipse content | Cleanest content-scope; loses the Casca/Griffith ensemble dynamic. |
+
+**Trusight read:** Option A preserves the IP's ensemble richness while staying within WoTC's tonal envelope.
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Other magic items (Dragonslayer, Behelits, Skull Knight's Sword) | LOW | Standard legendary / artifact-tier items using existing rarity infrastructure |
+| Spells | LOW | Small surface; existing schools |
+| Backgrounds | LOW | 1 background (*Hawks Mercenary* or *Branded Survivor*); standard infrastructure |
+| Setting book | LOW | Within typical sourcebook envelope |
 
 ### Potential Sigil VTT locations
 
