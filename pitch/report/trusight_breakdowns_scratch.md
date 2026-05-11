@@ -6,7 +6,7 @@ into specific D&D Beyond product (a la carte or full setting book), plus
 Sigil VTT location ideas and the measured data underneath.
 
 Started May 7 2026. First worked example: **Mistborn**. Template will
-iterate based on Phil's reaction to this entry.
+iterate based on feedback to this entry.
 
 ---
 
@@ -58,6 +58,76 @@ DDB-homebrew evidence backs every category below: the corpus already shows 12 su
 | **Setting book** | *The Final Empire* hardcover — Era 1 setting, Luthadel city sourcebook, Lord Ruler campaign arc | Forum thread "Allomancer (Mistborn Series by Brandon Sanderson) Homebrew..." is the canonical converter signal |
 
 The natural product structure: **a la carte first** (release the canonical Mistborn subclass + Misting variants as a $4.99 mini-pack, gauge attach rate), **full setting book second** if the a la carte hits a target threshold. That sequencing de-risks the deal — the licensee doesn't commit to a full book until the audience signal is empirical.
+
+#### Slot options — brand-integrity-cost framing
+
+Mistborn's signature challenge: 8 Misting variants plus the full-Mistborn archetype plus Feruchemy plus Hemalurgy is far more content than any sourcebook envelope can hold. The brand-integrity discipline asks which existing 5e slots deliver the Allomancy fantasy at lowest cost. The Brotherwise Cosmere RPG ecosystem-trap (per main entry's *Translation challenges* section) is the live commercial-side competitor; the licensing pitch is scoped to Era 1 audience.
+
+##### Mistborn / Misting subclass family — 5 fitting options
+
+The community has built a 117-add canonical Mistborn subclass; the question is which parent class and how to handle the 8 single-metal Misting variants.
+
+| # | Approach | Brand-integrity cost | Why it fits | Why it might not |
+|---|---|---|---|---|
+| A | **One Mistborn subclass on Rogue** (multi-metal toolkit; the 117-add community canonical) | **LOW** | Existing subclass slot; multi-metal toolkit fits Rogue's bonus-action-rich kit | Locks the fantasy to Rogue identity |
+| B | **One Mistborn subclass on Sorcerer** (metal-as-sorcerous-origin bloodline) | LOW | Metallic Bloodline matches Sorcerer's origin-archetype shape; spell-slot economy maps to metal reserves | Loses the heist / agility flavor |
+| C | **Refresh existing Monk subclass (e.g., Way of the Drunken Master)** with Mistborn-flavored Pewterarm options | **LOWEST** | Zero new subclass; layers IP-recognition onto under-loved Monk content; satisfies "Monks need more love" sentiment | Limited IP-recognition surface |
+| D | **8 single-metal Mistings as feats** (instead of separate subclasses) | **LOWEST** | Each Misting (Coinshot, Lurcher, Tineye, Soother, Rioter, Smoker, Seeker, Thug) becomes one feat; any class can pick up to two. Slot-bounded, modular | Less iconic subclass-tier delivery |
+| E | *8 separate Misting subclasses across 8 classes* | **HIGH — not recommended** | Maximum IP-fidelity | Brand-dilution; 8 subclasses across one sourcebook violates typical envelope |
+
+**Trusight read:** Options A + D together (full Mistborn as Rogue subclass + 8 Mistings as feats) deliver the complete Allomancy IP-recognition through two existing slot types. Option C is the lowest-cost path if WoTC prefers a refresh-existing approach.
+
+##### Allomancy resource model — 3 fitting options
+
+Allomancy's "burn a metal for a power" mechanic is the IP's signature. How it maps to 5e's resource economy:
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Reflavor existing spell slots / Ki / Sorcery Points** | **LOWEST** | Mistborn subclass uses spell slots (or Ki, depending on parent class) as "metal reserves." Pure flavor reskin. Zero new mechanics. |
+| B | **Short-rest "Metal Reserves" pool** (like Battle Master Superiority Dice) | LOW | Subclass-feature-tier resource. Refresh on short rest; metal-specific cost per ability. Uses existing per-subclass-resource-pool pattern. |
+| C | *New stand-alone "Allomancy" subsystem* | **HIGH — not recommended** | Full custom resource system. Permanent brand commitment; conflicts with future books that would have to reconcile. |
+
+**Trusight read:** Option B delivers the "burn a metal for a power" flavor with mechanical bite, using a well-established 5e per-subclass-resource pattern (Battle Master, Way of Mercy, Echo Knight, Soulknife).
+
+##### Feruchemy + Hemalurgy — 3 fitting options
+
+Mistborn's secondary magic systems can be scoped in or out:
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Scope out — Era 1 Mistborn focus only** | **LOWEST** | First sourcebook covers Allomancy only; Feruchemy and Hemalurgy are referenced lore but not playable. Expansion book later covers Era 2 with Feruchemy. |
+| B | **Hemalurgy as a cursed-magic-item track** (Hemalurgic spikes) | LOW | Spikes are very-rare attuned cursed items with steal-ability mechanic; Hemalurgy delivered through magic-item slot, no new subclass needed. |
+| C | **Feruchemy as a Wizard or Cleric subclass** | LOW | Single subclass for the Feruchemist archetype; uses existing wizard / cleric infrastructure |
+
+**Trusight read:** Option A (scope-out for first product) is the brand-integrity-friendliest path. Hemalurgic spikes as cursed magic items (Option B) can ship in the same book without subclass commitment.
+
+##### Scadrian species — 3 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **3 new species** (Skaa, Noble, Kandra) | MID | Within Theros/Spelljammer envelope. Kandra shapeshifter is the distinctive species. |
+| B | **1 species (Scadrian)** with 3 subraces | **LOW** | Skaa / Noble / Kandra as subraces inside one Scadrian species; mirrors elf-subrace pattern. |
+| C | **Variant Human + Allomantic-Heritage feat** (replaces species choice) | **LOWEST** | Players take Variant Human; Allomantic-Heritage feat substitutes for racial features. Lowest infrastructure. |
+
+**Trusight read:** Option B delivers the Skaa/Noble class-divide flavor through subraces without expanding the species slot. Option A is justified if Kandra-as-distinctive-shapeshifter-species is a key product hook.
+
+##### Hemalurgic spikes & Atium — 1 fitting option each
+
+| Element | Slot | Brand-integrity cost | Note |
+|---|---|---|---|
+| Hemalurgic spikes | Cursed attuned magic items | LOW | Very-rare; cursed-item rules; encode-stolen-ability mechanic uses existing spell-or-feature replication |
+| Atium | Legendary consumable | LOW | Single-use legendary item; grants short-duration scry-future effect; existing legendary-consumable pattern |
+| Aluminum | Uncommon material (anti-magic) | LOWEST | Material category; not even an "item" — just a substance with rules |
+| Metalminds | Rare attuned magic items (Feruchemy variant) | LOW | Standard attunement; one per stored attribute. Slot-bounded. |
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Monsters (Steel Inquisitor, Koloss, Mistwraith, Lord Ruler) | LOW | Standard creature types (Aberration / Monstrosity / Fiend); 20 DDB monster items signal strong existing community conversion |
+| Backgrounds (Crew Member, Skaa Rebel, Obligator) | LOW | Standard background infrastructure; high-fit for heist-flavored campaigns |
+| Mundane items (vials, dueling canes, mistcloaks) | LOW | Gear chapter; standard equipment infrastructure |
+| Setting book | LOW | Within typical envelope; Era 1 scope-limit is the discipline |
 
 ### Potential Sigil VTT locations
 
@@ -136,6 +206,82 @@ The 642-add Shadow Monarch subclass is the headline; the product surface around 
 | **Monsters** | *Igris* (CR 18), *Beru* (CR 19), *Kamish* (CR 25, dragon-tier capstone), *Iron-clad Knight* (CR 12), *Stone Golem* (CR 8), Demon Castle bestiary | clear gap — high-tier boss-roster opportunity |
 | **Setting** | Hunter Association world — modern-day-with-magic-gates urban-fantasy; mirror dungeons; the Demon Castle and Shadow Realm | 85 forum results, top thread *"Seeking Solo Leveling Warrior inspired game for PF1 (GM needed)"* — converter pattern present |
 
+#### Slot options — brand-integrity-cost framing
+
+Solo Leveling's signature challenge: the IP is built around one protagonist (Sung Jinwoo) whose progression IS the story. The breakdowns' *Translation challenges* section already reframes player characters as *other Hunters*; the slot-options layer asks which existing 5e slots deliver the Hunter / Shadow-Monarch / progression-fantasy at lowest cost. Clean-lane positioning (no competing TTRPG) gives WoTC unusual flexibility here.
+
+##### Shadow Monarch subclass — 4 fitting options
+
+The 642-add community Shadow Monarch is the corpus-leading single-IP artifact, built as a Warlock subclass. The question: which parent class best holds this fantasy, and which other parent classes are also viable?
+
+| # | Parent class | Brand-integrity cost | Why it fits | Why it might not |
+|---|---|---|---|---|
+| A | **Warlock (Shadow Monarch Patron)** | LOW | 642-add community subclass validates the Warlock path; Pact-of-the-Chain shadow-soldier mechanic delivers the Beru/Igris fantasy through existing pact infrastructure | Risks adding to Warlock's already-rich pact shelf |
+| B | **Sorcerer (Awakened Bloodline)** | LOW | Sorcerous origin fits the "you awoke as a Hunter" narrative; spell-slot economy maps to mana | Loses the shadow-soldier patron flavor |
+| C | **Refresh existing Warlock pact** (e.g., Pact of the Undying) with Shadow-Monarch-flavored expansion | **LOWEST** | Zero new subclass; layers IP-recognition onto under-used Pact-of-the-Undying content | Limits the IP-recognition surface |
+| D | *New base class — "Hunter"* | **HIGH — not recommended** | Maximum IP-fidelity (Hunter is the entire premise) | New base class is a permanent commitment; rare in WoTC catalog (Artificer 2019 is the last). The Shadow Monarch fantasy delivers through existing subclass infrastructure |
+
+**Trusight read:** Option A is community-signal-matched and the brand-integrity-friendliest path with full IP-recognition. Option C is the lowest-cost alternative.
+
+##### Hunter-class variants (Tank / Mage / Healer / Iron-Body / Necromancer) — 3 fitting options
+
+The Solo Leveling world has distinct Hunter classes beyond the Shadow Monarch. The Source-B harvest showed community-built subclass concepts across multiple parent classes.
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Hunter Background** with rank-progression flavor (E → S rank) | **LOWEST** | Standard background slot; any class can take it; rank-progression is roleplay flavor, not mechanic |
+| B | **2-3 Hunter-themed subclasses** spread across existing classes (Awakened Knight on Fighter, Mage-class Hunter on Wizard, Healer Hunter on Cleric) | LOW | Subclass-tier delivery; within typical envelope (Strixhaven precedent: 5 college subclasses) |
+| C | *14-class Hunter expansion* | **HIGH — not recommended** | Brand-dilution risk — too many subclasses per book |
+
+**Trusight read:** Option A + B together (Hunter background as universal flavor + 2-3 selected subclasses) deliver the full Hunter-class IP-recognition at the brand-integrity-friendliest tier.
+
+##### Hunter rank-progression system — 3 fitting options
+
+The "E → D → C → B → A → S rank" Hunter-License progression is one of the IP's most-recognizable elements. How it fits:
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Background-tier roleplay flavor** (Hunter background grants rank progression as narrative tracker; no mechanical effect) | **LOWEST** | Pure flavor; zero new mechanics |
+| B | **Optional rules variant** (Hunter Rank as a Renown / Reputation tracker, similar to Faction Renown from DMG) | LOW | Existing Renown infrastructure reflavored; opt-in like other DMG variants |
+| C | *New character-progression subsystem* | **HIGH — not recommended** | Conflicts with 5e's level-based progression; duplicative mechanic |
+
+**Trusight read:** Option A is the cleanest path — rank-progression is iconic flavor that doesn't need mechanical infrastructure to deliver.
+
+##### Shadow Soldier summoning — 3 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Pact of the Chain Warlock variant** (extra invocations grant multiple shadow soldiers) | **LOWEST** | Uses existing Chain Pact infrastructure; shadow-soldier as Familiar-variant |
+| B | **Magic item: Shadow Summoning Daggers** (legendary; attuned; summon tier-appropriate shadow ally for duration) | LOW | Item-tier delivery; legendary slot |
+| C | *New "Shadow Army" rules subsystem* (count, manage, level shadow soldiers) | **HIGH — not recommended** | Brand-dilution; the Shadow Monarch patron's Pact features deliver this fantasy through existing pact infrastructure |
+
+**Trusight read:** Option A integrated into the Shadow Monarch patron (above) delivers shadow-summoning through one cohesive subclass.
+
+##### Hunter / Magic Beast species — 3 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Awakened Human species** (variant human with awakening-trigger ability) | LOW | New species at MID-cost; mechanical-advantage at gate-encounters |
+| B | **Custom Lineage (Tasha's)** with Awakened flavor | **LOWEST** | Use existing Custom Lineage rules; Awakened is pure flavor |
+| C | **Variant Human + Awakening feat** | LOW | Single feat substitutes for race feature; slot-bounded |
+
+**Trusight read:** Option B is the brand-integrity-friendliest path — Solo Leveling's Hunter fantasy is more about awakening-event than racial features.
+
+##### High-tier boss bestiary — 1 fitting option
+
+Igris (CR 18), Beru (CR 19), Kamish (CR 25), Iron-clad Knight (CR 12), Stone Golem (CR 8), plus the Demon Castle bestiary. Standard creature types (Fiend / Monstrosity / Dragon). Brand-integrity cost: LOW.
+
+**Important — Kamish at CR 25 fills the high-tier dragon slot.** D&D's dragon bestiary at CR 20+ is well-populated (ancient chromatic/metallic dragons), but Korean-mythology-flavored dragon-tier monstrosity is distinct from European-dragon canon.
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Magic items (Demon King's Daggers, Knight Killer, Dragonscale armor, Vulcan's Shadow, Stone of Splendor) | LOW | Standard legendary / very-rare magic items; existing rarity infrastructure |
+| Spells (Shadow Extraction, Inventory, Rulers'-authority-flavored) | LOW | Small surface; existing schools (Necromancy, Conjuration) |
+| Mundane items (mana stones, gate-portal beacons, Hunter IDs) | LOW | Equipment chapter |
+| Setting book | LOW | Modern-day-with-magic-gates urban-fantasy; within typical envelope. Distinct from existing D&D settings (medieval-fantasy default) — adds genre-variety |
+
 ### Potential Sigil VTT locations
 
 - **Demon's Castle** — the mirror-dungeon raid map, six floors with escalating encounters.
@@ -191,7 +337,7 @@ This is the breakdown that maps directly to the optimization-and-system-mastery 
 ### Translation challenges
 
 1. **The competing Steamforged 5e Dark Souls RPG.** This is a real licensed product from Steamforged Games — and it surfaced directly in our harvest as *"What are people's experiences with the 5e Compatible Dark Souls RPG?"* (r/dndnext). Mistborn's ecosystem-trap is theoretical; Dark Souls' is concrete. The honest answer: WoTC's product would be DDB-native (character builder, monster compendium, Sigil VTT integration) rather than a third-party 5e supplement on DriveThruRPG. The audience overlap is partial — the Steamforged product reaches the dedicated TTRPG specialist who already knows about it; a DDB-native release reaches the much larger pool of D&D Beyond players who don't shop on DTRPG. The 18 confirmed D&D-sub posts in the last 12 months — *post-Steamforged-launch* — are the empirical evidence the demand for a DDB-native version remains real.
-2. **Character death is the IP's core loop.** Dark Souls is built around dying, repeatedly, on purpose. D&D 5e treats death as a major narrative event with permadeath weight. The 5e-shaped answer (per Phil's worked example): a *Linked Heir* mechanic — when a Knight dies, their soul-bound second-tier character takes over with shared progression flags. Or *Hollowing* as a 5e long-term injury system rather than full character death — HP and levels persist, certain abilities suppressed until rest at a bonfire, "humanity" as a recoverable resource. Bonfire-respawn maps cleanly to 5e's long-rest mechanic if the rules are reframed for a Souls campaign.
+2. **Character death is the IP's core loop.** Dark Souls is built around dying, repeatedly, on purpose. D&D 5e treats death as a major narrative event with permadeath weight. The 5e-shaped answer: a *Linked Heir* mechanic — when a Knight dies, their soul-bound second-tier character takes over with shared progression flags. Or *Hollowing* as a 5e long-term injury system rather than full character death — HP and levels persist, certain abilities suppressed until rest at a bonfire, "humanity" as a recoverable resource. Bonfire-respawn maps cleanly to 5e's long-rest mechanic if the rules are reframed for a Souls campaign.
 3. **Combat is meant to be punishing.** Standard 5e is balanced for "the players succeed in most encounters." The 5e-shaped answer: a *Souls-difficulty* optional rules variant — bumped CR, monsters hit on lower numbers, action-economy stamina cost. This is exactly what the community is already homebrewing.
 
 ### Translation possibilities (DDB product surface)
@@ -708,6 +854,82 @@ DDB shows zero confirmed Pillars items, but the harvest reveals active fan-table
 | **Monsters** | *Engwithan constructs* (PoE1 + PoE2, CR 10-18 boss-tier ancient-civilization automatons), *Adragans* (gorgon-petrification, CR 12), *Eyeless* (PoE2 cursed Eothas-priests, CR varies), *Death Godlike NPC encounters*, *Sea Cave drakes* (PoE2 Deadfire-aquatic), *Oracle of Wael* (CR 16 lore-keeper boss), *Concelhaut* (PoE1 endboss-arch-lich, CR 22), *Eothas-as-titan* (PoE2 walking-god encounter, CR 25+ if treated as full god, or environmental-set-piece) | clear gap |
 | **Setting** | *Eora Setting Book* — multi-region world-bible covering both games' geography: **PoE1 regions** (Dyrwood, Defiance Bay, Twin Elms, the Eastern Reach, the White March DLC), **PoE2 regions** (Deadfire Archipelago, Neketaka, Magran's Teeth, the Black Isles), with *Old Vailia* and *Aedyr* as background-civilizations referenced across both. Soul-cycle theology and divine politics as throughline. Map already exists at fan-quality on r/projecteternity (the 472-up *"Fan map of Eora"*). The licensing scope: full Eora world-bible, with PoE1 and PoE2 regions as discrete adventure-arcs within it | 39 forum results in BQ; *"Pillars of Eternity II: Deadfire (spoilers contained within) - RPGnet"* top thread |
 
+#### Slot options — brand-integrity-cost framing
+
+Pillars's signature challenge is the opposite of Solo Leveling's: the IP has *too much* class diversity (Cipher, Chanter, Sage are Pillars-original archetypes) and a parallel-magic-system (animancy = soul-magic, distinct from arcane/divine). The brand-integrity discipline asks which existing 5e slots deliver each Pillars-distinctive archetype at lowest cost. The Obsidian / Baldur's Gate pedigree-fit is a marketing-side advantage that supports a brand-integrity-friendly approach.
+
+##### Pillars-original archetypes (Cipher, Chanter, Sage) — 4 fitting options
+
+These are the most-mechanically-novel Pillars elements. How they fit:
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Cipher as Wizard subclass (Psionic tradition)** + **Chanter as Bard subclass (Invocation singer)** | **LOW** | Subclass-tier delivery; uses existing parent-class infrastructure; psionic-Wizard is established 5.5e direction. Each fits a distinct existing class identity |
+| B | **Cipher + Chanter as one consolidated Pillars subclass per parent class** (delivers both archetypes via dual-subclass approach) | LOW | 2 subclasses total within typical envelope |
+| C | **Refresh existing subclasses** (e.g., College of Eloquence Bard with Chanter-flavored options; Soulknife Rogue with Cipher-flavored options) | **LOWEST** | Zero new subclass slot; layers IP-recognition onto under-used 5.5e content |
+| D | *Full Pillars class-lineup port (Cipher / Chanter / Sage / Gun Mage as separate classes or subclasses)* | **HIGH — not recommended** | Brand-dilution; too many new subclasses |
+
+**Trusight read:** Option A is the cleanest IP-recognition path (Cipher as psionic-Wizard subclass + Chanter as invocation-Bard subclass). Option C is the lowest-cost alternative; Soulknife Rogue is mechanically very close to Cipher's soul-piercing fantasy and could absorb it with refresh flavor.
+
+##### Animancy (soul-magic) — 3 fitting options
+
+Animancy is Pillars's parallel magic system — *applied science* operating on souls. Distinct from arcane/divine but mechanically adjacent.
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Wizard arcane tradition (Animancer)** with soul-themed spell list | **LOW** | Subclass-tier delivery using existing Wizard infrastructure; soul-themed spells (soul-shock, soul-bind, soul-trap) live in existing spell-school taxonomy |
+| B | **Cleric Domain (Soul-Cycle)** as alternative animancy path | LOW | Domain-tier delivery; theological-investigation flavor |
+| C | *New parallel magic system (Animancy as separate magic-axis from arcane/divine)* | **HIGH — not recommended** | Permanent brand commitment; conflicts with 5e's existing arcane/divine taxonomy |
+
+**Trusight read:** Option A is the cleanest path; Option B for the theological-investigation flavor without adding to Wizard's subclass shelf.
+
+##### Soulbound weapons — 2 fitting options
+
+Pillars's signature magic-item mechanic — weapons that level up with the wielder — is mechanically novel for 5e.
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **New magic-item category: Soulbound Weapons** (3-5 named weapons that gain properties as wielder advances) | **LOW-MID** | New magic-item category with scaling-with-level mechanic. Could carry into other licensed products (Berserk's Dragonslayer, Elden Ring's iconic weapons, Hollow Knight's Pure Vessel sword). Cross-IP applicability justifies the brand-integrity cost |
+| B | **Standard legendary/very-rare magic items without scaling mechanic** | **LOWEST** | Each soulbound weapon as standard legendary with fixed properties; loses the scaling fantasy but uses existing rarity infrastructure |
+
+**Trusight read:** Option A is the higher-cost path that creates a new mechanical-category WoTC could reuse across multiple future licensed products. Option B is the brand-integrity-friendliest single-product path.
+
+##### Eora species (Aumaua, Orlan, Godlike) — 3 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **3 new species** (Aumaua, Orlan, Godlike with 4 sub-races) | MID | Within Spelljammer-envelope (6 new species). Godlike sub-races (Death / Fire / Moon / Nature) are the distinctive Pillars element |
+| B | **2 species + Godlike as background-tier** (Aumaua + Orlan as full species; Godlike as variant-Human feat with elemental flavor) | **LOW** | Reduces species-shelf expansion; Godlike-Heritage feat captures the divinity-marked flavor |
+| C | **1 Eoran species** with subraces for Aumaua / Orlan / Godlike-variants | **LOWEST** | Single canonical species with subraces inside; mirrors elf-subrace pattern |
+
+**Trusight read:** Option A delivers the most IP-recognition (the Godlike sub-races are ready-to-port and distinctive). Option B is the brand-integrity-friendly compromise if shelf-expansion is a concern.
+
+##### Renaissance-tech firearms — 2 fitting options
+
+Pillars features firearms (arquebus, blunderbuss, pistol) canonically. 5e already has firearm rules (Tasha's optional rules; Spelljammer-era confirmation).
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Reflavor existing Tasha's firearm rules** with Pillars-flavored arquebus / blunderbuss / pistol stats | **LOWEST** | Zero new mechanics; pure flavor layer over existing optional firearm rules |
+| B | **Gun Mage Wizard subclass** (Pillars-original combining firearms with spellcasting) | LOW | Subclass slot; mechanically novel; cited in community harvest (13-up *"Gun mage. Wizard, or Chanter?"* on r/projecteternity) |
+
+**Trusight read:** Option A handles the firearm-presence baseline. Option B adds the Gun-Mage IP-recognition through a single subclass.
+
+##### Engwithan ruins bestiary — 1 fitting option
+
+Engwithan constructs (CR 10-18), Adragans, Eyeless, Sea Cave drakes, Oracle of Wael, Concelhaut (CR 22 endboss-arch-lich), Eothas-as-titan. All standard creature types (Construct / Aberration / Fiend / Monstrosity). Mythic Action infrastructure for boss-tier monsters.
+
+**Brand-integrity cost: LOW.** Existing taxonomy + Mythic Actions.
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Backgrounds (Watcher of Caed Nua, Defiance Bay Politician, Deadfire Captain, Huana Tribesfolk, White March Frontiersman) | LOW | Standard background infrastructure; multiple backgrounds within typical envelope |
+| Spells (Animancy suite, Eothas's Restoration, Berath's Doom, Soul Whip, Chanter invocations) | LOW | Standard spell slots; existing schools |
+| Mundane items (firearms via Tasha's, Animancer's tools, soul-meditation incense) | LOW | Equipment chapter |
+| Setting book (Eora world-bible, PoE1 + PoE2 regions as adventure-arcs) | LOW | Within Wildemount / Theros setting-book envelope |
+
 ### Potential Sigil VTT locations
 
 **Pillars I:**
@@ -957,6 +1179,65 @@ DDB shows zero confirmed ORV homebrew artifacts in BQ (consistent with the pre-a
 | **Monsters** | *Disaster Scenario beasts* (CR-variable per-scenario bestiary), *Nightmare Cycle creatures* (CR 14-18), *Nameless Mist denizens* (CR 16+), *Outer God-tier Constellations* (CR 22-25 — when they manifest as boss-encounters), *Beyond the Wall horrors* (CR 18 — high-difficulty endgame) | 0 — clear gap; high-tier boss-roster opportunity tied to specific scenarios |
 | **Setting** | *Star Stream Earth* setting book — apocalyptic Seoul + train-system maps + the Industrial Complex + Beyond the Wall regions; Scenario sequence as campaign arcs | 1 confirmed forum thread (Top Forum #2: *"Creative - Isekai Antagonists | Tabletop Roleplaying Open"*); 1 confirmed homebrew artifact tied to ORV; reverse-funnel inside r/OmniscientReader confirms D&D-context engagement |
 
+#### Slot options — brand-integrity-cost framing
+
+ORV is an early-signal IP — DDB-homebrew is essentially zero (the 0.99% AO3 proportional rate carries the case), so the slot-options framing is mapping the IP-content onto existing 5e slots without competing fan-canonical signal. The clean-lane positioning (no competing TTRPG) gives WoTC full design flexibility. Pantheon-overlap with Theros / Forgotten Realms is the structural caveat addressed in *Translation challenges*.
+
+##### Constellation Patron subclass — 4 fitting options
+
+The Star Stream's Constellation-as-patron mechanic is the IP's signature delivery vector for a player-facing subclass. ORV's metafictional twist — Constellations *broadcast* and *react* to their Incarnation — is mechanically novel.
+
+| # | Approach | Brand-integrity cost | Why it fits | Why it might not |
+|---|---|---|---|---|
+| A | **Warlock — Star Stream Patron** (Constellation pact with reactive-narration boons keyed to dramatic-moment triggers) | LOW | Cleanest IP-recognition; Warlock's pact-mechanic delivers the Constellation fantasy through existing infrastructure; the reactive-narration boon mechanic is a novel-but-bounded subclass feature | Adds a new Warlock pact to an already-rich shelf |
+| B | **Refresh existing Warlock patron** (e.g., Pact of the Genie or Pact of the Hexblade) with Constellation-flavored reactive-narration options | **LOWEST** | Zero new subclass slot; layers IP-recognition onto under-used existing Warlock content | Limits the IP-recognition surface |
+| C | **Cleric — Constellation Domain** (collective-Constellation domain, similar to Twilight or Trickery Domains) | LOW | Cleric's deity-channeling mechanic maps to Constellation-sponsorship; existing Domain infrastructure | Less mechanically novel than the Warlock path |
+| D | *New "Incarnation" base class* | **HIGH — not recommended** | Maximum IP-fidelity (Incarnation IS the premise) | New base class is a permanent commitment; the Constellation Patron fantasy delivers through existing subclass infrastructure |
+
+**Trusight read:** Option A is the cleanest IP-recognition path; Option B is the brand-integrity-friendliest alternative if WoTC prefers content-refresh over subclass-shelf expansion.
+
+##### "Skill" magic surface — 3 fitting options
+
+ORV's *Skills* — *Fourth Wall*, *Bullet Time*, *Probability Manipulation*, *Insight: Story Beats* — sit between "spell" and "feat" mechanically. Three slot options:
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **As named spells** (existing spell-school taxonomy; 4-6 named ORV spells across cantrip/1st/3rd level) | **LOWEST** | Pure spell-tier delivery; existing schools (Divination, Transmutation, Enchantment) |
+| B | **As consumable Skill Manuals** (magic items granting a one-use spell-like effect; tied to specific scenarios) | LOW | Item-tier delivery; existing magic-item rarity; the *Skill Manual books* fan-concept maps directly |
+| C | *New "Skill" character feature track* (separate from spells/feats; new advancement axis) | **HIGH — not recommended** | New character-progression axis conflicts with existing class advancement |
+
+**Trusight read:** Option A + B together (named spells for permanent character abilities + Skill Manuals as discoverable in-scenario items) cover the ORV mechanic at the brand-integrity-friendliest tier.
+
+##### Incarnation / Star-Stream-marked species — 3 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **New species** (*Awakened Incarnation*) | MID | Variant-human-shape with Star Stream marks granting a tier-1 boon; full species commitment |
+| B | **Custom Lineage (Tasha's) with Awakened-Incarnation flavor** | **LOWEST** | Use existing Custom Lineage rules; Awakened-Incarnation is pure flavor with player-choice feat |
+| C | **Background-tier delivery** (Scenario Survivor / Pre-Scenario Office Worker background granting the awakening flavor) | LOW | Background slot; not a species feature |
+
+**Trusight read:** Option B is the brand-integrity-friendliest path. The ORV "awakening" fantasy is more event-driven than racial; Custom Lineage delivers it cleanly.
+
+##### Scenario-as-adventure-module — 1 fitting option
+
+ORV's scenario-by-scenario narrative structure maps unusually well to one-shot adventure-module format. Each Scenario (Subway, Cohabitation Train, Industrial Complex, Pillars of Asgard, Nightmare Cycle, etc.) ships as a discrete adventure-module within the setting book.
+
+**Brand-integrity cost: LOW.** Mirrors Tales from the Yawning Portal / Candlekeep Mysteries format — a setting book with multiple discrete adventures inside.
+
+##### Constellation roster / boss bestiary — 1 fitting option
+
+The Constellations and Disaster Scenario beasts as standard 5e creatures. Outer-God-tier Constellations at CR 22-25 sit alongside existing legendary creatures (Tarrasque, Tiamat, demon princes). The Korean-myth-anchored Constellations (Sage King of the Underworld, etc.) add cultural-diversity to the high-tier roster.
+
+**Brand-integrity cost: LOW.** Standard creature types (Celestial / Fiend / Aberration depending on Constellation alignment); existing legendary-action and Mythic-Action infrastructure.
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Magic items (Black Coat of the Demon King, Constellation tokens, Bag of the Apocalypse, Dokkaebi devices) | LOW | Standard legendary / very-rare items; existing rarity infrastructure |
+| Mundane items (Coins, scenario-message receivers, dokkaebi-bag) | LOW | Equipment chapter; modern-urban-fantasy flavor |
+| Setting book | LOW-MID | Modern-day-with-Star-Stream setting; brand-integrity-friendly *if* scoped to "Star-Stream-affected Seoul" rather than as full pantheon-replacement |
+
 ### Potential Sigil VTT locations
 
 ORV's scenario-by-scenario structure maps unusually cleanly to one-shot adventure maps.
@@ -1100,13 +1381,13 @@ Hollow Knight (2017) and Hollow Knight: Silksong (2025) are Team Cherry's two-pe
 
 ### Marketing angle / D&D-universe niche
 
-Hollow Knight is the canonical Trusight Greenlight: the indie IP a Hollywood-driven licensing pipeline cannot see, with deep community-conversion infrastructure and zero existing tabletop ecosystem to fight. The harvest's killer single artifact is **a 1,161-up Silksong-inspired *"Monk: Way of the Needle"* subclass on r/UnearthedArcana** — the highest community-built D&D-subclass post in this batch. Hallownest's worldbuilding (Charms-as-magic-items, Soul-as-resource, Vessel-class characters) maps cleanly onto 5e mechanics. Niche it fills: a *bug-civilization fallen-kingdom* setting register that 5e doesn't currently have, with unusually clean translation paths. Per Phil's worked example: the licensing scope frames the Knight as a powerful NPC and player characters as *other Vessels / other denizens of Hallownest*; focus on monsters, environmental hazards, charms, and locations rather than recreating the lone-protagonist arc.
+Hollow Knight is the canonical Trusight Greenlight: the indie IP a Hollywood-driven licensing pipeline cannot see, with deep community-conversion infrastructure and zero existing tabletop ecosystem to fight. The harvest's killer single artifact is **a 1,161-up Silksong-inspired *"Monk: Way of the Needle"* subclass on r/UnearthedArcana** — the highest community-built D&D-subclass post in this batch. Hallownest's worldbuilding (Charms-as-magic-items, Soul-as-resource, Vessel-class characters) maps cleanly onto 5e mechanics. Niche it fills: a *bug-civilization fallen-kingdom* setting register that 5e doesn't currently have, with unusually clean translation paths. The licensing scope frames the Knight as a powerful NPC and player characters as *other Vessels / other denizens of Hallownest*; focus on monsters, environmental hazards, charms, and locations rather than recreating the lone-protagonist arc.
 
 ### Translation challenges
 
 1. **One-protagonist IP.** Same as Solo Leveling, ORV, Persona 5: reframe as setting + NPC framework. Player characters are *other Vessels* (siblings of the Knight from the Abyss), Hornet-allied Mantis-tribe descendants, or visiting researcher-NPCs. The Knight + the Pale King become canonical NPCs.
 2. **No party-friendly class diversity in canon.** The IP's "classes" are Charms (magical-item loadouts), not classes. The 5e-shaped answer: lean into Charm-as-magic-item slots (a Charm Notch system as 5e attunement variant), and provide canonical 5e subclasses keyed to Hallownest factions — Mantis Tribe Warden (Ranger), Soul Sanctum Adept (Wizard), Grimm Troupe Conjurer (Warlock), Hive Defender (Fighter), Pale Court Knight (Paladin).
-3. **Story-arc translation.** Per Phil's worked example: the Knight's pursuit of the Radiance and the Pale-King-Vessel ecosystem becomes the campaign-arc backdrop; player characters live their own story within Hallownest's collapse rather than retracing the Knight's. Silksong content (Hornet, Pharloom) becomes the second-product expansion.
+3. **Story-arc translation.** The Knight's pursuit of the Radiance and the Pale-King-Vessel ecosystem becomes the campaign-arc backdrop; player characters live their own story within Hallownest's collapse rather than retracing the Knight's. Silksong content (Hornet, Pharloom) becomes the second-product expansion.
 4. **No existing licensed Hollow Knight TTRPG.** Clean lane.
 
 ### Translation possibilities (DDB product surface)
@@ -1409,6 +1690,80 @@ DDB shows 29 confirmed items — monster-led conversion (20 of 29 are monsters).
 | **Mundane items** | Runes (currency-soul), Sites of Grace (rest-flag), Spectral Steed Whistle (Torrent the mount), Estus-Flask-equivalent crimson + cerulean | clear gap |
 | **Monsters** | *Margit the Fell Omen* (top item — 38 adds, CR 12), *Godrick the Grafted* (CR 14), *Rennala* (CR 16), *Radahn* (CR 18), *Morgott* (CR 17), *Malenia, Blade of Miquella* (CR 20 capstone), *Mohg* (CR 18), *Godfrey, First Elden Lord* (CR 22), *Elden Beast* (CR 24 endgame), *Maliketh* (CR 19) | **20 DDB monster items**; top item *Margit the Fell Omen* — 38 adds (the IP is monster-led on DDB) |
 | **Setting** | *Lands Between Setting Book* — Limgrave / Liurnia / Caelid / Altus Plateau / Mountaintops of the Giants / Crumbling Farum Azula / Leyndell Royal Capital + Land of Shadow DLC. Per-region adventure-arc structure | **371 forum results** in BQ; top thread *"[Setting Help] Making My Campaign Setting A Bit More Elden Ring..."* — direct conversion |
+
+#### Slot options — brand-integrity-cost framing
+
+Elden Ring's signature is the demigod-boss roster + Souls-difficulty rules + spell-rich combat. The 566-up *Elden Ring D&D v1.0* three-rulebook community project (200+ weapons, 100+ spells, 100+ statblocks) is the empirical anchor for an entire community-built conversion at scale. The brand-integrity discipline asks: how much of that delivers through existing 5e slots? Plus: the GRR-Martin lore-licensing layer is the unique deal-process consideration.
+
+##### Demigod boss bestiary — 1 fitting option
+
+Margit (CR 12), Godrick (CR 14), Rennala (CR 16), Radahn (CR 18), Morgott (CR 17), Malenia (CR 20), Mohg (CR 18), Godfrey (CR 22), Maliketh (CR 19), Elden Beast (CR 24). All standard creature types (Humanoid / Aberration / Fiend / Construct / Celestial depending on boss). Mythic Action infrastructure (Theros precedent) for multi-phase bosses.
+
+**Brand-integrity cost: LOW.** Existing creature taxonomy + Mythic Actions. The IP's signature delivery vector — boss-fight-as-narrative-set-piece — fits 5e's existing legendary-creature infrastructure perfectly. The 20 community DDB monster items confirm conversion fluency.
+
+##### Souls-difficulty rules variant — 3 fitting options
+
+The community 3-rulebook project includes a "difficulty" layer that bumps CR, lowers monster-hit thresholds, and increases action-economy cost. Three options for how WoTC ships this:
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Optional rules variant** (Tasha's-style "Souls-difficulty" opt-in module) | **LOW-MID** | Single opt-in rules variant; bumps monster CR, lowers AC thresholds, increases resource cost on actions. Existing Tasha's-variant infrastructure |
+| B | **Per-monster "Mythic Souls-Tier" variants** baked into each boss stat block | LOW | Each demigod boss has a *Standard* and *Mythic Souls-Tier* stat block; players choose at table-setup. Standard infrastructure |
+| C | *New "Souls-Mode" rules subsystem* (mandatory in Elden Ring campaigns; rewrites encounter math) | **HIGH — not recommended** | Permanent commitment that conflicts with future books |
+
+**Trusight read:** Option B (per-monster Mythic Souls-Tier variants) delivers the punishing-difficulty fantasy through standard stat-block infrastructure; opt-in at table level without new rules variants. Option A is the wider-scope path if WoTC wants Souls-difficulty available across the campaign generally.
+
+##### Faction-flavored subclasses — 4 fitting options
+
+Elden Ring's factions (Carian sorcerers, Crucible Knights, Bloody Finger invaders, Banished Knights) translate to existing subclass slots cleanly.
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **2-3 subclasses across existing classes** (Crucible Knight on Fighter, Carian Sorcerer on Wizard, Faith-Keeper of Erdtree on Cleric) | LOW | Within typical envelope (Strixhaven precedent: 5 college subclasses). Each subclass faction-anchored |
+| B | **Faction-themed Backgrounds** (Tarnished, Roundtable Hold Visitor, Carian Royal, Volcano Manor Hunter, Haligtree Pilgrim) | **LOW** | Standard background slot; multiple backgrounds within typical envelope |
+| C | **Refresh existing subclasses** (e.g., College of Glamour Bard with Tarnished-flavored options; Oath of Vengeance Paladin with Banished-Knight variant) | **LOWEST** | Zero new subclass slot; refreshes under-loved existing content |
+| D | *Full 8-faction subclass expansion* | **HIGH — not recommended** | Brand-dilution; 8 subclasses violates typical envelope |
+
+**Trusight read:** Options A + B together (2-3 subclasses + faction-themed backgrounds) deliver the IP's faction-fantasy at the brand-integrity-friendliest tier with full IP-recognition. Option C is the lowest-cost refresh path.
+
+##### Spell-rich Elden Ring spellbook — 2 fitting options
+
+The 8 DDB spell items + the 100+-spell community fan project show ER's spell-rich combat is a community-desired conversion target.
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **8-12 named ER-themed spells across schools** (Glintstone Pebble, Comet Azur, Carian Slicer, Black Flame, Bestial Sling, Dragonbreath, Star Shower, Death Lightning) | **LOW** | Standard spell slot; multiple schools (Evocation, Necromancy, Transmutation); existing infrastructure |
+| B | *Full 100+ spell expansion* | **HIGH — not recommended** | Brand-dilution; 100+ spells per book violates typical envelope. Curate to 8-12 iconic |
+
+**Trusight read:** Option A is the curated path; the community's 100+ spell fan project did the broader work, but the licensed product ships the iconic subset.
+
+##### Iconic weapon magic items — 2 fitting options
+
+Moonveil, Rivers of Blood, Sword of Night and Flame, Eclipse Shotel, Marais Executioner's Sword — Elden Ring weapons are mechanically distinctive and community-beloved.
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **5-8 named legendary / very-rare magic weapons** with signature-effect properties | **LOW** | Standard magic-item rarity infrastructure; each weapon's special property uses existing magic-item-power patterns (cast a spell as action, etc.) |
+| B | **Soulbound weapons (Pillars-style — items that level with the wielder)** | MID | New mechanic category; could carry into Pillars / Berserk licensing too. Larger commitment |
+
+**Trusight read:** Option A delivers the IP-recognition at lowest cost. Option B is a wider mechanic-category bet that pays off across multiple licensed products.
+
+##### Tarnished + lineage species — 3 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **New species** (Tarnished, Albinauric, Misbegotten) | MID | 3 species; within envelope |
+| B | **1 Tarnished species + 1-2 background-tier lineages** | **LOW** | Tarnished as species (the canonical PC archetype); Albinauric / Misbegotten as background-flavor variants |
+| C | **Background-only delivery** (Tarnished background) | **LOWEST** | All lineages as backgrounds; player picks any species + Tarnished background |
+
+**Trusight read:** Option B is the brand-integrity-friendly path — preserves the iconic Tarnished species while consolidating other lineages into backgrounds.
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Mundane items (Runes-as-currency, Sites of Grace as rest-flag, Spectral Steed Whistle, Estus-Flask-equivalent flasks) | LOW | Equipment chapter; the Sites of Grace mechanic reflavors existing long-rest infrastructure |
+| Setting book | LOW-MID | Lands Between as full setting; within typical envelope. Per-region adventure-arc structure mirrors Wildemount / Theros precedent |
 
 ### Potential Sigil VTT locations
 
@@ -1825,7 +2180,7 @@ DDB shows **55 confirmed items** — substantial ensemble despite the thin rever
 
 ## Notes / open questions
 
-- Phil's worked examples (Hollow Knight as NPC + monsters/charms/locations focus, Dark Souls as harder-combat niche) suggest the breakdown shape works best when the "translation challenges" section names a specific structural friction and gives a specific D&D-shaped answer. The Mistborn entry above leans on that pattern.
+- The worked examples (Hollow Knight as NPC + monsters/charms/locations focus, Dark Souls as harder-combat niche) suggest the breakdown shape works best when the "translation challenges" section names a specific structural friction and gives a specific D&D-shaped answer. The Mistborn entry above leans on that pattern.
 - The "DDB-homebrew evidence" pattern (citing the 12 / 20 / 12 spread, the 117-add top item) is the empirical anchor that distinguishes a Trusight breakdown from a generic licensing pitch. Every entry should lean on the BQ data for that paragraph.
 - Sigil VTT angle is genuinely additive — none of the AI cadre raised it in the original outline, but it sells the Hasbro-portfolio integration story. Worth keeping prominent in every entry.
 - The "ecosystem-trap" honest caveat (Mistborn's competing Cosmere RPG) is a feature not a bug — calibrated honesty is the report's voice. Each entry should surface the equivalent caveat where one exists (e.g., Dark Souls has nothing comparable; Persona 5 has no TTRPG; Hades has none).
