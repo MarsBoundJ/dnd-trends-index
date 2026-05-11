@@ -355,6 +355,79 @@ This is the breakdown that maps directly to the optimization-and-system-mastery 
 | **Monsters** | *Ornstein* (CR 18), *Smough* (CR 17), *Artorias the Abysswalker* (CR 22), *Manus, Father of the Abyss* (CR 24), *Sif, Great Grey Wolf* (CR 14), *Gaping Dragon* (CR 12), *Capra Demon* (CR 7), *Black Knight* (CR 10), *Hollow* (CR 1/4), *Crystal Lizard* (treasure-encounter) | **17 monster items live — deepest single-category signal in the corpus** |
 | **Setting** | *Lordran* sourcebook (DS1 — the canonical setting), *Drangleic* (DS2), *Lothric* (DS3) — three potential expansion lines | 3 forum results, top thread *"Ruminating on a Stamina System implementation"* — direct mechanical-conversion evidence |
 
+#### Slot options — brand-integrity-cost framing
+
+Dark Souls is monster-led on DDB (17 of 22 items are monsters) and has the *Steamforged 5e Dark Souls RPG* ecosystem-trap caveat addressed in the main entry. The brand-integrity discipline here applies most heavily to the Souls-difficulty rules layer (the community's most-asked-for element per the *"Stamina System implementation"* top forum thread) and the iconic-weapon magic-item category.
+
+##### Souls-difficulty rules — 3 fitting options
+
+Mirror of the Elden Ring options (Section 16) but DS-native:
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Per-monster Mythic Souls-Tier stat-block variants** baked into each boss (Standard / Souls-Tier variants for Ornstein, Smough, Artorias, etc.) | **LOW** | Standard stat-block infrastructure; opt-in at table-setup. Same pattern as Elden Ring entry — cross-IP consistency |
+| B | **Tasha's-style optional rules module ("Souls-Mode")** with stamina-cost-per-action + bumped CR | LOW-MID | Wider opt-in scope; one rules module covers both DS and ER licensing |
+| C | *New mandatory Souls-Mode subsystem* | **HIGH — not recommended** | Permanent commitment; conflicts with existing Saltmarsh / Spelljammer naval rules baseline |
+
+**Trusight read:** Option A delivers difficulty through standard stat-blocks; Option B if WoTC wants a cross-IP rules module that applies to both DS and ER licensed products.
+
+##### Iconic Boss-Soul weapons — 1 fitting option (cross-IP)
+
+Quelaag's Furysword, Artorias's Greatsword, Gravelord Sword, Moonlight Greatsword, etc. **Slots into the same new magic-item category proposed for Bloodborne (Trick Weapons) and Elden Ring (iconic legendary weapons) and Berserk (Dragonslayer) and Hollow Knight (Pure Vessel sword).**
+
+**Brand-integrity cost: LOW-MID (or LOWEST if cross-IP category already established).** This is the canonical example of *portfolio-level synergy* — the magic-item-category infrastructure cost lands once, then DS / ER / BB / Berserk / HK all benefit. Recommend bundling the category-creation with whichever IP ships first.
+
+##### Knight / Pyromancer / Sorcerer subclass family — 4 fitting options
+
+DS faction-subclass slate has clean parent-class fits:
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **2-3 selected subclasses** (Knight of Astora as Fighter; Pyromancer as Sorcerer / Cleric hybrid via existing Cleric Light Domain refresh; Sorcerer of Vinheim as Wizard subclass) | LOW | Within typical envelope; faction-anchored |
+| B | **Backgrounds for the faction-flavor** (Knight of Astora, Cleric of the Way of White, Pyromancer Acolyte, Vinheim Sorcery Apprentice) | **LOWEST** | Background slot; multiple backgrounds within envelope |
+| C | **Refresh existing subclasses** (Light Domain Cleric with Pyromancer-flavored options; Eldritch Knight with Knight-of-Astora flavor) | LOW | Zero new subclass slot |
+| D | *Full 5-faction subclass expansion* | **HIGH — not recommended** | Brand-dilution |
+
+**Trusight read:** Options A + B combo (2 subclasses for the most-mechanically-distinctive factions + Backgrounds for the broader faction-flavor) delivers the IP-recognition.
+
+##### Hollowing / Undead Curse — 3 fitting options
+
+The DS hollowing mechanic is the IP's signature character-condition (the main *Translation challenges* section proposes a *Linked Heir* mechanic as one path):
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Cursed-item (Darksign) with periodic respawn-at-bonfire mechanic** | **LOWEST** | Item-tier delivery; uses cursed-item infrastructure; the respawn-at-bonfire mechanic ties to long-rest rules |
+| B | **New "Hollowing" condition** with cumulative penalties; humanity-as-resource to restore | MID | Adds to 5e's condition list; carries into future books |
+| C | **Tasha's-style optional rules ("Hollow-Mode")** — death-respawn variant where character HP/level persist but abilities decay until bonfire-rest | LOW-MID | Opt-in rules variant; bounded |
+
+**Trusight read:** Option A is the brand-integrity-friendliest path; Option C for the broader respawn-loop rules variant if WoTC wants the Souls fantasy at full fidelity.
+
+##### Hollow / Dragon-blooded / Pygmy species — 3 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **2-3 new species** (Hollow, Dragon-blooded, Pygmy) | MID | Within Spelljammer-envelope |
+| B | **1 Hollow species** with 3 subraces (Crestfallen / Dragon-blooded / Pygmy variants) | **LOW** | Single canonical species with subraces |
+| C | **Variant Human + Undead-Curse / Dragon-Heritage / Dark-Soul feat** | **LOWEST** | Variant Human path |
+
+**Trusight read:** Option B for full lineage variety at low slot cost.
+
+##### Boss bestiary — 1 fitting option
+
+Ornstein (CR 18), Smough (CR 17), Artorias (CR 22), Manus (CR 24), Sif (CR 14), Gaping Dragon (CR 12), Capra Demon (CR 7), Black Knight (CR 10), Hollow (CR 1/4), Crystal Lizard (treasure-encounter). Standard creature types (Humanoid / Undead / Aberration / Beast / Construct). Mythic Action infrastructure for boss-tier multi-phase fights (Ornstein-and-Smough paired-boss arena uses Mythic precedent cleanly).
+
+**Brand-integrity cost: LOW.** Existing creature taxonomy + Mythic Actions. **The 17 DDB monster items is the deepest single-category signal in the corpus** — community conversion energy is concentrated on bosses, which the licensing slot-options work confirms is the right direction.
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Estus Flask | LOW | Cursed/attuned magic item with scaling charges per bonfire kindling; existing magic-item-with-charges infrastructure |
+| Spells (Soul Arrow, Pyromancy fire-suite, Wrath of the Gods / Sunlight Spear, Heal-Mira flavor) | LOW | Existing schools (Evocation, Divination) |
+| Backgrounds | LOW | See subclass options above |
+| Mundane items (white/red sign soapstones, Lordvessel keys, prism stones, transient curses) | LOW | Equipment chapter; the soapstones are multiplayer-flavor (cross-table consultation items) |
+| Setting book (Lordran / Drangleic / Lothric — three potential expansion lines) | LOW-MID | Within Wildemount setting envelope; per-game expansion structure |
+
 ### Potential Sigil VTT locations
 
 - **Anor Londo** — the cathedral-city set-piece, multi-tier Gothic architecture, the iconic Ornstein & Smough boss arena.
@@ -760,6 +833,73 @@ DDB shows 5 confirmed items, top "Hades" subclass at 65 adds — modest. The Red
 | **Mundane items** | Pomegranate seeds (consumable healing), Nectar (relationship token), Ambrosia (companion-system), Centaur Hearts (HP-permanent), Boon-rings (slot for Boon-Pact rules variant) | clear gap |
 | **Monsters** | *Hades II's Chronos-invasion bestiary* — Polyphemus (cyclops, CR 14), Echidna (CR 16), Hecate (CR 22 boss-tier), Chronos (CR 25 endgame). Plus original-game bosses: Megaera (Fury, CR 12), Theseus + Asterius (paired, CR 16/18), Hades himself (CR 24). | clear gap — high-tier boss roster opportunity |
 | **Setting** | *The House of Hades* sourcebook — Underworld geography (Tartarus / Asphodel / Elysium / Styx + Hades II's surface-and-deep-paths Erebus, Oceanus, Tartarus), House-of-Hades-as-campaign-hub, Olympian patron politics, Chronos-as-overarching-villain-arc for Hades II content | 0 forum results in BQ — surprisingly thin formal forum presence; r/HadesTheGame substitutes |
+
+#### Slot options — brand-integrity-cost framing
+
+Hades's brand-integrity discipline is shaped by the *Theros-overlap* caveat (Greek myth already in 5e canon). The licensing scope is Supergiant's *characterization* of the gods plus the Aspect-weapon and Boons mechanics — not the underlying mythology. The community's revealed-preference signal is **items-led** (309-up Aspect-of-Thanatos axe, 280-up Aspect-of-the-Morrigan, 150-up Claws-of-Enkidu — three top-engagement homebrew artifacts are 5e legendary items, not subclasses).
+
+##### Aspect weapons — 1 fitting option (cross-IP)
+
+Stygian Blade with Aspect-of-Achilles/Aspect-of-Hera/Aspect-of-Guan-Yu/Aspect-of-Lucifer variants. **Slots into the same new magic-item category proposed for Bloodborne (Trick Weapons), Elden Ring (iconic legendary weapons), Berserk (Dragonslayer), Hollow Knight (Pure Vessel sword), Dark Souls (Boss-Soul weapons), and Pillars II (Soulbound weapons).**
+
+**Brand-integrity cost: LOW (or LOWEST if cross-IP category already established).** Aspect-of-X is the canonical example of *form-shifting magic weapon* — same mechanic-category bet as Bloodborne's Trick Weapons. Pomegranate-seed-flavored consumables hand out unique Aspect-activation rather than permanent property. **The 309-up r/HadesTheGame Aspect-of-Thanatos fan artifact is the empirical anchor — items are where this IP delivers IP-recognition.**
+
+##### Olympian Patron / Witchcraft subclass family — 4 fitting options
+
+The Hades cast spans 12 Olympians + Hades II's Hecate witchcraft tradition. Multiple parent-class options:
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **2 Warlock subclasses** (House of Hades Patron + Hecate Witchcraft Patron) | LOW | Subclass-tier delivery; Pact-mechanic delivers patron-bond fantasy through existing infrastructure. Two subclasses within typical envelope |
+| B | **Refresh existing Warlock patrons** (Celestial Patron with Hades-flavored Olympian options; Genie Patron with Underworld-region-flavor) | **LOWEST** | Zero new subclass slot; layers Hades-recognition onto under-used existing Warlock content |
+| C | **1 Olympian Cleric Domain** (multi-god domain for Olympian-mortal devotees) | LOW | Cleric Domain delivery; existing infrastructure |
+| D | *Full 12-Olympian-Patron expansion* | **HIGH — not recommended** | Brand-dilution; 12 subclasses violates typical envelope |
+
+**Trusight read:** Option B is the brand-integrity-friendliest path; Option A for the higher-fidelity IP-recognition. The *characterization* layer (Supergiant's specific take on each Olympian) delivers through patron-mechanics descriptions, not through subclass count.
+
+##### Boon-Pact mechanic — 3 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Short-rest patron-bond mechanic baked into Warlock subclass features** | **LOWEST** | Existing Warlock-pact infrastructure; per-rest boon-negotiation as subclass feature; zero new rules |
+| B | **Boon-rings as attuned magic items** (slot grants one Boon-per-ring; can attune multiple per the standard 3-slot limit) | LOW | Item-tier delivery; existing magic-item attunement |
+| C | *New "Boon-Pact" rules subsystem* (Tasha's-style optional rules variant) | LOW-MID | Opt-in rules variant; bounded |
+
+**Trusight read:** Option A delivers the per-encounter-Boon fantasy through subclass features; Option B adds a magic-item layer for cross-character flexibility.
+
+##### Shade / Demigod / Witch-blooded species — 3 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **3 new species** (Shade, Demigod, Witch-blooded) | MID | Within Spelljammer-envelope; Demigod-as-Olympian-descendant is the IP-distinctive option |
+| B | **1 species (Underworld-touched)** with 3 subraces (Shade / Demigod / Witch-blooded variants) | **LOW** | Single canonical species with subraces |
+| C | **Variant Human + per-lineage feat** (Demigod-Heritage, Witch-Heritage, Shade-Heritage feats) | **LOWEST** | Variant Human path |
+
+**Trusight read:** Option B is the brand-integrity-friendliest path with lineage variety.
+
+##### Hades II witchcraft (Melinoë's casting tradition) — 2 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Wizard subclass: Witchcraft Tradition** (Hades II Hecate-line incantation-and-circle magic) | LOW | Subclass-tier delivery; distinguishes Hades II content from Hades I content |
+| B | **Refresh Druid (Circle of the Moon / Circle of Spores) with Witchcraft-flavored options** | **LOWEST** | Zero new subclass slot; Druid circle-magic is mechanically adjacent |
+
+**Trusight read:** Option B is brand-integrity-friendlier and surfaces Hades-II-specific content through existing-content refresh.
+
+##### High-tier Olympian / Titan bestiary — 1 fitting option
+
+Megaera (Fury, CR 12), Theseus + Asterius (paired CR 16/18), Hades (CR 24), Polyphemus (CR 14), Echidna (CR 16), Hecate (CR 22 boss-tier), Chronos (CR 25 endgame). Standard creature types (Fiend / Celestial / Aberration). Mythic Action infrastructure for boss-tier multi-phase fights. **Note: 5e already has Greek-myth-adjacent monsters via Theros (Tarrasque, Centaurs, etc.); Hades adds Supergiant-characterized variants rather than wholly new creatures.**
+
+**Brand-integrity cost: LOW.** Existing creature taxonomy + Mythic Actions; the differentiation is *characterization* not *creature type*.
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Spells (Aspect-themed weapon transformations, Boon-of-X, Cast / Hades II ranged spell, Resurrection Pomegranate, Meg's Whip, Hecate's Hex) | LOW | Small surface; existing schools |
+| Backgrounds (House of Hades Servant, Charon's Boatman, Underworld Bureaucrat, Surface-World Mortal) | LOW | Multiple backgrounds within typical envelope |
+| Mundane items (Pomegranate seeds, Nectar, Ambrosia, Centaur Hearts, Boon-rings) | LOW | Equipment chapter; consumables-heavy by IP design |
+| Setting book (The House of Hades — Underworld geography) | LOW-MID | Within Wildemount envelope but **must thread the Theros-overlap needle** (per main *Translation challenges*): scope licensed product to Supergiant's characterization + mechanics, not the public-domain Greek mythology |
 
 ### Potential Sigil VTT locations
 
@@ -1299,6 +1439,72 @@ DDB shows minimal DF homebrew traffic — the fanbase tends to play DF, not conv
 | **Monsters** | *Forgotten Beasts* (procedurally-generated CR-variable encounters — one of the IP's signatures, every fortress fights different ones), *Megabeasts* (Bronze Colossus CR 18, Hydra-class CR 16, Roc CR 17, Cyclops CR 14), *Goblin Civilization* (large-CR-variable raid-army tables), *Wereturkey / Werellama* (DF-classic absurd-and-deadly were-creatures), *Deep One* (cavern-layer-3 horror), *Adamantine demon* (CR 22+, end-game) | 0 — fresh bestiary opportunity, especially Forgotten Beasts (procedural-table format) |
 | **Setting** | *Dwarf Fortress: The Mountainhome Setting Book* — a canonical worldgen output as the licensed map, the 4-cavern-layer cosmology (caverns, magma sea, hell, and the surface), generational-campaign rules variant, succession-game DM-rotation structure | 0 forum results in BQ for DF (sparse); the IP-home reverse-funnel is the conversion channel |
 
+#### Slot options — brand-integrity-cost framing
+
+DF is the prestige-and-innovation case — the licensing call is *not* volume-driven (the fanbase is small in absolute terms) but value-per-slot-driven (the Strange Mood mechanic is the most-mechanically-novel single feature in the breakdown corpus). The brand-integrity discipline asks how to deliver the genuinely-novel DF elements (Strange Mood procedural artifacts, succession-game campaign frame, Forgotten Beast procedural bestiary) without over-extending into mechanics WoTC already has.
+
+##### Strange Mood Artifacts — 2 fitting options
+
+This is the IP's killer mechanic — procedurally-generated legendary items with random component-lists. The brand-integrity question: does the procedural-generation infrastructure ship or just the outputs?
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Pre-generated table of ~30-50 Strange Mood Artifacts** as named legendary magic items (each with a generated description and random property profile) | **LOWEST** | Standard legendary magic-item slot; the procedural-feel is delivered through *each item's flavor description* and the published-table-of-many pattern (mirrors *Vecna: Eve of Ruin*'s 50+ magic-item appendix; Tasha's Magical Cattle table). Zero new rules infrastructure |
+| B | **Tasha's-style optional rules: Strange Mood generator** — a procedural-generation table DMs can use to create unique artifacts at table | LOW-MID | Adds a procedural-generation table system (similar to *Xanathar's*' Trinket table or wild magic surge tables); opt-in; bounded |
+
+**Trusight read:** Option A is the brand-integrity-friendliest path and delivers the Strange Mood IP-recognition through standard magic-item infrastructure. Option B adds the generator system for tables that want truly-procedural artifacts; both can ship together (the published table is the curated subset of what the generator can produce).
+
+##### Succession-game campaign frame — 2 fitting options
+
+DF's tradition: multiple players collaboratively run the same fortress across generations of dwarves, rotating DM duties. This is *genuinely innovative* for 5e.
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Optional rules variant: Succession Mode** (Tasha's-style opt-in — multi-DM-rotation framework with shared fortress sheet, character-handoff rules, generational-event tables) | LOW-MID | New opt-in rules variant; bounded by opt-in; genuinely novel for 5e and a meaningful product differentiator |
+| B | **Campaign-frame guidance chapter (no rules infrastructure)** | **LOWEST** | Pure DM-advice chapter; describes the succession-game approach as a play-style suggestion without formal rules. Zero new infrastructure |
+
+**Trusight read:** Option A is the high-fidelity path that delivers Succession Mode as a meaningful product distinguisher; Option B is the brand-integrity-friendliest if the goal is "introduce the concept without committing to rules infrastructure."
+
+##### Forgotten Beast bestiary — 2 fitting options
+
+Forgotten Beasts are procedurally-generated CR-variable encounters (every fortress fights different ones).
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Forgotten Beast generation table** (modular-stat-block infrastructure: pick body-plan + material + special-attack + size from rolling-tables) | LOW-MID | New procedural-bestiary table; similar to Tasha's Sidekick-builder pattern. Genuinely novel and meaningful product differentiator |
+| B | **15-20 pre-generated Forgotten Beasts** as named legendary creatures (curated subset of what the generator could produce) | **LOWEST** | Standard creature-statblock infrastructure; same approach as Strange Mood Artifacts Option A |
+
+**Trusight read:** Same dual-track as Strange Mood — Option B for curated published bestiary (LOWEST cost), Option A for the procedural-generator (LOW-MID cost; both can coexist).
+
+##### Mountainhome Dwarf species — 2 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Refresh existing Mountain Dwarf with DF-flavored subrace** (Mountainhome variant emphasizing generational-grudge / long-memory feature) | **LOWEST** | Zero new species slot; layers DF-recognition onto canonical Mountain Dwarf |
+| B | **New Mountainhome Dwarf species** (full species with siege-defense / generational-grudge mechanical features) | LOW | New species; within Spelljammer-envelope |
+
+**Trusight read:** Option A is brand-integrity-friendliest; the DF-flavor distinction is *characterization* (multi-generational fortress trauma, grudge-list cosmology) that delivers through existing-species refresh.
+
+##### Mountainhome Defender / Strange Mood Artisan subclass — 3 fitting options
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Strange Mood Artisan as Artificer subclass** (mood-stricken legendary-artifact creator; existing Artificer crafting infrastructure refreshed) | LOW | Subclass-tier delivery; existing Artificer infrastructure delivers the procedural-craft fantasy |
+| B | **Refresh existing Artificer subclasses** (Armorer or Battle Smith with Mountainhome-Defender-flavored options) | **LOWEST** | Zero new subclass slot |
+| C | **Backgrounds only** (Fortress Founder, Strange Mood Survivor, etc.) | **LOWEST** | Standard background infrastructure; no subclass needed |
+
+**Trusight read:** Option C is the brand-integrity-friendliest path — DF is a setting-and-mechanics IP, not a class-fantasy IP. Most of the IP-recognition delivers through Strange Mood Artifacts + Succession-Mode framework, not subclasses.
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Megabeasts (Bronze Colossus CR 18, Hydra-class CR 16, Roc CR 17, Cyclops CR 14) | LOW | Existing 5e creatures or near-equivalents; standard creature-statblock infrastructure |
+| Were-creature variants (Wereturkey, Werellama — DF-classic absurd-and-deadly) | LOW | Standard Were-template applied to absurd animals; existing template infrastructure |
+| Spells (low-magic by design — Procedural Beast Curse, Generational Memory divination, Magma-of-the-Mountainhome) | LOW | Small surface; existing schools; low-magic-flavor |
+| Mundane items (plump helmets, dwarven cheese, magma-forged tools, rope reed shirts, copper / iron / steel / adamantine tiered military equipment) | LOW | Equipment chapter; existing material-tier infrastructure |
+| Setting book (Mountainhome Setting Book with 4-cavern-layer cosmology) | LOW-MID | Within typical envelope; the 4-cavern-layer cosmology (caverns / magma sea / hell / surface) is distinctive but uses existing planar / level-of-depth infrastructure |
+
 ### Potential Sigil VTT locations
 
 DF is *built around* fortress maps — natural Sigil fit. Each succession-game's fortress IS a map.
@@ -1519,6 +1725,79 @@ DDB shows zero confirmed HotD homebrew artifacts. This is consistent with the **
 | **Mundane items** | Period gear: maester's chains, Iron Throne replica, Westerosi armor sets, sailing equipment, court-noble wardrobe | 0 — clear gap |
 | **Monsters** | **The dragons** — Vhagar (CR 24 ancient), Caraxes (CR 22), Syrax (CR 18), Meleys (CR 19), Sunfyre (CR 20), Vermithor (CR 21), Seasmoke (CR 17). Plus *White Walkers* (out of HotD-period but ASOIAF-shared, CR 22+), *Wights* (CR 5-8 swarm), *Direwolves* (CR 6-8) | 0 — high-tier dragon-roster opportunity (the dragons are the licensable spectacle) |
 | **Setting** | *Westeros (HotD-era) Setting Book* — Seven Kingdoms map, dynastic-politics rules variant, faction-reputation mechanics, dragon-bond unique-PC handling. Companion to the existing HBO show calendar | 0 forum results in BQ; the community-silence pattern is the data, not a gap in measurement |
+
+#### Slot options — brand-integrity-cost framing
+
+HotD's brand-integrity discipline is shaped by the *engine question* (the main entry's structural finding: 5e is heroic-high-magic, HotD is gritty-low-magic-political). The community-silence pattern means there's no community-built canonical to anchor; the slot-options layer here proposes how WoTC *would* fit HotD content into existing slots *if* the deal proceeds. Per main entry's *Negotiation leverage* section: each high-cost option in the table below is a co-development-funding lever at the term-sheet table.
+
+##### Dragons — the licensable spectacle — 1 fitting option
+
+This is HotD's clear product anchor. Vhagar (CR 24 ancient), Caraxes (CR 22), Syrax (CR 18), Meleys (CR 19), Sunfyre (CR 20), Vermithor (CR 21), Seasmoke (CR 17). Standard creature type (Dragon) with Mythic Action infrastructure for boss-tier fights.
+
+**Brand-integrity cost: LOW.** Existing creature taxonomy + Mythic Actions; the dragon-bestiary is HotD's strongest IP-recognition vector and slots cleanly into 5e's existing dragon infrastructure. **The dragons ARE the licensable spectacle** — six named iconic dragons would deliver high IP-recognition at low brand-integrity cost.
+
+##### Dragon-rider Targaryen subclass — 4 fitting options
+
+Dragon-bond magic is character-defining for Targaryens but rare in canon. The brand-integrity question: how to deliver "play a Targaryen who rides a dragon" without making it an everyone-PC option?
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Sorcerer subclass: Dragonrider Bloodline** (limited to one-PC-per-party as Wild-Card option) | MID | Subclass slot; the one-per-party limit is mechanically awkward in published rules; mirrors P5 Wild Card Warlock dilemma |
+| B | **Magic item: Targaryen Dragon-Egg attunement** — egg hatches into a dragon companion over campaign-long arc | **LOW** | Magic-item-tier delivery; mirrors Drakewarden Ranger's bonded-drake pattern; existing companion-bond infrastructure |
+| C | **Refresh Drakewarden Ranger** with Targaryen-flavored options (the existing Drakewarden subclass already covers dragon-bond fantasy) | **LOWEST** | Zero new subclass slot; layers Targaryen-recognition onto existing Drakewarden |
+| D | *New "Dragon-Rider" base class* | **HIGH — not recommended** | Permanent commitment for a one-narrative-archetype class |
+
+**Trusight read:** Option C is the brand-integrity-friendliest path; Option B delivers the Targaryen-Egg fantasy as item-tier without subclass commitment. Option A is the high-IP-recognition path with acknowledged one-per-party awkwardness.
+
+##### Political-intrigue subclass family — 4 fitting options
+
+The non-Targaryen Westerosi archetypes (Maester, Court Knight, Pyromancer, Faceless-Man-adjacent assassin):
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **2-3 selected subclasses** (Maester as Wizard subclass — political-investigator scholarly tradition; Pyromancer as Sorcerer Wildfire-alchemy specialty; Hand-of-the-King Court Knight as Fighter) | LOW | Within typical envelope; faction-anchored |
+| B | **Backgrounds for the political-intrigue archetypes** (Court Noble, Maester-in-Training, Pyromancer Acolyte, Iron Islands Sailor, Dornish Sand Snake, King's Landing Spy) | **LOWEST** | Background slot; multiple backgrounds within envelope; standard infrastructure |
+| C | **Refresh existing subclasses** (e.g., College of Lore Bard with Maester flavor; Assassin Rogue with Faceless-Man-flavored options) | **LOWEST** | Zero new subclass slot |
+| D | *Full faction subclass expansion* | **HIGH — not recommended** | Brand-dilution |
+
+**Trusight read:** Option B is the brand-integrity-friendliest path — HotD's political-intrigue archetypes deliver well through Background tier (faction-affiliations are roleplay-flavor, not subclass-mechanics).
+
+##### Faction-reputation / dynastic politics rules — 3 fitting options
+
+The IP's narrative engine is faction-politics. Per main entry *Translation challenges*: 5e doesn't have rules subsystems for court drama, faction reputation, slow-burn dynastic conflict.
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Reflavor existing Faction Renown** (DMG infrastructure) with Westerosi house-loyalty mechanic | **LOWEST** | Zero new rules; pure flavor over existing DMG Faction Renown rules |
+| B | **Optional rules variant: Dynastic Politics** (Tasha's-style opt-in for court-intrigue, slow-burn-conflict, succession-event tracking) | MID | New rules subsystem; **per main entry's negotiation-leverage paragraph: this is a co-development funding lever — the engine-question means inventing this subsystem is significant rules-design work the licensor should share funding for** |
+| C | *New mandatory faction-politics subsystem* | **HIGH — not recommended** | Permanent commitment that conflicts with future books |
+
+**Trusight read:** Option A is the brand-integrity-friendliest baseline path. Option B is the high-fidelity path that captures HotD's narrative-engine — and a term-sheet negotiation lever per the main entry's framing.
+
+##### Valyrian Steel weapons — 1 fitting option (cross-IP)
+
+Valyrian steel weapons are generations-old named blades. **Slots into the same new magic-item category proposed for Bloodborne (Trick Weapons), Elden Ring (iconic weapons), Berserk (Dragonslayer), HK (Pure Vessel sword), Dark Souls (Boss-Soul weapons), Hades (Aspect weapons), and Pillars II (Soulbound weapons).**
+
+**Brand-integrity cost: LOW (or LOWEST if cross-IP category already established).** Cross-IP portfolio-bet — same mechanic-category infrastructure cost lands once, then HotD adds to the established named-weapons-with-scaling-history pattern.
+
+##### Targaryen-blooded / Westerosi-noble lineages — 3 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **2-3 new species** (Targaryen-blooded, Dornish, First Men descendant) | MID | Within Spelljammer-envelope |
+| B | **1 Westerosi species** with subraces (Targaryen-blooded / Dornish / First-Men-descendant / Iron-Born variants) | **LOW** | Single canonical species with subraces |
+| C | **Variant Human + per-house feat** (Targaryen-Blood, Dornish-Heritage feats) | **LOWEST** | Variant Human path; per-house feats deliver lineage flavor |
+
+**Trusight read:** Option B is the brand-integrity-friendliest with full lineage variety.
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Spells (Wildfire alchemy, Glamour face-changer, Greenseer Vision, Warging) | LOW | Small surface; existing schools (Evocation, Transmutation, Divination) |
+| Backgrounds | LOW | See political-intrigue subclass-family options above |
+| Mundane items (period gear: maester's chains, Iron Throne replica, Westerosi armor sets, sailing equipment) | LOW | Equipment chapter; period-flavor for medieval-political register |
+| Setting book (Westeros HotD-era + Seven Kingdoms map) | LOW-MID | Within Wildemount setting envelope; the engine-question caveat (per main entry) shapes scope — companion to HBO show calendar rather than full-Westeros-canon coverage |
 
 ### Potential Sigil VTT locations
 
@@ -2194,6 +2473,67 @@ DDB shows **0 confirmed FFXIV homebrew artifacts** — the most surprising data 
 | **Monsters** | *Eikons / Primals* (CR 18-22 — Bahamut, Ifrit, Garuda, Titan, Leviathan, Shiva, Ramuh, Odin, Zodiark), *Ascians* (CR 16-22 — Lahabrea, Elidibus, Emet-Selch), *Beastmen tribes* (Sahagin, Amalj'aa, Kobolds, Sylphs — CR-variable), *Cloud of Darkness* (CR 24 endgame), *Endsinger* (CR 25 Endwalker capstone) | clear gap — high-tier Eikon-roster opportunity |
 | **Setting** | *Eorzea Setting Book* — Limsa Lominsa (sea-port) / Ul'dah (desert-trade) / Gridania (forest-druidic) / Ishgard (snow-Holy-See) / Doma + Othard / Sharlayan + Old Sharlayan / The First (Shadowbringers' parallel world) | **107 forum results** in BQ; **top thread: *"The Final Fantasy XIV tabletop RPG is coming | Page 3 - RPGnet"*** — confirms the in-development official TTRPG |
 
+#### Slot options — brand-integrity-cost framing
+
+FFXIV is the **strongest ecosystem-trap caveat in the breakdown corpus** — Square Enix has an officially-announced TTRPG in development with another partner (per BQ forum top thread). The brand-integrity discipline here applies *to the overall licensing recommendation*, not just to individual slot options: even the brand-integrity-friendliest slot choices land into a competing-product context. The slot-options below are documented for completeness but the main entry's recommendation stands — **pass on FFXIV unless the official TTRPG announcement falls through**.
+
+##### Job-system class translations — 4 fitting options
+
+FFXIV's 20+ Jobs (Red Mage / Dark Knight / Astrologian / Dragoon / Machinist / Samurai / Reaper / Sage / etc.) cannot fit as subclasses individually.
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **2-3 selected Job-themed subclasses** (Red Mage as Wizard/Bard hybrid — the 100-up r/UnearthedArcana fan post; Dark Knight as Paladin subclass; Astrologian as Cleric Domain) | LOW | Within typical envelope; faction-anchored to most-iconic Jobs |
+| B | **Backgrounds for Job archetypes** (Adventurers' Guild Recruit + Job-affiliate backgrounds) | **LOWEST** | Background slot; multiple within envelope |
+| C | **Refresh existing subclasses** (e.g., Hexblade Warlock with Dark-Knight-flavored options; College of Eloquence Bard with Red-Mage flavor) | **LOWEST** | Zero new subclass slot |
+| D | *Full 20-Job subclass expansion* | **HIGH — not recommended** | Brand-dilution; 20 subclasses violates typical envelope |
+
+**Trusight read:** Options B + C combo delivers Job-recognition at brand-integrity-friendliest tier. **But all options sit underneath the ecosystem-trap caveat** — see top of section.
+
+##### Eorzean species — 3 fitting options
+
+8 canonical species (Hyur / Elezen / Lalafell / Miqo'te / Roegadyn / Au Ra / Hrothgar / Viera). Several have close 5e analogs (Hyur ≈ Human, Elezen ≈ Elf, Lalafell ≈ Halfling, Miqo'te ≈ Tabaxi).
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Refresh existing 5e species** with FFXIV-flavored variants (Tabaxi with Miqo'te-clan flavor; Elf with Elezen-subrace; Halfling with Lalafell-subrace) | **LOWEST** | Zero new species slot; layers FFXIV-recognition onto existing 5e species |
+| B | **2-3 new species for the FFXIV-distinctive ones** (Au Ra, Hrothgar, Viera) | LOW | Within Spelljammer-envelope; covers species that don't have clean 5e analogs |
+| C | **All 8 as new species** | MID | Within envelope but adds significant species-shelf expansion |
+
+**Trusight read:** Option A is the brand-integrity-friendliest path; Option B for the species that genuinely lack 5e analogs.
+
+##### Eikon / Primal bestiary — 1 fitting option
+
+Eikons (Bahamut, Ifrit, Garuda, Titan, Leviathan, Shiva, Ramuh, Odin, Zodiark) at CR 18-22; Ascians at CR 16-22; Cloud of Darkness at CR 24; Endsinger at CR 25 Endwalker capstone. Standard creature types (Celestial / Elemental / Fiend / Aberration). Mythic Action infrastructure for boss-tier fights.
+
+**Brand-integrity cost: LOW.** Existing creature taxonomy + Mythic Actions. **However: Square Enix's official TTRPG will likely cover this same Eikon roster** — the ecosystem-trap means duplication risk is high. The 5e-licensed product would need to find IP-recognition value that the official TTRPG can't deliver (e.g., 5e-mechanic-fit specifically, cross-Cosmere-portfolio bundling).
+
+##### Eikon-derived weapons — 1 fitting option (cross-IP)
+
+Bahamut's Wing, Ifrit's Tusk, Shiva's Spear — Eikon-derived weapons. **Slots into the same new magic-item category proposed for Bloodborne / Elden Ring / Berserk / HK / Dark Souls / Hades / HotD / Pillars II / Demon Slayer.**
+
+**Brand-integrity cost: LOW (or LOWEST if cross-IP category already established).** Cross-IP portfolio-bet applies; the Eikon-affinity flavor adds another variant to the established named-weapons-with-scaling-history pattern.
+
+##### Limit Break / Job-stone Soul Crystal — 2 fitting options
+
+Two FFXIV-signature mechanics that don't have direct 5e analogs:
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Limit Break as encounter-tier ultimate spell** (single named spell at high level — encounter-resource, similar to Wish or Power Word Kill) | **LOW** | Existing spell-slot infrastructure |
+| B | **Soul Crystal as attuned magic item** (job-stone format — attuning grants subclass-feature-tier ability tied to a chosen Job) | LOW | Existing attuned-magic-item infrastructure |
+
+**Trusight read:** Both options layer cleanly. The Soul Crystal mechanic is the cleanest IP-recognition for FFXIV's Job-stone fantasy.
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Spells (element-tied attack spells, Holy, Cure, Flare, Meteor) | LOW | Existing schools (Evocation, Necromancy); the FFXIV spell suite maps cleanly to 5e spell-school taxonomy |
+| Backgrounds (Adventurers' Guild Recruit, Scion of the Seventh Dawn, Garlean Defector, Sharlayan Scholar, Doman Samurai) | LOW | Multiple backgrounds within typical envelope |
+| Mundane items (Gil currency, aetheryte travel-stones, Linkpearl communication, Chocobo Whistle) | LOW | Equipment chapter; standard infrastructure |
+| Setting book (Eorzea Setting Book + Shadowbringers parallel-world) | LOW-MID | Within Wildemount envelope. **Ecosystem-trap caveat applies most strongly here** — the announced official TTRPG will likely ship its own Eorzea setting book; 5e-licensed product would face direct overlap |
+
 ### Potential Sigil VTT locations
 
 - **Limsa Lominsa** — pirate-port hub map.
@@ -2422,6 +2762,74 @@ DDB shows **55 confirmed items** — substantial ensemble despite the thin rever
 | **Mundane items** | Wisteria-pattern uniforms, brand-of-the-Demon-Slayer-Corps marking, kakushi (support corps) gear, Tanjiro's checkered haori | clear gap |
 | **Monsters** | *Lower Moon demons* (CR 8-14 — Rui, Enmu, Akaza-pre-Moon), *Upper Moon demons* (CR 16-22 — Akaza, Doma, Kokushibo, Kaigaku, Hantengu, Gyokko, Daki+Gyutaro, Nakime), *Muzan Kibutsuji* (CR 25 endgame), *Final Selection forest demons* (CR 1-5 minion-tier) | 4 DDB monster items + room for high-tier demon roster |
 | **Setting** | *Taisho-era Demon Slayer Corps Setting Book* — Final Selection Mountain / Butterfly Estate / Swordsmith Village / Entertainment District / Mugen Train / Infinity Castle. Per-arc adventure modules | **50 forum results**; top thread *"Building Nezuko from Demon Slayer: Kimetsu no Yaiba"* |
+
+#### Slot options — brand-integrity-cost framing
+
+Demon Slayer is the passionate-subset case — the 718-add *Blood Hunter, Order of the Demon Slayer* community subclass is the corpus-leading single-character DDB engagement, but the broader reverse-funnel shows the broader fanbase engages with the IP as anime spectacle rather than ensemble-campaign material. Per main entry's *Translation challenges*: explicit Hashira-aspirant framing — players are recruits, not Tanjiro. The 14 Breathing Styles cannot fit as 14 subclasses; the brand-integrity discipline asks how to deliver Breathing-Style variety at typical envelope.
+
+##### Hashira-aspirant subclass — 5 fitting options
+
+The 718-add canonical community subclass uses Blood Hunter as parent class. Multiple alternatives, ranked by brand-integrity cost:
+
+| # | Parent class | Brand-integrity cost | Why it fits | Notes |
+|---|---|---|---|---|
+| A | **Monk (Way of the Hashira)** | LOW | Breathing-Style fluency is mechanically Monk-shaped — focused-breathing maps to Ki-as-resource; existing Monk infrastructure delivers the discipline / martial-arts register | Loses some weapon-mastery flavor |
+| B | **Ranger (Demon-Slayer Hunter)** | LOW-MID | Tracking-and-hunting framing fits Ranger; could refresh existing Monster Slayer Ranger from Xanathar's | Less martial-arts discipline register than Monk |
+| C | **Fighter (Breathing-Style Master)** | MID | Cleaner weapon-mastery fit; 5.5e Weapon Mastery for all Fighters provides infrastructure | Class-identity drift into Ranger territory; loses focused-breathing discipline register |
+| D | **Blood Hunter (community canonical at 718 adds)** | MID | Mechanically cleanest fit (cursed-power archetype is BH's core); the corpus-leading community subclass uses this path | Blood Hunter is a non-WoTC-core-roster class on DDB; building a flagship licensed product on a non-core-roster class is structurally unusual |
+| E | *Full 14-Breathing-Style subclass expansion* | **HIGH — not recommended** | Maximum IP-fidelity | Brand-dilution; 14 subclasses violates typical envelope |
+
+**Trusight read:** Option A is the cleanest mechanical-fit and brand-integrity-friendliest path. Option B offers the additional benefit of refreshing existing Monster Slayer Ranger content (per the cross-IP "refresh existing content" pattern). Option D is the community-organic path with structural caveats.
+
+##### Breathing Style variety — 3 fitting options
+
+14 Breathing Styles in canon. The brand-integrity discipline asks how to deliver the variety at typical envelope:
+
+| # | Approach | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **Subclass-feature choice within one Hashira subclass** (player picks one Breathing Style as a subclass-feature option; each Breathing Style is a 3-feature progression within the subclass) | **LOWEST** | Existing subclass-feature-choice infrastructure (mirrors Battle Master Maneuvers, Eldritch Invocations, Cleric Domain spells); one subclass, 14 flavor variants |
+| B | **Feats — one per Breathing Style** (Water Breathing Adept, Thunder Breathing Initiate, etc.) | LOW | Feat-tier; modular; any class can take any Breathing Style as feat |
+| C | **2-3 selected Breathing-Style subclasses** (the most-iconic — Water, Thunder, Sun — across selected classes) | MID | Subclass slot; within typical envelope but limits coverage to 2-3 of 14 styles |
+
+**Trusight read:** Option A is the brand-integrity-friendliest path — delivers full 14-Breathing-Style coverage through one subclass with subclass-feature choice. Mirrors the Eldritch Invocations / Battle Master Maneuvers pattern that 5e already uses to deliver wide flavor variety within a single subclass slot.
+
+##### Nichirin Blades — 1 fitting option (cross-IP)
+
+Color-changing katanas, multiple variants per Breathing Style affinity. **Slots into the same new magic-item category proposed for Bloodborne (Trick Weapons), Elden Ring (iconic weapons), Berserk (Dragonslayer), HK (Pure Vessel sword), Dark Souls (Boss-Soul weapons), Hades (Aspect weapons), HotD (Valyrian steel), and Pillars II (Soulbound weapons).**
+
+**Brand-integrity cost: LOW (or LOWEST if cross-IP category already established).** The Nichirin color-change-by-affinity mechanic adds a per-Breathing-Style flavor variant; cross-IP portfolio bet applies.
+
+##### Demon bestiary — 1 fitting option
+
+Lower Moon demons (CR 8-14 — Rui, Enmu, Akaza-pre-Moon), Upper Moon demons (CR 16-22 — Akaza, Doma, Kokushibo, Kaigaku, Hantengu, Gyokko, Daki+Gyutaro, Nakime), Muzan Kibutsuji (CR 25 endgame), Final Selection forest demons (CR 1-5 minion-tier). Standard creature type (Fiend) with Mythic Action infrastructure for Upper Moon and Muzan boss-tier multi-phase fights.
+
+**Brand-integrity cost: LOW.** Existing Fiend taxonomy + Mythic Actions. The 12-demon ladder (Lower Moons + Upper Moons) makes a clean tier-progression boss roster.
+
+##### Demon Slayer Corps species — 3 fitting options
+
+| # | Slot | Brand-integrity cost | Description |
+|---|---|---|---|
+| A | **2-3 new species** (Demon Slayer Corps Recruit as variant human, Hashira-blooded as rare lineage, Demon as PC option for unusual campaigns) | MID | Within Spelljammer-envelope |
+| B | **Variant Human + Breathing-Style-Heritage feat** | **LOWEST** | Variant Human path with feat-tier lineage delivery |
+| C | **Custom Lineage (Tasha's)** with Hashira-Aspirant flavor | LOW | Existing Custom Lineage rules; pure flavor |
+
+**Trusight read:** Option B or C is the brand-integrity-friendliest path; the Hashira-aspirant fantasy is more training-trajectory than racial.
+
+##### Mature-content scope-definition — 1 fitting option
+
+Period-Japan demonic-violence + Hashira self-sacrifice arcs are present in canon but **lower-stakes than Berserk's mature-content caveat**. Wildemount-tonal-precedent (mature themes via implication, not explicit depiction) handles the scope cleanly.
+
+**Brand-integrity cost: LOW.** No special-handling rules; standard Wildemount-style tonal envelope.
+
+##### Other content categories — standard infrastructure
+
+| Element | Brand-integrity cost | Note |
+|---|---|---|
+| Spells (Total Concentration: Breathing as concentration-buff variant, Breathing-Style elemental cantrips, Sun Breathing First Form as rare-tier ultimate) | LOW | Small surface; existing schools (Evocation, Transmutation); the Breathing-Style spell suite scales with the per-style subclass-feature progression |
+| Backgrounds (Demon Slayer Corps Recruit, Hashira Aspirant, Final Selection Survivor, Wisteria Mansion Healer, Swordsmith Village Resident, Butterfly Estate Trainee) | LOW | Multiple backgrounds within typical envelope |
+| Magic items (Hashira-tier weapons — Mitsuri's whip-katana, Tengen's twin nunchaku-blades, Sanemi's wind-blade — Hand of Tamayo's medicine, Wisteria-flower poisons) | LOW | Standard legendary / rare magic items; existing rarity infrastructure |
+| Mundane items (Wisteria-pattern uniforms, Demon Slayer Corps brand, kakushi gear, Tanjiro's checkered haori) | LOW | Equipment chapter |
+| Setting book (Taisho-era Demon Slayer Corps Setting + per-arc adventure modules) | LOW-MID | Within Wildemount setting-book envelope; per-arc adventure-module structure mirrors Tales from the Yawning Portal |
 
 ### Potential Sigil VTT locations
 

@@ -61,17 +61,29 @@ The DDB Fit options-framing is integrated into each IP's *Translation
 possibilities (DDB product surface)* section in the breakdowns doc.
 Pilot coverage so far:
 
-| IP | Status | Location in breakdowns doc |
+All 19 IPs in the breakdowns doc have integrated *Slot options — brand-integrity-cost framing* subsections inside their *Translation possibilities (DDB product surface)* sections.
+
+| Section | IP | Status |
 |---|---|---|
-| Hollow Knight | ✓ integrated | Section 13, *Slot options* subsection |
-| Monster Hunter pair | ✓ integrated | Section 5, *Slot options* subsection |
-| Berserk | ✓ integrated | Section 18, *Slot options* subsection |
-| Mistborn | pending | Section 1 |
-| Solo Leveling | pending | Section 2 |
-| Omniscient Reader's Viewpoint | pending | Section 11 |
-| Elden Ring | pending | Section 16 |
-| Pillars of Eternity + Deadfire | pending | Section 8 |
-| *(remaining 11 IPs)* | pending | Various sections |
+| 1 | Mistborn | ✓ integrated |
+| 2 | Solo Leveling | ✓ integrated |
+| 3 | Dark Souls | ✓ integrated |
+| 4 | Persona 5 + Persona 5 Royal | ✓ integrated |
+| 5 | Monster Hunter pair | ✓ integrated |
+| 6 | Hades + Hades II | ✓ integrated |
+| 7 | Sea of Thieves | ✓ integrated |
+| 8 | Pillars of Eternity + Deadfire | ✓ integrated |
+| 9 | Deep Rock Galactic | ✓ integrated |
+| 10 | Dwarf Fortress | ✓ integrated |
+| 11 | Omniscient Reader's Viewpoint | ✓ integrated |
+| 12 | House of the Dragon | ✓ integrated |
+| 13 | Hollow Knight | ✓ integrated |
+| 14 | Bloodborne | ✓ integrated |
+| 15 | One Piece | ✓ integrated |
+| 16 | Elden Ring | ✓ integrated |
+| 17 | Final Fantasy XIV | ✓ integrated |
+| 18 | Berserk | ✓ integrated |
+| 19 | Demon Slayer | ✓ integrated |
 
 ---
 
@@ -117,6 +129,63 @@ options-framed pilot answers "what's the lowest-cost option that
 delivers the IP fantasy?" The second framing matches WoTC's actual
 decision-rights better — they're the design experts; we surface the
 menu and the brand-integrity profile, they pick.
+
+### 5. Portfolio-level cross-IP mechanic-category bets
+
+Iconic-weapons-with-special-properties is the strongest cross-IP
+synergy pattern surfaced in the full pass. **10 of 19 IPs have iconic
+weapons that share a single new magic-item-category shape:**
+
+| IP | Iconic weapon-category |
+|---|---|
+| Bloodborne | Trick Weapons (paired-form magic weapons) |
+| Elden Ring | iconic-effect legendary weapons (Moonveil, Rivers of Blood) |
+| Berserk | Dragonslayer + Skull Knight's Sword (oversized cursed weapons) |
+| Hollow Knight | Pure Vessel sword + Hornet's needle |
+| Dark Souls | Boss-Soul weapons (Quelaag's Furysword, Artorias's Greatsword) |
+| Hades | Aspect weapons (multi-Aspect-variant transformations) |
+| House of the Dragon | Valyrian steel weapons (generations-old named blades) |
+| Pillars II | Soulbound weapons (level with the wielder) |
+| Demon Slayer | Nichirin Blades (color-changing affinity weapons) |
+| Final Fantasy XIV | Eikon-derived weapons (Bahamut's Wing, Ifrit's Tusk) |
+
+**The pitch implication:** WoTC could ship a single new magic-item
+mechanic-category (e.g., "Soulbound / iconic-affinity weapons that
+gain properties as wielder advances") once, and reuse it across all 10
+of these IPs. Per-IP brand-integrity cost is LOWEST once the category
+exists; first product carries the infrastructure cost; subsequent IPs
+slot in for free. **This is a portfolio-level synergy the per-IP
+framing doesn't surface but the cross-IP view makes clear.**
+
+### 6. "Refresh existing content" is the most-generalizable lowest-cost path
+
+Across the full 19-IP pass, **the LOWEST-cost option in nearly every
+subclass-tier decision is "refresh existing official content."**
+Specific instances:
+
+- Hollow Knight Way of the Needle → refresh existing Monk subclass
+- Monster Hunter Hunter archetype → refresh Monster Slayer Ranger
+- Monster Hunter Palico companion → refresh Beast Master Primal Companion
+- Mistborn Mistborn-subclass → refresh existing Monk subclass (Drunken Master)
+- Solo Leveling Shadow Monarch → refresh existing Warlock patron (Pact of the Undying)
+- Pillars II Cipher → refresh Soulknife Rogue
+- Elden Ring faction-subclasses → refresh existing Bard / Paladin subclasses
+- Bloodborne Hunter → refresh Monster Slayer Ranger
+- One Piece Devil Fruit types → refresh existing Sorcerer origins
+- Hades Olympian Patron → refresh existing Warlock patrons (Celestial, Genie)
+- Demon Slayer Hashira-aspirant → refresh existing Monk content
+- Dark Souls Pyromancer / Knight → refresh existing Cleric Light Domain / Eldritch Knight
+- HotD Targaryen Dragon-rider → refresh Drakewarden Ranger
+- DRG Bosco companion → refresh Battle Smith Mechanical Companion
+- DRG Industrial Dwarf → refresh existing Mountain Dwarf with subrace
+- FFXIV Job-themed subclasses → refresh existing Hexblade Warlock / College of Eloquence Bard
+- Dwarf Fortress Mountainhome Dwarf → refresh existing Mountain Dwarf
+
+**The pitch implication:** the recurring community sentiment that
+"under-loved older subclasses deserve attention" is a directly-actionable
+licensing-product strategy. Every IP-license has a default brand-integrity-
+friendly path that *also* refreshes existing 5e content. Two birds, one
+sourcebook.
 
 ---
 
