@@ -303,6 +303,7 @@ This is the IP that maps most cleanly onto Sigil's encounter-map paradigm — ev
 | Acquisition confirmed mentions (Wilds) | 1 | — |
 | **COMMERCIAL — Revenue Risk** | | |
 | BGG proxy score (Wilds) | 0.825 | Strong board-game-comparable signal |
+| **Mobile-game proxy** (manual signal, pending pipeline) | **cult_classic_mobile** | *Monster Hunter Now* (Niantic + Capcom, September 2023) — AR/location-based, Pokémon-GO-style. 15M+ downloads in first 6 months per publicly cited milestones; 4.0-4.3 App Store / Play Store ratings; Niantic's second-most-successful AR launch after Pokémon GO. Niche-but-active fanbase; no major P2W backlash (AR-exploration model, not gacha). **Whale-to-Minnow Disconnect flag does not fire.** **Mobile success ≠ tabletop compatibility caveat applies** — the AR-exploration appeal doesn't directly translate to D&D-conversion intent, but commercial appetite for the IP in tabletop-adjacent paid-content format is demonstrated. |
 | DMs Guild + DTRPG confirmed products | **0** | No third-party 5e Monster Hunter content on either marketplace — the 622-page Monster Manual is on Reddit/imgur, not DTRPG |
 | External licensed product | **none** | Capcom has not licensed any MH TTRPG. The franchise has TCG card games (MH:World — Iceborne) but no tabletop RPG. Clean lane. |
 | Catalog signal | clean lane / first to market | Negotiation-leverage point: like Solo Leveling and Persona 5, no competing TTRPG to anchor advance demands against. **Plus** — Capcom is conservative on Western licensing, which means demonstrated demand-proof has unusual leverage at the deal table |
@@ -455,6 +456,7 @@ Berserk's canon includes content (Eclipse arc sexual violence, Casca trauma arcs
 | Acquisition confirmed mentions | 2 | — |
 | **COMMERCIAL — Revenue Risk** | | |
 | BGG proxy score | 0.71 | Solid |
+| **Mobile-game proxy** (manual signal, pending pipeline) | **sleeper_mobile / dormant** | Multiple licensed mobile games over the years — older Japanese titles, *Berserk Endless Eclipse* announced 2024-25, various tie-in releases. Modest commercial signal compared to console (Bandai Namco's *Berserk and the Band of the Hawk*, 2016) or anime/manga revenue. No broad-mass-market mobile hit comparable to Solo Leveling: ARISE. Mobile-proxy is *not* the primary commercial signal for this IP; that role is filled by the BGG board game and the 1,010 forum-result signal already in this entry. **Mobile success ≠ tabletop compatibility caveat applies** but is secondary here given mobile signal sparseness. Comprehensive mobile-game harvest pending pipeline. |
 | DMs Guild + DTRPG confirmed products | 0 | Clean lane |
 | External licensed product | **none** | Hakusensha + Studio Mu hasn't licensed Berserk for tabletop. Clean lane. Plus the Kentaro Miura estate's licensing posture (post-2021 death; continued by Kouji Mori) is a unique negotiation consideration |
 | Catalog signal | clean lane / first to market | Plus the **highest-fit-and-highest-reception combination** in this batch is a meaningful diligence anchor |
@@ -602,7 +604,8 @@ Igris (CR 18), Beru (CR 19), Kamish (CR 25), Iron-clad Knight (CR 12), Stone Gol
 | Reddit r/sololeveling reverse-funnel | 3 D&D-context posts | Small count, **high engagement**: *"DM: They're just villagers. Players: Not for long."* (126 ups), *"Solo leveling adventure part 1"* (61 ups, 54 comments), *"Choose your own solo leveling adventure day 7.5"* (23 ups) |
 | Forum total results | 85 | Mid-tier forum signal — top thread *"Seeking Solo Leveling Warrior inspired game for PF1 (GM needed)"* (Pathfinder side, but converter pattern present) |
 | **COMMERCIAL — Revenue Risk** | | |
-| BGG proxy score | — | No board-game comparable yet (a *Solo Leveling: ARISE* mobile game launched 2024 but no board-game tabletop product) |
+| BGG proxy score | — | No board-game comparable |
+| **Mobile-game proxy** (manual signal, pending pipeline) | **broad_durable_hit signal with momentum-decay caveat** | *Solo Leveling: ARISE* (Netmarble, May 2024) — **50M+ installs / $139M revenue in first six months** (peak month $58.9M, per public industry reporting); **4.6-4.7 App Store / Play Store ratings** on hundreds of thousands of reviews; top markets Korea / Japan / US. Revenue declined month-on-month post-launch — momentum-decay caveat applies, but rating durability indicates no major P2W backlash (**Whale-to-Minnow Disconnect flag does not fire**). **Mobile success ≠ tabletop compatibility caveat applies** — this signal demonstrates strong commercial appetite for the IP in tabletop-adjacent paid-content format, *not* predicts D&D tabletop conversion. Tabletop-conversion signal remains thin (per AO3 0.31% + 6 D&D-sub strict-filter posts elsewhere in this entry). |
 | DMs Guild + DTRPG confirmed products | **0** | **No third-party 5e or other-system Solo Leveling content on either marketplace.** Clean lane — WoTC would be first to market. |
 | Catalog signal | clean — no competing TTRPG | Negotiation-leverage point: the licensor cannot anchor advance demands to a comparable existing product, because there isn't one |
 
@@ -1662,6 +1665,7 @@ Sea Kings (CR-variable ocean megafauna), Marine Vice Admirals (Garp CR 25, Kizar
 | Forum total results | **6,200** | **Corpus-leading forum signal**; top thread *"One Piece Characters as D and D 5e Characters"* |
 | **COMMERCIAL — Revenue Risk** | | |
 | BGG proxy score | NULL | No One Piece board game in measurement |
+| **Mobile-game proxy** (manual signal, pending pipeline) | **mainstream_hit_mobile** — strongest longevity signal in this batch | Multiple long-running titles: *One Piece Treasure Cruise* (Bandai Namco, 2014 — **10+ years sustained, $1B+ cumulative revenue per publicly disclosed milestones**), *One Piece Bounty Rush* (2018), *One Piece Fighting Path* (China, regional). Both Treasure Cruise and Bounty Rush maintain 4.4-4.6 App Store / Play Store ratings. **Durable mobile-IP success** — sustained 10+ years of mobile-game releases without significant P2W backlash; gacha model generally well-received in One Piece community. **Whale-to-Minnow Disconnect flag does not fire.** Mobile-success-to-tabletop translation gap is small here — One Piece's broad commercial-translatability signal is unusually strong. The corpus-leading 6,200 forum results and 4,130-up viral DnD-campaign-art post elsewhere in this entry are the tabletop-side evidence. |
 | DMs Guild + DTRPG confirmed products | 0 | Clean lane on 5e content |
 | External licensed product | **none** in 5e (Bandai-licensed Japanese tabletop games exist but not Western 5e) | Clean lane on the WoTC-side license |
 
@@ -1954,6 +1958,7 @@ Period-Japan demonic-violence + Hashira self-sacrifice arcs are present in canon
 | Forum total results | 50 | Mid-tier; top thread *"Building Nezuko from Demon Slayer: Kimetsu no Yaiba"* |
 | **COMMERCIAL — Revenue Risk** | | |
 | BGG proxy score | NULL | No DS board game in measurement |
+| **Mobile-game proxy** (manual signal, pending pipeline) | **cult_classic_mobile / sleeper_mobile** | Multiple licensed mobile games — *Demon Slayer: Keppuu Kengeki Royale* (Aniplex), various tie-in titles, anime-merchandise mobile adaptations. No single breakout commercial mobile success — the IP's major game is *Hinokami Chronicles* (CyberConnect2, 2021, console). Mobile presence is supplementary to the IP's anime + merchandise commercial story rather than a primary commercial-translatability signal. **Whale-to-Minnow Disconnect flag does not fire** (no major P2W backlash on the mobile titles). **Mobile success ≠ tabletop compatibility caveat applies** — the IP's strongest commercial signal is in non-mobile categories (anime + merchandise + console gaming). Comprehensive mobile-game harvest pending pipeline. |
 | DMs Guild + DTRPG confirmed products | 0 | Clean lane on 5e content |
 | External licensed product | **none** in 5e | Clean lane |
 
@@ -2429,6 +2434,7 @@ Each Palace is a complete dungeon set-piece — the IP is *built around* dungeon
 | Forum total results | 7 | Mid-tier; top thread *"Persona 5 Royal | Video Games Open | RPGnet"* |
 | **COMMERCIAL — Revenue Risk** | | |
 | BGG proxy score (Royal) | 0.82 | Strong board-game-comparable signal |
+| **Mobile-game proxy** (manual signal, pending pipeline) | **mainstream_hit_mobile in Asia / launch_spike_fade with regional caveat in West** | *Persona 5: The Phantom X* (Perfect World Games + Atlus, 2023 China launch / 2024 global launch) — gacha-RPG with original-cast-plus-new-Phantom-Thieves story. **Strong launch in China** (Sensor Tower-reported top-grossing in first months); **more mixed reception in Western markets** with modest P2W community complaints in West (mild compared to other gacha titles). 4.3-4.5 App Store / Play Store ratings globally. **Whale-to-Minnow Disconnect flag: borderline** — high revenue with mid-range Western reception. **Mobile success ≠ tabletop compatibility caveat applies** — the Phantom X mobile commercial signal corroborates broad Persona 5 IP appeal but the off-DDB consolidation pattern elsewhere in this entry (217-up Persona 5e fan project; zero DDB items) means tabletop-conversion signal is the load-bearing channel here, not mobile. |
 | DMs Guild + DTRPG confirmed products | **0** | No third-party 5e or other-system Persona content on either marketplace — the fan 5e Persona project is on Reddit/Discord, not DTRPG |
 | External licensed product | **none** | Atlus has not licensed any Persona TTRPG; the IP is video-game-and-anime-only commercially |
 | Catalog signal | clean lane / first to market | Negotiation-leverage point: like Solo Leveling, no competing TTRPG to anchor advance demands against |
@@ -2712,6 +2718,7 @@ Two FFXIV-signature mechanics that don't have direct 5e analogs:
 | Forum total results | 107 | Mid-tier |
 | **COMMERCIAL — Revenue Risk** | | |
 | BGG proxy score | 0.74 | Solid |
+| **Mobile-game proxy** (manual signal, pending pipeline) | **pending — FFXIV Mobile in development** | *Final Fantasy XIV Mobile* announced 2024 (LightSpeed Studios / Tencent + Square Enix), expected 2025-26 launch. **No FFXIV-specific commercial data yet.** Important parallel signal: the broader Final Fantasy mobile franchise has multiple commercial hits — *FF7 Ever Crisis* (2023, ongoing), *War of the Visions FFBE* (2019, sustained), *FF Brave Exvius* (2014, sustained), *Mobius Final Fantasy* (sunset 2023). Demonstrates Square Enix's strong mobile-publishing track record for the Final Fantasy IP umbrella. **FFXIV-specific archetype: pending; Final Fantasy franchise-level: mainstream_hit_mobile.** **The ecosystem-trap caveat in this entry's main *Translation challenges* section dominates the commercial recommendation** — the announced Square Enix TTRPG combined with FFXIV Mobile in development means Square Enix is actively pursuing FFXIV-IP-licensing across multiple non-WoTC partners simultaneously. |
 | DMs Guild + DTRPG confirmed products | 0 | But see external-licensed-product caveat below |
 | External licensed product | **A licensed FFXIV tabletop RPG was announced in 2025** | The headline ecosystem-trap finding. *"The Final Fantasy XIV tabletop RPG is coming | Page 3 - RPGnet"* is the BQ-confirmed forum thread. **WoTC's 5e licensing call competes directly with this announced official product** |
 | Catalog signal | **ecosystem-trap** | The strongest ecosystem-trap caveat in the breakdowns doc — an *announced* official TTRPG, not just a competing-system product like Steamforged's Dark Souls |
