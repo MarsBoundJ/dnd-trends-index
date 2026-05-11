@@ -189,6 +189,76 @@ sourcebook.
 
 ---
 
+## Source A demand harvest — expanded May 11 2026
+
+The original pilot identified 8 demand clusters from a 65-query Reddit
+wishlist harvest at ≥30 ups. The May 11 expansion targeted 5 additional
+demand-pattern categories and added r/DMAcademy as a 6th sub. 174 files
+harvested across 29 query patterns × 6 subs.
+
+### Expansion target categories
+
+1. Modern / urban-fantasy setting demand (relevant for P5, Solo Leveling, ORV)
+2. Anime / shonen / isekai demand (relevant for DS, OP)
+3. High-tier / epic-boss / Tier-4 demand
+4. Political intrigue / low-magic / faction demand (relevant for HotD, Pillars II)
+5. Cozy / relationship / social / downtime demand (relevant for P5 Confidants)
+
+### Honest finding from the expansion
+
+The expansion **validated** the original 8 clusters as the strongest
+signal in the demand space and **surfaced 2 new confirmed clusters** —
+but did **not** produce major new clusters for most patterns searched.
+Cross-IP Reddit-search is structurally noisy at this scope. Queries for
+"modern setting," "anime inspired," and "cozy fantasy" mostly caught
+DM-advice and homebrew-system posts that *mention* those terms
+tangentially rather than *articulating demand* for them.
+
+### Two new confirmed clusters (updated reference: 10 clusters total)
+
+| # | Cluster | Strongest evidence | Engagement |
+|---|---|---|---|
+| 9 | **High-tier / Tier-4 / endgame design** | r/DMAcademy *"How do I (mentally) prep for the final session of a 3 year, level 1-20 5e campaign ending tonight?"* + r/DnD *"Exploration and Survival in 5e: Under-Integrated, Not Under-Supported"* + r/dndnext *"The Arch-Hag: An Analysis"* (community celebrating 2025 MM Tier-4 monster) | 122u + 105u + 139u |
+| 10 | **Setting-variety / non-default-medieval** | r/DnD *"Why Dungeons and Dragons needs a Dark Sun setting"* — direct articulation of demand for non-medieval D&D settings | 147u, 246c |
+
+### Patterns that didn't surface in cross-IP search but exist via IP-home signal
+
+Three demand patterns are empirically real (visible in IP-home community
+signal) but the D&D-sub cross-IP search didn't catch them:
+
+- **Modern / urban-fantasy setting** (relevant to P5, Solo Leveling, ORV)
+  — visible in IP-home reverse-funnel signal (217-up Persona 5e fan
+  project, 126-up r/sololeveling DM-jokes) but not in cross-IP search
+- **Anime-IP-specific demand** (relevant to DS, OP) — community
+  vocabulary is different on anime subs; cross-IP search misses
+- **Cozy / relationship-driven mechanics** (relevant to P5 Confidants) —
+  too vague a search target; underlying demand exists culturally
+  (Stardew Valley fan-D&D content) but Reddit search doesn't isolate it
+
+**Implication for the Community Demand Match work:** the per-IP
+reverse-funnel signal (already in each IP entry's *Measured data*
+section) is the *stronger* source for IP-specific demand matching than
+cross-IP Reddit search. The expanded cluster list (now 10) serves as a
+cross-corpus reference; the per-IP signal carries the actual citation
+strength.
+
+### Updated 10-cluster demand reference with IP-supply mapping
+
+| # | Demand cluster | Citation strength | Top IPs that supply it |
+|---|---|---|---|
+| 1 | Missing class: Warlord | strong (121u r/3d6) | Pillars II (Sage / Chanter), Hades (House of Hades faction-Cleric) |
+| 2 | Missing class: Gish (arcane-martial hybrid) | strong (121u + 46u) | Mistborn (Mistborn-as-Wizard hybrid), Pillars II (Gun Mage), Elden Ring (Carian Sorcerer) |
+| 3 | Higher-power-level (Guts-tier) | **very strong — direct IP-citation (1,489u)** | **Berserk (direct empirical match)**, Elden Ring, Bloodborne, Dark Souls |
+| 4 | Active / dynamic martials | strong (multi-thread + 1,161u HK Way of the Needle) | **Hollow Knight (1,161u canonical)**, Monster Hunter (14 weapon-class subclasses), Berserk (Path of the Possessed) |
+| 5 | Drop-in low-prep content | mid (37u) | **Monster Hunter (episodic Hunting Commissions)**, Sea of Thieves (Tall Tales), ORV (per-scenario adventures), Dwarf Fortress (Strange Mood Artifact tables) |
+| 6 | Better Enchanter / charm-magic mechanics | strong (130u) | Hollow Knight (Charms-as-consumables), Hades (Boon-Pact) |
+| 7 | Stronger Artificer | mid (31u) | **Deep Rock Galactic (Engineer / Battle Smith refresh)**, Monster Hunter (crafting-loop is Artificer-adjacent) |
+| 8 | Player-facing magic-item wishlist | mid (66u) | Monster Hunter (Carve-and-Craft), Hades (Aspect-weapon variants), Bloodborne (Trick Weapons) |
+| 9 | **High-tier / Tier-4 / endgame design** | strong (122u + 105u + 139u) | **All IPs with CR 20+ bosses** — One Piece (Yonko CR 25-26), Berserk (Femto CR 25), Bloodborne (Orphan of Kos CR 24), Elden Ring (Elden Beast CR 24), Hades pair (Chronos CR 25, Hades CR 24), HotD (Vhagar CR 24), ORV (Outer-God Constellations CR 22-25), Solo Leveling (Kamish CR 25), FFXIV (Endsinger CR 25), Demon Slayer (Muzan CR 25) |
+| 10 | **Setting-variety / non-default-medieval** | strong (147u direct article) | **Persona 5 (modern-Tokyo)**, ORV (Star-Stream-Earth), Solo Leveling (modern-with-gates), Sea of Thieves (pirate-fantasy), Monster Hunter (frontier-hunting), Deep Rock Galactic (sci-fi-fantasy), Dwarf Fortress (procedural-medieval-with-deep-cosmology), Demon Slayer (Taisho-era Japan) |
+
+---
+
 ## Methodology notes for extension
 
 **What worked:**
