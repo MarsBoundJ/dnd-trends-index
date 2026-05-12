@@ -1,21 +1,23 @@
 # Trusight IP Breakdowns: 19 Licensing Candidates
 
-Working scratch document. Per-IP "Trusight breakdown" format that explores
-how each promising IP could be marketed, translated into D&D, and converted
-into specific D&D Beyond product (a la carte or full setting book), plus
-Sigil VTT location ideas and the measured data underneath.
+This report presents 19 IP-licensing candidates selected from Trusight's 142-IP corpus, each examined across translation strategy, brand-integrity cost, and measured community signal.
 
 ---
 
-## Template (each IP follows this shape)
+## Document overview
 
-1. **IP name + thumbnail** (image placeholder for now)
-2. **Quick description.** What the IP is — medium, scope, one-paragraph orientation.
-3. **Marketing angle / D&D-universe niche.** Why a D&D licensee would want this IP. What gap in the D&D portfolio it fills.
-4. **Translation challenges.** Specific structural friction points moving the IP into 5.5e — and how they'd be addressed.
-5. **Translation possibilities (DDB product surface).** Subclasses / species / backgrounds / spells / magic items / mundane items / monsters / settings. With DDB-homebrew evidence — what the community has already built.
-6. **Potential Sigil VTT locations.** Specific maps / encounter sites from the IP that would translate into Sigil-platform content.
-7. **Measured data.** Fit / Reception / Acquisition / Commercial scores plus per-channel signal — the foundation a stakeholder needs.
+Each IP entry uses a consistent structure:
+
+1. **Thumbnail + title** — IP name, attribution, and key art.
+2. **Cross-reference** (where applicable) — where the IP appears in the companion IP & Licensing report.
+3. **Versioning note** (paired entries only) — how multi-game franchises are scoped (umbrella vs version-specific).
+4. **Strategic positioning note** (where applicable) — a framing of how the entry's placement in this document should be read.
+5. **Quick description** — what the IP is in one paragraph: medium, scope, orientation.
+6. **Marketing angle / D&D-universe niche** — why a D&D licensee would want this IP, and what gap in the portfolio it fills.
+7. **Translation challenges** — specific structural friction points moving the IP into 5.5e, with proposed answers.
+8. **Translation possibilities (DDB product surface)** — content categories the IP could populate (subclasses, species, backgrounds, spells, magic items, mundane items, monsters, settings), with DDB-homebrew evidence. Includes a **Slot options — brand-integrity-cost framing** subsection presenting 2-4 ranked implementation options per major category.
+9. **Potential Sigil VTT locations** — IP maps and encounters that would translate into Sigil-platform content.
+10. **Measured data — grouped by 4-Risk UB Matrix dimension** — Fit, Reception, Acquisition, and Commercial signal with per-channel detail.
 
 ---
 
@@ -23,7 +25,7 @@ Sigil VTT location ideas and the measured data underneath.
 
 ![Hollow Knight — Team Cherry key art](thumbnails/01_hollow_knight.jpg)
 
-> **Cross-reference.** Hollow Knight is the *Greenlight* anchor case in the main IP & Licensing report (Section 4.1). This breakdown applies the standard 7-section template with refreshed harvest data.
+> **Cross-reference.** Hollow Knight is the *Greenlight* anchor case in the companion IP & Licensing report (Section 4.1). This breakdown applies the standard 7-section template with refreshed harvest data.
 
 ### Quick description
 
@@ -315,7 +317,7 @@ This is the IP that maps most cleanly onto Sigil's encounter-map paradigm — ev
 
 ![Berserk — Guts key visual](thumbnails/03_berserk.jpg)
 
-> **Cross-reference.** Berserk is one of the *Two Winners, One Slot* candidates in the main IP & Licensing report (Section 4.5), winning the "mechanical translation" frame against Elden Ring (Berserk's measured fit 0.94 + reception 0.83 are higher than Elden Ring's). Berserk's design DNA is *one of the foundational influences on FromSoftware's entire catalog* — Miyazaki has explicitly cited Berserk as primary inspiration. Elden Ring grew out of Berserk, mechanically and tonally.
+> **Cross-reference.** Berserk is one of the *Two Winners, One Slot* candidates in the companion IP & Licensing report (Section 4.5), winning the "mechanical translation" frame against Elden Ring (Berserk's measured fit 0.94 + reception 0.83 are higher than Elden Ring's). Berserk's design DNA is *one of the foundational influences on FromSoftware's entire catalog* — Miyazaki has explicitly cited Berserk as primary inspiration. Elden Ring grew out of Berserk, mechanically and tonally.
 
 ### Quick description
 
@@ -472,7 +474,7 @@ Solo Leveling is a Korean progression-fantasy property: web novel by Chugong (20
 
 ### Marketing angle / D&D-universe niche
 
-The pitch writes itself in one data point: **the Shadow Monarch Warlock subclass on D&D Beyond has 642 adds — the highest single-artifact engagement in our entire corpus.** The community has independently built the canonical Solo Leveling D&D conversion and 642 players have adopted it. A licensed product converts that revealed preference into a first-party DDB release. The niche this fills in the D&D portfolio: the *progression-fantasy / isekai* audience — younger, international, anime-adjacent — that does not currently have a first-party D&D entry point. In the cannibalization frame from the main IP & Licensing report, this is unambiguously a **net-new audience** acquisition play.
+The pitch writes itself in one data point: **the Shadow Monarch Warlock subclass on D&D Beyond has 642 adds — the highest single-artifact engagement in our entire corpus.** The community has independently built the canonical Solo Leveling D&D conversion and 642 players have adopted it. A licensed product converts that revealed preference into a first-party DDB release. The niche this fills in the D&D portfolio: the *progression-fantasy / isekai* audience — younger, international, anime-adjacent — that does not currently have a first-party D&D entry point. In the cannibalization frame from the companion IP & Licensing report, this is unambiguously a **net-new audience** acquisition play.
 
 ### Translation challenges
 
@@ -616,7 +618,7 @@ Igris (CR 18), Beru (CR 19), Kamish (CR 25), Iron-clad Knight (CR 12), Stone Gol
 
 ![Elden Ring — FromSoftware / Bandai Namco key art](thumbnails/05_elden_ring.jpg)
 
-> **Cross-reference.** Elden Ring is one of the *Two Winners, One Slot* candidates in the main IP & Licensing report (Section 4.5), winning the "execution depth" frame against One Piece and losing the "mechanical translation" frame against Berserk.
+> **Cross-reference.** Elden Ring is one of the *Two Winners, One Slot* candidates in the companion IP & Licensing report (Section 4.5), winning the "execution depth" frame against One Piece and losing the "mechanical translation" frame against Berserk.
 
 ### Quick description
 
@@ -768,7 +770,7 @@ Moonveil, Rivers of Blood, Sword of Night and Flame, Eclipse Shotel, Marais Exec
 
 ![Omniscient Reader's Viewpoint — anime key visual](thumbnails/06_orv.jpg)
 
-> **Note on cross-referencing the main IP & Licensing report.** ORV is the *Sleeper #2* anchor case in the main report (Section 4.3). Data here is sourced from the May 2026 due-diligence harvest documented in `pitch/report/harvest_findings.md`. The breakdown below applies the standard 7-section format on top of the existing harvest evidence.
+> **Cross-reference.** ORV is the *Sleeper #2* anchor case in the companion IP & Licensing report (Section 4.3).
 
 ### Quick description
 
@@ -908,7 +910,7 @@ ORV's scenario-by-scenario structure maps unusually cleanly to one-shot adventur
 
 ![Bloodborne — FromSoftware / Sony key art](thumbnails/07_bloodborne.jpg)
 
-> **Cross-reference.** Bloodborne is the *Sleeper #1* anchor case in the main IP & Licensing report (Section 4.2). This breakdown documents the standard 7-section format with refreshed harvest data.
+> **Cross-reference.** Bloodborne is the *Sleeper #1* anchor case in the companion IP & Licensing report (Section 4.2). This breakdown documents the standard 7-section format with refreshed harvest data.
 
 ### Quick description
 
@@ -1355,7 +1357,7 @@ DRG is *built around* procedural cave-encounter maps — natural fit for Sigil's
 
 ![One Piece — Toei Animation key visual](thumbnails/10_one_piece.jpg)
 
-> **Cross-reference.** One Piece is the *Two Winners, One Slot* anchor in the main IP & Licensing report (Section 4.5), framed as the "audience expansion" winner against Elden Ring and the "blue ocean" winner against FFXIV.
+> **Cross-reference.** One Piece is the *Two Winners, One Slot* anchor in the companion IP & Licensing report (Section 4.5), framed as the "audience expansion" winner against Elden Ring and the "blue ocean" winner against FFXIV.
 
 ### Quick description
 
@@ -1652,7 +1654,7 @@ DF is *built around* fortress maps — natural Sigil fit. Each succession-game's
 
 ![Demon Slayer — Ufotable / Aniplex key visual](thumbnails/12_demon_slayer.jpg)
 
-> **Cross-reference.** Demon Slayer is *Two Promising IPs / Case 2* in the main IP & Licensing report (Section 4.4) — the structural-fit-vs-thin-conversion pattern, with the chosen-one-narrative-meeting-ensemble-cast-game friction as the diligence finding.
+> **Cross-reference.** Demon Slayer is *Two Promising IPs / Case 2* in the companion IP & Licensing report (Section 4.4) — the structural-fit-vs-thin-conversion pattern, with the chosen-one-narrative-meeting-ensemble-cast-game friction as the diligence finding.
 
 ### Quick description
 
@@ -2589,7 +2591,7 @@ Skeleton Captain (CR 10), Megalodon (CR 12), The Kraken (CR 18 — existing 5.5e
 
 ![Final Fantasy XIV — Square Enix key art](thumbnails/18_ffxiv.jpg)
 
-> **Cross-reference.** FFXIV is the *Two Winners, One Slot vs One Piece* anchor in the main IP & Licensing report (Section 4.5), framed as the "cannibalization vs blue ocean" comparison — *FFXIV's player base already significantly overlaps with the existing D&D player base*, making it the audience-overlap counterexample to One Piece's net-new-audience pitch.
+> **Cross-reference.** FFXIV is the *Two Winners, One Slot vs One Piece* anchor in the companion IP & Licensing report (Section 4.5), framed as the "cannibalization vs blue ocean" comparison — *FFXIV's player base already significantly overlaps with the existing D&D player base*, making it the audience-overlap counterexample to One Piece's net-new-audience pitch.
 
 ### Quick description
 
@@ -2597,7 +2599,7 @@ Final Fantasy XIV (2010 launch, A Realm Reborn relaunch 2013, currently in *Dawn
 
 ### Marketing angle / D&D-universe niche
 
-FFXIV is the **audience-overlap-cannibalization** counterexample case in the main report's frame, and the harvest reinforces that: AO3 proportional rate **0.063%** is the second-lowest of any IP measured (after One Piece's 0.048%); Reddit D&D-subs strict-filter is dominated by generic "Red Mage" / "Berserker" class-name false positives rather than direct FFXIV-conversion. **The fanbase already plays D&D**; conversion isn't the bottleneck, *cannibalization* is. Niche it would fill: a *high-fantasy classic-Final-Fantasy-flavored* setting, but the audience overlap with existing D&D players means the licensing economics behave like *resale to existing customers* rather than net-new audience import.
+FFXIV is the **audience-overlap-cannibalization** counterexample case in the companion IP & Licensing report's frame, and the harvest reinforces that: AO3 proportional rate **0.063%** is the second-lowest of any IP measured (after One Piece's 0.048%); Reddit D&D-subs strict-filter is dominated by generic "Red Mage" / "Berserker" class-name false positives rather than direct FFXIV-conversion. **The fanbase already plays D&D**; conversion isn't the bottleneck, *cannibalization* is. Niche it would fill: a *high-fantasy classic-Final-Fantasy-flavored* setting, but the audience overlap with existing D&D players means the licensing economics behave like *resale to existing customers* rather than net-new audience import.
 
 ### Translation challenges
 
@@ -2728,7 +2730,7 @@ Two FFXIV-signature mechanics that don't have direct 5.5e analogs:
 
 ![House of the Dragon — HBO key art](thumbnails/19_house_of_the_dragon.png)
 
-> **Note on cross-referencing the main IP & Licensing report.** HotD is the *Two Promising IPs / Case 1* anchor case in the main report (Section 4.4), where the structural-fit-vs-thin-conversion pattern is the headline finding. Data here is sourced from the May 2026 due-diligence harvest (`harvest_findings.md`). This breakdown documents what an HotD licensing-product pitch would look like *given the data* — the engine-question caveat is the structural finding, and the negotiation-leverage paragraph is the dual-use answer.
+> **Cross-reference.** HotD is the *Two Promising IPs / Case 1* anchor case in the companion IP & Licensing report (Section 4.4), where the structural-fit-vs-thin-conversion pattern is the headline finding. This breakdown documents what an HotD licensing-product pitch would look like *given the data* — the engine-question caveat is the structural finding, and the negotiation-leverage paragraph is the dual-use answer.
 
 ### Quick description
 
@@ -2885,7 +2887,7 @@ Valyrian steel weapons are generations-old named blades. **Slots into the same n
 
 ---
 
-## Coverage map — all nineteen breakdowns in strategic order
+## At-a-glance summary
 
 | # | IP | Headline finding |
 |---|---|---|
@@ -2942,15 +2944,6 @@ Valyrian steel weapons are generations-old named blades. **Slots into the same n
 | One Piece | 0.048% | Largest-Reddit-engagement net-new audience |
 | Demon Slayer | 0.040% | Passionate-subset pattern |
 | Sea of Thieves | 0% | Market-opportunity-led / thin |
-
-## Notes / open questions
-
-- The worked examples (Hollow Knight as NPC + monsters/charms/locations focus, Dark Souls as harder-combat niche) suggest the breakdown shape works best when the "translation challenges" section names a specific structural friction and gives a specific D&D-shaped answer. The Mistborn entry above leans on that pattern.
-- The "DDB-homebrew evidence" pattern (citing the 12 / 20 / 12 spread, the 117-add top item) is the empirical anchor that distinguishes a Trusight breakdown from a generic licensing pitch. Every entry should lean on the BQ data for that paragraph.
-- Sigil VTT angle is genuinely additive — none of the AI cadre raised it in the original outline, but it sells the Hasbro-portfolio integration story. Worth keeping prominent in every entry.
-- The "ecosystem-trap" honest caveat (Mistborn's competing Cosmere RPG) is a feature not a bug — calibrated honesty is the report's voice. Each entry should surface the equivalent caveat where one exists (e.g., Dark Souls has nothing comparable; Persona 5 has no TTRPG; Hades has none).
-
----
 
 ## Image attributions
 
