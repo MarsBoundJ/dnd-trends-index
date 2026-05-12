@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Frame abstraction (Step 9.5).
+ * Trusight — Frame abstraction (Step 9.5).
  *
  * A "Frame" is a switchable interpretive prior used by Track D articles and
  * Sage when answering questions about signals in the frame's domain. Frames

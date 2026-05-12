@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — BackerKit run status (Step 12 + stale-run detector).
+ * Trusight — BackerKit run status (Step 12 + stale-run detector).
  *
  * GET /api/admin/backerkit/status?limit=N
  *   - Verifies admin allowlist (same guard as /run).

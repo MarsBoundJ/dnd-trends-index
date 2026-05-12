@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Bag of Holding report export helpers.
+ * Trusight — Bag of Holding report export helpers.
  *
  * Client-side serializers that turn an organized bag (items + clusters
  * from the /api/bag/organize endpoint) into a shareable text artifact
@@ -41,7 +41,7 @@ export interface ReportSection {
  * of every export format.
  */
 export interface ReportMeta {
-  /** Report title. Defaults to "Arcane Analytics — Bag of Holding Report". */
+  /** Report title. Defaults to "Trusight — Bag of Holding Report". */
   title?: string
   /** The user's display name for a "prepared for" line. Optional. */
   preparedFor?: string
@@ -129,7 +129,7 @@ export function serializeToMarkdown(
   sections: ReportSection[],
   meta: ReportMeta = {},
 ): string {
-  const title = meta.title ?? "Arcane Analytics — Bag of Holding Report"
+  const title = meta.title ?? "Trusight — Bag of Holding Report"
   const date = formatDate(meta.generatedAt)
 
   const lines: string[] = []
@@ -194,7 +194,7 @@ export function serializeToPlainText(
   sections: ReportSection[],
   meta: ReportMeta = {},
 ): string {
-  const title = meta.title ?? "Arcane Analytics — Bag of Holding Report"
+  const title = meta.title ?? "Trusight — Bag of Holding Report"
   const date = formatDate(meta.generatedAt)
 
   const lines: string[] = []

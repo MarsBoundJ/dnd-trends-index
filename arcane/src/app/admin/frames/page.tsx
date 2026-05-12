@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Admin Frames panel (Step 9.5).
+ * Trusight — Admin Frames panel (Step 9.5).
  *
  * Lists every frame in Firestore and shows which is currently active. Admin
  * can flip the active pointer via a server action. Frames themselves are

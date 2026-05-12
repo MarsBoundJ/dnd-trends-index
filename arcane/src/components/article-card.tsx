@@ -1,7 +1,7 @@
 "use client"
 
 /*
- * Arcane Analytics — ArticleCard (Step 9b).
+ * Trusight — ArticleCard (Step 9b).
  *
  * Renders a single Council article row from `gold_data.daily_articles`
  * inside the universal CardChrome shell. Each Council member has a

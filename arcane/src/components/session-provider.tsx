@@ -1,7 +1,7 @@
 "use client"
 
 /*
- * Arcane Analytics — SessionProvider wrapper (Step 11).
+ * Trusight — SessionProvider wrapper (Step 11).
  *
  * Thin "use client" boundary around Auth.js's SessionProvider so the
  * root layout stays a Server Component. Every client component below

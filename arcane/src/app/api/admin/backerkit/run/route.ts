@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — BackerKit harvest trigger (Step 12 + self-report fix).
+ * Trusight — BackerKit harvest trigger (Step 12 + self-report fix).
  *
  * POST /api/admin/backerkit/run
  *   - Verifies caller is on the admin allowlist (belt-and-suspenders;

@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Step 1 token-verification harness (moved to /swatch in Step 2).
+ * Trusight — Step 1 token-verification harness (moved to /swatch in Step 2).
  *
  * This page proves the Obsidian & Ember palette and three fonts are wired correctly.
  * Rarity tier swatches updated to the metal ladder (copper/silver/gold/platinum/mithral)

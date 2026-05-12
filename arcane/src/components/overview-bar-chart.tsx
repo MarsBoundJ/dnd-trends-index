@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Category Heat bar chart.
+ * Trusight — Category Heat bar chart.
  *
  * Client component (Recharts requires the browser DOM). Renders a horizontal
  * bar chart of D&D categories sorted by Google Trends heat score.

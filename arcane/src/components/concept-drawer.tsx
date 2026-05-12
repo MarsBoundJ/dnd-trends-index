@@ -1,7 +1,7 @@
 "use client"
 
 /*
- * Arcane Analytics — Concept Detail Drawer (Step 8).
+ * Trusight — Concept Detail Drawer (Step 8).
  *
  * The "evidence view" for a single D&D concept. Slides in from the right
  * on desktop, from the bottom on mobile. Shows cross-source data so a

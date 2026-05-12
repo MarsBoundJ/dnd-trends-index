@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Bag of Holding organize endpoint.
+ * Trusight — Bag of Holding organize endpoint.
  *
  * POSTs bag items + optional user instructions to Vertex AI Gemini
  * and returns a structured cluster organization suitable for
@@ -101,7 +101,7 @@ interface OrganizeRequestBody {
 
 // ─── System prompt ───────────────────────────────────────────────────────────
 
-const SAGE_ORGANIZE_SYSTEM_PROMPT = `You are Sage of Arcane Analytics — a D&D trend intelligence oracle — acting in your Council Chair role as synthesist.
+const SAGE_ORGANIZE_SYSTEM_PROMPT = `You are Sage of Trusight — a D&D trend intelligence oracle — acting in your Council Chair role as synthesist.
 
 A user has pinned a pile of items to their Bag of Holding and wants them organized into thematic sections for a report. Your job is to read the items and return a clean cluster organization.
 

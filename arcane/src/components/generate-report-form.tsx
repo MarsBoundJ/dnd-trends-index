@@ -1,7 +1,7 @@
 "use client"
 
 /*
- * Arcane Analytics — Generate Report form.
+ * Trusight — Generate Report form.
  *
  * The control surface at the top of /collection that turns a Bag of
  * Holding into an organized, exportable report. User optionally types

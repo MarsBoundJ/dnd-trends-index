@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Auth.js v5 full config (Steps 11 + 11.5).
+ * Trusight — Auth.js v5 full config (Steps 11 + 11.5).
  *
  * Imports the shared edge-safe `authConfig` from auth.config.ts and
  * layers in the Firebase adapter — a Node-only dependency that the
@@ -36,14 +36,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     ...authConfig.providers,
     Resend({
       apiKey: process.env.AUTH_RESEND_KEY,
-      // Production sending address. Domain arcaneanalytics.io was
+      // Production sending address. Domain trusightdata.ai was
       // verified at Resend on 2026-04-23 with DKIM/SPF/DMARC TXT
       // records in Cloudflare DNS. This address can deliver to any
       // recipient now — no more sandbox recipient-allowlist constraint.
       // Using "hello@" handle (short, professional, reusable for any
       // future transactional mail — welcome, notifications, etc.)
       // rather than something flow-specific like "magic-links@".
-      from: "hello@arcaneanalytics.io",
+      from: "hello@trusightdata.ai",
     }),
   ],
   // Reuse our existing firebase-admin singleton rather than letting

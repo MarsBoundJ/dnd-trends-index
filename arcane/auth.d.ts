@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Auth.js v5 type augmentation (Step 11).
+ * Trusight — Auth.js v5 type augmentation (Step 11).
  *
  * Adds a stable `uid` field to the JWT and `user.id` on the session so
  * TypeScript knows about the custom fields we set in auth.ts callbacks.

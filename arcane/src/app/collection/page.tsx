@@ -1,7 +1,7 @@
 "use client"
 
 /*
- * Arcane Analytics — Bag of Holding viewer (Step 5 MVP).
+ * Trusight — Bag of Holding viewer (Step 5 MVP).
  *
  * Client Component (all state lives in localStorage via Zustand). Renders
  * three sections:
@@ -65,7 +65,7 @@ export default function CollectionPage() {
     <main className="mx-auto max-w-4xl px-6 py-12 space-y-10">
       <header className="space-y-3">
         <p className="font-mono text-xs uppercase tracking-widest text-ember-bright">
-          Arcane Analytics · Bag of Holding
+          Trusight · Bag of Holding
         </p>
         <div className="flex items-end justify-between gap-4 flex-wrap">
           <h1 className="font-display text-4xl font-semibold tracking-tight text-parchment">

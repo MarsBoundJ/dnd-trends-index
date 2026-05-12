@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Not Authorized (Step 12).
+ * Trusight — Not Authorized (Step 12).
  *
  * Landing page when a signed-in user hits /admin/* and isn't on the
  * ADMIN_EMAILS allowlist. Friendly rather than a blunt 403 — most of
@@ -9,7 +9,7 @@
 import Link from "next/link"
 
 export const metadata = {
-  title: "Not authorized · Arcane Analytics",
+  title: "Not authorized · Trusight",
 }
 
 export default function NotAuthorizedPage() {

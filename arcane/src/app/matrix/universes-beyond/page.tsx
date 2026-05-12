@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Universes Beyond Matrix (Step 9.9 Chunk E).
+ * Trusight — Universes Beyond Matrix (Step 9.9 Chunk E).
  *
  * The flagship saleable feature. Ranks ~142 non-D&D/non-MTG IPs by a
  * composite license_fit_score (rubric-primary + fandom heat + gated
@@ -19,7 +19,7 @@ import { UBMatrixCard } from "@/components/ub-matrix-card"
 export const revalidate = 3600
 
 export const metadata = {
-  title: "Universes Beyond Matrix · Arcane Analytics",
+  title: "Universes Beyond Matrix · Trusight",
   description:
     "Rigorous multi-dimensional scoring of ~140 IPs as Magic: The Gathering Universes Beyond / D&D-campaign-setting licensing candidates.",
 }

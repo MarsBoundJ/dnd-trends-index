@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Overview lens loading skeleton.
+ * Trusight — Overview lens loading skeleton.
  *
  * Shown by Next.js while the Server Component fetches from Bouncer.
  * Mirrors the grid layout of the real page so there's no layout shift.

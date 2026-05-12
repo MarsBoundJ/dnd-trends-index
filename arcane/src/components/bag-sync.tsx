@@ -1,7 +1,7 @@
 "use client"
 
 /*
- * Arcane Analytics — Bag-of-Holding ↔ Firestore sync glue (Step 11).
+ * Trusight — Bag-of-Holding ↔ Firestore sync glue (Step 11).
  *
  * Mounted once in the root layout. Watches the Auth.js session and
  * orchestrates the localStorage ↔ Firestore lifecycle:

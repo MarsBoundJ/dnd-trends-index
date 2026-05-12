@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Bag of Holding store (Step 5 MVP).
+ * Trusight — Bag of Holding store (Step 5 MVP).
  *
  * Zustand store with localStorage persistence. Stows three kinds of items:
  *

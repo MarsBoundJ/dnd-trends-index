@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Bag of Holding sigil (Step 10).
+ * Trusight — Bag of Holding sigil (Step 10).
  *
  * Composite icon: a `PackageOpen` base with a small `Infinity` charm
  * tucked into the bottom-right corner. The infinity glyph connotes the

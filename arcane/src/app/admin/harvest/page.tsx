@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Harvesting Cockpit (Step 12).
+ * Trusight — Harvesting Cockpit (Step 12).
  *
  * Server Component — pulls the bookmarklet registry (which reads from
  * scripts/*.txt on disk via `"server-only"`) and hands the raw

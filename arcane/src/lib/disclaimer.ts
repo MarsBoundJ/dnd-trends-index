@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — AI-content disclaimers.
+ * Trusight — AI-content disclaimers.
  *
  * Shared source of truth for all disclaimers that travel with
  * AI-generated outputs. Having these co-located means:
@@ -10,7 +10,7 @@
  *      so leaked-screenshot / leaked-PDF / leaked-chat-snippet all
  *      carry the same non-affiliation language.
  *
- * Why this exists: Arcane Analytics articles — especially Track D
+ * Why this exists: Trusight articles — especially Track D
  * (Hasbro-frame) corporate-strategy pieces like the Dean's
  * "D&D Book Isn't Dying" — can be structurally indistinguishable
  * from internal-consulting analysis if screenshot out of context.
@@ -41,7 +41,7 @@ export const ARTICLE_DISCLAIMER =
  * churn.
  */
 export const SAGE_DISCLAIMER =
-  "Sage is AI-generated. Arcane Analytics is not affiliated with " +
+  "Sage is AI-generated. Trusight is not affiliated with " +
   "or endorsed by Hasbro or Wizards of the Coast."
 
 /**

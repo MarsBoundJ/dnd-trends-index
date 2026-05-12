@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Arcane Analytics">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Trusight">
   <!--
-    Arcane Analytics favicon.
+    Trusight favicon.
     Ember-bright circle (#e87722) with parchment capital "A" (#e8e3d5)
     in system serif — matches Obsidian & Ember palette + Spectral wordmark.
     Web fonts don't load in favicons; system serif (Georgia / Times NR /

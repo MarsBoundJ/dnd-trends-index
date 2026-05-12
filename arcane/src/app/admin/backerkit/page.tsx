@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — BackerKit Console page (Step 12).
+ * Trusight — BackerKit Console page (Step 12).
  */
 
 import { AdminShell } from "@/components/admin/admin-shell"

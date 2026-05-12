@@ -41,9 +41,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Arcane Analytics",
+  title: "Trusight: a D&D Trendwatch",
   description:
-    "A Fantasy Bloomberg Terminal for the D&D multiverse — market intelligence for Hasbro, WotC, and the people who love the game.",
+    "Data-driven intelligence for the D&D ecosystem. IP & licensing analysis, sentiment audits, and weekly community-signal reads for Hasbro, WotC, and the people who love the game.",
 };
 
 export default function RootLayout({

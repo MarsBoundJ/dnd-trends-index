@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Admin shell wrapper (Step 12).
+ * Trusight — Admin shell wrapper (Step 12).
  *
  * Thin framing component every /admin/* page mounts inside of. Adds:
  *   - A narrow uppercase "ADMIN" breadcrumb strip under the main site
@@ -8,7 +8,7 @@
  *   - Max-width container around the children.
  *
  * Visually distinct from public pages via (a) the bronze top rule and
- * (b) the mono-uppercase "ADMIN / Arcane Analytics" label — no change
+ * (b) the mono-uppercase "ADMIN / Trusight" label — no change
  * to the Obsidian & Ember palette itself.
  */
 
@@ -44,7 +44,7 @@ export function AdminShell({
             Admin
           </Link>
           <span className="text-ash/40">·</span>
-          <span className="text-ash/80">Arcane Analytics</span>
+          <span className="text-ash/80">Trusight</span>
 
           {crumbs && crumbs.length > 0 && (
             <>

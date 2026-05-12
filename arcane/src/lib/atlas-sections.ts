@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Atlas section registry (Step 10).
+ * Trusight — Atlas section registry (Step 10).
  *
  * Single source of truth for every destination the Atlas surfaces. Keeps
  * copy and status out of the component so a new page can join the site

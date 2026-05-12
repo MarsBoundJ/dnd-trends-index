@@ -1,7 +1,7 @@
 "use client"
 
 /*
- * Arcane Analytics — sign-in menu (Step 11).
+ * Trusight — sign-in menu (Step 11).
  *
  * Lives in SiteHeader, just left of the Atlas trigger.
  *
