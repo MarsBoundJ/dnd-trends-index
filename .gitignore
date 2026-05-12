@@ -25,6 +25,9 @@ antigravity-browser-profile/
 !pitch/report/rpgnet_vo2_posts.json
 !pitch/report/gitp_ua_audit.json
 !pitch/report/package.json
+# Pitch report IP thumbnails — press-kit assets referenced by trusight_breakdowns_scratch.md
+!pitch/report/thumbnails/*.jpg
+!pitch/report/thumbnails/*.png
 # Next.js app JSON configs — must be tracked
 !arcane/package.json
 !arcane/tsconfig.json

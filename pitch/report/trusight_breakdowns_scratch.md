@@ -24,7 +24,7 @@ iterate based on feedback to this entry.~~
 
 ## 1. Hollow Knight  ·  Team Cherry  ·  video game
 
-*[thumbnail placeholder — Hallownest cross-section, the Knight + Hornet, or Silksong key art]*
+![Hollow Knight — Team Cherry key art](thumbnails/01_hollow_knight.jpg)
 
 > **Cross-reference.** Hollow Knight is the *Greenlight* anchor case in the main IP & Licensing report (Section 4.1). This breakdown applies the standard 7-section template with refreshed harvest data.
 
@@ -156,7 +156,7 @@ The content surface above maps to specific 5e architectural slots. Each major el
 
 ## 2. Monster Hunter: World + Monster Hunter Wilds  ·  Capcom  ·  video game  ·  paired entry
 
-*[thumbnail placeholder — Rathalos key art or Hunter-with-Felyne squad imagery from World/Wilds promo]*
+![Monster Hunter — Capcom key art](thumbnails/02_monster_hunter.jpg)
 
 ### Versioning note
 
@@ -316,7 +316,7 @@ This is the IP that maps most cleanly onto Sigil's encounter-map paradigm — ev
 
 ## 3. Berserk  ·  Kentaro Miura / Kouji Mori (continuation) / Hakusensha  ·  manga / anime
 
-*[thumbnail placeholder — Guts in the Berserker Armor, or the Skull Knight + Femto composite]*
+![Berserk — Guts key visual](thumbnails/03_berserk.jpg)
 
 > **Cross-reference.** Berserk is one of the *Two Winners, One Slot* candidates in the main IP & Licensing report (Section 4.5), winning the "mechanical translation" frame against Elden Ring (Berserk's measured fit 0.94 + reception 0.83 are higher than Elden Ring's). Berserk's design DNA is *one of the foundational influences on FromSoftware's entire catalog* — Miyazaki has explicitly cited Berserk as primary inspiration. Elden Ring grew out of Berserk, mechanically and tonally.
 
@@ -467,7 +467,7 @@ Berserk's canon includes content (Eclipse arc sexual violence, Casca trauma arcs
 
 ## 4. Solo Leveling  ·  Chugong  ·  webtoon / web novel / anime
 
-*[thumbnail placeholder — Sung Jinwoo as Shadow Monarch key art]*
+![Solo Leveling — Sung Jinwoo Shadow Monarch key visual](thumbnails/04_solo_leveling.jpg)
 
 ### Quick description
 
@@ -617,7 +617,7 @@ Igris (CR 18), Beru (CR 19), Kamish (CR 25), Iron-clad Knight (CR 12), Stone Gol
 
 ## 5. Elden Ring  ·  FromSoftware / Bandai Namco / GRR Martin (lore)  ·  video game
 
-*[thumbnail placeholder — Tarnished + Erdtree + Malenia Blade of Miquella key art]*
+![Elden Ring — FromSoftware / Bandai Namco key art](thumbnails/05_elden_ring.jpg)
 
 > **Cross-reference.** Elden Ring is one of the *Two Winners, One Slot* candidates in the main IP & Licensing report (Section 4.5), winning the "execution depth" frame against One Piece and losing the "mechanical translation" frame against Berserk.
 
@@ -769,7 +769,7 @@ Moonveil, Rivers of Blood, Sword of Night and Flame, Eclipse Shotel, Marais Exec
 
 ## 6. Omniscient Reader's Viewpoint  ·  Chugong / singshong  ·  webtoon / web novel / anime / film
 
-*[thumbnail placeholder — Kim Dokja with the Three Ways to Survive in the Apocalyptic World book, or a Star Stream constellation tableau]*
+![Omniscient Reader's Viewpoint — anime key visual](thumbnails/06_orv.jpg)
 
 > **Note on cross-referencing the main IP & Licensing report.** ORV is the *Sleeper #2* anchor case in the main report (Section 4.3). Data here is sourced from the May 2026 due-diligence harvest documented in `pitch/report/harvest_findings.md`. The breakdown below applies the standard 7-section format on top of the existing harvest evidence.
 
@@ -909,7 +909,7 @@ ORV's scenario-by-scenario structure maps unusually cleanly to one-shot adventur
 
 ## 7. Bloodborne  ·  FromSoftware (Sony IP)  ·  video game
 
-*[thumbnail placeholder — Hunter silhouette with Yharnam cathedral, or the Old Hunters DLC Lady Maria key art]*
+![Bloodborne — FromSoftware / Sony key art](thumbnails/07_bloodborne.jpg)
 
 > **Cross-reference.** Bloodborne is the *Sleeper #1* anchor case in the main IP & Licensing report (Section 4.2). This breakdown documents the standard 7-section format with refreshed harvest data.
 
@@ -1062,7 +1062,7 @@ Father Gascoigne (CR 10), Vicar Amelia (CR 13 beastform), Blood-starved Beast (C
 
 ## 8. Mistborn  ·  Brandon Sanderson  ·  literature
 
-*[thumbnail placeholder — Era 1 trilogy cover or Vin/Kelsier key art]*
+![Mistborn — Brandon Sanderson / Dragonsteel cover art](thumbnails/08_mistborn.jpg)
 
 ### Quick description
 
@@ -1213,7 +1213,7 @@ Mistborn's secondary magic systems can be scoped in or out:
 
 ## 9. Deep Rock Galactic  ·  Ghost Ship Games  ·  video game
 
-*[thumbnail placeholder — the four-Hunter dwarf squad on Hoxxes IV, Glyphid Praetorian in foreground]*
+![Deep Rock Galactic — Ghost Ship Games key art](thumbnails/09_deep_rock_galactic.png)
 
 ### Quick description
 
@@ -1356,7 +1356,7 @@ DRG is *built around* procedural cave-encounter maps — natural fit for Sigil's
 
 ## 10. One Piece  ·  Eiichiro Oda / Toei Animation / Shueisha  ·  anime / manga
 
-*[thumbnail placeholder — Straw Hat Crew composite, the Going Merry / Thousand Sunny ships, or Luffy Gear 5]*
+![One Piece — Toei Animation key visual](thumbnails/10_one_piece.jpg)
 
 > **Cross-reference.** One Piece is the *Two Winners, One Slot* anchor in the main IP & Licensing report (Section 4.5), framed as the "audience expansion" winner against Elden Ring and the "blue ocean" winner against FFXIV.
 
@@ -1508,7 +1508,7 @@ Sea Kings (CR-variable ocean megafauna), Marine Vice Admirals (Garp CR 25, Kizar
 
 ## 11. Dwarf Fortress  ·  Bay 12 Games (Tarn + Zach Adams)  ·  video game
 
-*[thumbnail placeholder — ASCII fortress cross-section, or premium-edition's tile-art dwarven kitchen with magma forge]*
+![Dwarf Fortress — Bay 12 Games / Kitfox Premium Edition art](thumbnails/11_dwarf_fortress.jpg)
 
 ### Quick description
 
@@ -1653,7 +1653,7 @@ DF is *built around* fortress maps — natural Sigil fit. Each succession-game's
 
 ## 12. Demon Slayer  ·  Koyoharu Gotouge / Ufotable / Shueisha  ·  manga / anime / film
 
-*[thumbnail placeholder — Tanjiro + Nezuko + Hashira composite, or the Infinity Castle climax key art]*
+![Demon Slayer — Ufotable / Aniplex key visual](thumbnails/12_demon_slayer.jpg)
 
 > **Cross-reference.** Demon Slayer is *Two Promising IPs / Case 2* in the main IP & Licensing report (Section 4.4) — the structural-fit-vs-thin-conversion pattern, with the chosen-one-narrative-meeting-ensemble-cast-game friction as the diligence finding.
 
@@ -1801,7 +1801,7 @@ Period-Japan demonic-violence + Hashira self-sacrifice arcs are present in canon
 
 ## 13. Pillars of Eternity + Pillars of Eternity II: Deadfire  ·  Obsidian Entertainment  ·  video game  ·  paired entry
 
-*[thumbnail placeholder — Watcher of Caed Nua + Eothas key art, or a side-by-side of the Dyrwood/Defiance Bay (PoE1) and the Deadfire Archipelago/Neketaka (PoE2)]*
+![Pillars of Eternity — Obsidian Entertainment key art](thumbnails/13_pillars_of_eternity.jpg)
 
 ### Versioning note
 
@@ -1977,7 +1977,7 @@ The underlying demand is real, persistent, and worth a later revisit. A future W
 The Dark Souls aesthetic is also already present in part in other IPs in this document — most notably **Elden Ring (Section 5)**, FromSoftware's direct modern successor with GRR Martin's lore and 2022-2026 cultural momentum. **Bloodborne (Section 7)** overlaps in tone but anchors gothic-cosmic-horror specifically; **Hollow Knight (Section 1)** shares the difficulty-as-feature design philosophy in a different aesthetic. The Souls-difficulty rules variant proposed in *Slot options* below could ship through any of these IP-licensing products if WoTC pursues one — or as a stand-alone WoTC product without IP-licensing.
 
 
-*[thumbnail placeholder — Knight Artorias, Anor Londo cathedral, or DS3 Pontiff Sulyvahn key art]*
+![Dark Souls — FromSoftware / Bandai Namco key art](thumbnails/14_dark_souls.jpg)
 
 ### Quick description
 
@@ -2126,7 +2126,7 @@ Ornstein (CR 18), Smough (CR 17), Artorias (CR 22), Manus (CR 24), Sif (CR 14), 
 
 ## 15. Hades + Hades II  ·  Supergiant Games  ·  video game  ·  paired entry
 
-*[thumbnail placeholder — Zagreus + Melinoë composite key art, or Hades's signature stylized Olympian portrait]*
+![Hades — Supergiant Games key art](thumbnails/15_hades.jpg)
 
 ### Versioning note
 
@@ -2285,7 +2285,7 @@ Megaera (Fury, CR 12), Theseus + Asterius (paired CR 16/18), Hades (CR 24), Poly
 
 ## 16. Persona 5 + Persona 5 Royal  ·  Atlus / Sega  ·  video game  ·  paired entry
 
-*[thumbnail placeholder — Phantom Thieves group key art or Joker + Velvet Room imagery]*
+![Persona 5 — Atlus / Sega key art](thumbnails/16_persona_5.jpg)
 
 ### Versioning note (paired-entry convention)
 
@@ -2447,7 +2447,7 @@ Each Palace is a complete dungeon set-piece — the IP is *built around* dungeon
 
 ## 17. Sea of Thieves  ·  Rare / Microsoft  ·  video game
 
-*[thumbnail placeholder — galleon at sunset with the Athena's Fortune crew imagery, or Pirate Lord throne-room]*
+![Sea of Thieves — Rare / Microsoft key art](thumbnails/17_sea_of_thieves.jpg)
 
 ### Quick description
 
@@ -2590,7 +2590,7 @@ Skeleton Captain (CR 10), Megalodon (CR 12), The Kraken (CR 18 — existing 5e m
 
 ## 18. Final Fantasy XIV  ·  Square Enix  ·  video game (MMORPG)
 
-*[thumbnail placeholder — Warrior of Light + Hydaelyn vs Zodiark composite, or Endwalker key art]*
+![Final Fantasy XIV — Square Enix key art](thumbnails/18_ffxiv.jpg)
 
 > **Cross-reference.** FFXIV is the *Two Winners, One Slot vs One Piece* anchor in the main IP & Licensing report (Section 4.5), framed as the "cannibalization vs blue ocean" comparison — *FFXIV's player base already significantly overlaps with the existing D&D player base*, making it the audience-overlap counterexample to One Piece's net-new-audience pitch.
 
@@ -2729,7 +2729,7 @@ Two FFXIV-signature mechanics that don't have direct 5e analogs:
 
 ## 19. House of the Dragon  ·  HBO  ·  TV / film (with Game of Thrones umbrella)
 
-*[thumbnail placeholder — Targaryen dynasty composite or the Iron Throne]*
+![House of the Dragon — HBO key art](thumbnails/19_house_of_the_dragon.png)
 
 > **Note on cross-referencing the main IP & Licensing report.** HotD is the *Two Promising IPs / Case 1* anchor case in the main report (Section 4.4), where the structural-fit-vs-thin-conversion pattern is the headline finding. Data here is sourced from the May 2026 due-diligence harvest (`harvest_findings.md`). This breakdown documents what an HotD licensing-product pitch would look like *given the data* — the engine-question caveat is the structural finding, and the negotiation-leverage paragraph is the dual-use answer.
 
