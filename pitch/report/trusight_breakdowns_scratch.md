@@ -21,6 +21,7 @@ Each IP entry uses a consistent structure:
 
 ---
 
+<a id="contents"></a>
 ## Contents
 
 The 19 IPs, in document order:
@@ -177,6 +178,8 @@ The content surface above maps to specific 5.5e architectural slots. Each major 
 | External licensed product | **none** | Team Cherry has not licensed HK for tabletop. Clean lane / first to market |
 
 **Cross-channel reading.** Hollow Knight is the **community-already-built-it** archetype. The DDB ensemble (50 items including 269-add Vessel + 8 subclasses + 20 monsters + 20 species) is the deepest non-Monster-Hunter homebrew engagement in the corpus. The 47-D&D-sub-strict-filter post count is the **highest** we've measured. The 1,161-up Way-of-the-Needle subclass + the 500-up 11-installment subclass series + the 749-up race set are revealed-preference signals at unusual concentration. **Greenlight-tier; Silksong-2025-launch momentum makes the 12-18 month window the optimal acquisition zone.**
+
+[↑ Back to Contents](#contents)
 
 ---
 
@@ -339,6 +342,8 @@ This is the IP that maps most cleanly onto Sigil's encounter-map paradigm — ev
 
 **The Greenlight case.** Six channels of community signal, all strong, all triangulating on the same finding: **the audience has built the licensed product themselves, and they're waiting for an official version.** Based on the 122 community-built monster pages × DDB attach rate × Hasbro distribution, a WoTC product would likely sell. Capcom-side licensing complexity is real, but the demand-proof to bring to that negotiation is unusually strong. Recommendation: **Greenlight-tier candidate; pair with the Monster Hunter umbrella license rather than version-specific (World or Wilds) for licensing scope.**
 
+[↑ Back to Contents](#contents)
+
 ---
 
 <a id="ip-03-berserk"></a>
@@ -491,6 +496,8 @@ Berserk's canon includes content (Eclipse arc sexual violence, Casca trauma arcs
 
 **Cross-channel reading.** Berserk is the **highest-fit-with-mature-content-caveat** archetype. Fit 0.94 + reception 0.83 + `highly_corroborated: true` + 1,010 forum results + 12 magic-item entries + 227-add canonical subclass triangulate as one of the strongest greenlight cases in the corpus. The mature-content honest caveat is the unique consideration — but the harvest shows zero backlash flags, and the community engagement is positive across all measured channels. **Strong greenlight; the licensing-team's Kentaro-Miura-estate-and-Hakusensha-side conversation is the call to make, with explicit scope-definition for family-friendly-but-tonally-mature content.**
 
+[↑ Back to Contents](#contents)
+
 ---
 
 <a id="ip-04-solo-leveling"></a>
@@ -641,6 +648,8 @@ Igris (CR 18), Beru (CR 19), Kamish (CR 25), Iron-clad Knight (CR 12), Stone Gol
 **Cross-channel reading.** The 642-add Shadow Monarch is the spine of the case. The 124-up *r/UnearthedArcana* converter post and the 126-up *r/sololeveling* DM-crossover joke independently confirm the audience already speaks D&D vocabulary. AO3 proportional rate is in-band with the calibration cluster. The Commercial dimension reads as **clean lane / first to market** — meaningfully different from Mistborn's Brotherwise-Cosmere ecosystem-trap and Dark Souls' Steamforged ecosystem-trap. Sparseness on smaller channels is on-message for a 2024-anime-momentum IP at peak cultural attention but pre-broad-tabletop awareness.
 
 **The clean-lane positioning.** Unlike Mistborn (Brotherwise Cosmere RPG) and Dark Souls (Steamforged 5e RPG), Solo Leveling has no existing licensed TTRPG. WoTC would be first to market. That's both a positioning advantage and a negotiation-leverage point: the licensor can be told *"there's no comparable competing product to anchor your advance demands against; the deal economics start from zero, not from a Steamforged-RPG comparable."*
+
+[↑ Back to Contents](#contents)
 
 ---
 
@@ -795,6 +804,8 @@ Moonveil, Rivers of Blood, Sword of Night and Flame, Eclipse Shotel, Marais Exec
 
 **Cross-channel reading.** Elden Ring is the **execution-depth-with-killer-fan-conversion** archetype. 40 D&D-sub strict-filter posts (second only to Hollow Knight), 0.401% AO3 proportional rate (above the calibration cluster), 371 forum results, and the 566-up three-rulebook community-built 5.5e Elden Ring conversion as the headline single artifact. Greenlight-tier; the GRR-Martin licensing-layer is the deal-process-distinguishing factor. **Pair with HotD in the Hasbro-portfolio cross-license framing if both are ever on the table simultaneously.**
 
+[↑ Back to Contents](#contents)
+
 ---
 
 <a id="ip-06-omniscient-reader"></a>
@@ -935,6 +946,8 @@ ORV's scenario-by-scenario structure maps unusually cleanly to one-shot adventur
 | Catalog signal | clean lane / first to market | Negotiation-leverage point: peak-cultural-attention IP at pre-mainstream-tabletop awareness, no comparable competing TTRPG |
 
 **Cross-channel reading.** ORV is the **early-signal sleeper** archetype. Sparse-but-consistent signal across five channels: 0.99% AO3 proportional rate (the killer single data point), 1 forum thread, 1 homebrew artifact, 1 reverse-funnel post, effectively zero D&D-sub spillover. The proportional AO3 rate carries the case study; the smaller channels are corroborating, not load-bearing. The asymmetry — D&D-conversion engagement *inside* r/OmniscientReader but not yet bleeding *outward* into r/dndnext / r/UnearthedArcana — is itself the early-signal pattern. **Recommended as a Sleeper-tier license: act before the data thickens.** Diversification value vs. Bloodborne (different medium, different geography, different demographic) makes the two together demonstrate Trusight's range.
+
+[↑ Back to Contents](#contents)
 
 ---
 
@@ -1090,6 +1103,8 @@ Father Gascoigne (CR 10), Vicar Amelia (CR 13 beastform), Blood-starved Beast (C
 
 **Cross-channel reading.** Bloodborne is the **deep-data Sleeper** — 5 sources, 71 DDB items, 25 D&D-sub posts, 41 reverse-funnel posts, 330 forum results, top forum thread is a direct conversion-question. The Sony licensing-process is real friction but the demand-proof is unusually strong, and the existing CMON board-game licenses establish that Sony has been willing to license Bloodborne for tabletop. **Strong Sleeper greenlight; the licensing-team's Sony-side conversation is the call to make.**
 
+[↑ Back to Contents](#contents)
+
 ---
 
 <a id="ip-08-mistborn"></a>
@@ -1242,6 +1257,8 @@ Mistborn's secondary magic systems can be scoped in or out:
 
 ---
 
+[↑ Back to Contents](#contents)
+
 ---
 
 <a id="ip-09-deep-rock-galactic"></a>
@@ -1385,6 +1402,8 @@ DRG is *built around* procedural cave-encounter maps — natural fit for Sigil's
 **Cross-channel reading.** Deep Rock Galactic is a **commercial-precedent-led** case. The AO3 proportional rate (2.99%) is in ORV territory — extremely high — but on a tiny absolute base (2 / 67). The strongest single data point isn't from community-conversion: **it's the existing board game's commercial track record + the BGG proxy 0.83 signal.** That's a different value proposition than Monster Hunter's "the audience built it themselves" or Mistborn's "deep multi-category homebrew." DRG's pitch is "the IP is licensing-friendly, the tabletop appetite is empirically commercial, and the fanbase is converting at high proportional intensity even on small absolute volume."
 
 **Recommendation framing.** Recommend as a **mid-tier greenlight with cross-product portfolio framing** — pair a 5.5e DRG book with the existing Mood Publishing board game's commercial track record as the diligence anchor, target the Spelljammer-adjacent player base, position the four Mission Classes as the headline subclass deliverable. Lower-risk than Monster Hunter (smaller demand-proof) but lower-cost-of-entry too (Ghost Ship Games is a smaller, more accessible licensor than Capcom).
+
+[↑ Back to Contents](#contents)
 
 ---
 
@@ -1539,6 +1558,8 @@ Sea Kings (CR-variable ocean megafauna), Marine Vice Admirals (Garp CR 25, Kizar
 
 **Cross-channel reading.** One Piece is the **largest-fanbase / lowest-AO3-rate / highest-Reddit-engagement** anomaly. The 0.048% AO3 proportional rate is misleading — the fanbase is heavily ship-fic-dominated on AO3, not crossover-fic-dominated. **The Reddit signal tells the actual story:** 4,130-up viral D&D-campaign-art post + 6,200 forum results + 0.87 acquisition score + 95K-AO3-fanbase scale. Greenlight-tier; **the largest net-new-audience-import opportunity in the entire breakdown corpus.**
 
+[↑ Back to Contents](#contents)
+
 ---
 
 <a id="ip-11-dwarf-fortress"></a>
@@ -1684,6 +1705,8 @@ DF is *built around* fortress maps — natural Sigil fit. Each succession-game's
 **Cross-channel reading.** Dwarf Fortress is the **prestige-and-cultural-overlap** case — distinct from every other IP in the doc. The **4.11% AO3 proportional rate is the highest measured**, but on tiny absolute volume (3 / 73). The IP-home Reddit reverse-funnel is similarly thin in count but **the audience-overlap is structurally high** — DF players overwhelmingly already play D&D; the community doesn't have to be *converted* to D&D, they're already there. The licensing pitch isn't volume-driven; it's **cultural-prestige-driven** plus a **uniquely innovative campaign-structure deliverable** (succession-game-as-campaign).
 
 **Recommendation framing.** Dwarf Fortress is the **highest-prestige, lowest-volume** licensing candidate in the doc. The licensing call evaluates differently than every other IP: deal economics are likely modest (Bay 12 is a two-person studio; the brothers have famously prioritized the project's longevity over commercial maximization), but the *product-distinctiveness* is unusually high (succession-game campaign frame + Strange Mood artifact mechanic + Forgotten Beast procedural-bestiary tables). **Recommend as a "credibility-and-innovation" license** — the deal isn't where the value lives, the resulting product is. A WoTC Dwarf Fortress book carries cultural weight that no other IP in this batch can replicate, and the gameplay innovations (succession-rotation, procedural artifact tables) would be genuinely novel for the 5.5e product line.
+
+[↑ Back to Contents](#contents)
 
 ---
 
@@ -1833,6 +1856,8 @@ Period-Japan demonic-violence + Hashira self-sacrifice arcs are present in canon
 | External licensed product | **none** in 5.5e | Clean lane |
 
 **Cross-channel reading.** Demon Slayer is the **passionate-subset-vs-broader-engagement** archetype. The 718-add Blood Hunter Order is the corpus's deepest single-character DDB engagement; the broader DDB ensemble (55 items) is genuinely substantial. But the AO3 rate (0.040%) and the IP-home reverse-funnel emptiness (7 raw posts, almost entirely false positives) tell the structural story: **passionate small subset is doing single-character homebrew; the broader fanbase isn't engaging in ensemble-campaign conversion.** Per the main report's negotiation-leverage framing: **lower upfront fee** + **royalty structure indexed to engagement** + **narrower initial scope** (single-Hashira-themed subclass kit aligning with where the homebrew velocity actually concentrates) + **performance-gated expansion** are the diligence-and-leverage answers.
+
+[↑ Back to Contents](#contents)
 
 ---
 
@@ -2002,6 +2027,8 @@ Engwithan constructs (CR 10-18), Adragans, Eyeless, Sea Cave drakes, Oracle of W
 
 **The pedigree pitch.** This is the unique licensing angle. Obsidian's senior staff *literally designed Baldur's Gate I/II*. A Pillars D&D product carries the implicit endorsement of "the people who built D&D's most-loved CRPGs are the people whose IP we're licensing into D&D." That's a marketing register no other IP in this doc can replicate. **Recommendation: a strong cross-portfolio fit even with modest volume signals; the fit-score precision and pedigree-alignment make this a credible greenlight candidate for the *theologically-thick fantasy* niche specifically.**
 
+[↑ Back to Contents](#contents)
+
 ---
 
 <a id="ip-14-dark-souls"></a>
@@ -2160,6 +2187,8 @@ Ornstein (CR 18), Smough (CR 17), Artorias (CR 22), Manus (CR 24), Sif (CR 14), 
 **Cross-channel reading.** Strongest D&D-sub direct-conversion volume of any IP we've measured at this depth (18 posts). The community is *currently* building Souls 5.5e content despite — or because of — the Steamforged product not fully scratching the DDB-native itch. The 17-monster DDB depth + bestiary-skewed conversion pattern + *"Stamina System"* forum thread + the Anor Londo / Pyromancer / Capra Demon character-build threads triangulate cleanly: **this is a monster-and-rules-variant licensing target, not a subclass-led one.** Commercial dimension is dominated by the existing Steamforged product (the ecosystem-trap caveat); the Trusight read is that DDB-native distribution + Sigil VTT integration would reach a meaningfully different audience than Steamforged's specialist-TTRPG buyer base.
 
 **The honest caveat the harvest also surfaced.** Steamforged Games' 5.5e-compatible Dark Souls RPG already exists (board games adjacent to the same license). The Mistborn ecosystem-trap pattern repeats. The differentiating answer for a DDB-native release: distribution channel (D&D Beyond install base vs DriveThruRPG specialty buyers), integration depth (character builder + Sigil VTT + monster compendium), and the rules-variant-as-canon framing. The 18 confirmed D&D-sub posts in the last 12 months are post-Steamforged-launch and demonstrate the demand wasn't fully absorbed by the existing product.
+
+[↑ Back to Contents](#contents)
 
 ---
 
@@ -2320,6 +2349,8 @@ Megaera (Fury, CR 12), Theseus + Asterius (paired CR 16/18), Hades (CR 24), Poly
 **The Theros caveat.** This is the unique honest-caveat for Hades: WoTC already has Greek-myth coverage via Mythic Odyssey of Theros. A Hades licensing call has to thread the needle between *what's already free* (public-domain Greek myth) and *what requires Supergiant's permission* (their specific characterization, Boons-system, House of Hades hub-cast). The defensible licensing scope is the characterization layer + mechanics, not the underlying mythology. That narrows the deal but makes it cleaner.
 
 **The Hades II open question.** Hades II is too fresh for independent measurement — AO3 merges into the umbrella fandom; r/HadesTheGame_II shows 0 D&D-context posts; the witchcraft-and-incantation aesthetic hasn't yet developed its own tabletop conversion. **Licensing-implication: the deal scope should cover both versions**, with Hades II content positioned as the second-product expansion line once the audience signal thickens (likely 12-18 months post-1.0-release).
+
+[↑ Back to Contents](#contents)
 
 ---
 
@@ -2484,6 +2515,8 @@ Each Palace is a complete dungeon set-piece — the IP is *built around* dungeon
 
 **The base-vs-Royal asymmetry.** r/Persona5 (12 D&D posts) vs r/Persona5Royal (0 D&D posts). Licensing implication: the brand-name on the licensed product should be *Persona 5 Royal* (Atlus's commercially canonical version) but the content depth and marketing voice should reach the base-P5 audience that's actually doing the conversion work. The Royal-specific Maruki Palace and Kasumi character become add-on content rather than the centerpiece.
 
+[↑ Back to Contents](#contents)
+
 ---
 
 <a id="ip-17-sea-of-thieves"></a>
@@ -2628,6 +2661,8 @@ Skeleton Captain (CR 10), Megalodon (CR 12), The Kraken (CR 18 — existing 5.5e
 
 **Recommendation framing.** SoT reads as a *market-opportunity-led* license rather than an *audience-led* license. The honest pitch to the diligence team: WoTC could license Sea of Thieves and produce a solid naval-D&D product the market would buy, but the deal economics should reflect that the audience-bridge isn't pre-built the way it is for Monster Hunter or Mistborn. **Negotiation-leverage point: the lower-than-Mistborn-or-MH revealed-preference signal is empirical evidence the advance should reflect this isn't an audience-pre-converted IP.** Microsoft-side negotiation may be the bigger driver of deal terms than community-signal anchoring.
 
+[↑ Back to Contents](#contents)
+
 ---
 
 <a id="ip-18-ffxiv"></a>
@@ -2767,6 +2802,8 @@ Two FFXIV-signature mechanics that don't have direct 5.5e analogs:
 | Catalog signal | **ecosystem-trap** | The strongest ecosystem-trap caveat in the breakdowns doc — an *announced* official TTRPG, not just a competing-system product like Steamforged's Dark Souls |
 
 **Cross-channel reading.** FFXIV is the **cannibalization-and-ecosystem-trap** archetype. The 0.063% AO3 rate plus the audience-overlap-with-existing-D&D-players plus the announced official FFXIV TTRPG plus the off-DDB-consolidation-with-zero-DDB-items combine into the strongest *honest-caveat* case in the breakdowns doc. **The licensing recommendation: pass on FFXIV unless the official TTRPG announcement falls through, or pursue a cross-licensee partnership rather than competing 5.5e product.** Trusight's role: surface the cannibalization-and-ecosystem-trap pattern empirically rather than allowing the brand-recognition surface-pitch to obscure it.
+
+[↑ Back to Contents](#contents)
 
 ---
 
@@ -2929,6 +2966,8 @@ Valyrian steel weapons are generations-old named blades. **Slots into the same n
 - *Lower upfront fee* — reflect the translation cost the data shows
 
 **Recommendation framing.** Do-or-don't is leadership's call. **Trusight's contribution is six channels of empirical evidence on where the engine question shows up in actual community signal, and the term-sheet leverage if the deal proceeds.** The breakdown isn't an "avoid" — it's a "diligence-and-leverage" deliverable showing exactly how the data shapes the conversation.
+
+[↑ Back to Contents](#contents)
 
 ---
 
