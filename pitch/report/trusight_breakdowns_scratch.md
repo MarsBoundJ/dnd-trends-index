@@ -1,12 +1,9 @@
-# Trusight IP Breakdowns — Scratch
+# Trusight IP Breakdowns: 19 Licensing Candidates
 
 Working scratch document. Per-IP "Trusight breakdown" format that explores
 how each promising IP could be marketed, translated into D&D, and converted
 into specific D&D Beyond product (a la carte or full setting book), plus
 Sigil VTT location ideas and the measured data underneath.
-
-~~Started May 7 2026. First worked example: **Mistborn**. Template will
-iterate based on feedback to this entry.~~
 
 ---
 
@@ -15,7 +12,7 @@ iterate based on feedback to this entry.~~
 1. **IP name + thumbnail** (image placeholder for now)
 2. **Quick description.** What the IP is — medium, scope, one-paragraph orientation.
 3. **Marketing angle / D&D-universe niche.** Why a D&D licensee would want this IP. What gap in the D&D portfolio it fills.
-4. **Translation challenges.** Specific structural friction points moving the IP into 5e — and how they'd be addressed.
+4. **Translation challenges.** Specific structural friction points moving the IP into 5.5e — and how they'd be addressed.
 5. **Translation possibilities (DDB product surface).** Subclasses / species / backgrounds / spells / magic items / mundane items / monsters / settings. With DDB-homebrew evidence — what the community has already built.
 6. **Potential Sigil VTT locations.** Specific maps / encounter sites from the IP that would translate into Sigil-platform content.
 7. **Measured data.** Fit / Reception / Acquisition / Commercial scores plus per-channel signal — the foundation a stakeholder needs.
@@ -34,12 +31,12 @@ Hollow Knight (2017) and Hollow Knight: Silksong (2025) are Team Cherry's two-pe
 
 ### Marketing angle / D&D-universe niche
 
-Hollow Knight is the canonical Trusight Greenlight: the indie IP a Hollywood-driven licensing pipeline ~~cannot see~~ (might miss), with deep community-conversion infrastructure and zero existing tabletop ecosystem to fight. The harvest's killer single artifact is **a 1,161-up Silksong-inspired *"Monk: Way of the Needle"* subclass on r/UnearthedArcana** — the highest community-built D&D-subclass post in this batch. Hallownest's worldbuilding (Charms-as-magic-items, Soul-as-resource, Vessel-class characters) maps cleanly onto 5e mechanics. Niche it fills: a *bug-civilization fallen-kingdom* setting register that 5e doesn't currently have, with unusually clean translation paths. The licensing scope frames the Knight as a powerful NPC and player characters as *other Vessels / other denizens of Hallownest*; focus on monsters, environmental hazards, charms, and locations rather than recreating the lone-protagonist arc.
+Hollow Knight is the canonical Trusight Greenlight: the indie IP a Hollywood-driven licensing pipeline ~~cannot see~~ (might miss), with deep community-conversion infrastructure and zero existing tabletop ecosystem to fight. The harvest's killer single artifact is **a 1,161-up Silksong-inspired *"Monk: Way of the Needle"* subclass on r/UnearthedArcana** — the highest community-built D&D-subclass post in this batch. Hallownest's worldbuilding (Charms-as-magic-items, Soul-as-resource, Vessel-class characters) maps cleanly onto 5.5e mechanics. Niche it fills: a *bug-civilization fallen-kingdom* setting register that 5.5e doesn't currently have, with unusually clean translation paths. The licensing scope frames the Knight as a powerful NPC and player characters as *other Vessels / other denizens of Hallownest*; focus on monsters, environmental hazards, charms, and locations rather than recreating the lone-protagonist arc.
 
 ### Translation challenges
 
 1. **One-protagonist IP.** Same as Solo Leveling, ORV, Persona 5: reframe as setting + NPC framework. Player characters are *other Vessels* (siblings of the Knight from the Abyss), Hornet-allied Mantis-tribe descendants, or visiting researcher-NPCs. The Knight + the Pale King become canonical NPCs.
-2. **No party-friendly class diversity in canon.** The IP's "classes" are Charms (magical-item loadouts), not classes. The 5e-shaped answer: lean into Charm-as-magic-item slots (a Charm Notch system as 5e attunement variant), and provide canonical 5e subclasses keyed to Hallownest factions — Mantis Tribe Warden (Ranger), Soul Sanctum Adept (Wizard), Grimm Troupe Conjurer (Warlock), Hive Defender (Fighter), Pale Court Knight (Paladin).
+2. **No party-friendly class diversity in canon.** The IP's "classes" are Charms (magical-item loadouts), not classes. The 5.5e-shaped answer: lean into Charm-as-magic-item slots (a Charm Notch system as 5.5e attunement variant), and provide canonical 5.5e subclasses keyed to Hallownest factions — Mantis Tribe Warden (Ranger), Soul Sanctum Adept (Wizard), Grimm Troupe Conjurer (Warlock), Hive Defender (Fighter), Pale Court Knight (Paladin).
 3. **Story-arc translation.** The Knight's pursuit of the Radiance and the Pale-King-Vessel ecosystem becomes the campaign-arc backdrop; player characters live their own story within Hallownest's collapse rather than retracing the Knight's. Silksong content (Hornet, Pharloom) becomes the second-product expansion.
 4. **No existing licensed Hollow Knight TTRPG.** Clean lane.
 
@@ -53,20 +50,20 @@ DDB shows **50 confirmed items** in BQ — a deeply-converted IP with real ensem
 | **Species** | *Vessel* (canonical PC species — 269 adds is the corpus headline), *Mantis Tribe*, *Hive Bee*, *Mosskin*, *Grimmkin*, *Pale Beings* (lineage variants) | **20 DDB species items**; Vessel — 269 adds (the corpus's signature Hollow Knight artifact). Plus 749-up *"Hollow Knight inspired Races for dnd"* fan-made set |
 | **Backgrounds** | *Wanderer of Hallownest*, *City of Tears Citizen*, *Mantis Village Initiate*, *Soul Sanctum Apprentice*, *Grimm Troupe Member* | clear gap |
 | **Spells** | *Soul Vessel-themed* spells — *Soul Catcher* (concentration-cap variant), *Vengeful Spirit* (signature offensive spell), *Howling Wraiths*, *Desolate Dive*, *Cyclone Slash* | 2 DDB spell items |
-| **Magic items** | *Charms* — the IP's signature mechanic. ~40 named Charms in canon (Quick Slash, Mark of Pride, Spell Twister, Shaman Stone, etc.), each translatable as a 5e magic item with attunement-as-Charm-Notch. Plus *Pure Vessel sword*, *Pale Lurker Lantern*, *King's Brand* | 0 DDB magic-item entries — unfilled product gap, the most-obvious product opportunity |
+| **Magic items** | *Charms* — the IP's signature mechanic. ~40 named Charms in canon (Quick Slash, Mark of Pride, Spell Twister, Shaman Stone, etc.), each translatable as a 5.5e magic item with attunement-as-Charm-Notch. Plus *Pure Vessel sword*, *Pale Lurker Lantern*, *King's Brand* | 0 DDB magic-item entries — unfilled product gap, the most-obvious product opportunity |
 | **Mundane items** | Geo (currency), maps from Cornifer, Simple Key / Elegant Key / Shopkeeper's Key, Lumafly Lantern, Shade Cloak | clear gap |
 | **Monsters** | *Mantis Lord* (CR 8), *False Knight* (CR 5), *Hornet* (CR 14 NPC-or-boss), *Soul Master* (CR 10), *Watcher Knights* (CR 12 squad), *Nightmare King Grimm* (CR 18), *Radiance* (CR 22 endgame), *Pale Lurker* (CR 7), plus the *Hollow Knight* itself (CR 16 boss-tier or NPC patron) | **20 DDB monster items**. Plus 355-up + 219-up *"Hollow Knight X DnD Fusion"* boss-mashup community series |
 | **Setting** | *Hallownest Setting Book* — the kingdom map (King's Pass / Forgotten Crossroads / Greenpath / Fungal Wastes / City of Tears / Crystal Peak / Resting Grounds / Deepnest / Ancient Basin / Kingdom's Edge / White Palace / Abyss). Silksong as expansion: Pharloom + Hornet's pilgrimage | 0 forum results in BQ; 240-up *"What DnD class would the Shade Lord be?"* in r/HollowKnight |
 
 #### Slot options — brand-integrity-cost framing
 
-The content surface above maps to specific 5e architectural slots. Each major element offers 2-4 options ranked by brand-integrity cost; the lowest-cost option that delivers the IP-recognition value is the default unless a specific reason supports a higher-cost path. Total footprint constrained to typical crossover-sourcebook envelope.
+The content surface above maps to specific 5.5e architectural slots. Each major element offers 2-4 options ranked by brand-integrity cost; the lowest-cost option that delivers the IP-recognition value is the default unless a specific reason supports a higher-cost path. Total footprint constrained to typical crossover-sourcebook envelope.
 
 ##### Hallownest-themed martial subclass — 3 fitting options
 
 | # | Parent class | Brand-integrity cost | Why it fits | Why it might not |
 |---|---|---|---|---|
-| A | **Monk (Way of the Needle)** | LOW | 1,161-up community subclass validates the Monk path; *"bind, slash, dance"* kinetic-mobility fantasy aligns with Ki-as-resource | Risks adding to an already-rich Monk subclass shelf |
+| A | **Monk (Way of the Needle)** | LOW | 1,161-up community subclass validates the Monk path; *"bind, slash, dance"* kinetic-mobility fantasy aligns with Focus Points-as-resource | Risks adding to an already-rich Monk subclass shelf |
 | B | **Rogue (Hornet's Style / Soul-Wielder)** | LOW | Bonus-action mobility + Sneak-Attack-as-Soul-resource is mechanically clean | Loses the agile-melee dance flavor |
 | C | **Existing-subclass refresh** — update an existing Monk subclass (e.g., Way of the Open Hand) with Hornet-flavored options | **LOWEST** | Zero new subclass slot; layers IP-recognition onto existing 5.5e Monk content | Limits the IP-recognition surface |
 
@@ -96,7 +93,7 @@ The content surface above maps to specific 5e architectural slots. Each major el
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
 | A | **Consumable magic items (potion~~-shelf~~ variant)** | **LOWEST** | Each Charm is a consumable; grants long-duration buff (1h-8h or until next long rest). ~10-12 named Charms across uncommon/rare/very-rare. Zero new attunement infrastructure. |
-| B | **Standard attuned magic items** | LOW | Charms as standard 5e magic items using existing 3-attunement-slot limit. |
+| B | **Standard attuned magic items** | LOW | Charms as standard 5.5e magic items using existing 3-attunement-slot limit. |
 | C | *New Charm-Notch attunement subsystem* | **HIGH — not recommended** | Invents new rules infrastructure to deliver the same flavor Option A delivers via the potion shelf. |
 
 **Trusight read:** Option A delivers the modular-loadout fantasy at the lowest brand-integrity cost. The Charm-name list (Quick Slash, Mark of Pride, Spell Twister, Shaman Stone, etc.) ships as consumables.
@@ -160,7 +157,7 @@ The content surface above maps to specific 5e architectural slots. Each major el
 
 ### Versioning note
 
-Monster Hunter is Capcom's flagship action-RPG series (1st generation 2004; mainline entries roughly every 2-3 years). For licensing purposes the *umbrella* franchise is the right grant scope — the 27 D&D-sub crossover posts and the community-built D&D 5e Monster Hunter Monster Manual aren't tied to one version; they span the bestiary across every mainline game. The two version-specific entries on the corpus are anchor points: **Monster Hunter: World** (2018, 28M+ copies, the mainstream-friendly cultural-establishment version) and **Monster Hunter Wilds** (Feb 2025, 10M+ copies in first months, the marketing-momentum version). AO3 keeps these as separate fandoms (umbrella: 1,795 works; World: 124; Wilds: 75) but the conversion conversation is umbrella-shaped.
+Monster Hunter is Capcom's flagship action-RPG series (1st generation 2004; mainline entries roughly every 2-3 years). For licensing purposes the *umbrella* franchise is the right grant scope — the 27 D&D-sub crossover posts and the community-built D&D 5.5e Monster Hunter Monster Manual aren't tied to one version; they span the bestiary across every mainline game. The two version-specific entries on the corpus are anchor points: **Monster Hunter: World** (2018, 28M+ copies, the mainstream-friendly cultural-establishment version) and **Monster Hunter Wilds** (Feb 2025, 10M+ copies in first months, the marketing-momentum version). AO3 keeps these as separate fandoms (umbrella: 1,795 works; World: 124; Wilds: 75) but the conversion conversation is umbrella-shaped.
 
 ### Quick description
 
@@ -168,13 +165,13 @@ Monster Hunter is Capcom's longest-running action-RPG franchise: cooperative hun
 
 ### Marketing angle / D&D-universe niche
 
-This is the most data-rich greenlight pitch in the breakdowns doc. The licensed Monster Hunter D&D product positions itself as the **structured-hunt / weapon-mastery / monster-ecology** corner of the D&D portfolio — adjacent to Dark Souls' optimization niche but distinct: where Dark Souls is *punishing combat*, Monster Hunter is *systems-mastery* via bestiary depth, weapon-class-fluency, and craft-loop progression. The 14-weapon-class system maps directly onto subclass design (Hunter subclasses by weapon type — *Great Sword Hunter*, *Charge Blade Hunter*, *Hunting Horn Hunter*, etc.), each with mechanically distinct combat patterns. Monster ecology + carving/harvest mechanics align cleanly with D&D's existing monster-parts loot system (already supported in 5e). The cooperative-hunt structure is exactly D&D's four-player party. The niche this fills: a *campaign-frame setting* organized around Guild commissions and progressive-monster-difficulty, with a structurally rich crafting system that the community has been clearly hungry for.
+This is the most data-rich greenlight pitch in the breakdowns doc. The licensed Monster Hunter D&D product positions itself as the **structured-hunt / weapon-mastery / monster-ecology** corner of the D&D portfolio — adjacent to Dark Souls' optimization niche but distinct: where Dark Souls is *punishing combat*, Monster Hunter is *systems-mastery* via bestiary depth, weapon-class-fluency, and craft-loop progression. The 14-weapon-class system maps directly onto subclass design (Hunter subclasses by weapon type — *Great Sword Hunter*, *Charge Blade Hunter*, *Hunting Horn Hunter*, etc.), each with mechanically distinct combat patterns. Monster ecology + carving/harvest mechanics align cleanly with D&D's existing monster-parts loot system (already supported in 5.5e). The cooperative-hunt structure is exactly D&D's four-player party. The niche this fills: a *campaign-frame setting* organized around Guild commissions and progressive-monster-difficulty, with a structurally rich crafting system that the community has been clearly hungry for.
 
 ### Translation challenges
 
-1. **The hunting loop is repetitive by design in MH** (multiple hunts of the same monster for parts); D&D campaigns aren't usually built that way. The 5e-shaped answer: campaign structure based on *Guild commissions* — episodic hunt-of-the-week format with ongoing commission ranks (1★ → 9★) tied to character progression, with a longer narrative arc emerging from elder-dragon-tier endgame hunts. This is structurally close to West-Marches campaign style, which has a healthy precedent.
-2. **No clear "spell" magic in the source material.** MH has elemental damage and decoration (jewel-slot) loadouts, but no caster classes. The 5e-shaped answer: focus the licensed product on *martial subclasses* (12 weapon-class subclasses + Hunter base class) plus a small caster surface — a *Field Researcher* (Wizard reflavor with monster-knowledge specializations) and *Wyverian Sage* (Cleric variant tied to the Wyverian elder race). The bulk of the product is martial-PC-led; 5e's existing arcane/divine mechanics handle the small caster surface.
-3. **No existing licensed MH TTRPG, but there's a 622-page community-built Monster Manual.** Our harvest surfaced *"5e 2014 Monster Hunter Monster Manual Update | Now 622 Pages | Every Monster From Every Mainline Game"* — a community-organized D&D 5e bestiary covering the entire MH franchise. This is the strongest single revealed-preference artifact in the breakdowns doc. WoTC's licensed product would supersede it as the canonical version; the community fan project would migrate into add-on content for the official release.
+1. **The hunting loop is repetitive by design in MH** (multiple hunts of the same monster for parts); D&D campaigns aren't usually built that way. The 5.5e-shaped answer: campaign structure based on *Guild commissions* — episodic hunt-of-the-week format with ongoing commission ranks (1★ → 9★) tied to character progression, with a longer narrative arc emerging from elder-dragon-tier endgame hunts. This is structurally close to West-Marches campaign style, which has a healthy precedent.
+2. **No clear "spell" magic in the source material.** MH has elemental damage and decoration (jewel-slot) loadouts, but no caster classes. The 5.5e-shaped answer: focus the licensed product on *martial subclasses* (12 weapon-class subclasses + Hunter base class) plus a small caster surface — a *Field Researcher* (Wizard reflavor with monster-knowledge specializations) and *Wyverian Sage* (Cleric variant tied to the Wyverian elder race). The bulk of the product is martial-PC-led; 5.5e's existing arcane/divine mechanics handle the small caster surface.
+3. **No existing licensed MH TTRPG, but there's a 622-page community-built Monster Manual.** Our harvest surfaced *"5e 2014 Monster Hunter Monster Manual Update | Now 622 Pages | Every Monster From Every Mainline Game"* — a community-organized D&D 5.5e bestiary covering the entire MH franchise. This is the strongest single revealed-preference artifact in the breakdowns doc. WoTC's licensed product would supersede it as the canonical version; the community fan project would migrate into add-on content for the official release.
 4. **Capcom is conservative on Western licensing.** Worth flagging as a deal-process consideration. Capcom's IP-licensing posture is more careful than, say, Atlus or Sony; the negotiation-table scenario assumes Capcom wants to see meaningful proof-of-demand before greenlighting. **The 622-page fan Monster Manual + the 2,817-up viral *"I have a DnD one shot coming up..."* thread on r/MonsterHunter are exactly that proof.**
 
 ### Translation possibilities (DDB product surface)
@@ -204,7 +201,7 @@ The content surface above must be curated heavily — 622 community-built monste
 
 ##### Hunter archetype subclass / class-feature — 4 fitting options
 
-Existing 5e starting point: the *Monster Slayer* Ranger subclass from Xanathar's Guide to Everything (2017) already lives in the Hunter-archetype slot. The partial community sentiment that "Rangers need more love" overlaps with this existing-but-underused subclass — a natural refresh target.
+Existing 5.5e starting point: the *Monster Slayer* Ranger subclass from Xanathar's Guide to Everything (2017) already lives in the Hunter-archetype slot. The partial community sentiment that "Rangers need more love" overlaps with this existing-but-underused subclass — a natural refresh target.
 
 | # | Approach | Brand-integrity cost | Why it fits | Why it might not |
 |---|---|---|---|---|
@@ -228,7 +225,7 @@ Monster Hunter's 14 weapon classes (Great Sword, Long Sword, Dual Blades, Hammer
 
 ##### Carve-and-Craft loop — 5 fitting options at different brand-integrity tiers
 
-The 622-page community Monster Manual ports a full subsystem. The brand-integrity discipline asks: how much of that fantasy can we deliver through existing 5e rules?
+The 622-page community Monster Manual ports a full subsystem. The brand-integrity discipline asks: how much of that fantasy can we deliver through existing 5.5e rules?
 
 | # | Approach | Brand-integrity cost | Description |
 |---|---|---|---|
@@ -304,11 +301,11 @@ This is the IP that maps most cleanly onto Sigil's encounter-map paradigm — ev
 | **COMMERCIAL — Revenue Risk** | | |
 | BGG proxy score (Wilds) | 0.825 | Strong board-game-comparable signal |
 | **Mobile-game proxy** (manual signal, pending pipeline) | **cult_classic_mobile** | *Monster Hunter Now* (Niantic + Capcom, September 2023) — AR/location-based, Pokémon-GO-style. 15M+ downloads in first 6 months per publicly cited milestones; 4.0-4.3 App Store / Play Store ratings; Niantic's second-most-successful AR launch after Pokémon GO. Niche-but-active fanbase; no major P2W backlash (AR-exploration model, not gacha). **Whale-to-Minnow Disconnect flag does not fire.** **Mobile success ≠ tabletop compatibility caveat applies** — the AR-exploration appeal doesn't directly translate to D&D-conversion intent, but commercial appetite for the IP in tabletop-adjacent paid-content format is demonstrated. |
-| DMs Guild + DTRPG confirmed products | **0** | No third-party 5e Monster Hunter content on either marketplace — the 622-page Monster Manual is on Reddit/imgur, not DTRPG |
+| DMs Guild + DTRPG confirmed products | **0** | No third-party 5.5e Monster Hunter content on either marketplace — the 622-page Monster Manual is on Reddit/imgur, not DTRPG |
 | External licensed product | **none** | Capcom has not licensed any MH TTRPG. The franchise has TCG card games (MH:World — Iceborne) but no tabletop RPG. Clean lane. |
 | Catalog signal | clean lane / first to market | Negotiation-leverage point: like Solo Leveling and Persona 5, no competing TTRPG to anchor advance demands against. **Plus** — Capcom is conservative on Western licensing, which means demonstrated demand-proof has unusual leverage at the deal table |
 
-**Cross-channel reading.** This is the strongest data picture in the breakdowns doc and arguably in the entire corpus. **Five independent channels triangulate on the same pattern**: AO3 proportional rate at 0.78% (near-ORV-territory), 27 D&D-sub strict-filter posts (highest count measured), 38 r/MonsterHunter reverse-funnel posts including a 2,817-up viral DnD-crossover thread, a 622-page community Monster Manual covering every MH game's bestiary, and a community subclass compendium at 137 ups. The off-DDB consolidation pattern (zero DDB items) reads as false-negative — the conversion energy is consolidated on a Reddit-organized Monster Manual project, exactly like the Persona 5e fan project. The version-specific subs (World 6 posts, Wilds 30 posts mostly DM-noise) are minor relative to the umbrella sub's 38; the licensable property is the franchise umbrella, not any single version.
+**Cross-channel reading.** This is the strongest data picture in the breakdowns doc and arguably in the entire corpus. **Five independent channels triangulate on the same pattern**: AO3 proportional rate at 0.78% (near-ORV-territory), 27 D&D-sub strict-filter posts (highest count measured), 38 r/MonsterHunter reverse-funnel posts including a 2,817-up viral DnD-crossover thread, a 622-page community Monster Manual covering every MH game's bestiary, and a community subclass compendium at 137 ups. The off-DDB consolidation pattern (zero DDB items) reads as false-negative — the conversion energy is consolidated on a Reddit-organized Monster Manual project, exactly like the Persona 5.5e fan project. The version-specific subs (World 6 posts, Wilds 30 posts mostly DM-noise) are minor relative to the umbrella sub's 38; the licensable property is the franchise umbrella, not any single version.
 
 **The Greenlight case.** Six channels of community signal, all strong, all triangulating on the same finding: **the audience has built the licensed product themselves, and they're waiting for an official version.** Based on the 122 community-built monster pages × DDB attach rate × Hasbro distribution, a WoTC product would likely sell. Capcom-side licensing complexity is real, but the demand-proof to bring to that negotiation is unusually strong. Recommendation: **Greenlight-tier candidate; pair with the Monster Hunter umbrella license rather than version-specific (World or Wilds) for licensing scope.**
 
@@ -328,13 +325,13 @@ Berserk is Kentaro Miura's seinen manga (1989-2021, continued posthumously by Ko
 
 Berserk is the **highest-fit highly-corroborated IP in the corpus** (fit 0.94, reception 0.83, `highly_corroborated: true`). The harvest's killer signal: **1,010 forum results in BQ — the second-largest forum signal in the corpus** (after One Piece) — with the top thread literally being *"D&D 5.5e (2014) - Guts (BERSERK) Build 5.5e"*. The 25 DDB items + 227-add Berserker Redux subclass + 12 magic items + the corpus-leading forum signal triangulate cleanly: this is a **dark-fantasy / oversized-weapon / curse-mechanic** licensing target with deep community translation already in motion.
 
-Niche it fills: a *grimdark medieval-with-demons* setting register that 5e doesn't fully address (Curse of Strahd is gothic-horror, not dark-fantasy). Mature-tone product with the *Brand of Sacrifice* curse-mechanic, Apostle-tier monster roster, and Berserker Armor-tier legendary-item economy. The audience: dark-fantasy manga readers + Soulslike players + grimdark-tabletop-fans (RPG.net + GitP demographic).
+Niche it fills: a *grimdark medieval-with-demons* setting register that 5.5e doesn't fully address (Curse of Strahd is gothic-horror, not dark-fantasy). Mature-tone product with the *Brand of Sacrifice* curse-mechanic, Apostle-tier monster roster, and Berserker Armor-tier legendary-item economy. The audience: dark-fantasy manga readers + Soulslike players + grimdark-tabletop-fans (RPG.net + GitP demographic).
 
 ### Translation challenges
 
-1. **Mature themes — sexualized violence and trauma in canon.** This is the unique honest-caveat for Berserk. The IP includes content that would require careful handling for a D&D-licensed product (the *Eclipse* arc specifically is graphic; the *Casca* trauma-arc has explicit content). The 5e-shaped answer: scope the licensed product to *Berserk's narrative-tone* without the explicit content (Critical Role's Wildemount is a useful tonal precedent — mature themes handled accessibly). **The harvest does not show backlash flags in BQ** — community engagement is positive — but the licensing-call requires explicit scope-definition for content that's family-friendly enough for the WoTC brand.
+1. **Mature themes — sexualized violence and trauma in canon.** This is the unique honest-caveat for Berserk. The IP includes content that would require careful handling for a D&D-licensed product (the *Eclipse* arc specifically is graphic; the *Casca* trauma-arc has explicit content). The 5.5e-shaped answer: scope the licensed product to *Berserk's narrative-tone* without the explicit content (Critical Role's Wildemount is a useful tonal precedent — mature themes handled accessibly). **The harvest does not show backlash flags in BQ** — community engagement is positive — but the licensing-call requires explicit scope-definition for content that's family-friendly enough for the WoTC brand.
 2. **Lone-protagonist Guts arc.** Same reframing as Solo Leveling / ORV / Persona 5: Guts as canonical NPC; player characters are Hawks-band-adjacent figures, other Branded survivors, or post-Eclipse new mercenary parties.
-3. **The Berserker Armor is character-defining for Guts but rare.** The 5e-shaped answer: a *Berserker Armor* unique-PC-only legendary item (one per party as a Warlock-pact-equivalent commitment), with supporting subclass *Branded Champion* (Fighter or Barbarian).
+3. **The Berserker Armor is character-defining for Guts but rare.** The 5.5e-shaped answer: a *Berserker Armor* unique-PC-only legendary item (one per party as a Warlock-pact-equivalent commitment), with supporting subclass *Branded Champion* (Fighter or Barbarian).
 4. **No existing licensed Berserk TTRPG.** Clean lane.
 
 ### Translation possibilities (DDB product surface)
@@ -362,7 +359,7 @@ This is the cursed-power-fantasy supply matching the **1,489-up *"Standard Array
 
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
-| A | **Cursed legendary magic item** (existing 5e cursed-item slot) | **LOWEST** | Single named legendary item (rare or very rare); curse grants power-with-cost. Uses existing cursed-item infrastructure. Direct delivery of the Guts fantasy through standard magic-item rules. |
+| A | **Cursed legendary magic item** (existing 5.5e cursed-item slot) | **LOWEST** | Single named legendary item (rare or very rare); curse grants power-with-cost. Uses existing cursed-item infrastructure. Direct delivery of the Guts fantasy through standard magic-item rules. |
 | B | **Cursed legendary item with extended attunement mechanics** | LOW | Same as A plus mechanics like HP-cost-when-entering-Berserker-form. Still uses cursed-item infrastructure but adds item-specific rules. |
 | C | *New Cost-of-Power rules subsystem* | **HIGH — not recommended unless system-wide scope** | New rules variant where power-with-cost is recurring. Brand-integrity cost only justifies if WoTC wants the system across multiple future products. |
 
@@ -385,7 +382,7 @@ The 88-up *Path of the Possessed* Barbarian homebrew is the community canonical 
 
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
-| A | **Standard Fiend-type monsters with phase-transition** (existing Mythic Action infrastructure) | **LOW** | Apostles as standard 5e Fiends with two stat blocks (humanoid form / Apostle form). Existing legendary-action and Mythic-Action mechanics (Theros precedent). |
+| A | **Standard Fiend-type monsters with phase-transition** (existing Mythic Action infrastructure) | **LOW** | Apostles as standard 5.5e Fiends with two stat blocks (humanoid form / Apostle form). Existing legendary-action and Mythic-Action mechanics (Theros precedent). |
 | B | **New "Apostle" creature subtype tag** | MID | Adds a tag/subtype with shared rules (Brand-attraction proximity). Larger commitment. |
 | C | **Apostle Template** (modular augmentation applicable to any humanoid) | MID | Template system; similar to community Monster Hunter's Guardian template. Reusable across future books but adds a permanent template-system. |
 
@@ -396,7 +393,7 @@ The 88-up *Path of the Possessed* Barbarian homebrew is the community canonical 
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
 | A | **Magic item (Brand-marked) with periodic encounter trigger** | **LOWEST** | Item-tier mechanic; periodically attracts Apostle / Fiend encounters when attuned. Zero new condition/curse infrastructure. |
-| B | New condition (Branded) with passive Fiend-attraction | MID | Adds to 5e's existing condition list; carries into future books. |
+| B | New condition (Branded) with passive Fiend-attraction | MID | Adds to 5.5e's existing condition list; carries into future books. |
 
 **Trusight read:** Option A keeps it slot-bounded.
 
@@ -479,8 +476,8 @@ The pitch writes itself in one data point: **the Shadow Monarch Warlock subclass
 
 ### Translation challenges
 
-1. **Solo Leveling is a one-protagonist story; D&D is a party game.** The 5e-shaped answer is to reframe Sung Jinwoo as a powerful NPC patron (similar to how Stranger Things' Hawkins teens are NPCs in the WoTC adventure). Player characters are *other Hunters* in the same world — different ranks (E through S), different awakened classes, different gates. The world is the licensable IP, not the lone protagonist.
-2. **The "System" interface — quest logs, stat allocation, class-up screens — is the IP's signature mechanic.** Ironically, that's what D&D players already see in their character sheet. The 5e-shaped answer is to lean into it: a *Hunter's License* character-sheet variant with explicit rank progression (E → D → C → B → A → S), gate-clearance log, shadow-soldier collection mechanic for the Necromancer/Warlock subclass.
+1. **Solo Leveling is a one-protagonist story; D&D is a party game.** The 5.5e-shaped answer is to reframe Sung Jinwoo as a powerful NPC patron (similar to how Stranger Things' Hawkins teens are NPCs in the WoTC adventure). Player characters are *other Hunters* in the same world — different ranks (E through S), different awakened classes, different gates. The world is the licensable IP, not the lone protagonist.
+2. **The "System" interface — quest logs, stat allocation, class-up screens — is the IP's signature mechanic.** Ironically, that's what D&D players already see in their character sheet. The 5.5e-shaped answer is to lean into it: a *Hunter's License* character-sheet variant with explicit rank progression (E → D → C → B → A → S), gate-clearance log, shadow-soldier collection mechanic for the Necromancer/Warlock subclass.
 3. **No existing TTRPG ecosystem to fight.** This is a *clean licensing lane.* No competing Cosmere RPG, no Steamforged Soulslike. WoTC would be first to market with a tabletop Solo Leveling product. That's a meaningful negotiation lever.
 
 ### Translation possibilities (DDB product surface)
@@ -500,7 +497,7 @@ The 642-add Shadow Monarch subclass is the headline; the product surface around 
 
 #### Slot options — brand-integrity-cost framing
 
-Solo Leveling's signature challenge: the IP is built around one protagonist (Sung Jinwoo) whose progression IS the story. The breakdowns' *Translation challenges* section already reframes player characters as *other Hunters*; the slot-options layer asks which existing 5e slots deliver the Hunter / Shadow-Monarch / progression-fantasy at lowest cost. Clean-lane positioning (no competing TTRPG) gives WoTC unusual flexibility here.
+Solo Leveling's signature challenge: the IP is built around one protagonist (Sung Jinwoo) whose progression IS the story. The breakdowns' *Translation challenges* section already reframes player characters as *other Hunters*; the slot-options layer asks which existing 5.5e slots deliver the Hunter / Shadow-Monarch / progression-fantasy at lowest cost. Clean-lane positioning (no competing TTRPG) gives WoTC unusual flexibility here.
 
 ##### Shadow Monarch subclass — 4 fitting options
 
@@ -535,7 +532,7 @@ The "E → D → C → B → A → S rank" Hunter-License progression is one of 
 |---|---|---|---|
 | A | **Background-tier roleplay flavor** (Hunter background grants rank progression as narrative tracker; no mechanical effect) | **LOWEST** | Pure flavor; zero new mechanics |
 | B | **Optional rules variant** (Hunter Rank as a Renown / Reputation tracker, similar to Faction Renown from DMG) | LOW | Existing Renown infrastructure reflavored; opt-in like other DMG variants |
-| C | *New character-progression subsystem* | **HIGH — not recommended** | Conflicts with 5e's level-based progression; duplicative mechanic |
+| C | *New character-progression subsystem* | **HIGH — not recommended** | Conflicts with 5.5e's level-based progression; duplicative mechanic |
 
 **Trusight read:** Option A is the cleanest path — rank-progression is iconic flavor that doesn't need mechanical infrastructure to deliver.
 
@@ -606,7 +603,7 @@ Igris (CR 18), Beru (CR 19), Kamish (CR 25), Iron-clad Knight (CR 12), Stone Gol
 | **COMMERCIAL — Revenue Risk** | | |
 | BGG proxy score | — | No board-game comparable yet (a *Solo Leveling: ARISE* mobile game launched 2024 but no board-game tabletop product) |
 | **Mobile-game proxy** (manual signal, pending pipeline) | **broad_durable_hit signal with momentum-decay caveat** | *Solo Leveling: ARISE* (Netmarble, May 2024) — **50M+ installs / $139M revenue in first six months** (peak month $58.9M, per public industry reporting); **4.6-4.7 App Store / Play Store ratings** on hundreds of thousands of reviews; top markets Korea / Japan / US. Revenue declined month-on-month post-launch — momentum-decay caveat applies, but rating durability indicates no major P2W backlash (**Whale-to-Minnow Disconnect flag does not fire**). **Mobile success ≠ tabletop compatibility caveat applies** — this signal demonstrates strong commercial appetite for the IP in tabletop-adjacent paid-content format, *not* predicts D&D tabletop conversion. Tabletop-conversion signal remains thin (per AO3 0.31% + 6 D&D-sub strict-filter posts elsewhere in this entry). |
-| DMs Guild + DTRPG confirmed products | **0** | **No third-party 5e or other-system Solo Leveling content on either marketplace.** Clean lane — WoTC would be first to market. |
+| DMs Guild + DTRPG confirmed products | **0** | **No third-party 5.5e or other-system Solo Leveling content on either marketplace.** Clean lane — WoTC would be first to market. |
 | Catalog signal | clean — no competing TTRPG | Negotiation-leverage point: the licensor cannot anchor advance demands to a comparable existing product, because there isn't one |
 
 **Cross-channel reading.** The 642-add Shadow Monarch is the spine of the case. The 124-up *r/UnearthedArcana* converter post and the 126-up *r/sololeveling* DM-crossover joke independently confirm the audience already speaks D&D vocabulary. AO3 proportional rate is in-band with the calibration cluster. The Commercial dimension reads as **clean lane / first to market** — meaningfully different from Mistborn's Brotherwise-Cosmere ecosystem-trap and Dark Souls' Steamforged ecosystem-trap. Sparseness on smaller channels is on-message for a 2024-anime-momentum IP at peak cultural attention but pre-broad-tabletop awareness.
@@ -627,14 +624,14 @@ Elden Ring (2022) is FromSoftware's open-world Soulslike, with worldbuilding by 
 
 ### Marketing angle / D&D-universe niche
 
-Elden Ring is the **execution-depth-greenlight** with unusually concrete demand-proof: the harvest's killer single artifact is *"Elden Ring D&D v1.0: Three core rulebooks with 200+ new weapons, 100+ new spells, and 100+ statblocks, plus a free adventure in Limgrave"* — **a community-built complete 5e Elden Ring conversion at three-rulebook scale** posted on r/UnearthedArcana with 566 ups. Niche it fills: the *high-fantasy + Souls-difficulty + GRR-Martin worldbuilding* register; adjacent to Dark Souls's optimized-combat niche but distinguished by mainstream-press cachet (the IP that won 2022 Game of the Year). The audience: open-world-RPG players + Souls-veterans + Martin-readers (large overlap with HotD demographic on the lore side, but distinct from HotD's prestige-TV audience).
+Elden Ring is the **execution-depth-greenlight** with unusually concrete demand-proof: the harvest's killer single artifact is *"Elden Ring D&D v1.0: Three core rulebooks with 200+ new weapons, 100+ new spells, and 100+ statblocks, plus a free adventure in Limgrave"* — **a community-built complete 5.5e Elden Ring conversion at three-rulebook scale** posted on r/UnearthedArcana with 566 ups. Niche it fills: the *high-fantasy + Souls-difficulty + GRR-Martin worldbuilding* register; adjacent to Dark Souls's optimized-combat niche but distinguished by mainstream-press cachet (the IP that won 2022 Game of the Year). The audience: open-world-RPG players + Souls-veterans + Martin-readers (large overlap with HotD demographic on the lore side, but distinct from HotD's prestige-TV audience).
 
 ### Translation challenges
 
 1. **George R. R. Martin's worldbuilding is partially co-licensed with him personally.** This is the unique licensing-process consideration — GRR Martin's involvement adds a creator-side relationship layer. Honest framing: a clean GRR-Martin negotiation (separate from any HotD/GoT licensing).
 2. **Open-world-Soulslike doesn't translate to D&D campaign structure 1:1.** Same answer as Dark Souls: scope as a *setting* not a campaign-engine; players are Tarnished operating in the Lands Between with Souls-difficulty optional rules variant.
-3. **Boss-fight-as-narrative-set-piece is the IP's signature.** The 5e-shaped answer: each major demigod boss (Godrick, Rennala, Radahn, Morgott, Malenia, Mohg, Maliketh, Godfrey) becomes a campaign-arc capstone with rules-variant boss-encounter design.
-4. **No existing licensed Elden Ring TTRPG.** Clean lane on 5e specifically; the FromSoftware + Bandai Namco licensing posture is similar to Dark Souls' (Steamforged precedent on Dark Souls didn't extend to Elden Ring).
+3. **Boss-fight-as-narrative-set-piece is the IP's signature.** The 5.5e-shaped answer: each major demigod boss (Godrick, Rennala, Radahn, Morgott, Malenia, Mohg, Maliketh, Godfrey) becomes a campaign-arc capstone with rules-variant boss-encounter design.
+4. **No existing licensed Elden Ring TTRPG.** Clean lane on 5.5e specifically; the FromSoftware + Bandai Namco licensing posture is similar to Dark Souls' (Steamforged precedent on Dark Souls didn't extend to Elden Ring).
 
 ### Translation possibilities (DDB product surface)
 
@@ -653,13 +650,13 @@ DDB shows 29 confirmed items — monster-led conversion (20 of 29 are monsters).
 
 #### Slot options — brand-integrity-cost framing
 
-Elden Ring's signature is the demigod-boss roster + Souls-difficulty rules + spell-rich combat. The 566-up *Elden Ring D&D v1.0* three-rulebook community project (200+ weapons, 100+ spells, 100+ statblocks) is the empirical anchor for an entire community-built conversion at scale. The brand-integrity discipline asks: how much of that delivers through existing 5e slots? Plus: the GRR-Martin lore-licensing layer is the unique deal-process consideration.
+Elden Ring's signature is the demigod-boss roster + Souls-difficulty rules + spell-rich combat. The 566-up *Elden Ring D&D v1.0* three-rulebook community project (200+ weapons, 100+ spells, 100+ statblocks) is the empirical anchor for an entire community-built conversion at scale. The brand-integrity discipline asks: how much of that delivers through existing 5.5e slots? Plus: the GRR-Martin lore-licensing layer is the unique deal-process consideration.
 
 ##### Demigod boss bestiary — 1 fitting option
 
 Margit (CR 12), Godrick (CR 14), Rennala (CR 16), Radahn (CR 18), Morgott (CR 17), Malenia (CR 20), Mohg (CR 18), Godfrey (CR 22), Maliketh (CR 19), Elden Beast (CR 24). All standard creature types (Humanoid / Aberration / Fiend / Construct / Celestial depending on boss). Mythic Action infrastructure (Theros precedent) for multi-phase bosses.
 
-**Brand-integrity cost: LOW.** Existing creature taxonomy + Mythic Actions. The IP's signature delivery vector — boss-fight-as-narrative-set-piece — fits 5e's existing legendary-creature infrastructure perfectly. The 20 community DDB monster items confirm conversion fluency.
+**Brand-integrity cost: LOW.** Existing creature taxonomy + Mythic Actions. The IP's signature delivery vector — boss-fight-as-narrative-set-piece — fits 5.5e's existing legendary-creature infrastructure perfectly. The 20 community DDB monster items confirm conversion fluency.
 
 ##### Souls-difficulty rules variant — 3 fitting options
 
@@ -759,11 +756,11 @@ Moonveil, Rivers of Blood, Sword of Night and Flame, Eclipse Shotel, Marais Exec
 | Forum total results | **371** | Strong; top thread *"[Setting Help] Making My Campaign Setting A Bit More Elden Ring..."* |
 | **COMMERCIAL — Revenue Risk** | | |
 | BGG proxy score | 0.71 | Solid |
-| DMs Guild + DTRPG confirmed products | 0 | No third-party 5e Elden Ring content on either marketplace |
-| External licensed product | **none** in 5e (Steamforged's Dark Souls precedent didn't extend to ER) | Clean lane on 5e specifically |
+| DMs Guild + DTRPG confirmed products | 0 | No third-party 5.5e Elden Ring content on either marketplace |
+| External licensed product | **none** in 5.5e (Steamforged's Dark Souls precedent didn't extend to ER) | Clean lane on 5.5e specifically |
 | Catalog signal | clean lane / first to market | Plus the **GRR Martin licensing layer** is the unique deal consideration |
 
-**Cross-channel reading.** Elden Ring is the **execution-depth-with-killer-fan-conversion** archetype. 40 D&D-sub strict-filter posts (second only to Hollow Knight), 0.401% AO3 proportional rate (above the calibration cluster), 371 forum results, and the 566-up three-rulebook community-built 5e Elden Ring conversion as the headline single artifact. Greenlight-tier; the GRR-Martin licensing-layer is the deal-process-distinguishing factor. **Pair with HotD in the Hasbro-portfolio cross-license framing if both are ever on the table simultaneously.**
+**Cross-channel reading.** Elden Ring is the **execution-depth-with-killer-fan-conversion** archetype. 40 D&D-sub strict-filter posts (second only to Hollow Knight), 0.401% AO3 proportional rate (above the calibration cluster), 371 forum results, and the 566-up three-rulebook community-built 5.5e Elden Ring conversion as the headline single artifact. Greenlight-tier; the GRR-Martin licensing-layer is the deal-process-distinguishing factor. **Pair with HotD in the Hasbro-portfolio cross-license framing if both are ever on the table simultaneously.**
 
 ---
 
@@ -781,12 +778,12 @@ Omniscient Reader's Viewpoint is a Korean meta-fictional progression-fantasy by 
 
 ORV is one of the highest-fit IPs in the corpus (0.93) and the harvest's killer finding from the main report was the AO3 proportional-conversion rate: **13 D&D-crossover works against 1,316 total = 0.99% rate** — meaningfully higher than any other large-fanbase IP measured (vs HotD's 0.13%, Mistborn's 0.29%, P5's 0.081%). The fanbase is small in absolute terms but converting at unusually high proportional intensity — exactly the *early-signal sleeper* pattern that Trusight's framework is built to surface. **Note: Consider negotiating a rename for WoTC crossover title to "Omniscient", "ORV", or something else.**
 
-The licensing pitch: a *meta-fictional progression-fantasy* setting where the *Star Stream* is the patron-cosmology for a Warlock-led campaign. Scenarios-as-adventure-modules and Constellations-as-Warlock-patrons map onto 5e's existing Warlock-pact-as-campaign-frame structure with unusual cleanliness. The niche this fills: a *broadcast-cosmology / observer-as-narrator* setting register that 5e doesn't currently have — distinct from Theros's mythological gods and Eberron's industrial fantasy. The audience: Korean-webtoon and isekai fans, demographically younger and more international than the existing D&D player base, with anime-driven momentum at peak cultural attention. **Net-new audience acquisition** in the cannibalization frame.
+The licensing pitch: a *meta-fictional progression-fantasy* setting where the *Star Stream* is the patron-cosmology for a Warlock-led campaign. Scenarios-as-adventure-modules and Constellations-as-Warlock-patrons map onto 5.5e's existing Warlock-pact-as-campaign-frame structure with unusual cleanliness. The niche this fills: a *broadcast-cosmology / observer-as-narrator* setting register that 5.5e doesn't currently have — distinct from Theros's mythological gods and Eberron's industrial fantasy. The audience: Korean-webtoon and isekai fans, demographically younger and more international than the existing D&D player base, with anime-driven momentum at peak cultural attention. **Net-new audience acquisition** in the cannibalization frame.
 
 ### Translation challenges
 
-1. **One-protagonist meta-fictional premise.** Kim Dokja's "I read the novel" advantage is structurally singular. The 5e-shaped answer (same as Solo Leveling): reframe Kim Dokja as a powerful NPC patron; player characters are *other Incarnations* in the same Scenario world — different Constellation sponsors, different background-novels-they-read, different starting Scenario tiers.
-2. **The Star Stream broadcast cosmology is unusual for D&D.** Players exist as broadcasted protagonists with Constellation-watchers betting on them. The 5e-shaped answer: a *Star Stream Patron* Warlock subclass where the Constellation pact mechanics include reactive-narration mechanics (the patron grants temporary boons keyed to dramatic-moment triggers, mirroring the source material's "Constellation reaction" beats). This is genuinely innovative for 5e's patron-pact mechanic surface.
+1. **One-protagonist meta-fictional premise.** Kim Dokja's "I read the novel" advantage is structurally singular. The 5.5e-shaped answer (same as Solo Leveling): reframe Kim Dokja as a powerful NPC patron; player characters are *other Incarnations* in the same Scenario world — different Constellation sponsors, different background-novels-they-read, different starting Scenario tiers.
+2. **The Star Stream broadcast cosmology is unusual for D&D.** Players exist as broadcasted protagonists with Constellation-watchers betting on them. The 5.5e-shaped answer: a *Star Stream Patron* Warlock subclass where the Constellation pact mechanics include reactive-narration mechanics (the patron grants temporary boons keyed to dramatic-moment triggers, mirroring the source material's "Constellation reaction" beats). This is genuinely innovative for 5.5e's patron-pact mechanic surface.
 3. **Constellations are drawn from world mythology including Korean myth.** Some pantheon overlap with Theros / Forgotten Realms, but ORV's specific characterization (the *Demon-King of Salvation*, *Detective of the Old World*, *Nightmare Bug*, etc.) is the licensing distinguisher. The Korean-myth Constellations especially are content WoTC doesn't currently feature.
 4. **No existing licensed ORV TTRPG.** Clean lane — singshong / KW BOOKS / Naver Webtoon haven't licensed ORV for tabletop. First to market.
 
@@ -807,7 +804,7 @@ DDB shows zero confirmed ORV homebrew artifacts in BQ (consistent with the pre-a
 
 #### Slot options — brand-integrity-cost framing
 
-ORV is an early-signal IP — DDB-homebrew is essentially zero (the 0.99% AO3 proportional rate carries the case), so the slot-options framing is mapping the IP-content onto existing 5e slots without competing fan-canonical signal. The clean-lane positioning (no competing TTRPG) gives WoTC full design flexibility. Pantheon-overlap with Theros / Forgotten Realms is the structural caveat addressed in *Translation challenges*.
+ORV is an early-signal IP — DDB-homebrew is essentially zero (the 0.99% AO3 proportional rate carries the case), so the slot-options framing is mapping the IP-content onto existing 5.5e slots without competing fan-canonical signal. The clean-lane positioning (no competing TTRPG) gives WoTC full design flexibility. Pantheon-overlap with Theros / Forgotten Realms is the structural caveat addressed in *Translation challenges*.
 
 ##### Constellation Patron subclass — 4 fitting options
 
@@ -852,7 +849,7 @@ ORV's scenario-by-scenario narrative structure maps unusually well to one-shot a
 
 ##### Constellation roster / boss bestiary — 1 fitting option
 
-The Constellations and Disaster Scenario beasts as standard 5e creatures. Outer-God-tier Constellations at CR 22-25 sit alongside existing legendary creatures (Tarrasque, Tiamat, demon princes). The Korean-myth-anchored Constellations (Sage King of the Underworld, etc.) add cultural-diversity to the high-tier roster.
+The Constellations and Disaster Scenario beasts as standard 5.5e creatures. Outer-God-tier Constellations at CR 22-25 sit alongside existing legendary creatures (Tarrasque, Tiamat, demon princes). The Korean-myth-anchored Constellations (Sage King of the Underworld, etc.) add cultural-diversity to the high-tier roster.
 
 **Brand-integrity cost: LOW.** Standard creature types (Celestial / Fiend / Aberration depending on Constellation alignment); existing legendary-action and Mythic-Action infrastructure.
 
@@ -882,7 +879,7 @@ ORV's scenario-by-scenario structure maps unusually cleanly to one-shot adventur
 | Metric | Value | Reading |
 |---|---|---|
 | **FIT — Translation Risk** | | |
-| License Fit Score | **0.93** | High — meta-fictional and progression-fantasy structures are 5e-translation-friendly |
+| License Fit Score | **0.93** | High — meta-fictional and progression-fantasy structures are 5.5e-translation-friendly |
 | Tier | edge | UB Matrix edge-tier |
 | Measured sources | **5 of 5 channels** | Tier 1 (post main-report harvest) |
 | DDB total items | 0 | Pre-anime-momentum; early-signal pattern, not measurement gap |
@@ -895,7 +892,7 @@ ORV's scenario-by-scenario structure maps unusually cleanly to one-shot adventur
 | AO3 proportional crossover rate | **0.99%** | **The single highest proportional rate of any major-fanbase IP measured** — ~7-8× HotD's, near-Dwarf-Fortress-territory but on a healthy ~1,300-work base rather than DF's tiny 73 |
 | **ACQUISITION — Demand Risk** | | |
 | Reddit D&D-subs (strict filter, last 12mo) | effectively 0 | The conversion is *concentrated inside* r/OmniscientReader — not yet bleeding into D&D-sub conversation. **That asymmetry IS the early-signal pattern** |
-| Reddit r/OmniscientReader reverse-funnel | 1 confirmed D&D-context post | Modest direct count; "5e," "campaign," "DM," "tabletop" vocabulary all return active subreddit discussion |
+| Reddit r/OmniscientReader reverse-funnel | 1 confirmed D&D-context post | Modest direct count; "5.5e," "campaign," "DM," "tabletop" vocabulary all return active subreddit discussion |
 | Forum total results | 1 | Top Forum #2 confirmed thread: *"Creative - Isekai Antagonists | Tabletop Roleplaying Open"* — positive sentiment |
 | **COMMERCIAL — Revenue Risk** | | |
 | BGG proxy score | NULL | No ORV board game |
@@ -919,14 +916,14 @@ Bloodborne (2015) is FromSoftware's gothic-cosmic-horror Soulslike, a PlayStatio
 
 ### Marketing angle / D&D-universe niche
 
-Bloodborne is the canonical Trusight Sleeper — well-measured (5 sources), clear gothic-cosmic-horror gap in D&D's portfolio (between Curse of Strahd and Van Richten's), no licensed TTRPG, and a community quietly converting for a decade. The harvest confirms the pattern: **a fan-made 5e Bloodborne class iteration at "V5"** (revealed-preference for an active conversion project), 320-up *"I made my players fear for their lives"* Bloodborne-themed-campaign post, plus the 213-add Bloodborne Hunter subclass on DDB. Niche it fills: a *gothic-cosmic-horror with Soulslike-difficulty* register; complementary to the broader Dark Souls niche but distinct in tone (Yharnam's Victorian-medical body-horror vs Lordran's high-fantasy decay).
+Bloodborne is the canonical Trusight Sleeper — well-measured (5 sources), clear gothic-cosmic-horror gap in D&D's portfolio (between Curse of Strahd and Van Richten's), no licensed TTRPG, and a community quietly converting for a decade. The harvest confirms the pattern: **a fan-made 5.5e Bloodborne class iteration at "V5"** (revealed-preference for an active conversion project), 320-up *"I made my players fear for their lives"* Bloodborne-themed-campaign post, plus the 213-add Bloodborne Hunter subclass on DDB. Niche it fills: a *gothic-cosmic-horror with Soulslike-difficulty* register; complementary to the broader Dark Souls niche but distinct in tone (Yharnam's Victorian-medical body-horror vs Lordran's high-fantasy decay).
 
 ### Translation challenges
 
 1. **Sony IP gates.** This is the biggest licensing-process consideration. Sony Interactive Entertainment + FromSoftware's IP-licensing posture is more careful than indie studios. **The pitch is the demand-proof: 5 channels of community signal documenting decade-of-tabletop-demand.**
-2. **Trick-weapons mechanic doesn't have a 5e analog.** The 5e-shaped answer: a *Trick Weapon* magic-item subclass — paired-form magic weapons with an action-economy transform mechanic. Translates Bloodborne's signature mechanic without breaking 5e's combat economy.
-3. **Insight-and-cosmic-horror cosmology.** Bloodborne's Insight resource governs Madness-and-Great-One-visibility. The 5e-shaped answer: an *Insight* secondary resource as a Sanity-variant rules system (similar to Mythic Odyssey of Theros's Piety mechanic), unlocking Eldritch-knowledge-tied Warlock/Wizard subclasses.
-4. **Beast-versus-hunter cycle as campaign engine.** The 5e-shaped answer: the *Hunter's Dream* as cross-campaign hub; Bloodborne campaigns are framed around hunting-the-beasts loop, with Old Hunters expansion as second-product.
+2. **Trick-weapons mechanic doesn't have a 5.5e analog.** The 5.5e-shaped answer: a *Trick Weapon* magic-item subclass — paired-form magic weapons with an action-economy transform mechanic. Translates Bloodborne's signature mechanic without breaking 5.5e's combat economy.
+3. **Insight-and-cosmic-horror cosmology.** Bloodborne's Insight resource governs Madness-and-Great-One-visibility. The 5.5e-shaped answer: an *Insight* secondary resource as a Sanity-variant rules system (similar to Mythic Odyssey of Theros's Piety mechanic), unlocking Eldritch-knowledge-tied Warlock/Wizard subclasses.
+4. **Beast-versus-hunter cycle as campaign engine.** The 5.5e-shaped answer: the *Hunter's Dream* as cross-campaign hub; Bloodborne campaigns are framed around hunting-the-beasts loop, with Old Hunters expansion as second-product.
 
 ### Translation possibilities (DDB product surface)
 
@@ -982,7 +979,7 @@ Bloodborne's *Insight* governs Madness-and-Great-One-visibility. The harvest's *
 | B | **Optional rules variant (Insight Track)** | LOW | New opt-in subsystem; bounded by opt-in nature |
 | C | *New mandatory Insight subsystem* | **HIGH — not recommended** | Permanent commitment that conflicts with future books |
 
-**Trusight read:** Option A is the brand-integrity-friendliest path — Theros's Piety mechanic is the closest existing 5e infrastructure for a tier-progression-faith-tracker, and reflavoring it is a refresh-existing-content path that satisfies the "Theros has under-used content" sentiment.
+**Trusight read:** Option A is the brand-integrity-friendliest path — Theros's Piety mechanic is the closest existing 5.5e infrastructure for a tier-progression-faith-tracker, and reflavoring it is a refresh-existing-content path that satisfies the "Theros has under-used content" sentiment.
 
 ##### Blood-vial healing economy — 2 fitting options
 
@@ -1016,7 +1013,7 @@ Father Gascoigne (CR 10), Vicar Amelia (CR 13 beastform), Blood-starved Beast (C
 | Spells (Beast Roar, Augur of Ebrietas, A Call Beyond, Old Hunter's Bone, Tiny Tonitrus, Choir Bell, Executioner's Gloves) | LOW | 5-8 named spells; existing schools (Evocation, Conjuration, Necromancy for the cosmic-horror surface) |
 | Backgrounds (Hunter, Choir Acolyte, Cainhurst Servant, Mensis Mentor, Yahar'gul Captive, Fishing Hamlet Native) | LOW | Multiple backgrounds within typical envelope |
 | Mundane items (blood vials handled above, Quicksilver bullets, Pebble, Madman's Knowledge, Ritual blood, Hunter's Dream tokens) | LOW | Equipment chapter |
-| Setting book (Yharnam + Old Hunters DLC regions) | LOW-MID | Within Wildemount / Theros setting-book envelope; the gothic-cosmic-horror tonal-register fills a documented gap (current 5e: Curse of Strahd is gothic, Van Richten's is specialist; Yharnam adds Victorian-medical body-horror specifically) |
+| Setting book (Yharnam + Old Hunters DLC regions) | LOW-MID | Within Wildemount / Theros setting-book envelope; the gothic-cosmic-horror tonal-register fills a documented gap (current 5.5e: Curse of Strahd is gothic, Van Richten's is specialist; Yharnam adds Victorian-medical body-horror specifically) |
 
 ### Potential Sigil VTT locations
 
@@ -1052,7 +1049,7 @@ Father Gascoigne (CR 10), Vicar Amelia (CR 13 beastform), Blood-starved Beast (C
 | Forum total results | **330** | Strong; top thread *"System for Bloodborne? | Tabletop Roleplaying Open - RPGnet"* — direct conversion-question |
 | **COMMERCIAL — Revenue Risk** | | |
 | BGG proxy score | **0.81** | Strong board-game-comparable signal (CMON's *Bloodborne: The Board Game* + card games) |
-| DMs Guild + DTRPG confirmed products | 0 | No third-party 5e Bloodborne content |
+| DMs Guild + DTRPG confirmed products | 0 | No third-party 5.5e Bloodborne content |
 | External licensed product | **CMON board games + Eldritch Editions card game** | Bloodborne tabletop-licensing precedent exists; Sony has shown willingness to license. Lowers Sony-side licensing-process risk |
 | Catalog signal | Sony complexity is real but tabletop-precedent exists | Demand-proof: 5 channels, 330 forum results, 71 DDB items, fan-class at V5 |
 
@@ -1070,14 +1067,14 @@ Mistborn is Brandon Sanderson's flagship epic-fantasy series and the most-read p
 
 ### Marketing angle / D&D-universe niche
 
-The marketing pitch writes itself: **the most rigorously systematized magic system in modern fantasy, translated into 5e mechanics.** Allomancy (burn metals for powers), Feruchemy (store attributes in metallic minds), and Hemalurgy (steal abilities via metal spikes) are already mechanically specified at a level of detail that 5e mechanic translation can lean into rather than invent. Sanderson's "magic systems with hard limits" school of design overlaps directly with 5e's spell-slot economy — the conversion isn't a forced fit, it's a direct mapping. The niche this fills in the D&D portfolio: a *ruleset-forward* setting book that appeals specifically to the optimization-and-system-mastery half of the player base (the half that buys Tasha's, Xanathar's, and Treantmonk's character-build content). Less Strixhaven (vibes), more Eberron (system-rich worldbuilding).
+The marketing pitch writes itself: **the most rigorously systematized magic system in modern fantasy, translated into 5.5e mechanics.** Allomancy (burn metals for powers), Feruchemy (store attributes in metallic minds), and Hemalurgy (steal abilities via metal spikes) are already mechanically specified at a level of detail that 5.5e mechanic translation can lean into rather than invent. Sanderson's "magic systems with hard limits" school of design overlaps directly with 5.5e's spell-slot economy — the conversion isn't a forced fit, it's a direct mapping. The niche this fills in the D&D portfolio: a *ruleset-forward* setting book that appeals specifically to the optimization-and-system-mastery half of the player base (the half that buys Tasha's, Xanathar's, and Treantmonk's character-build content). Less Strixhaven (vibes), more Eberron (system-rich worldbuilding).
 
 ### Translation challenges
 
 Three specific friction points, each with a known D&D-shaped answer:
 
-- **The competing Cosmere RPG.** Brotherwise Games' Cosmere RPG Kickstarted in 2024 for one of the largest tabletop campaigns in Kickstarter history. That product is setting-led (Stormlight first, Mistborn likely later). The ecosystem-trap consideration is real but has a structural answer: the Cosmere RPG uses its own custom system, not 5e. The 5e community is structurally a different audience than the people backing a custom-system Cosmere RPG. The 117-add Mistborn subclass on D&D Beyond and the 376-result forum trail show the D&D-side audience exists and is converting independent of the Brotherwise product.
-- **Allomancy's "burn a metal" mechanic doesn't map 1:1 to spell slots.** The 5e-shaped answer: a new resource — *Metal Reserves* — tied to the subclass, refreshed on short rest, with each metal as a feat-like ability. The 12-subclass / 20-monster / 12-species spread on D&D Beyond shows the community has already built versions of exactly this resource model.
+- **The competing Cosmere RPG.** Brotherwise Games' Cosmere RPG Kickstarted in 2024 for one of the largest tabletop campaigns in Kickstarter history. That product is setting-led (Stormlight first, Mistborn likely later). The ecosystem-trap consideration is real but has a structural answer: the Cosmere RPG uses its own custom system, not 5.5e. The 5.5e community is structurally a different audience than the people backing a custom-system Cosmere RPG. The 117-add Mistborn subclass on D&D Beyond and the 376-result forum trail show the D&D-side audience exists and is converting independent of the Brotherwise product.
+- **Allomancy's "burn a metal" mechanic doesn't map 1:1 to spell slots.** The 5.5e-shaped answer: a new resource — *Metal Reserves* — tied to the subclass, refreshed on short rest, with each metal as a feat-like ability. The 12-subclass / 20-monster / 12-species spread on D&D Beyond shows the community has already built versions of exactly this resource model.
 - **The Cosmere is interconnected — does a Mistborn book commit WoTC to a multi-IP setting?** The clean answer is to scope the licensed product to *Era 1 only*. That's the most popular sub-fanbase, the most contained narrative arc, and avoids cross-Cosmere licensing complexity. Era 2 + Era 3 stay available as future expansions if Era 1 sells.
 
 ### Translation possibilities (DDB product surface)
@@ -1099,7 +1096,7 @@ A potential product structure: **a la carte first** (release the canonical Mistb
 
 #### Slot options — brand-integrity-cost framing
 
-Mistborn's signature challenge: 8 Misting variants plus the full-Mistborn archetype plus Feruchemy plus Hemalurgy is far more content than any sourcebook envelope can hold. The brand-integrity discipline asks which existing 5e slots deliver the Allomancy fantasy at lowest cost. The Brotherwise Cosmere RPG ecosystem-trap (per main entry's *Translation challenges* section) is the live commercial-side competitor; the licensing pitch is scoped to Era 1 audience.
+Mistborn's signature challenge: 8 Misting variants plus the full-Mistborn archetype plus Feruchemy plus Hemalurgy is far more content than any sourcebook envelope can hold. The brand-integrity discipline asks which existing 5.5e slots deliver the Allomancy fantasy at lowest cost. The Brotherwise Cosmere RPG ecosystem-trap (per main entry's *Translation challenges* section) is the live commercial-side competitor; the licensing pitch is scoped to Era 1 audience.
 
 ##### Mistborn / Misting subclass family — 5 fitting options
 
@@ -1117,15 +1114,15 @@ The community has built a 117-add canonical Mistborn subclass; the question is w
 
 ##### Allomancy resource model — 3 fitting options
 
-Allomancy's "burn a metal for a power" mechanic is the IP's signature. How it maps to 5e's resource economy:
+Allomancy's "burn a metal for a power" mechanic is the IP's signature. How it maps to 5.5e's resource economy:
 
 | # | Approach | Brand-integrity cost | Description |
 |---|---|---|---|
-| A | **Reflavor existing spell slots / Ki / Sorcery Points** | **LOWEST** | Mistborn subclass uses spell slots (or Ki, depending on parent class) as "metal reserves." Pure flavor reskin. Zero new mechanics. |
+| A | **Reflavor existing spell slots / Focus Points / Sorcery Points** | **LOWEST** | Mistborn subclass uses spell slots (or Focus Points, depending on parent class) as "metal reserves." Pure flavor reskin. Zero new mechanics. |
 | B | **Short-rest "Metal Reserves" pool** (like Battle Master Superiority Dice) | LOW | Subclass-feature-tier resource. Refresh on short rest; metal-specific cost per ability. Uses existing per-subclass-resource-pool pattern. |
 | C | *New stand-alone "Allomancy" subsystem* | **HIGH — not recommended** | Full custom resource system. Permanent brand commitment; conflicts with future books that would have to reconcile. |
 
-**Trusight read:** Option B delivers the "burn a metal for a power" flavor with mechanical bite, using a well-established 5e per-subclass-resource pattern (Battle Master, Way of Mercy, Echo Knight, Soulknife).
+**Trusight read:** Option B delivers the "burn a metal for a power" flavor with mechanical bite, using a well-established 5.5e per-subclass-resource pattern (Battle Master, Way of Mercy, Echo Knight, Soulknife).
 
 ##### Feruchemy + Hemalurgy — 3 fitting options
 
@@ -1194,7 +1191,7 @@ Mistborn's secondary magic systems can be scoped in or out:
 | AO3 proportional crossover rate | **0.29%** | Between HotD (0.13%) and ORV (0.99%); ~2× HotD's rate |
 | **ACQUISITION — Demand Risk** | | |
 | Reddit D&D-subs (strict filter, last 12mo) | **6 confirmed posts** | Modest direct conversion-intent. Top hit *"The First Step Cosmere RPG but for DnD"* (r/onednd, 12 ups); *"Would a Mistborn Homebrew be a good idea for a character"* (r/DnD); *"Story of Mistborn as a DnD campaign"* (r/Mistborn) |
-| Reddit r/Cosmere reverse-funnel | **17 D&D-context posts** | Strong — the Cosmere fanbase is actively D&D-converting. *"Trying to make a DND character based on Dalinar"* (27 ups), *"Nightblood for DnD"* (17 ups, 18 comments), *"[Emberdark] Making Dusk in dnd 5e"* (8 ups), multiple homebrew-sword posts |
+| Reddit r/Cosmere reverse-funnel | **17 D&D-context posts** | Strong — the Cosmere fanbase is actively D&D-converting. *"Trying to make a DND character based on Dalinar"* (27 ups), *"Nightblood for DnD"* (17 ups, 18 comments), *"[Emberdark] Making Dusk in dnd 5.5e"* (8 ups), multiple homebrew-sword posts |
 | Reddit r/Mistborn reverse-funnel | **5 D&D-context posts** | *"Story of Mistborn as a DnD campaign"* (9 ups, 13 comments), *"Playing Dnd"* (8 ups, 20 comments), Mistborn Adventure Game references |
 | Forum total results | **376** | One of the heaviest forum signals in the corpus |
 | Forum top thread | *"Allomancer (Mistborn Series by Brandon Sanderson) Homebrew..."* | Community-converter direct evidence |
@@ -1223,14 +1220,14 @@ Deep Rock Galactic (2018, full release 2020) is Ghost Ship Games' co-op-first-pe
 
 The natural niche: **sci-fi fantasy dwarves** — the genre-blend space between traditional D&D dwarves and Spelljammer's space-fantasy setting. WoTC has Spelljammer (2022) and has loose precedent for sci-fi/space fantasy. DRG's "industrial-corporate dwarves mining bug-infested alien planets" is a fresh niche flavor even within Spelljammer, and the four Hunter classes map directly onto subclass design (Gunner / Driller / Engineer / Scout — each its own subclass for Fighter or a new Industrial Dwarf class). The audience this brings: co-op-shooter players with mod-culture overlap, who are demographically adjacent to (but distinct from) the existing D&D player base.
 
-The harvest's interesting commercial corroboration: a **DRG board game already exists and ships with commercial success** (Mood Publishing's Kickstarter campaign delivered, BGG proxy 0.83 confirms strong board-game-comparable signal). That's the single strongest commercial-side data point in this batch — DRG's existing-tabletop track record reduces commercial-revenue-risk on a 5e licensing call.
+The harvest's interesting commercial corroboration: a **DRG board game already exists and ships with commercial success** (Mood Publishing's Kickstarter campaign delivered, BGG proxy 0.83 confirms strong board-game-comparable signal). That's the single strongest commercial-side data point in this batch — DRG's existing-tabletop track record reduces commercial-revenue-risk on a 5.5e licensing call.
 
 ### Translation challenges
 
-1. **Co-op-shooter session loop is hostile to D&D campaign structure.** DRG missions are 20-40 minute one-shots with discrete extraction-and-XP loops. The 5e-shaped answer: campaign frame as *Mining Commissions* — episodic mission-of-the-week with a long-arc Heart of Hoxxes endgame. Same shape as the Monster Hunter Guild-commissions pattern.
-2. **Industrial-corporate dwarves are tonally distinct from D&D's traditional Mountain/Hill dwarves.** The 5e-shaped answer: a *Deep Rock Galactic* setting variant — the corporate-industrial flavor is part of the licensing distinction. Players can run DRG-flavored campaigns without needing to match traditional D&D dwarf fluff.
-3. **Sci-fi weapons (gunner / scout / engineer / driller toolkits) require Spelljammer-style sci-fi-fantasy rules.** The 5e-shaped answer: lean on the Spelljammer ruleset precedent. Mining-tools and platforms as gear; Bosco-as-drone-companion as a Familiar variant.
-4. **DRG has a board game but no licensed RPG.** Honest caveat: Mood Publishing's board game establishes that Ghost Ship Games is willing to license *and* that the IP has tabletop commercial appetite. The 5e licensing call doesn't compete with the board game (different product category) but may share licensing-process precedent.
+1. **Co-op-shooter session loop is hostile to D&D campaign structure.** DRG missions are 20-40 minute one-shots with discrete extraction-and-XP loops. The 5.5e-shaped answer: campaign frame as *Mining Commissions* — episodic mission-of-the-week with a long-arc Heart of Hoxxes endgame. Same shape as the Monster Hunter Guild-commissions pattern.
+2. **Industrial-corporate dwarves are tonally distinct from D&D's traditional Mountain/Hill dwarves.** The 5.5e-shaped answer: a *Deep Rock Galactic* setting variant — the corporate-industrial flavor is part of the licensing distinction. Players can run DRG-flavored campaigns without needing to match traditional D&D dwarf fluff.
+3. **Sci-fi weapons (gunner / scout / engineer / driller toolkits) require Spelljammer-style sci-fi-fantasy rules.** The 5.5e-shaped answer: lean on the Spelljammer ruleset precedent. Mining-tools and platforms as gear; Bosco-as-drone-companion as a Familiar variant.
+4. **DRG has a board game but no licensed RPG.** Honest caveat: Mood Publishing's board game establishes that Ghost Ship Games is willing to license *and* that the IP has tabletop commercial appetite. The 5.5e licensing call doesn't compete with the board game (different product category) but may share licensing-process precedent.
 
 ### Translation possibilities (DDB product surface)
 
@@ -1249,7 +1246,7 @@ DDB shows zero DRG items in BQ. The fan-conversion energy in our harvest is real
 
 #### Slot options — brand-integrity-cost framing
 
-DRG's signature challenge is the 4 Mission Classes (Gunner / Driller / Engineer / Scout) — too many to ship as 4 separate subclasses, but each is mechanically distinct in canon. The brand-integrity discipline asks how to deliver the Mission-Class fantasy at lowest cost. Spelljammer-adjacent genre-fit means sci-fi-fantasy rules baseline is already established in 5e canon. The existing DRG board game establishes Ghost Ship Games' licensing posture as friendly.
+DRG's signature challenge is the 4 Mission Classes (Gunner / Driller / Engineer / Scout) — too many to ship as 4 separate subclasses, but each is mechanically distinct in canon. The brand-integrity discipline asks how to deliver the Mission-Class fantasy at lowest cost. Spelljammer-adjacent genre-fit means sci-fi-fantasy rules baseline is already established in 5.5e canon. The existing DRG board game establishes Ghost Ship Games' licensing posture as friendly.
 
 ##### Mission Classes (Gunner / Driller / Engineer / Scout) — 4 fitting options
 
@@ -1344,13 +1341,13 @@ DRG is *built around* procedural cave-encounter maps — natural fit for Sigil's
 | Forum total results | 17 | Mid-tier; top thread *"Tell me about Tiny Dungeon"* — TTRPG-discussion-side adjacency |
 | **COMMERCIAL — Revenue Risk** | | |
 | BGG proxy score | **0.83** | **Strongest BGG signal in this batch.** *Deep Rock Galactic: The Board Game* exists and shipped (Mood Publishing 2022 Kickstarter) — concrete commercial-revealed-preference for tabletop |
-| DMs Guild + DTRPG confirmed products | **0** | No third-party 5e DRG content on either marketplace — clean lane on the RPG side |
-| External licensed product | **DRG board game (Mood Publishing 2022)** | Tabletop adaptation precedent exists. Different product category from a 5e RPG but establishes Ghost Ship Games is licensing-friendly |
+| DMs Guild + DTRPG confirmed products | **0** | No third-party 5.5e DRG content on either marketplace — clean lane on the RPG side |
+| External licensed product | **DRG board game (Mood Publishing 2022)** | Tabletop adaptation precedent exists. Different product category from a 5.5e RPG but establishes Ghost Ship Games is licensing-friendly |
 | Catalog signal | clean lane on RPG / commercial precedent on board game | Negotiation-leverage point: existing board-game commercial proof reduces revenue-risk diligence |
 
 **Cross-channel reading.** Deep Rock Galactic is a **commercial-precedent-led** case. The AO3 proportional rate (2.99%) is in ORV territory — extremely high — but on a tiny absolute base (2 / 67). The strongest single data point isn't from community-conversion: **it's the existing board game's commercial track record + the BGG proxy 0.83 signal.** That's a different value proposition than Monster Hunter's "the audience built it themselves" or Mistborn's "deep multi-category homebrew." DRG's pitch is "the IP is licensing-friendly, the tabletop appetite is empirically commercial, and the fanbase is converting at high proportional intensity even on small absolute volume."
 
-**Recommendation framing.** Recommend as a **mid-tier greenlight with cross-product portfolio framing** — pair a 5e DRG book with the existing Mood Publishing board game's commercial track record as the diligence anchor, target the Spelljammer-adjacent player base, position the four Mission Classes as the headline subclass deliverable. Lower-risk than Monster Hunter (smaller demand-proof) but lower-cost-of-entry too (Ghost Ship Games is a smaller, more accessible licensor than Capcom).
+**Recommendation framing.** Recommend as a **mid-tier greenlight with cross-product portfolio framing** — pair a 5.5e DRG book with the existing Mood Publishing board game's commercial track record as the diligence anchor, target the Spelljammer-adjacent player base, position the four Mission Classes as the headline subclass deliverable. Lower-risk than Monster Hunter (smaller demand-proof) but lower-cost-of-entry too (Ghost Ship Games is a smaller, more accessible licensor than Capcom).
 
 ---
 
@@ -1366,13 +1363,13 @@ One Piece is Eiichiro Oda's flagship manga (1997-present, 1,100+ chapters), with
 
 ### Marketing angle / D&D-universe niche
 
-One Piece is the **net-new-audience** Trusight Greenlight — the IP whose audience demographically overlaps least with the existing D&D player base, making it the highest-CAC-reduction licensing opportunity. The harvest's killer single artifact: **a 4,130-up *"Cover art for our One Piece DND campaign"* viral post** on r/OnePiece, plus the corpus's largest forum signal (**6,200 forum results**, top thread *"One Piece Characters as D and D 5e Characters"*). Niche it fills: a *piracy-and-Devil-Fruit-superpower fantasy* setting register that 5e doesn't have. The audience: anime-fans and shounen-readers, demographically younger and more international than the core D&D player base. In the cannibalization frame: **maximum net-new audience import.**
+One Piece is the **net-new-audience** Trusight Greenlight — the IP whose audience demographically overlaps least with the existing D&D player base, making it the highest-CAC-reduction licensing opportunity. The harvest's killer single artifact: **a 4,130-up *"Cover art for our One Piece DND campaign"* viral post** on r/OnePiece, plus the corpus's largest forum signal (**6,200 forum results**, top thread *"One Piece Characters as D and D 5.5e Characters"*). Niche it fills: a *piracy-and-Devil-Fruit-superpower fantasy* setting register that 5.5e doesn't have. The audience: anime-fans and shounen-readers, demographically younger and more international than the core D&D player base. In the cannibalization frame: **maximum net-new audience import.**
 
 ### Translation challenges
 
-1. **The 1,100+ chapter narrative is an inherent licensing-scope question.** Cannot license "all of One Piece" in one product. The 5e-shaped answer: scope to a specific *Saga* (East Blue / Alabasta / Skypiea / Water 7 / Marineford / Wano are the canonical arc-divisions), with first-product covering East Blue + Alabasta as the natural campaign-introduction, expansions covering later sagas.
-2. **Devil Fruits as superpowers don't have a 5e analog.** The 5e-shaped answer: *Devil Fruit User* base class with subclass = specific Devil Fruit type (Logia / Paramecia / Zoan), each with an action-economy power-set keyed to the Fruit's canon. Mirrors the 14-class Monster-Hunter weapon-class approach.
-3. **No existing licensed One Piece TTRPG** in the West (Bandai has had Japanese-language OP tabletop games but nothing 5e-targeted). Clean lane.
+1. **The 1,100+ chapter narrative is an inherent licensing-scope question.** Cannot license "all of One Piece" in one product. The 5.5e-shaped answer: scope to a specific *Saga* (East Blue / Alabasta / Skypiea / Water 7 / Marineford / Wano are the canonical arc-divisions), with first-product covering East Blue + Alabasta as the natural campaign-introduction, expansions covering later sagas.
+2. **Devil Fruits as superpowers don't have a 5.5e analog.** The 5.5e-shaped answer: *Devil Fruit User* base class with subclass = specific Devil Fruit type (Logia / Paramecia / Zoan), each with an action-economy power-set keyed to the Fruit's canon. Mirrors the 14-class Monster-Hunter weapon-class approach.
+3. **No existing licensed One Piece TTRPG** in the West (Bandai has had Japanese-language OP tabletop games but nothing 5.5e-targeted). Clean lane.
 
 ### Translation possibilities (DDB product surface)
 
@@ -1385,11 +1382,11 @@ One Piece is the **net-new-audience** Trusight Greenlight — the IP whose audie
 | **Magic items** | *Devil Fruits* themselves as legendary consumable items (each grants a permanent subclass-level transformation), *Black Blade-grade Meito swords* (Yoru, Wado Ichimonji), *Ope Ope no Mi* (the immortality-fruit), *Vivre Cards*, *Den-Den Mushi* communication snails | clear gap — major opportunity given 1,100+ chapter source material |
 | **Mundane items** | Berries (currency), wanted posters, sea-faring equipment, Going-Merry / Thousand-Sunny ship layouts, Sea Stone (Devil-Fruit-suppressing material) | clear gap |
 | **Monsters** | *Sea Kings* (CR-variable ocean megafauna), Marine Vice Admirals (Garp CR 25, Kizaru CR 24, Aokiji CR 22), *Yonko* (Kaido CR 26, Big Mom CR 25, Blackbeard CR 23), *Buster Call* armada (encounter event), *Pacifista* cyborgs (Kuma CR 18) | 2 DDB monster items — high-tier expansion opportunity |
-| **Setting** | *Grand Line Setting Book* — East Blue → Reverse Mountain → Grand Line → New World pacing structure. World map (the four Blues, the Red Line, Mariejois at the top of the world). Per-Saga adventure modules | **6,200 forum results** — corpus-leading; top thread *"One Piece Characters as D and D 5e Characters"* |
+| **Setting** | *Grand Line Setting Book* — East Blue → Reverse Mountain → Grand Line → New World pacing structure. World map (the four Blues, the Red Line, Mariejois at the top of the world). Per-Saga adventure modules | **6,200 forum results** — corpus-leading; top thread *"One Piece Characters as D and D 5.5e Characters"* |
 
 #### Slot options — brand-integrity-cost framing
 
-One Piece's signature challenges: 1,100+ chapters cannot fit in one sourcebook (saga-scoping is mandatory), Devil Fruits are superpowers without a clean 5e analog, and Haki is a parallel power-system overlaying the Devil Fruit mechanic. The brand-integrity discipline asks how to deliver IP-recognition through curated saga-anchored content rather than wholesale franchise port. Clean-lane positioning on 5e (no licensed Western OP TTRPG). Acquisition score 0.87 (gold_mine quadrant) is among the corpus-highest — net-new-audience-import potential is the strategic anchor.
+One Piece's signature challenges: 1,100+ chapters cannot fit in one sourcebook (saga-scoping is mandatory), Devil Fruits are superpowers without a clean 5.5e analog, and Haki is a parallel power-system overlaying the Devil Fruit mechanic. The brand-integrity discipline asks how to deliver IP-recognition through curated saga-anchored content rather than wholesale franchise port. Clean-lane positioning on 5.5e (no licensed Western OP TTRPG). Acquisition score 0.87 (gold_mine quadrant) is among the corpus-highest — net-new-audience-import potential is the strategic anchor.
 
 ##### Saga scoping — 2 fitting options
 
@@ -1424,7 +1421,7 @@ Haki is the OP parallel power-system (Observation / Armament / Conqueror). How i
 |---|---|---|---|
 | A | **Monk subclass (Way of Haki)** with three Haki paths as subclass-feature progression | LOW | Subclass-tier delivery; Monk Focus Points as resource maps to Haki energy; existing Monk infrastructure |
 | B | **2-3 named feats** (Observation Haki / Armament Haki / Conqueror's Haki feats grant tier-appropriate abilities) | **LOWEST** | Feat-tier; modular; any class can pick up Haki paths through feats |
-| C | *New stand-alone Haki magic-system* | **HIGH — not recommended** | New parallel power-system conflicts with existing Devil-Fruit subclass + base 5e magic |
+| C | *New stand-alone Haki magic-system* | **HIGH — not recommended** | New parallel power-system conflicts with existing Devil-Fruit subclass + base 5.5e magic |
 
 **Trusight read:** Option B delivers Haki at the brand-integrity-friendliest tier — feat-based modular pickup matches the "anyone can train Haki" narrative.
 
@@ -1479,7 +1476,7 @@ Sea Kings (CR-variable ocean megafauna), Marine Vice Admirals (Garp CR 25, Kizar
 | Metric | Value | Reading |
 |---|---|---|
 | **FIT — Translation Risk** | | |
-| License Fit Score | **0.95** | Highest fit in this batch — superpower-fantasy maps cleanly to 5e mechanics |
+| License Fit Score | **0.95** | Highest fit in this batch — superpower-fantasy maps cleanly to 5.5e mechanics |
 | Tier | winner | UB Matrix winner-quadrant; **gold_mine** |
 | Measured sources | 4 of 5 channels | Tier 1 |
 | DDB total items | 28 (5 subs / 1 spell / 2 monsters / 0 magic items / **20 species**) | Species-led conversion (Cyborg, Fishman, Mink, Skypiean — diverse anatomy) |
@@ -1495,12 +1492,12 @@ Sea Kings (CR-variable ocean megafauna), Marine Vice Admirals (Garp CR 25, Kizar
 | Reddit D&D-subs (strict filter) | 12 confirmed posts | Modest count but substantial single-IP-anchored hits |
 | Reddit r/OnePiece reverse-funnel | **52 D&D-context posts** | Strong. **Killer hit: 4,130-up *"Cover art for our One Piece DND campaign"*** (125 comments — viral campaign-art post). Plus 427-up *"DND x OP Mashup: Cleric Kuma and Chronomancer Wizard Bonney"*, 290-up *"Current progress of my DND x OP Warlords"*, 246-up *"My One-piece OC for a DND session I joined"* |
 | Acquisition score (BQ) | **0.87** | Among the highest acquisition scores in the corpus |
-| Forum total results | **6,200** | **Corpus-leading forum signal**; top thread *"One Piece Characters as D and D 5e Characters"* |
+| Forum total results | **6,200** | **Corpus-leading forum signal**; top thread *"One Piece Characters as D and D 5.5e Characters"* |
 | **COMMERCIAL — Revenue Risk** | | |
 | BGG proxy score | NULL | No One Piece board game in measurement |
 | **Mobile-game proxy** (manual signal, pending pipeline) | **mainstream_hit_mobile** — strongest longevity signal in this batch | Multiple long-running titles: *One Piece Treasure Cruise* (Bandai Namco, 2014 — **10+ years sustained, $1B+ cumulative revenue per publicly disclosed milestones**), *One Piece Bounty Rush* (2018), *One Piece Fighting Path* (China, regional). Both Treasure Cruise and Bounty Rush maintain 4.4-4.6 App Store / Play Store ratings. **Durable mobile-IP success** — sustained 10+ years of mobile-game releases without significant P2W backlash; gacha model generally well-received in One Piece community. **Whale-to-Minnow Disconnect flag does not fire.** Mobile-success-to-tabletop translation gap is small here — One Piece's broad commercial-translatability signal is unusually strong. The corpus-leading 6,200 forum results and 4,130-up viral DnD-campaign-art post elsewhere in this entry are the tabletop-side evidence. |
-| DMs Guild + DTRPG confirmed products | 0 | Clean lane on 5e content |
-| External licensed product | **none** in 5e (Bandai-licensed Japanese tabletop games exist but not Western 5e) | Clean lane on the WoTC-side license |
+| DMs Guild + DTRPG confirmed products | 0 | Clean lane on 5.5e content |
+| External licensed product | **none** in 5.5e (Bandai-licensed Japanese tabletop games exist but not Western 5.5e) | Clean lane on the WoTC-side license |
 
 **Cross-channel reading.** One Piece is the **largest-fanbase / lowest-AO3-rate / highest-Reddit-engagement** anomaly. The 0.048% AO3 proportional rate is misleading — the fanbase is heavily ship-fic-dominated on AO3, not crossover-fic-dominated. **The Reddit signal tells the actual story:** 4,130-up viral D&D-campaign-art post + 6,200 forum results + 0.87 acquisition score + 95K-AO3-fanbase scale. Greenlight-tier; **the largest net-new-audience-import opportunity in the entire breakdown corpus.**
 
@@ -1516,14 +1513,14 @@ Dwarf Fortress is Bay 12 Games's two-decade-running deep-simulation game — Tar
 
 ### Marketing angle / D&D-universe niche
 
-This is the most unusual licensing target in the doc. The pitch isn't volume-based — it's **cultural-prestige-based.** Dwarf Fortress has a near-mythological status in gaming culture. A licensed Dwarf Fortress D&D book carries the implicit endorsement of "the people who designed the most-revered procedural-generation game ever made are licensing their world to D&D." That's a marketing register that would land with games-press, with the gamedev-adjacent player base, and with longtime D&D players who consume gaming history. Niche it fills: a **fortress-management / generational-campaign** structure that 5e currently doesn't have any product addressing. Dwarf Fortress's *succession game* tradition (multiple players collaboratively running the same fortress over generations) literally is a tabletop campaign structure.
+This is the most unusual licensing target in the doc. The pitch isn't volume-based — it's **cultural-prestige-based.** Dwarf Fortress has a near-mythological status in gaming culture. A licensed Dwarf Fortress D&D book carries the implicit endorsement of "the people who designed the most-revered procedural-generation game ever made are licensing their world to D&D." That's a marketing register that would land with games-press, with the gamedev-adjacent player base, and with longtime D&D players who consume gaming history. Niche it fills: a **fortress-management / generational-campaign** structure that 5.5e currently doesn't have any product addressing. Dwarf Fortress's *succession game* tradition (multiple players collaboratively running the same fortress over generations) literally is a tabletop campaign structure.
 
 The audience this brings: the deep-simulation / sandbox / procgen player demographic. Smaller than Monster Hunter or Persona 5 in absolute count, but unusually high overlap with D&D players already (DF players who don't play D&D are rare; the inverse is more common but still common).
 
 ### Translation challenges
 
-1. **Dwarf Fortress's defining feature is procedural generation — the IP isn't a fixed world, it's a world-generation engine.** The 5e-shaped answer: license a *specific generated world* as the canonical Dwarf Fortress D&D setting (worldgen seed-and-output published as the official map), with rules variants for procedural-generation-based campaigns. Or: license the *fortress-management gameplay loop* as a campaign structure, decoupled from any specific worldgen output.
-2. **The community's celebrated emergent stories (Boatmurdered) are the IP's value, not the procedural engine itself.** The 5e-shaped answer: lean on the *succession game* structure as the campaign frame. Multiple players take turns DM-ing or co-managing a single fortress across generations of dwarves. This is genuinely innovative for a 5e product line and would distinguish a DF book from any prior WoTC release.
+1. **Dwarf Fortress's defining feature is procedural generation — the IP isn't a fixed world, it's a world-generation engine.** The 5.5e-shaped answer: license a *specific generated world* as the canonical Dwarf Fortress D&D setting (worldgen seed-and-output published as the official map), with rules variants for procedural-generation-based campaigns. Or: license the *fortress-management gameplay loop* as a campaign structure, decoupled from any specific worldgen output.
+2. **The community's celebrated emergent stories (Boatmurdered) are the IP's value, not the procedural engine itself.** The 5.5e-shaped answer: lean on the *succession game* structure as the campaign frame. Multiple players take turns DM-ing or co-managing a single fortress across generations of dwarves. This is genuinely innovative for a 5.5e product line and would distinguish a DF book from any prior WoTC release.
 3. **Bay 12 Games is a two-person studio — Tarn and Zach Adams.** Honest framing: this is the most independent licensor to negotiate with. Direct creator-relationship licensing, likely with Tarn Adams personally on the deal. That's a profoundly different negotiation than Capcom or Sony or Microsoft. Lower legal complexity, but the Adams brothers have famously declined commercial offers for years; the licensing call would have to align with their values around DF's longevity and culture.
 4. **No existing licensed Dwarf Fortress TTRPG.** Clean lane. The Steam premium edition's tile-art is the only commercial extension; everything else is community modding (DFHack, mods, fan-art).
 
@@ -1537,7 +1534,7 @@ DDB shows minimal DF homebrew traffic — the fanbase tends to play DF, not conv
 | **Species** | *Mountainhome Dwarf* (DF-flavored canonical dwarf — long memory of fortress traumas, generations-spanning grudges), *Plump Helmet Man* (cavern-resident humanoid — niche), *Goblin Civ Native* (raised-by-goblins variant for atypical dwarf characters) | clear gap |
 | **Backgrounds** | *Fortress Founder*, *Goblin-Sieged Veteran*, *Strange Mood Survivor*, *Adventure Mode Wanderer*, *Mountainhome Diplomat* | clear gap |
 | **Spells** | DF is low-magic in core — the magic emerges from the simulation (forgotten beasts have procedural magic). *Procedural Beast Curse* (forgotten-beast-flavor curse spells), *Generational Memory*-flavored divination, *Magma-of-the-Mountainhome* (fire-domain summon) | small surface; low-magic flavor |
-| **Magic items** | **Strange Mood Artifacts — the killer category.** Each is a procedurally-generated legendary item with a unique component-list (e.g., "an iron throne studded with bone, depicting the elf Liluvian fighting the dragon Ngalith, encrusted with rough-cut sapphires"). Hundreds of these can ship as a generated-table chapter, each with random properties — translates DF's emergent-narrative engine into 5e magic-item form. | 0 — **massive opportunity**; the Strange Mood mechanic is genuinely unique |
+| **Magic items** | **Strange Mood Artifacts — the killer category.** Each is a procedurally-generated legendary item with a unique component-list (e.g., "an iron throne studded with bone, depicting the elf Liluvian fighting the dragon Ngalith, encrusted with rough-cut sapphires"). Hundreds of these can ship as a generated-table chapter, each with random properties — translates DF's emergent-narrative engine into 5.5e magic-item form. | 0 — **massive opportunity**; the Strange Mood mechanic is genuinely unique |
 | **Mundane items** | Plump helmets, dwarven cheese, magma-forged tools, rope reed shirts, military equipment by tier (copper / iron / steel / adamantine) | clear gap |
 | **Monsters** | *Forgotten Beasts* (procedurally-generated CR-variable encounters — one of the IP's signatures, every fortress fights different ones), *Megabeasts* (Bronze Colossus CR 18, Hydra-class CR 16, Roc CR 17, Cyclops CR 14), *Goblin Civilization* (large-CR-variable raid-army tables), *Wereturkey / Werellama* (DF-classic absurd-and-deadly were-creatures), *Deep One* (cavern-layer-3 horror), *Adamantine demon* (CR 22+, end-game) | 0 — fresh bestiary opportunity, especially Forgotten Beasts (procedural-table format) |
 | **Setting** | *Dwarf Fortress: The Mountainhome Setting Book* — a canonical worldgen output as the licensed map, the 4-cavern-layer cosmology (caverns, magma sea, hell, and the surface), generational-campaign rules variant, succession-game DM-rotation structure | 0 forum results in BQ for DF (sparse); the IP-home reverse-funnel is the conversion channel |
@@ -1559,11 +1556,11 @@ This is the IP's killer mechanic — procedurally-generated legendary items with
 
 ##### Succession-game campaign frame — 2 fitting options
 
-DF's tradition: multiple players collaboratively run the same fortress across generations of dwarves, rotating DM duties. This is *genuinely innovative* for 5e.
+DF's tradition: multiple players collaboratively run the same fortress across generations of dwarves, rotating DM duties. This is *genuinely innovative* for 5.5e.
 
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
-| A | **Optional rules variant: Succession Mode** ( opt-in — multi-DM-rotation framework with shared fortress sheet, character-handoff rules, generational-event tables) | LOW-MID | New opt-in rules variant; bounded by opt-in; genuinely novel for 5e and a meaningful product differentiator |
+| A | **Optional rules variant: Succession Mode** ( opt-in — multi-DM-rotation framework with shared fortress sheet, character-handoff rules, generational-event tables) | LOW-MID | New opt-in rules variant; bounded by opt-in; genuinely novel for 5.5e and a meaningful product differentiator |
 | B | **Campaign-frame guidance chapter (no rules infrastructure)** | **LOWEST** | Pure DM-advice chapter; describes the succession-game approach as a play-style suggestion without formal rules. Zero new infrastructure |
 
 **Trusight read:** Option A is the high-fidelity path that delivers Succession Mode as a meaningful product distinguisher; Option B is the brand-integrity-friendliest if the goal is "introduce the concept without committing to rules infrastructure."
@@ -1602,7 +1599,7 @@ Forgotten Beasts are procedurally-generated CR-variable encounters (every fortre
 
 | Element | Brand-integrity cost | Note |
 |---|---|---|
-| Megabeasts (Bronze Colossus CR 18, Hydra-class CR 16, Roc CR 17, Cyclops CR 14) | LOW | Existing 5e creatures or near-equivalents; standard creature-statblock infrastructure |
+| Megabeasts (Bronze Colossus CR 18, Hydra-class CR 16, Roc CR 17, Cyclops CR 14) | LOW | Existing 5.5e creatures or near-equivalents; standard creature-statblock infrastructure |
 | Were-creature variants (Wereturkey, Werellama — DF-classic absurd-and-deadly) | LOW | Standard Were-template applied to absurd animals; existing template infrastructure |
 | Spells (low-magic by design — Procedural Beast Curse, Generational Memory divination, Magma-of-the-Mountainhome) | LOW | Small surface; existing schools; low-magic-flavor |
 | Mundane items (plump helmets, dwarven cheese, magma-forged tools, rope reed shirts, copper / iron / steel / adamantine tiered military equipment) | LOW | Equipment chapter; existing material-tier infrastructure |
@@ -1647,7 +1644,7 @@ DF is *built around* fortress maps — natural Sigil fit. Each succession-game's
 
 **Cross-channel reading.** Dwarf Fortress is the **prestige-and-cultural-overlap** case — distinct from every other IP in the doc. The **4.11% AO3 proportional rate is the highest measured**, but on tiny absolute volume (3 / 73). The IP-home Reddit reverse-funnel is similarly thin in count but **the audience-overlap is structurally high** — DF players overwhelmingly already play D&D; the community doesn't have to be *converted* to D&D, they're already there. The licensing pitch isn't volume-driven; it's **cultural-prestige-driven** plus a **uniquely innovative campaign-structure deliverable** (succession-game-as-campaign).
 
-**Recommendation framing.** Dwarf Fortress is the **highest-prestige, lowest-volume** licensing candidate in the doc. The licensing call evaluates differently than every other IP: deal economics are likely modest (Bay 12 is a two-person studio; the brothers have famously prioritized the project's longevity over commercial maximization), but the *product-distinctiveness* is unusually high (succession-game campaign frame + Strange Mood artifact mechanic + Forgotten Beast procedural-bestiary tables). **Recommend as a "credibility-and-innovation" license** — the deal isn't where the value lives, the resulting product is. A WoTC Dwarf Fortress book carries cultural weight that no other IP in this batch can replicate, and the gameplay innovations (succession-rotation, procedural artifact tables) would be genuinely novel for the 5e product line.
+**Recommendation framing.** Dwarf Fortress is the **highest-prestige, lowest-volume** licensing candidate in the doc. The licensing call evaluates differently than every other IP: deal economics are likely modest (Bay 12 is a two-person studio; the brothers have famously prioritized the project's longevity over commercial maximization), but the *product-distinctiveness* is unusually high (succession-game campaign frame + Strange Mood artifact mechanic + Forgotten Beast procedural-bestiary tables). **Recommend as a "credibility-and-innovation" license** — the deal isn't where the value lives, the resulting product is. A WoTC Dwarf Fortress book carries cultural weight that no other IP in this batch can replicate, and the gameplay innovations (succession-rotation, procedural artifact tables) would be genuinely novel for the 5.5e product line.
 
 ---
 
@@ -1669,8 +1666,8 @@ Niche it fills: a *period-Japan-with-demons / Hashira-tier-elite-warrior* settin
 
 ### Translation challenges
 
-1. **Chosen-one-narrative meeting ensemble-cast game.** Tanjiro's narrative is structurally singular; the Hashira are powerful elite NPCs, not party members. The harvest reveals the structural friction — fans build single-character homebrew (the 718-add Blood Hunter Order is one example) but don't engage in ensemble-campaign conversion. The 5e-shaped answer: explicit Hashira-aspirant framing — players are Demon Slayer Corps recruits, not Tanjiro himself; canonical Hashira are NPC patrons / mentors.
-2. **Breathing Style mechanic.** The 14+ Breathing Styles each have distinct combat patterns. The 5e-shaped answer: each Breathing Style as a martial-class subclass (Water Breathing Fighter, Thunder Breathing Monk, Insect Breathing Rogue, Sun Breathing — restricted ultimate). Mirrors the Monster-Hunter weapon-class approach and Berserk's subclass-density.
+1. **Chosen-one-narrative meeting ensemble-cast game.** Tanjiro's narrative is structurally singular; the Hashira are powerful elite NPCs, not party members. The harvest reveals the structural friction — fans build single-character homebrew (the 718-add Blood Hunter Order is one example) but don't engage in ensemble-campaign conversion. The 5.5e-shaped answer: explicit Hashira-aspirant framing — players are Demon Slayer Corps recruits, not Tanjiro himself; canonical Hashira are NPC patrons / mentors.
+2. **Breathing Style mechanic.** The 14+ Breathing Styles each have distinct combat patterns. The 5.5e-shaped answer: each Breathing Style as a martial-class subclass (Water Breathing Fighter, Thunder Breathing Monk, Insect Breathing Rogue, Sun Breathing — restricted ultimate). Mirrors the Monster-Hunter weapon-class approach and Berserk's subclass-density.
 3. **Demon Slayer fanbase is heavily anime-watcher demographic, less tabletop-converting.** This is the structural finding from the harvest: 0.040% AO3 rate, thin reverse-funnel, mostly DM-as-direct-message false positives in r/DemonSlayerAnime. The 718-add Blood Hunter is a passionate-subset signal, not a broad-conversion signal.
 4. **Mature themes — period-Japan demonic-violence + hashira self-sacrifice arcs.** Lower-stakes than Berserk's mature-content caveat, but worth flagging for content-scope definition. No backlash flags in BQ.
 
@@ -1699,7 +1696,7 @@ The 718-add canonical community subclass uses Blood Hunter as parent class. Mult
 
 | # | Parent class | Brand-integrity cost | Why it fits | Notes |
 |---|---|---|---|---|
-| A | **Monk (Way of the Hashira)** | LOW | Breathing-Style fluency is mechanically Monk-shaped — focused-breathing maps to Ki-as-resource; existing Monk infrastructure delivers the discipline / martial-arts register | Loses some weapon-mastery flavor |
+| A | **Monk (Way of the Hashira)** | LOW | Breathing-Style fluency is mechanically Monk-shaped — focused-breathing maps to Focus Points-as-resource; existing Monk infrastructure delivers the discipline / martial-arts register | Loses some weapon-mastery flavor |
 | B | **Ranger (Demon-Slayer Hunter)** | LOW-MID | Tracking-and-hunting framing fits Ranger; could refresh existing Monster Slayer Ranger from Xanathar's | Less martial-arts discipline register than Monk |
 | C | **Fighter (Breathing-Style Master)** | MID | Cleaner weapon-mastery fit; 5.5e Weapon Mastery for all Fighters provides infrastructure | Class-identity drift into Ranger territory; loses focused-breathing discipline register |
 | D | **Blood Hunter (community canonical at 718 adds)** | MID | Mechanically cleanest fit (cursed-power archetype is BH's core); the corpus-leading community subclass uses this path | Blood Hunter is a non-WoTC-core-roster class on DDB; building a flagship licensed product on a non-core-roster class is structurally unusual |
@@ -1717,7 +1714,7 @@ The 718-add canonical community subclass uses Blood Hunter as parent class. Mult
 | B | **Feats — one per Breathing Style** (Water Breathing Adept, Thunder Breathing Initiate, etc.) | LOW | Feat-tier; modular; any class can take any Breathing Style as feat |
 | C | **2-3 selected Breathing-Style subclasses** (the most-iconic — Water, Thunder, Sun — across selected classes) | MID | Subclass slot; within typical envelope but limits coverage to 2-3 of 14 styles |
 
-**Trusight read:** Option A is the brand-integrity-friendliest path — delivers full 14-Breathing-Style coverage through one subclass with subclass-feature choice. Mirrors the Eldritch Invocations / Battle Master Maneuvers pattern that 5e already uses to deliver wide flavor variety within a single subclass slot.
+**Trusight read:** Option A is the brand-integrity-friendliest path — delivers full 14-Breathing-Style coverage through one subclass with subclass-feature choice. Mirrors the Eldritch Invocations / Battle Master Maneuvers pattern that 5.5e already uses to deliver wide flavor variety within a single subclass slot.
 
 ##### Nichirin Blades — 1 fitting option (cross-IP)
 
@@ -1773,7 +1770,7 @@ Period-Japan demonic-violence + Hashira self-sacrifice arcs are present in canon
 | Metric | Value | Reading |
 |---|---|---|
 | **FIT — Translation Risk** | | |
-| License Fit Score | 0.86 | Mid-high — Hashira-Breathing-Style structure is 5e-translatable |
+| License Fit Score | 0.86 | Mid-high — Hashira-Breathing-Style structure is 5.5e-translatable |
 | Tier | winner | UB Matrix winner-quadrant |
 | Measured sources | 3 of 5 channels | Tier 1 |
 | DDB total items | **55** (20 subs / 3 spells / 4 monsters / 20 magic items / 8 species) | Deep ensemble despite thin reverse-funnel |
@@ -1792,8 +1789,8 @@ Period-Japan demonic-violence + Hashira self-sacrifice arcs are present in canon
 | **COMMERCIAL — Revenue Risk** | | |
 | BGG proxy score | NULL | No DS board game in measurement |
 | **Mobile-game proxy** (manual signal, pending pipeline) | **cult_classic_mobile / sleeper_mobile** | Multiple licensed mobile games — *Demon Slayer: Keppuu Kengeki Royale* (Aniplex), various tie-in titles, anime-merchandise mobile adaptations. No single breakout commercial mobile success — the IP's major game is *Hinokami Chronicles* (CyberConnect2, 2021, console). Mobile presence is supplementary to the IP's anime + merchandise commercial story rather than a primary commercial-translatability signal. **Whale-to-Minnow Disconnect flag does not fire** (no major P2W backlash on the mobile titles). **Mobile success ≠ tabletop compatibility caveat applies** — the IP's strongest commercial signal is in non-mobile categories (anime + merchandise + console gaming). Comprehensive mobile-game harvest pending pipeline. |
-| DMs Guild + DTRPG confirmed products | 0 | Clean lane on 5e content |
-| External licensed product | **none** in 5e | Clean lane |
+| DMs Guild + DTRPG confirmed products | 0 | Clean lane on 5.5e content |
+| External licensed product | **none** in 5.5e | Clean lane |
 
 **Cross-channel reading.** Demon Slayer is the **passionate-subset-vs-broader-engagement** archetype. The 718-add Blood Hunter Order is the corpus's deepest single-character DDB engagement; the broader DDB ensemble (55 items) is genuinely substantial. But the AO3 rate (0.040%) and the IP-home reverse-funnel emptiness (7 raw posts, almost entirely false positives) tell the structural story: **passionate small subset is doing single-character homebrew; the broader fanbase isn't engaging in ensemble-campaign conversion.** Per the main report's negotiation-leverage framing: **lower upfront fee** + **royalty structure indexed to engagement** + **narrower initial scope** (single-Hashira-themed subclass kit aligning with where the homebrew velocity actually concentrates) + **performance-gated expansion** are the diligence-and-leverage answers.
 
@@ -1985,13 +1982,13 @@ Dark Souls is FromSoftware's genre-defining action-RPG trilogy: Dark Souls (2011
 
 ### Marketing angle / D&D-universe niche
 
-This is the breakdown that maps directly to the optimization-and-system-mastery half of the D&D player base — the half that runs Treantmonk's character builds, plays at a tactically demanding table, and has spent a decade saying 5.5e is too easy by default. *The Dark Souls IP is that desire monetized.* The marketing line is: a licensed Dark Souls 5.5e setting positions itself as the **harder, optimization-rewarding** D&D variant, with an optional rules variant for "Souls-difficulty" combat. The forum-thread evidence makes this empirical: the top GitP/RPG.net Dark Souls thread is *"Ruminating on a Stamina System implementation"* — the community is already building exactly this rules variant. The most-engaged D&D-sub crossover discussion is *"Could I get some advice or feedback on my HB rules of my upcoming souls campaign?"* Dark Souls is what the homebrew community converts to when 5e baseline isn't tactical enough.
+This is the breakdown that maps directly to the optimization-and-system-mastery half of the D&D player base — the half that runs Treantmonk's character builds, plays at a tactically demanding table, and has spent a decade saying 5.5e is too easy by default. *The Dark Souls IP is that desire monetized.* The marketing line is: a licensed Dark Souls 5.5e setting positions itself as the **harder, optimization-rewarding** D&D variant, with an optional rules variant for "Souls-difficulty" combat. The forum-thread evidence makes this empirical: the top GitP/RPG.net Dark Souls thread is *"Ruminating on a Stamina System implementation"* — the community is already building exactly this rules variant. The most-engaged D&D-sub crossover discussion is *"Could I get some advice or feedback on my HB rules of my upcoming souls campaign?"* Dark Souls is what the homebrew community converts to when 5.5e baseline isn't tactical enough.
 
 ### Translation challenges
 
-1. **The competing Steamforged 5e Dark Souls RPG.** This is a real licensed product from Steamforged Games — and it surfaced directly in our harvest as *"What are people's experiences with the 5e Compatible Dark Souls RPG?"* (r/dndnext). Mistborn's ecosystem-trap is theoretical; Dark Souls' is concrete. The honest answer: WoTC's product would be DDB-native (character builder, monster compendium, Sigil VTT integration) rather than a third-party 5e supplement on DriveThruRPG. The audience overlap is partial — the Steamforged product reaches the dedicated TTRPG specialist who already knows about it; a DDB-native release reaches the much larger pool of D&D Beyond players who don't shop on DTRPG. The 18 confirmed D&D-sub posts in the last 12 months — *post-Steamforged-launch* — are the empirical evidence the demand for a DDB-native version remains real.
-2. **Character death is the IP's core loop.** Dark Souls is built around dying, repeatedly, on purpose. D&D 5e treats death as a major narrative event with permadeath weight. The 5e-shaped answer: a *Linked Heir* mechanic — when a Knight dies, their soul-bound second-tier character takes over with shared progression flags. Or *Hollowing* as a 5e long-term injury system rather than full character death — HP and levels persist, certain abilities suppressed until rest at a bonfire, "humanity" as a recoverable resource. Bonfire-respawn maps cleanly to 5e's long-rest mechanic if the rules are reframed for a Souls campaign.
-3. **Combat is meant to be punishing.** Standard 5e is balanced for "the players succeed in most encounters." The 5e-shaped answer: a *Souls-difficulty* optional rules variant — bumped CR, monsters hit on lower numbers, action-economy stamina cost. This is exactly what the community is already homebrewing.
+1. **The competing Steamforged 5e Dark Souls RPG.** This is a real licensed product from Steamforged Games — and it surfaced directly in our harvest as *"What are people's experiences with the 5.5e Compatible Dark Souls RPG?"* (r/dndnext). Mistborn's ecosystem-trap is theoretical; Dark Souls' is concrete. The honest answer: WoTC's product would be DDB-native (character builder, monster compendium, Sigil VTT integration) rather than a third-party 5.5e supplement on DriveThruRPG. The audience overlap is partial — the Steamforged product reaches the dedicated TTRPG specialist who already knows about it; a DDB-native release reaches the much larger pool of D&D Beyond players who don't shop on DTRPG. The 18 confirmed D&D-sub posts in the last 12 months — *post-Steamforged-launch* — are the empirical evidence the demand for a DDB-native version remains real.
+2. **Character death is the IP's core loop.** Dark Souls is built around dying, repeatedly, on purpose. D&D 5.5e treats death as a major narrative event with permadeath weight. The 5.5e-shaped answer: a *Linked Heir* mechanic — when a Knight dies, their soul-bound second-tier character takes over with shared progression flags. Or *Hollowing* as a 5.5e long-term injury system rather than full character death — HP and levels persist, certain abilities suppressed until rest at a bonfire, "humanity" as a recoverable resource. Bonfire-respawn maps cleanly to 5.5e's long-rest mechanic if the rules are reframed for a Souls campaign.
+3. **Combat is meant to be punishing.** Standard 5.5e is balanced for "the players succeed in most encounters." The 5.5e-shaped answer: a *Souls-difficulty* optional rules variant — bumped CR, monsters hit on lower numbers, action-economy stamina cost. This is exactly what the community is already homebrewing.
 
 ### Translation possibilities (DDB product surface)
 
@@ -2050,7 +2047,7 @@ The DS hollowing mechanic is the IP's signature character-condition (the main *T
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
 | A | **Cursed-item (Darksign) with periodic respawn-at-bonfire mechanic** | **LOWEST** | Item-tier delivery; uses cursed-item infrastructure; the respawn-at-bonfire mechanic ties to long-rest rules |
-| B | **New "Hollowing" condition** with cumulative penalties; humanity-as-resource to restore | MID | Adds to 5e's condition list; carries into future books |
+| B | **New "Hollowing" condition** with cumulative penalties; humanity-as-resource to restore | MID | Adds to 5.5e's condition list; carries into future books |
 | C | **Optional rules ("Hollow-Mode")** — death-respawn variant where character HP/level persist but abilities decay until bonfire-rest | LOW-MID | Opt-in rules variant; bounded |
 
 **Trusight read:** Option A is the brand-integrity-friendliest path; Option C for the broader respawn-loop rules variant if WoTC wants the Souls fantasy at full fidelity.
@@ -2097,7 +2094,7 @@ Ornstein (CR 18), Smough (CR 17), Artorias (CR 22), Manus (CR 24), Sif (CR 14), 
 | Metric | Value | Reading |
 |---|---|---|
 | **FIT — Translation Risk** | | |
-| License Fit Score | 0.75 | Mid-high — fit constrained by 5e being heroic and Souls being punishing |
+| License Fit Score | 0.75 | Mid-high — fit constrained by 5.5e being heroic and Souls being punishing |
 | Tier | edge | UB Matrix edge-tier — high-fit but contested-reception |
 | Measured sources | 4 of 5 channels | Tier 1 — well-measured |
 | DDB total items | **22** (17 monsters / 2 subs / 2 species / 1 spell) | Monster-led conversion, **deepest single-category bestiary in the corpus** |
@@ -2110,17 +2107,17 @@ Ornstein (CR 18), Smough (CR 17), Artorias (CR 22), Manus (CR 24), Sif (CR 14), 
 | AO3 D&D-crossover works | 12 | — |
 | AO3 proportional crossover rate | **0.36%** | Highest proportional rate of this batch; ~3× HotD |
 | **ACQUISITION — Demand Risk** | | |
-| Reddit D&D-subs (strict filter, last 12mo) | **18 confirmed posts** | **Highest direct D&D-sub conversion engagement of any IP we've measured at this depth** (vs Mistborn 6, SL 6). *"What are people's experiences with the 5e Compatible Dark Souls RPG?"*, *"Could I get some advice or feedback on my HB rules of my upcoming souls campaign?"*, *"Opinions on a Ds3 Inspired campaign"*, *"Dark Souls Nameless King"*, *"Building the Capra Demon in PF2"*, *"Sharing a 'Bound by Flames' inspired character"* (8 ups, 12 comments) |
+| Reddit D&D-subs (strict filter, last 12mo) | **18 confirmed posts** | **Highest direct D&D-sub conversion engagement of any IP we've measured at this depth** (vs Mistborn 6, SL 6). *"What are people's experiences with the 5.5e Compatible Dark Souls RPG?"*, *"Could I get some advice or feedback on my HB rules of my upcoming souls campaign?"*, *"Opinions on a Ds3 Inspired campaign"*, *"Dark Souls Nameless King"*, *"Building the Capra Demon in PF2"*, *"Sharing a 'Bound by Flames' inspired character"* (8 ups, 12 comments) |
 | Reddit r/darksouls reverse-funnel | **18 D&D-context posts** | Strong — *"Dark Souls Inspired DnD Campaign, Anor Londo party Attendees"* (5 ups, 12 comments), *"Need help with a Dnd campaign in the world of dark souls"* (4 ups, 5 comments), *"DS1 Hybrid build, Pyromancer Knight vs Cleric Knight"* (6 ups, 13 comments) |
 | Forum total results | 3 | Sparse on count, but the top thread title is *the* signal: *"Ruminating on a Stamina System implementation"* — direct mechanical-conversion evidence |
 | **COMMERCIAL — Revenue Risk** | | |
 | BGG proxy score | 0.73 | Strong board-game-comparable signal (the Steamforged Dark Souls board game franchise sustains this) |
-| DMs Guild + DTRPG confirmed products | **0** | No third-party 5e content surfaces on either marketplace — but see caveat below |
-| External licensed product | **Steamforged Games 5e-compatible Dark Souls RPG (2022)** | Real — appeared in our D&D-sub harvest as *"the 5e Compatible Dark Souls RPG"*. Not on DTRPG (Steamforged distributes direct), so the BQ catalog field misses it. The 18 confirmed D&D-sub posts in the last 12 months are post-Steamforged-launch and demonstrate the demand wasn't fully absorbed |
+| DMs Guild + DTRPG confirmed products | **0** | No third-party 5.5e content surfaces on either marketplace — but see caveat below |
+| External licensed product | **Steamforged Games 5.5e-compatible Dark Souls RPG (2022)** | Real — appeared in our D&D-sub harvest as *"the 5.5e Compatible Dark Souls RPG"*. Not on DTRPG (Steamforged distributes direct), so the BQ catalog field misses it. The 18 confirmed D&D-sub posts in the last 12 months are post-Steamforged-launch and demonstrate the demand wasn't fully absorbed |
 
-**Cross-channel reading.** Strongest D&D-sub direct-conversion volume of any IP we've measured at this depth (18 posts). The community is *currently* building Souls 5e content despite — or because of — the Steamforged product not fully scratching the DDB-native itch. The 17-monster DDB depth + bestiary-skewed conversion pattern + *"Stamina System"* forum thread + the Anor Londo / Pyromancer / Capra Demon character-build threads triangulate cleanly: **this is a monster-and-rules-variant licensing target, not a subclass-led one.** Commercial dimension is dominated by the existing Steamforged product (the ecosystem-trap caveat); the Trusight read is that DDB-native distribution + Sigil VTT integration would reach a meaningfully different audience than Steamforged's specialist-TTRPG buyer base.
+**Cross-channel reading.** Strongest D&D-sub direct-conversion volume of any IP we've measured at this depth (18 posts). The community is *currently* building Souls 5.5e content despite — or because of — the Steamforged product not fully scratching the DDB-native itch. The 17-monster DDB depth + bestiary-skewed conversion pattern + *"Stamina System"* forum thread + the Anor Londo / Pyromancer / Capra Demon character-build threads triangulate cleanly: **this is a monster-and-rules-variant licensing target, not a subclass-led one.** Commercial dimension is dominated by the existing Steamforged product (the ecosystem-trap caveat); the Trusight read is that DDB-native distribution + Sigil VTT integration would reach a meaningfully different audience than Steamforged's specialist-TTRPG buyer base.
 
-**The honest caveat the harvest also surfaced.** Steamforged Games' 5e-compatible Dark Souls RPG already exists (board games adjacent to the same license). The Mistborn ecosystem-trap pattern repeats. The differentiating answer for a DDB-native release: distribution channel (D&D Beyond install base vs DriveThruRPG specialty buyers), integration depth (character builder + Sigil VTT + monster compendium), and the rules-variant-as-canon framing. The 18 confirmed D&D-sub posts in the last 12 months are post-Steamforged-launch and demonstrate the demand wasn't fully absorbed by the existing product.
+**The honest caveat the harvest also surfaced.** Steamforged Games' 5.5e-compatible Dark Souls RPG already exists (board games adjacent to the same license). The Mistborn ecosystem-trap pattern repeats. The differentiating answer for a DDB-native release: distribution channel (D&D Beyond install base vs DriveThruRPG specialty buyers), integration depth (character builder + Sigil VTT + monster compendium), and the rules-variant-as-canon framing. The 18 confirmed D&D-sub posts in the last 12 months are post-Steamforged-launch and demonstrate the demand wasn't fully absorbed by the existing product.
 
 ---
 
@@ -2147,14 +2144,14 @@ The harvest's most striking finding for marketing: a community thread *"The Deve
 ### Translation challenges
 
 1. **Greek myth overlap with Theros / existing D&D coverage.** This is the structural challenge no other IP in this batch faces. The clean answer (above): scope the licensing to Supergiant's *characterization* and *mechanics* (Boons-system, House of Hades hub), not the underlying Greek mythology.
-2. **Roguelike die-and-restart structure is hostile to traditional D&D campaigns.** Hades is built around dying repeatedly — that's not what 5e campaigns look like. Two 5e-shaped answers: (a) frame the campaign as *one-shot Zagreus runs* — short-form adventures where each session is a single attempt at escape, with House-of-Hades downtime between attempts; (b) reframe Hades as a *setting*, not a campaign-engine — players are residents of the Underworld, not roguelike runners, and the death-and-respawn loop is not in scope. Option (b) is the cleaner licensing pitch.
+2. **Roguelike die-and-restart structure is hostile to traditional D&D campaigns.** Hades is built around dying repeatedly — that's not what 5.5e campaigns look like. Two 5.5e-shaped answers: (a) frame the campaign as *one-shot Zagreus runs* — short-form adventures where each session is a single attempt at escape, with House-of-Hades downtime between attempts; (b) reframe Hades as a *setting*, not a campaign-engine — players are residents of the Underworld, not roguelike runners, and the death-and-respawn loop is not in scope. Option (b) is the cleaner licensing pitch.
 3. **One-protagonist story, twice over.** Zagreus and Melinoë are both lone-protagonist isekai. Same challenge as Solo Leveling and Persona 5: reframe as NPC patrons; player characters are *other denizens of the Underworld* (lesser shades, mortal descendants, junior gods). The House of Hades cast becomes the campaign's NPC ensemble.
-4. **Boons-from-gods is a single-character, single-run mechanic.** Each run, Zagreus accepts Boons from one or two Olympians per zone; they stack into a build. The 5e-shaped answer: a *Boon-Pact* rules variant — short-rest patron-bond mechanics where players negotiate temporary blessings from Olympian patrons via a per-encounter resource pool. This works as an optional rules layer; doesn't break a non-Boon campaign.
-5. **No existing licensed Hades TTRPG, no competing 5e Hades product.** Clean lane on the licensing side. The 1,199-up *"Hades themed MTG homebrew precon"* on r/HadesTheGame is interesting parent-Hasbro signal — Hades fans have built MTG content too, suggesting a Hasbro-portfolio cross-license (Hades MTG set + D&D book) might amortize the deal economics.
+4. **Boons-from-gods is a single-character, single-run mechanic.** Each run, Zagreus accepts Boons from one or two Olympians per zone; they stack into a build. The 5.5e-shaped answer: a *Boon-Pact* rules variant — short-rest patron-bond mechanics where players negotiate temporary blessings from Olympian patrons via a per-encounter resource pool. This works as an optional rules layer; doesn't break a non-Boon campaign.
+5. **No existing licensed Hades TTRPG, no competing 5.5e Hades product.** Clean lane on the licensing side. The 1,199-up *"Hades themed MTG homebrew precon"* on r/HadesTheGame is interesting parent-Hasbro signal — Hades fans have built MTG content too, suggesting a Hasbro-portfolio cross-license (Hades MTG set + D&D book) might amortize the deal economics.
 
 ### Translation possibilities (DDB product surface)
 
-DDB shows 5 confirmed items, top "Hades" subclass at 65 adds — modest. The Reddit pattern reveals the conversion direction is **items**, not subclasses: legendary 5e magic items inspired by Hades's Aspects (Aspect of Thanatos, Aspect of the Morrigan, Claws of Enkidu) are getting 150-300 ups each on r/HadesTheGame. Same monster-and-item-led pattern as Dark Souls.
+DDB shows 5 confirmed items, top "Hades" subclass at 65 adds — modest. The Reddit pattern reveals the conversion direction is **items**, not subclasses: legendary 5.5e magic items inspired by Hades's Aspects (Aspect of Thanatos, Aspect of the Morrigan, Claws of Enkidu) are getting 150-300 ups each on r/HadesTheGame. Same monster-and-item-led pattern as Dark Souls.
 
 | Category | Specific examples | DDB-homebrew evidence |
 |---|---|---|
@@ -2162,14 +2159,14 @@ DDB shows 5 confirmed items, top "Hades" subclass at 65 adds — modest. The Red
 | **Species** | *Shade* (deceased mortal as PC option for Underworld-resident campaigns), *Demigod* (Olympian descendant — Apollo's child, Aphrodite's grand-child, etc.), *Witch-blooded* (Hades II Hecate-line) | clear gap |
 | **Backgrounds** | *House of Hades Servant* (Hypnos / Achilles / Skelly archetypes), *Charon's Boatman*, *Underworld Bureaucrat* (Hermes-channel), *Surface-World Mortal* (the Hades II witch-warrior framing) | clear gap |
 | **Spells** | *Aspect-themed weapon transformations* (per-Aspect-of-X spell suite), *Boon-of-X* short-rest blessings, *Cast (Hades II)* — Melinoë's signature cast-circle ranged spell, *Resurrection Pomegranate* (the canonical Hades story-beat), *Meg's Whip* (lash effect), *Hecate's Hex* (Hades II witchcraft suite) | clear gap |
-| **Magic items** | *Stygian Blade*, *Aspect of Achilles spear*, *Eternal Spear*, *Heart-Seeking Bow*, *Twin Fists of Malphon*, *Adamant Rail*, *Shield of Chaos*, *Sister Blades* (Melinoë's Hades II twin-knives). **The 309-up r/HadesTheGame fan-built *"Aspect of the Thanatos"* legendary axe is the canonical evidence** — fans are converting Hades weapons into 5e legendary items at high engagement | 0 magic items live; **r/HadesTheGame: 309-up *"Legendary axe for D&D 5e inspired by Aspect of Thanatos"*, 280-up *"Aspect of the Morrigan"*, 150-up *"Claws of Enkidu"*** — clearest revealed-preference pattern for a magic-items-led product |
+| **Magic items** | *Stygian Blade*, *Aspect of Achilles spear*, *Eternal Spear*, *Heart-Seeking Bow*, *Twin Fists of Malphon*, *Adamant Rail*, *Shield of Chaos*, *Sister Blades* (Melinoë's Hades II twin-knives). **The 309-up r/HadesTheGame fan-built *"Aspect of the Thanatos"* legendary axe is the canonical evidence** — fans are converting Hades weapons into 5.5e legendary items at high engagement | 0 magic items live; **r/HadesTheGame: 309-up *"Legendary axe for D&D 5.5e inspired by Aspect of Thanatos"*, 280-up *"Aspect of the Morrigan"*, 150-up *"Claws of Enkidu"*** — clearest revealed-preference pattern for a magic-items-led product |
 | **Mundane items** | Pomegranate seeds (consumable healing), Nectar (relationship token), Ambrosia (companion-system), Centaur Hearts (HP-permanent), Boon-rings (slot for Boon-Pact rules variant) | clear gap |
 | **Monsters** | *Hades II's Chronos-invasion bestiary* — Polyphemus (cyclops, CR 14), Echidna (CR 16), Hecate (CR 22 boss-tier), Chronos (CR 25 endgame). Plus original-game bosses: Megaera (Fury, CR 12), Theseus + Asterius (paired, CR 16/18), Hades himself (CR 24). | clear gap — high-tier boss roster opportunity |
 | **Setting** | *The House of Hades* sourcebook — Underworld geography (Tartarus / Asphodel / Elysium / Styx + Hades II's surface-and-deep-paths Erebus, Oceanus, Tartarus), House-of-Hades-as-campaign-hub, Olympian patron politics, Chronos-as-overarching-villain-arc for Hades II content | 0 forum results in BQ — surprisingly thin formal forum presence; r/HadesTheGame substitutes |
 
 #### Slot options — brand-integrity-cost framing
 
-Hades's brand-integrity discipline is shaped by the *Theros-overlap* caveat (Greek myth already in 5e canon). The licensing scope is Supergiant's *characterization* of the gods plus the Aspect-weapon and Boons mechanics — not the underlying mythology. The community's revealed-preference signal is **items-led** (309-up Aspect-of-Thanatos axe, 280-up Aspect-of-the-Morrigan, 150-up Claws-of-Enkidu — three top-engagement homebrew artifacts are 5e legendary items, not subclasses).
+Hades's brand-integrity discipline is shaped by the *Theros-overlap* caveat (Greek myth already in 5.5e canon). The licensing scope is Supergiant's *characterization* of the gods plus the Aspect-weapon and Boons mechanics — not the underlying mythology. The community's revealed-preference signal is **items-led** (309-up Aspect-of-Thanatos axe, 280-up Aspect-of-the-Morrigan, 150-up Claws-of-Enkidu — three top-engagement homebrew artifacts are 5.5e legendary items, not subclasses).
 
 ##### Aspect weapons — 1 fitting option (cross-IP)
 
@@ -2221,7 +2218,7 @@ The Hades cast spans 12 Olympians + Hades II's Hecate witchcraft tradition. Mult
 
 ##### High-tier Olympian / Titan bestiary — 1 fitting option
 
-Megaera (Fury, CR 12), Theseus + Asterius (paired CR 16/18), Hades (CR 24), Polyphemus (CR 14), Echidna (CR 16), Hecate (CR 22 boss-tier), Chronos (CR 25 endgame). Standard creature types (Fiend / Celestial / Aberration). Mythic Action infrastructure for boss-tier multi-phase fights. **Note: 5e already has Greek-myth-adjacent monsters via Theros (Tarrasque, Centaurs, etc.); Hades adds Supergiant-characterized variants rather than wholly new creatures.**
+Megaera (Fury, CR 12), Theseus + Asterius (paired CR 16/18), Hades (CR 24), Polyphemus (CR 14), Echidna (CR 16), Hecate (CR 22 boss-tier), Chronos (CR 25 endgame). Standard creature types (Fiend / Celestial / Aberration). Mythic Action infrastructure for boss-tier multi-phase fights. **Note: 5.5e already has Greek-myth-adjacent monsters via Theros (Tarrasque, Centaurs, etc.); Hades adds Supergiant-characterized variants rather than wholly new creatures.**
 
 **Brand-integrity cost: LOW.** Existing creature taxonomy + Mythic Actions; the differentiation is *characterization* not *creature type*.
 
@@ -2266,7 +2263,7 @@ Megaera (Fury, CR 12), Theseus + Asterius (paired CR 16/18), Hades (CR 24), Poly
 | AO3 proportional crossover rate | **0.28%** | **In the calibration cluster** (Mistborn 0.29%, SL 0.31%); ~2× HotD's 0.13%. **Higher than the BQ reception of 0.35 would suggest.** |
 | **ACQUISITION — Demand Risk** | | |
 | Reddit D&D-subs (strict filter, last 12mo) | **4 confirmed posts** | Modest direct conversion-intent. Direct hits: *"Making a Hades inspired DnD adventure for my discord. Any suggestions on ways to DnD-ify the Hades system"* (r/DnD, 5 comments — exactly the conversion question), *"Please help improve my Zagreus inspired Fighter Subclass"* (r/DnD, 3 comments) |
-| Reddit r/HadesTheGame reverse-funnel | **20 D&D-context posts** | Strong, with **revealing engagement-shape**. Top hits: **309-up *"Legendary axe for D&D 5e inspired by the Aspect of the Thanatos"*** (7 comments), **280-up *"Legendary item for D&D 5e inspired by the Aspect of the Morrigan"*** (15 comments), **150-up *"Legendary item I made for D&D 5e inspired by the Claws of Enkidu"*** (3 comments). Plus *"The Developers of Hades could make an excellent DnD game"* (57 ups, 11 comments — community wishing for the licensed product), *"Hades DnD One-shot"* (42 ups, 11 comments), *"Thesis about adapting videogames to TTRPGs, chose Hades"* (22 ups, 18 comments — academic-grade interest) |
+| Reddit r/HadesTheGame reverse-funnel | **20 D&D-context posts** | Strong, with **revealing engagement-shape**. Top hits: **309-up *"Legendary axe for D&D 5.5e inspired by the Aspect of the Thanatos"*** (7 comments), **280-up *"Legendary item for D&D 5.5e inspired by the Aspect of the Morrigan"*** (15 comments), **150-up *"Legendary item I made for D&D 5.5e inspired by the Claws of Enkidu"*** (3 comments). Plus *"The Developers of Hades could make an excellent DnD game"* (57 ups, 11 comments — community wishing for the licensed product), *"Hades DnD One-shot"* (42 ups, 11 comments), *"Thesis about adapting videogames to TTRPGs, chose Hades"* (22 ups, 18 comments — academic-grade interest) |
 | Reddit r/HadesTheGame_II reverse-funnel | **0 D&D-context posts** | Hades II-specific sub has no D&D conversion signal — too fresh, audience overlaps with the umbrella |
 | Forum total results | 0 | No formal forum signal — the conversion conversation lives on Reddit |
 | **COMMERCIAL — Revenue Risk** | | |
@@ -2275,7 +2272,7 @@ Megaera (Fury, CR 12), Theseus + Asterius (paired CR 16/18), Hades (CR 24), Poly
 | External licensed product | **none** | Supergiant has not licensed Hades for tabletop. Clean lane. |
 | Cross-IP signal worth flagging | **1,199-up *"Hades themed MTG homebrew precon"* on r/HadesTheGame** | Hades fans have built MTG content too. Parent-Hasbro signal — a Hasbro-portfolio cross-license (Hades MTG set + D&D book bundled into one Supergiant deal) could amortize the deal economics across the two product lines |
 
-**Cross-channel reading.** The headline finding is what the data says about the **0.35 reception score** — it isn't community rejection. The fanbase is enthusiastic (5M+ copies, Hugo Award, 309/280/150-up community-built D&D 5e legendary items). The 0.35 score reflects measurement-channel sparseness — no BGG (no board game), zero formal-forum results, modest DDB pickup — combined with the structural-difficulty drag of Greek-myth-vs-Theros overlap and roguelike-vs-D&D-campaign translation friction. The AO3 proportional rate (0.28%) lands in the calibration cluster alongside Mistborn (0.29%) and Solo Leveling (0.31%), meaningfully above HotD (0.13%). **The conversion direction is items and characterization, not subclasses or campaign-engine** — fans are converting Hades's weapon-Aspects into 5e legendary items at 150-300 ups each, which is unusually concentrated revealed preference for a single product category.
+**Cross-channel reading.** The headline finding is what the data says about the **0.35 reception score** — it isn't community rejection. The fanbase is enthusiastic (5M+ copies, Hugo Award, 309/280/150-up community-built D&D 5.5e legendary items). The 0.35 score reflects measurement-channel sparseness — no BGG (no board game), zero formal-forum results, modest DDB pickup — combined with the structural-difficulty drag of Greek-myth-vs-Theros overlap and roguelike-vs-D&D-campaign translation friction. The AO3 proportional rate (0.28%) lands in the calibration cluster alongside Mistborn (0.29%) and Solo Leveling (0.31%), meaningfully above HotD (0.13%). **The conversion direction is items and characterization, not subclasses or campaign-engine** — fans are converting Hades's weapon-Aspects into 5.5e legendary items at 150-300 ups each, which is unusually concentrated revealed preference for a single product category.
 
 **The Theros caveat.** This is the unique honest-caveat for Hades: WoTC already has Greek-myth coverage via Mythic Odyssey of Theros. A Hades licensing call has to thread the needle between *what's already free* (public-domain Greek myth) and *what requires Supergiant's permission* (their specific characterization, Boons-system, House of Hades hub-cast). The defensible licensing scope is the characterization layer + mechanics, not the underlying mythology. That narrows the deal but makes it cleaner.
 
@@ -2297,18 +2294,18 @@ Persona 5 is Atlus's flagship JRPG: a Tokyo-set urban-fantasy story about high-s
 
 ### Marketing angle / D&D-universe niche
 
-The Persona 5 niche in the D&D portfolio is **modern-urban-fantasy with a Jungian magic system** — a register the D&D portfolio doesn't currently address well. D&D's modern-day-with-magic offerings are limited (the Stranger Things crossover sits closest); Persona 5 supplies an entire systematized modern-supernatural framework. The Velvet-Room-as-Patron, Personas-as-summons, and Palaces-as-cognitive-dungeons translate cleanly into 5e's existing class structures (Warlock, Wizard, Cleric) without forcing a system rewrite. The audience this brings: **the JRPG fanbase that doesn't currently shop in the D&D Beyond marketplace** — younger, more international, anime-adjacent, and demographically a meaningful net-new player import. In the cannibalization frame from the IP & Licensing report, Persona 5 reads as **net-new audience acquisition** rather than resale to existing D&D players.
+The Persona 5 niche in the D&D portfolio is **modern-urban-fantasy with a Jungian magic system** — a register the D&D portfolio doesn't currently address well. D&D's modern-day-with-magic offerings are limited (the Stranger Things crossover sits closest); Persona 5 supplies an entire systematized modern-supernatural framework. The Velvet-Room-as-Patron, Personas-as-summons, and Palaces-as-cognitive-dungeons translate cleanly into 5.5e's existing class structures (Warlock, Wizard, Cleric) without forcing a system rewrite. The audience this brings: **the JRPG fanbase that doesn't currently shop in the D&D Beyond marketplace** — younger, more international, anime-adjacent, and demographically a meaningful net-new player import. In the cannibalization frame from the IP & Licensing report, Persona 5 reads as **net-new audience acquisition** rather than resale to existing D&D players.
 
 ### Translation challenges
 
-1. **Modern-Tokyo setting is unusual for D&D.** Standard 5e is medieval-fantasy by default; the Phantom Thieves carry rapiers and modern guns, fight with Personas in cognitive dungeons, and live ordinary high-school lives between heists. The 5e-shaped answer: position the licensed product as a *Modern Persona* setting variant, similar in shape to Eberron's stand-alone treatment. Firearms are already in 5.5e; modern ones are therefore possible; the Persona-summon mechanic resolves the magic question without forcing the entire 5e magic system into a Tokyo register.
-2. **One-character-can-have-many-Personas.** Joker (the protagonist) is the Wild Card who collects and switches between dozens of Personas; everyone else has one. The 5e-shaped answer: a *Wild Card Warlock* subclass available only as a single-PC option (one per party) with limited Persona-fusion mechanics; standard players take a *Persona-User* subclass tied to a single signature Persona (Carmen, Goemon, Captain Kidd, Necronomicon, Milady). This mirrors the canon — Joker is unique; the rest of the Phantom Thieves each have one signature Persona.
-3. **The Confidant / Social Link mechanic doesn't have a 5e analog.** Persona 5's calendar-driven relationship-building system is one of its signatures. The 5e-shaped answer: a *Confidant* background-relationship rules variant (similar in spirit to the Bonds + Inspiration mechanics) where players build long-term NPC bonds across a campaign that grant scaling benefits. Optional rules variant; doesn't break a non-Persona campaign.
-4. **No existing licensed Persona TTRPG, but a fan-made 5e Persona is in active community development.** Our harvest surfaced *"Introducing... Persona 5e (Pre-Alpha)"* on r/Persona5 (217 ups, 39 comments) and *"PERSONA 5.5e (RELOAD CHARACTER SHEET V2)"* (69 ups). This is the "community-is-already-doing-the-work" pattern but unusually concentrated — the fan project is a coordinated rules variant rather than a scattering of subclass artifacts. That's why DDB shows zero items: the conversion energy is consolidated on a Reddit-organized homebrew project. Honest framing: WoTC's licensed product would supersede the fan project (which would migrate into community add-on content for the official release).
+1. **Modern-Tokyo setting is unusual for D&D.** Standard 5.5e is medieval-fantasy by default; the Phantom Thieves carry rapiers and modern guns, fight with Personas in cognitive dungeons, and live ordinary high-school lives between heists. The 5.5e-shaped answer: position the licensed product as a *Modern Persona* setting variant, similar in shape to Eberron's stand-alone treatment. Firearms are already in 5.5e; modern ones are therefore possible; the Persona-summon mechanic resolves the magic question without forcing the entire 5.5e magic system into a Tokyo register.
+2. **One-character-can-have-many-Personas.** Joker (the protagonist) is the Wild Card who collects and switches between dozens of Personas; everyone else has one. The 5.5e-shaped answer: a *Wild Card Warlock* subclass available only as a single-PC option (one per party) with limited Persona-fusion mechanics; standard players take a *Persona-User* subclass tied to a single signature Persona (Carmen, Goemon, Captain Kidd, Necronomicon, Milady). This mirrors the canon — Joker is unique; the rest of the Phantom Thieves each have one signature Persona.
+3. **The Confidant / Social Link mechanic doesn't have a 5.5e analog.** Persona 5's calendar-driven relationship-building system is one of its signatures. The 5.5e-shaped answer: a *Confidant* background-relationship rules variant (similar in spirit to the Bonds + Inspiration mechanics) where players build long-term NPC bonds across a campaign that grant scaling benefits. Optional rules variant; doesn't break a non-Persona campaign.
+4. **No existing licensed Persona TTRPG, but a fan-made 5.5e Persona is in active community development.** Our harvest surfaced *"Introducing... Persona 5.5e (Pre-Alpha)"* on r/Persona5 (217 ups, 39 comments) and *"PERSONA 5.5e (RELOAD CHARACTER SHEET V2)"* (69 ups). This is the "community-is-already-doing-the-work" pattern but unusually concentrated — the fan project is a coordinated rules variant rather than a scattering of subclass artifacts. That's why DDB shows zero items: the conversion energy is consolidated on a Reddit-organized homebrew project. Honest framing: WoTC's licensed product would supersede the fan project (which would migrate into community add-on content for the official release).
 
 ### Translation possibilities (DDB product surface)
 
-DDB shows zero confirmed Persona-tied items — interesting given the Reddit converter activity. The explanation: the community converter energy is consolidated on a fan-organized 5e Persona project, not scattered as individual DDB subclasses. Once a licensed product ships, expect rapid DDB pickup.
+DDB shows zero confirmed Persona-tied items — interesting given the Reddit converter activity. The explanation: the community converter energy is consolidated on a fan-organized 5.5e Persona project, not scattered as individual DDB subclasses. Once a licensed product ships, expect rapid DDB pickup.
 
 | Category | Specific examples | DDB-homebrew evidence |
 |---|---|---|
@@ -2323,7 +2320,7 @@ DDB shows zero confirmed Persona-tied items — interesting given the Reddit con
 
 #### Slot options — brand-integrity-cost framing
 
-P5's signature challenges: the protagonist Joker is the Wild Card who collects and switches between dozens of Personas (a one-protagonist-only mechanic by canon), the Confidant/Social Link system has no direct 5e analog, and the modern-Tokyo setting requires Spelljammer-style genre-translation. The community fan 5e Persona project (217 ups, Pre-Alpha) is the empirical anchor for an active conversion direction. Clean-lane positioning (no licensed Persona TTRPG; Atlus IP-conservatism is the licensing-process consideration).
+P5's signature challenges: the protagonist Joker is the Wild Card who collects and switches between dozens of Personas (a one-protagonist-only mechanic by canon), the Confidant/Social Link system has no direct 5.5e analog, and the modern-Tokyo setting requires Spelljammer-style genre-translation. The community fan 5.5e Persona project (217 ups, Pre-Alpha) is the empirical anchor for an active conversion direction. Clean-lane positioning (no licensed Persona TTRPG; Atlus IP-conservatism is the licensing-process consideration).
 
 ##### Wild Card / Persona-User subclass — 5 fitting options
 
@@ -2341,7 +2338,7 @@ The Wild Card mechanic is the IP's signature — Joker can collect and switch be
 
 ##### Confidant / Social Link system — 3 fitting options
 
-P5's calendar-driven relationship-building system has no direct 5e analog. The harvest's *Translation challenges* section proposed an optional rules variant; the brand-integrity discipline asks if a slot-bounded alternative delivers the same flavor.
+P5's calendar-driven relationship-building system has no direct 5.5e analog. The harvest's *Translation challenges* section proposed an optional rules variant; the brand-integrity discipline asks if a slot-bounded alternative delivers the same flavor.
 
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
@@ -2353,7 +2350,7 @@ P5's calendar-driven relationship-building system has no direct 5e analog. The h
 
 ##### Modern-Tokyo / Metaverse setting — 2 fitting options
 
-The Persona 5 setting is genre-distant from 5e's medieval-fantasy default.
+The Persona 5 setting is genre-distant from 5.5e's medieval-fantasy default.
 
 | # | Approach | Brand-integrity cost | Description |
 |---|---|---|---|
@@ -2419,7 +2416,7 @@ Each Palace is a complete dungeon set-piece — the IP is *built around* dungeon
 | License Fit Score (base P5) | not in BQ | Treat as same as Royal for licensing purposes (same content surface) |
 | Tier (Royal) | winner | UB Matrix winner-quadrant |
 | Measured sources (Royal) | 4 of 5 channels | Tier 1 — well-measured |
-| DDB total items | **0** | **Notable gap.** Reddit-organized fan 5e Persona project has consolidated the conversion energy off-DDB |
+| DDB total items | **0** | **Notable gap.** Reddit-organized fan 5.5e Persona project has consolidated the conversion energy off-DDB |
 | **RECEPTION — Community Risk** | | |
 | Reception (weighted, Royal) | 0.60 | Mid-tier — solid |
 | Backlash flags | none | low Community Risk |
@@ -2429,17 +2426,17 @@ Each Palace is a complete dungeon set-piece — the IP is *built around* dungeon
 | AO3 proportional crossover rate | **0.081%** | **Lower than HotD's 0.13%.** High-volume engagement, low D&D-conversion proportional intent — the AO3 fanbase is romance/relationship-driven (Confidant-system fan content), not crossover-driven |
 | **ACQUISITION — Demand Risk** | | |
 | Reddit D&D-subs (strict filter, last 12mo) | **5 confirmed posts** | Direct conversion-questions: *"Quick question. If I wanted to make a campaign based on Persona 5 with the DnD system, does that mean all the characters should be warlocks?"* (r/DnD, 8 comments), *"I want to create a master thief in a high magic world, builds"* (9 comments), *"Looking for tips and suggestions for a Warlock build"* (Persona-themed) |
-| Reddit r/Persona5 reverse-funnel | **12 D&D-context posts** | **High-engagement: *"The Phantom Thieves in DND"* — 227 ups, 42 comments; *"Introducing... Persona 5e (Pre-Alpha)"* — 217 ups, 39 comments (community-built fan 5e conversion in active development); *"PERSONA 5.5e (RELOAD CHARACTER SHEET V2)"* — 69 ups, 13 comments (iterating)** |
+| Reddit r/Persona5 reverse-funnel | **12 D&D-context posts** | **High-engagement: *"The Phantom Thieves in DND"* — 227 ups, 42 comments; *"Introducing... Persona 5.5e (Pre-Alpha)"* — 217 ups, 39 comments (community-built fan 5.5e conversion in active development); *"PERSONA 5.5e (RELOAD CHARACTER SHEET V2)"* — 69 ups, 13 comments (iterating)** |
 | Reddit r/Persona5Royal reverse-funnel | **0 D&D-context posts** | **The asymmetry is itself the finding.** D&D-conversion engagement happens on the base-game sub, not the Royal-specific sub — Royal-sub fans are focused on Royal-exclusive content (Kasumi, Maruki, third semester) |
 | Forum total results | 7 | Mid-tier; top thread *"Persona 5 Royal | Video Games Open | RPGnet"* |
 | **COMMERCIAL — Revenue Risk** | | |
 | BGG proxy score (Royal) | 0.82 | Strong board-game-comparable signal |
-| **Mobile-game proxy** (manual signal, pending pipeline) | **mainstream_hit_mobile in Asia / launch_spike_fade with regional caveat in West** | *Persona 5: The Phantom X* (Perfect World Games + Atlus, 2023 China launch / 2024 global launch) — gacha-RPG with original-cast-plus-new-Phantom-Thieves story. **Strong launch in China** (Sensor Tower-reported top-grossing in first months); **more mixed reception in Western markets** with modest P2W community complaints in West (mild compared to other gacha titles). 4.3-4.5 App Store / Play Store ratings globally. **Whale-to-Minnow Disconnect flag: borderline** — high revenue with mid-range Western reception. **Mobile success ≠ tabletop compatibility caveat applies** — the Phantom X mobile commercial signal corroborates broad Persona 5 IP appeal but the off-DDB consolidation pattern elsewhere in this entry (217-up Persona 5e fan project; zero DDB items) means tabletop-conversion signal is the load-bearing channel here, not mobile. |
-| DMs Guild + DTRPG confirmed products | **0** | No third-party 5e or other-system Persona content on either marketplace — the fan 5e Persona project is on Reddit/Discord, not DTRPG |
+| **Mobile-game proxy** (manual signal, pending pipeline) | **mainstream_hit_mobile in Asia / launch_spike_fade with regional caveat in West** | *Persona 5: The Phantom X* (Perfect World Games + Atlus, 2023 China launch / 2024 global launch) — gacha-RPG with original-cast-plus-new-Phantom-Thieves story. **Strong launch in China** (Sensor Tower-reported top-grossing in first months); **more mixed reception in Western markets** with modest P2W community complaints in West (mild compared to other gacha titles). 4.3-4.5 App Store / Play Store ratings globally. **Whale-to-Minnow Disconnect flag: borderline** — high revenue with mid-range Western reception. **Mobile success ≠ tabletop compatibility caveat applies** — the Phantom X mobile commercial signal corroborates broad Persona 5 IP appeal but the off-DDB consolidation pattern elsewhere in this entry (217-up Persona 5.5e fan project; zero DDB items) means tabletop-conversion signal is the load-bearing channel here, not mobile. |
+| DMs Guild + DTRPG confirmed products | **0** | No third-party 5.5e or other-system Persona content on either marketplace — the fan 5.5e Persona project is on Reddit/Discord, not DTRPG |
 | External licensed product | **none** | Atlus has not licensed any Persona TTRPG; the IP is video-game-and-anime-only commercially |
 | Catalog signal | clean lane / first to market | Negotiation-leverage point: like Solo Leveling, no competing TTRPG to anchor advance demands against |
 
-**Cross-channel reading.** This is the most asymmetric signal pattern we've measured. AO3 says "high-engagement-but-low-conversion" (HotD-like, 0.081%); DDB says "zero artifacts" (false-negative — energy is consolidated off-platform); Reddit r/Persona5 says "*massive* conversion engagement" (227+217+69+11 ups on direct D&D-crossover posts plus a fan 5e Persona project at pre-alpha). The signals only reconcile when you understand the fanbase composition: the D&D-conversion subset of the Persona 5 fanbase is concentrated on a Reddit-organized project, not scattered as individual DDB homebrew. **For licensing diligence, this means a Trusight read that looked only at DDB or AO3 would underestimate Persona 5's conversion-readiness by an order of magnitude. The Reddit reverse-funnel is the channel that catches it.** That's the structural argument for the convergence-threshold methodology — single-channel reads lie; three-channel reads triangulate.
+**Cross-channel reading.** This is the most asymmetric signal pattern we've measured. AO3 says "high-engagement-but-low-conversion" (HotD-like, 0.081%); DDB says "zero artifacts" (false-negative — energy is consolidated off-platform); Reddit r/Persona5 says "*massive* conversion engagement" (227+217+69+11 ups on direct D&D-crossover posts plus a fan 5.5e Persona project at pre-alpha). The signals only reconcile when you understand the fanbase composition: the D&D-conversion subset of the Persona 5 fanbase is concentrated on a Reddit-organized project, not scattered as individual DDB homebrew. **For licensing diligence, this means a Trusight read that looked only at DDB or AO3 would underestimate Persona 5's conversion-readiness by an order of magnitude. The Reddit reverse-funnel is the channel that catches it.** That's the structural argument for the convergence-threshold methodology — single-channel reads lie; three-channel reads triangulate.
 
 **The base-vs-Royal asymmetry.** r/Persona5 (12 D&D posts) vs r/Persona5Royal (0 D&D posts). Licensing implication: the brand-name on the licensed product should be *Persona 5 Royal* (Atlus's commercially canonical version) but the content depth and marketing voice should reach the base-P5 audience that's actually doing the conversion work. The Royal-specific Maruki Palace and Kasumi character become add-on content rather than the centerpiece.
 
@@ -2461,7 +2458,7 @@ The single most concrete revealed-preference signal: a **489-up *"SoT themed DM 
 
 ### Translation challenges
 
-1. **Sea of Thieves is a multiplayer-PvP-co-op game; D&D campaigns are narrative-cooperative.** The 5e-shaped answer: the licensed product is a *setting* and *rules variant*, not a campaign-engine. Players are pirates in the Sea of Thieves world (PvE-led), with optional inter-party PvP rules for tables that want that flavor. The Trading Companies become faction-reputation mechanics; Tall Tales become one-shot adventure modules; ship combat gets a refined naval-rules variant.
+1. **Sea of Thieves is a multiplayer-PvP-co-op game; D&D campaigns are narrative-cooperative.** The 5.5e-shaped answer: the licensed product is a *setting* and *rules variant*, not a campaign-engine. Players are pirates in the Sea of Thieves world (PvE-led), with optional inter-party PvP rules for tables that want that flavor. The Trading Companies become faction-reputation mechanics; Tall Tales become one-shot adventure modules; ship combat gets a refined naval-rules variant.
 2. **The naval-combat signal is real but undeveloped — and the existing D&D options (Saltmarsh) are the actual competition.** Two of the four D&D-sub strict-filter hits surface this: *"Naval combat: worth buying Saltmarsh for, or is there a better 3rd party set of rules?"* (r/DnD) and *"Time limit for naval combat?"*. The market is asking for a better naval-combat ruleset; SoT could be the IP-anchor for that product.
 3. **Thin community-conversion signal.** This is the honest caveat: the AO3 fanbase doesn't write D&D crossover (0/87 works); the IP-home sub mostly carries DM-as-direct-message false positives in our harvest; the 132 forum results in BQ are largely about other multiplayer co-op games (the top thread is *"VOID CREW: it's Sea of Deep Rock Darktide!"* — about a different IP entirely). The conversion energy isn't there in the same way it is for Mistborn or Monster Hunter.
 
@@ -2533,7 +2530,7 @@ Cursed Treasures (per-Tall-Tale legendary items), Athena's Fortune chest, Ashen 
 
 ##### Nautical bestiary — 1 fitting option
 
-Skeleton Captain (CR 10), Megalodon (CR 12), The Kraken (CR 18 — existing 5e monster, refresh-able), Ashen Lord (CR 14), Ghost Ship (CR 15), Phantom Crew. Standard creature types (Undead / Beast / Monstrosity / Elemental). Existing 5e Kraken refresh-target is the cleanest fit.
+Skeleton Captain (CR 10), Megalodon (CR 12), The Kraken (CR 18 — existing 5.5e monster, refresh-able), Ashen Lord (CR 14), Ghost Ship (CR 15), Phantom Crew. Standard creature types (Undead / Beast / Monstrosity / Elemental). Existing 5.5e Kraken refresh-target is the cleanest fit.
 
 **Brand-integrity cost: LOW.** Existing creature taxonomy; the Kraken-refresh is itself brand-integrity-friendly.
 
@@ -2604,14 +2601,14 @@ FFXIV is the **audience-overlap-cannibalization** counterexample case in the mai
 
 ### Translation challenges
 
-1. **A licensed FFXIV TTRPG is reportedly in development.** This is the headline ecosystem-trap finding — BQ's top FFXIV forum thread is *"The Final Fantasy XIV tabletop RPG is coming | Page 3 - RPGnet"*. Square Enix is already pursuing this licensing direction with another partner. **A WoTC 5e FFXIV product would compete directly with the in-development official FFXIV TTRPG.** The 5e licensing call is structurally harder for FFXIV than for any other IP in this batch.
-2. **MMORPG-as-D&D-translation:** the job-system + EXP-grind + raid-tier-progression structure is foreign to D&D campaign structure. The 5e-shaped answer: scope to a single expansion arc (Shadowbringers or Endwalker as canonical campaigns); use the Job-system as flavor for existing 5e classes rather than rules-variant rewrite.
+1. **A licensed FFXIV TTRPG is reportedly in development.** This is the headline ecosystem-trap finding — BQ's top FFXIV forum thread is *"The Final Fantasy XIV tabletop RPG is coming | Page 3 - RPGnet"*. Square Enix is already pursuing this licensing direction with another partner. **A WoTC 5.5e FFXIV product would compete directly with the in-development official FFXIV TTRPG.** The 5.5e licensing call is structurally harder for FFXIV than for any other IP in this batch.
+2. **MMORPG-as-D&D-translation:** the job-system + EXP-grind + raid-tier-progression structure is foreign to D&D campaign structure. The 5.5e-shaped answer: scope to a single expansion arc (Shadowbringers or Endwalker as canonical campaigns); use the Job-system as flavor for existing 5.5e classes rather than rules-variant rewrite.
 3. **30M players is a massive existing fanbase that's mostly already-D&D-fluent.** Translation is *not* the issue; the issue is the audience-overlap economics. The licensing call lands different than for a net-new-audience IP.
 4. **Square Enix has historically been conservative with Western licensing.** Honest framing: between the in-development official FFXIV TTRPG and Square Enix's licensing posture, this deal would be unusually hard to land for WoTC.
 
 ### Translation possibilities (DDB product surface)
 
-DDB shows **0 confirmed FFXIV homebrew artifacts** — the most surprising data point in this batch. With 30M+ players and 4 BQ-measured channels, the absence of DDB homebrew suggests the FFXIV community's tabletop conversion energy lives entirely off-DDB (WoW-flavored expansions on DTRPG, the in-development official TTRPG itself, fan-made systems unrelated to 5e).
+DDB shows **0 confirmed FFXIV homebrew artifacts** — the most surprising data point in this batch. With 30M+ players and 4 BQ-measured channels, the absence of DDB homebrew suggests the FFXIV community's tabletop conversion energy lives entirely off-DDB (WoW-flavored expansions on DTRPG, the in-development official TTRPG itself, fan-made systems unrelated to 5.5e).
 
 | Category | Specific examples | DDB-homebrew evidence |
 |---|---|---|
@@ -2643,21 +2640,21 @@ FFXIV's 20+ Jobs (Red Mage / Dark Knight / Astrologian / Dragoon / Machinist / S
 
 ##### Eorzean species — 3 fitting options
 
-8 canonical species (Hyur / Elezen / Lalafell / Miqo'te / Roegadyn / Au Ra / Hrothgar / Viera). Several have close 5e analogs (Hyur ≈ Human, Elezen ≈ Elf, Lalafell ≈ Halfling, Miqo'te ≈ Tabaxi).
+8 canonical species (Hyur / Elezen / Lalafell / Miqo'te / Roegadyn / Au Ra / Hrothgar / Viera). Several have close 5.5e analogs (Hyur ≈ Human, Elezen ≈ Elf, Lalafell ≈ Halfling, Miqo'te ≈ Tabaxi).
 
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
-| A | **Refresh existing 5e species** with FFXIV-flavored variants (Tabaxi with Miqo'te-clan flavor; Elf with Elezen-subrace; Halfling with Lalafell-subrace) | **LOWEST** | Zero new species slot; layers FFXIV-recognition onto existing 5e species |
-| B | **2-3 new species for the FFXIV-distinctive ones** (Au Ra, Hrothgar, Viera) | LOW | Within Spelljammer-envelope; covers species that don't have clean 5e analogs |
+| A | **Refresh existing 5.5e species** with FFXIV-flavored variants (Tabaxi with Miqo'te-clan flavor; Elf with Elezen-subrace; Halfling with Lalafell-subrace) | **LOWEST** | Zero new species slot; layers FFXIV-recognition onto existing 5.5e species |
+| B | **2-3 new species for the FFXIV-distinctive ones** (Au Ra, Hrothgar, Viera) | LOW | Within Spelljammer-envelope; covers species that don't have clean 5.5e analogs |
 | C | **All 8 as new species** | MID | Within envelope but adds significant species-shelf expansion |
 
-**Trusight read:** Option A is the brand-integrity-friendliest path; Option B for the species that genuinely lack 5e analogs.
+**Trusight read:** Option A is the brand-integrity-friendliest path; Option B for the species that genuinely lack 5.5e analogs.
 
 ##### Eikon / Primal bestiary — 1 fitting option
 
 Eikons (Bahamut, Ifrit, Garuda, Titan, Leviathan, Shiva, Ramuh, Odin, Zodiark) at CR 18-22; Ascians at CR 16-22; Cloud of Darkness at CR 24; Endsinger at CR 25 Endwalker capstone. Standard creature types (Celestial / Elemental / Fiend / Aberration). Mythic Action infrastructure for boss-tier fights.
 
-**Brand-integrity cost: LOW.** Existing creature taxonomy + Mythic Actions. **However: Square Enix's official TTRPG will likely cover this same Eikon roster** — the ecosystem-trap means duplication risk is high. The 5e-licensed product would need to find IP-recognition value that the official TTRPG can't deliver (e.g., 5e-mechanic-fit specifically, cross-Cosmere-portfolio bundling).
+**Brand-integrity cost: LOW.** Existing creature taxonomy + Mythic Actions. **However: Square Enix's official TTRPG will likely cover this same Eikon roster** — the ecosystem-trap means duplication risk is high. The 5.5e-licensed product would need to find IP-recognition value that the official TTRPG can't deliver (e.g., 5.5e-mechanic-fit specifically, cross-Cosmere-portfolio bundling).
 
 ##### Eikon-derived weapons — 1 fitting option (cross-IP)
 
@@ -2667,7 +2664,7 @@ Bahamut's Wing, Ifrit's Tusk, Shiva's Spear — Eikon-derived weapons. **Slots i
 
 ##### Limit Break / Job-stone Soul Crystal — 2 fitting options
 
-Two FFXIV-signature mechanics that don't have direct 5e analogs:
+Two FFXIV-signature mechanics that don't have direct 5.5e analogs:
 
 | # | Approach | Brand-integrity cost | Description |
 |---|---|---|---|
@@ -2680,10 +2677,10 @@ Two FFXIV-signature mechanics that don't have direct 5e analogs:
 
 | Element | Brand-integrity cost | Note |
 |---|---|---|
-| Spells (element-tied attack spells, Holy, Cure, Flare, Meteor) | LOW | Existing schools (Evocation, Necromancy); the FFXIV spell suite maps cleanly to 5e spell-school taxonomy |
+| Spells (element-tied attack spells, Holy, Cure, Flare, Meteor) | LOW | Existing schools (Evocation, Necromancy); the FFXIV spell suite maps cleanly to 5.5e spell-school taxonomy |
 | Backgrounds (Adventurers' Guild Recruit, Scion of the Seventh Dawn, Garlean Defector, Sharlayan Scholar, Doman Samurai) | LOW | Multiple backgrounds within typical envelope |
 | Mundane items (Gil currency, aetheryte travel-stones, Linkpearl communication, Chocobo Whistle) | LOW | Equipment chapter; standard infrastructure |
-| Setting book (Eorzea Setting Book + Shadowbringers parallel-world) | LOW-MID | Within Wildemount envelope. **Ecosystem-trap caveat applies most strongly here** — the announced official TTRPG will likely ship its own Eorzea setting book; 5e-licensed product would face direct overlap |
+| Setting book (Eorzea Setting Book + Shadowbringers parallel-world) | LOW-MID | Within Wildemount envelope. **Ecosystem-trap caveat applies most strongly here** — the announced official TTRPG will likely ship its own Eorzea setting book; 5.5e-licensed product would face direct overlap |
 
 ### Potential Sigil VTT locations
 
@@ -2701,7 +2698,7 @@ Two FFXIV-signature mechanics that don't have direct 5e analogs:
 | Metric | Value | Reading |
 |---|---|---|
 | **FIT — Translation Risk** | | |
-| License Fit Score | **0.90** | High — JRPG-fantasy maps cleanly to 5e |
+| License Fit Score | **0.90** | High — JRPG-fantasy maps cleanly to 5.5e |
 | Tier | winner | UB Matrix winner-quadrant |
 | Measured sources | 4 of 5 channels | Tier 1 |
 | DDB total items | **0** | Off-DDB consolidation pattern (extreme version — even larger than Persona 5's) |
@@ -2720,10 +2717,10 @@ Two FFXIV-signature mechanics that don't have direct 5e analogs:
 | BGG proxy score | 0.74 | Solid |
 | **Mobile-game proxy** (manual signal, pending pipeline) | **pending — FFXIV Mobile in development** | *Final Fantasy XIV Mobile* announced 2024 (LightSpeed Studios / Tencent + Square Enix), expected 2025-26 launch. **No FFXIV-specific commercial data yet.** Important parallel signal: the broader Final Fantasy mobile franchise has multiple commercial hits — *FF7 Ever Crisis* (2023, ongoing), *War of the Visions FFBE* (2019, sustained), *FF Brave Exvius* (2014, sustained), *Mobius Final Fantasy* (sunset 2023). Demonstrates Square Enix's strong mobile-publishing track record for the Final Fantasy IP umbrella. **FFXIV-specific archetype: pending; Final Fantasy franchise-level: mainstream_hit_mobile.** **The ecosystem-trap caveat in this entry's main *Translation challenges* section dominates the commercial recommendation** — the announced Square Enix TTRPG combined with FFXIV Mobile in development means Square Enix is actively pursuing FFXIV-IP-licensing across multiple non-WoTC partners simultaneously. |
 | DMs Guild + DTRPG confirmed products | 0 | But see external-licensed-product caveat below |
-| External licensed product | **A licensed FFXIV tabletop RPG was announced in 2025** | The headline ecosystem-trap finding. *"The Final Fantasy XIV tabletop RPG is coming | Page 3 - RPGnet"* is the BQ-confirmed forum thread. **WoTC's 5e licensing call competes directly with this announced official product** |
+| External licensed product | **A licensed FFXIV tabletop RPG was announced in 2025** | The headline ecosystem-trap finding. *"The Final Fantasy XIV tabletop RPG is coming | Page 3 - RPGnet"* is the BQ-confirmed forum thread. **WoTC's 5.5e licensing call competes directly with this announced official product** |
 | Catalog signal | **ecosystem-trap** | The strongest ecosystem-trap caveat in the breakdowns doc — an *announced* official TTRPG, not just a competing-system product like Steamforged's Dark Souls |
 
-**Cross-channel reading.** FFXIV is the **cannibalization-and-ecosystem-trap** archetype. The 0.063% AO3 rate plus the audience-overlap-with-existing-D&D-players plus the announced official FFXIV TTRPG plus the off-DDB-consolidation-with-zero-DDB-items combine into the strongest *honest-caveat* case in the breakdowns doc. **The licensing recommendation: pass on FFXIV unless the official TTRPG announcement falls through, or pursue a cross-licensee partnership rather than competing 5e product.** Trusight's role: surface the cannibalization-and-ecosystem-trap pattern empirically rather than allowing the brand-recognition surface-pitch to obscure it.
+**Cross-channel reading.** FFXIV is the **cannibalization-and-ecosystem-trap** archetype. The 0.063% AO3 rate plus the audience-overlap-with-existing-D&D-players plus the announced official FFXIV TTRPG plus the off-DDB-consolidation-with-zero-DDB-items combine into the strongest *honest-caveat* case in the breakdowns doc. **The licensing recommendation: pass on FFXIV unless the official TTRPG announcement falls through, or pursue a cross-licensee partnership rather than competing 5.5e product.** Trusight's role: surface the cannibalization-and-ecosystem-trap pattern empirically rather than allowing the brand-recognition surface-pitch to obscure it.
 
 ---
 
@@ -2739,16 +2736,16 @@ House of the Dragon is HBO's prestige-television prequel to Game of Thrones, pro
 
 ### Marketing angle / D&D-universe niche
 
-This is the IP whose data tells the most-complicated story in the breakdowns doc. The marketing pitch *would* be: a *prestige-medieval-political-fantasy* setting with dragon-bond magic, dynastic politics, and the production-value cachet of HBO. Niche it would fill: a *low-magic-political-intrigue* register that 5e currently undersupplies. **But** the harvest data tells a different story — and the breakdown's job is to surface that honest data picture rather than just describe the surface pitch. See *Translation challenges* and *Measured data* sections for what the data actually shows.
+This is the IP whose data tells the most-complicated story in the breakdowns doc. The marketing pitch *would* be: a *prestige-medieval-political-fantasy* setting with dragon-bond magic, dynastic politics, and the production-value cachet of HBO. Niche it would fill: a *low-magic-political-intrigue* register that 5.5e currently undersupplies. **But** the harvest data tells a different story — and the breakdown's job is to surface that honest data picture rather than just describe the surface pitch. See *Translation challenges* and *Measured data* sections for what the data actually shows.
 
 The marketing-angle write-up (if the deal proceeds): position the licensed product as *a HotD-themed political-intrigue D&D setting* with explicit rules subsystems for dynastic conflict, faction politics, and dragon-bond mechanics; ship as a *companion adventure module* tied to the HBO show's calendar rather than as a standalone setting book. The audience: prestige-TV fans + dragon-loving D&D players, with the HBO brand as the marketing anchor. Demographically older and more casual than the core D&D player base.
 
 ### Translation challenges
 
-1. **The engine question.** D&D 5e is a heroic high-magic ruleset — characters access spell tiers, magic items, and supernatural abilities by design. House of the Dragon's narrative engine is the opposite — gritty, low-magic, political-intrigue-driven, dynastic. The 5e rules subsystems for court drama, faction reputation, and slow-burn dynastic conflict aren't in the core book. **The community has implicitly already reached this conclusion through silence** — see *Measured data*. Any 5e licensee asking the engine to do what it wasn't designed for would have to invent significant rules subsystems (faction politics, dynastic event mechanics, low-magic combat balance).
-2. **Dragon-bond magic is character-defining for Targaryens but rare for non-Targaryens.** Most player-characters in a HotD-setting D&D game wouldn't be Targaryens (one-protagonist problem). The 5e-shaped answer: dragon-bond as a unique-PC-only Sorcerer subclass; non-Targaryen players take political-intrigue-flavored backgrounds (Court Knight, Maester, Spymaster, Pyromancer, Faceless-Man-adjacent assassin).
+1. **The engine question.** D&D 5.5e is a heroic high-magic ruleset — characters access spell tiers, magic items, and supernatural abilities by design. House of the Dragon's narrative engine is the opposite — gritty, low-magic, political-intrigue-driven, dynastic. The 5.5e rules subsystems for court drama, faction reputation, and slow-burn dynastic conflict aren't in the core book. **The community has implicitly already reached this conclusion through silence** — see *Measured data*. Any 5.5e licensee asking the engine to do what it wasn't designed for would have to invent significant rules subsystems (faction politics, dynastic event mechanics, low-magic combat balance).
+2. **Dragon-bond magic is character-defining for Targaryens but rare for non-Targaryens.** Most player-characters in a HotD-setting D&D game wouldn't be Targaryens (one-protagonist problem). The 5.5e-shaped answer: dragon-bond as a unique-PC-only Sorcerer subclass; non-Targaryen players take political-intrigue-flavored backgrounds (Court Knight, Maester, Spymaster, Pyromancer, Faceless-Man-adjacent assassin).
 3. **The IP is licensed across multiple Hasbro touchpoints already (board game, MTG potential).** Honest framing: HotD has commercial-tabletop precedent via the *House of the Dragon* board game (BGG proxy 0.58 — mid-tier reception). A WoTC licensing deal would compete with or complement that existing Hasbro-portfolio relationship. The **multi-product cross-portfolio commitment** is the natural deal structure (HotD MTG expansion + D&D book + digital integration bundled).
-4. **No existing licensed HotD/GoT TTRPG.** Game of Thrones has had multiple TTRPG attempts (Green Ronin's *A Song of Ice and Fire RPG* 2009, Modiphius's *A Song of Ice and Fire* 2018+) but none in 5e. The specific 5e-licensed product would be a clean lane on the system side.
+4. **No existing licensed HotD/GoT TTRPG.** Game of Thrones has had multiple TTRPG attempts (Green Ronin's *A Song of Ice and Fire RPG* 2009, Modiphius's *A Song of Ice and Fire* 2018+) but none in 5.5e. The specific 5.5e-licensed product would be a clean lane on the system side.
 
 ### Translation possibilities (DDB product surface)
 
@@ -2767,13 +2764,13 @@ DDB shows zero confirmed HotD homebrew artifacts. This is consistent with the **
 
 #### Slot options — brand-integrity-cost framing
 
-HotD's brand-integrity discipline is shaped by the *engine question* (the main entry's structural finding: 5e is heroic-high-magic, HotD is gritty-low-magic-political). The community-silence pattern means there's no community-built canonical to anchor; the slot-options layer here proposes how WoTC *would* fit HotD content into existing slots *if* the deal proceeds. Per main entry's *Negotiation leverage* section: each high-cost option in the table below is a co-development-funding lever at the term-sheet table.
+HotD's brand-integrity discipline is shaped by the *engine question* (the main entry's structural finding: 5.5e is heroic-high-magic, HotD is gritty-low-magic-political). The community-silence pattern means there's no community-built canonical to anchor; the slot-options layer here proposes how WoTC *would* fit HotD content into existing slots *if* the deal proceeds. Per main entry's *Negotiation leverage* section: each high-cost option in the table below is a co-development-funding lever at the term-sheet table.
 
 ##### Dragons — the licensable spectacle — 1 fitting option
 
 This is HotD's clear product anchor. Vhagar (CR 24 ancient), Caraxes (CR 22), Syrax (CR 18), Meleys (CR 19), Sunfyre (CR 20), Vermithor (CR 21), Seasmoke (CR 17). Standard creature type (Dragon) with Mythic Action infrastructure for boss-tier fights.
 
-**Brand-integrity cost: LOW.** Existing creature taxonomy + Mythic Actions; the dragon-bestiary is HotD's strongest IP-recognition vector and slots cleanly into 5e's existing dragon infrastructure. **The dragons ARE the licensable spectacle** — six named iconic dragons would deliver high IP-recognition at low brand-integrity cost.
+**Brand-integrity cost: LOW.** Existing creature taxonomy + Mythic Actions; the dragon-bestiary is HotD's strongest IP-recognition vector and slots cleanly into 5.5e's existing dragon infrastructure. **The dragons ARE the licensable spectacle** — six named iconic dragons would deliver high IP-recognition at low brand-integrity cost.
 
 ##### Dragon-rider Targaryen subclass — 4 fitting options
 
@@ -2803,7 +2800,7 @@ The non-Targaryen Westerosi archetypes (Maester, Court Knight, Pyromancer, Facel
 
 ##### Faction-reputation / dynastic politics rules — 3 fitting options
 
-The IP's narrative engine is faction-politics. Per main entry *Translation challenges*: 5e doesn't have rules subsystems for court drama, faction reputation, slow-burn dynastic conflict.
+The IP's narrative engine is faction-politics. Per main entry *Translation challenges*: 5.5e doesn't have rules subsystems for court drama, faction reputation, slow-burn dynastic conflict.
 
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
@@ -2867,19 +2864,19 @@ Valyrian steel weapons are generations-old named blades. **Slots into the same n
 | AO3 proportional crossover rate | **0.13%** | **The empirical anchor for the engine-question argument.** Notably low for a fanbase at this scale; ~3-7× lower than the calibration cluster |
 | **ACQUISITION — Demand Risk** | | |
 | Reddit D&D-subs (strict filter, last 12mo) | **0 confirmed posts** | Across r/dndnext + r/UnearthedArcana + r/DnD + r/onednd + r/3d6 — zero confirmed HotD-D&D-context posts in the last 12 months |
-| Reddit r/HouseOfTheDragon reverse-funnel | 0 D&D-context posts | "5e," "homebrew," "tabletop" all return zero year-over-year |
+| Reddit r/HouseOfTheDragon reverse-funnel | 0 D&D-context posts | "5.5e," "homebrew," "tabletop" all return zero year-over-year |
 | Reddit r/freefolk reverse-funnel | 0 D&D-context posts | The broader GoT/HotD subreddit shows the same pattern |
 | Forum total results | 0 | Zero confirmed forum threads about HotD as a D&D conversion candidate across all three monitored TTRPG forums |
 | **COMMERCIAL — Revenue Risk** | | |
 | BGG proxy score | 0.58 | Mid-tier — *House of the Dragon* board game performs at quality 8 |
 | DMs Guild + DTRPG confirmed products | 0 | No third-party HotD-D&D content |
-| External licensed product | **none** in 5e | (Modiphius / Green Ronin have non-5e GoT TTRPGs; clean lane on 5e specifically) |
-| Catalog signal | clean lane on 5e | But the underlying conversion-demand isn't there — see Demand Risk |
+| External licensed product | **none** in 5.5e | (Modiphius / Green Ronin have non-5.5e GoT TTRPGs; clean lane on 5.5e specifically) |
+| Catalog signal | clean lane on 5.5e | But the underlying conversion-demand isn't there — see Demand Risk |
 
 **Cross-channel reading.** Six channels of community signal triangulate on the **community-silence pattern**: 0.13% AO3 proportional rate, 0 D&D-sub strict-filter posts, 0 reverse-funnel posts, 0 forum threads, 0 DDB items, mid-tier BGG. Fans engage with HotD as *spectacle* (large general fanbase, active subreddits, board-game ownership) but **not as a D&D-conversion candidate**. The community-silence pattern is the data, not a measurement gap. The structural pattern Trusight surfaces — the *engine question* — is empirically supported, not just narrated.
 
 **Negotiation-leverage framing (per main report).** If WoTC is moving forward on a House of the Dragon or broader Game of Thrones property anyway, the data shapes the term sheet directly:
-- *Co-development funding from the licensor* — the engine question means WoTC would have to invent rules subsystems that don't yet exist in 5e
+- *Co-development funding from the licensor* — the engine question means WoTC would have to invent rules subsystems that don't yet exist in 5.5e
 - *Multi-product exclusivity / cross-portfolio commitment* — bundle HotD MTG expansion + D&D book + digital integration into one Hasbro-portfolio deal
 - *Renewal flexibility tied to first-product performance* — option-renewal structures rather than perpetual rights
 - *Lower upfront fee* — reflect the translation cost the data shows
@@ -2896,7 +2893,7 @@ Valyrian steel weapons are generations-old named blades. **Slots into the same n
 | 2 | Monster Hunter (World + Wilds) | **Strongest business case.** 27 D&D-sub strict-filter posts, 622-page community Monster Manual, 2,817-up viral DnD-one-shot; six channels of community signal |
 | 3 | Berserk | Highest fit (0.94) + reception (0.83) + `highly_corroborated`; the 1,489-up Standard Array thread citing Guts is the cleanest direct demand-supply citation by name |
 | 4 | Solo Leveling | **Corpus-leading single artifact** — 642-add Shadow Monarch Warlock subclass; clean-lane positioning (no competing TTRPG); peak anime momentum |
-| 5 | Elden Ring | 566-up community-built 3-rulebook 5e conversion is the killer artifact; mainstream IP (25M+ sales); GRR Martin lore layer |
+| 5 | Elden Ring | 566-up community-built 3-rulebook 5.5e conversion is the killer artifact; mainstream IP (25M+ sales); GRR Martin lore layer |
 | 6 | Omniscient Reader's Viewpoint | Early-signal sleeper — 0.99% AO3 proportional rate (corpus-leading proportional); peak 2025 cultural momentum (anime + film) |
 | 7 | Bloodborne | Deep-data sleeper (5 sources, 71 DDB items); fills gothic-cosmic-horror gap; Sony IP-complexity is the honest caveat |
 | 8 | Mistborn | Highest fit (0.96 — top in corpus); Sanderson's pedigree; Brotherwise Cosmere RPG ecosystem-trap as honest caveat |
@@ -2907,7 +2904,7 @@ Valyrian steel weapons are generations-old named blades. **Slots into the same n
 | 13 | Pillars of Eternity + Deadfire | **Repositioned per strategic-timing note.** Pedigree pitch (Obsidian veterans literally built Baldur's Gate I/II) + 472-up Eora map artifact, but PoE1 (2015) / Deadfire (2018) are past commercial peak. See *Strategic positioning note* in the entry |
 | 14 | Dark Souls | **Repositioned per strategic-timing note.** Strong community signal but IP cultural-peak was a decade ago; better read as grimdark-genre-appetite measure than current acquisition case. See *Strategic positioning note* in the entry |
 | 15 | Hades + Hades II | Reception 0.35 explained — structural difficulty + Theros overlap, not community rejection; items-led conversion direction (309-up Aspect axe) |
-| 16 | Persona 5 + Persona 5 Royal | Off-DDB consolidation pattern; 0.081% AO3 rate but 217-up fan 5e Persona project; the convergence-threshold methodology IP |
+| 16 | Persona 5 + Persona 5 Royal | Off-DDB consolidation pattern; 0.081% AO3 rate but 217-up fan 5.5e Persona project; the convergence-threshold methodology IP |
 | 17 | Sea of Thieves | Market-opportunity-led; thinnest community-conversion signal in the corpus; naval-rules-replacement-for-Saltmarsh angle |
 | 18 | Final Fantasy XIV | **Ecosystem-trap** — Square Enix has officially-announced TTRPG in development with another partner; cannibalization-with-existing-D&D-players |
 | 19 | House of the Dragon | **Most problematic.** Engine-question structural mismatch + 6-channel community-silence pattern; negotiation-leverage framing carries but the empirical read is "don't do this without specific term-sheet structure" |
