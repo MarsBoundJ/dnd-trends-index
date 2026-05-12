@@ -21,6 +21,33 @@ Each IP entry uses a consistent structure:
 
 ---
 
+## Contents
+
+The 19 IPs, in document order:
+
+1. [Hollow Knight](#ip-01-hollow-knight)
+2. [Monster Hunter (World + Wilds)](#ip-02-monster-hunter)
+3. [Berserk](#ip-03-berserk)
+4. [Solo Leveling](#ip-04-solo-leveling)
+5. [Elden Ring](#ip-05-elden-ring)
+6. [Omniscient Reader's Viewpoint](#ip-06-omniscient-reader)
+7. [Bloodborne](#ip-07-bloodborne)
+8. [Mistborn](#ip-08-mistborn)
+9. [Deep Rock Galactic](#ip-09-deep-rock-galactic)
+10. [One Piece](#ip-10-one-piece)
+11. [Dwarf Fortress](#ip-11-dwarf-fortress)
+12. [Demon Slayer](#ip-12-demon-slayer)
+13. [Pillars of Eternity (+ Deadfire)](#ip-13-pillars-of-eternity)
+14. [Dark Souls](#ip-14-dark-souls)
+15. [Hades (+ Hades II)](#ip-15-hades)
+16. [Persona 5 (+ Royal)](#ip-16-persona-5)
+17. [Sea of Thieves](#ip-17-sea-of-thieves)
+18. [Final Fantasy XIV](#ip-18-ffxiv)
+19. [House of the Dragon](#ip-19-house-of-the-dragon)
+
+---
+
+<a id="ip-01-hollow-knight"></a>
 ## 1. Hollow Knight  ·  Team Cherry  ·  video game
 
 ![Hollow Knight — Team Cherry key art](thumbnails/01_hollow_knight.jpg)
@@ -153,6 +180,7 @@ The content surface above maps to specific 5.5e architectural slots. Each major 
 
 ---
 
+<a id="ip-02-monster-hunter"></a>
 ## 2. Monster Hunter: World + Monster Hunter Wilds  ·  Capcom  ·  video game  ·  paired entry
 
 ![Monster Hunter — Capcom key art](thumbnails/02_monster_hunter.jpg)
@@ -313,6 +341,7 @@ This is the IP that maps most cleanly onto Sigil's encounter-map paradigm — ev
 
 ---
 
+<a id="ip-03-berserk"></a>
 ## 3. Berserk  ·  Kentaro Miura / Kouji Mori (continuation) / Hakusensha  ·  manga / anime
 
 ![Berserk — Guts key visual](thumbnails/03_berserk.jpg)
@@ -464,6 +493,7 @@ Berserk's canon includes content (Eclipse arc sexual violence, Casca trauma arcs
 
 ---
 
+<a id="ip-04-solo-leveling"></a>
 ## 4. Solo Leveling  ·  Chugong  ·  webtoon / web novel / anime
 
 ![Solo Leveling — Sung Jinwoo Shadow Monarch key visual](thumbnails/04_solo_leveling.jpg)
@@ -614,6 +644,7 @@ Igris (CR 18), Beru (CR 19), Kamish (CR 25), Iron-clad Knight (CR 12), Stone Gol
 
 ---
 
+<a id="ip-05-elden-ring"></a>
 ## 5. Elden Ring  ·  FromSoftware / Bandai Namco / GRR Martin (lore)  ·  video game
 
 ![Elden Ring — FromSoftware / Bandai Namco key art](thumbnails/05_elden_ring.jpg)
@@ -766,6 +797,7 @@ Moonveil, Rivers of Blood, Sword of Night and Flame, Eclipse Shotel, Marais Exec
 
 ---
 
+<a id="ip-06-omniscient-reader"></a>
 ## 6. Omniscient Reader's Viewpoint  ·  Chugong / singshong  ·  webtoon / web novel / anime / film
 
 ![Omniscient Reader's Viewpoint — anime key visual](thumbnails/06_orv.jpg)
@@ -906,6 +938,7 @@ ORV's scenario-by-scenario structure maps unusually cleanly to one-shot adventur
 
 ---
 
+<a id="ip-07-bloodborne"></a>
 ## 7. Bloodborne  ·  FromSoftware (Sony IP)  ·  video game
 
 ![Bloodborne — FromSoftware / Sony key art](thumbnails/07_bloodborne.jpg)
@@ -1059,6 +1092,7 @@ Father Gascoigne (CR 10), Vicar Amelia (CR 13 beastform), Blood-starved Beast (C
 
 ---
 
+<a id="ip-08-mistborn"></a>
 ## 8. Mistborn  ·  Brandon Sanderson  ·  literature
 
 ![Mistborn — Brandon Sanderson / Dragonsteel cover art](thumbnails/08_mistborn.jpg)
@@ -1210,6 +1244,7 @@ Mistborn's secondary magic systems can be scoped in or out:
 
 ---
 
+<a id="ip-09-deep-rock-galactic"></a>
 ## 9. Deep Rock Galactic  ·  Ghost Ship Games  ·  video game
 
 ![Deep Rock Galactic — Ghost Ship Games key art](thumbnails/09_deep_rock_galactic.png)
@@ -1353,6 +1388,7 @@ DRG is *built around* procedural cave-encounter maps — natural fit for Sigil's
 
 ---
 
+<a id="ip-10-one-piece"></a>
 ## 10. One Piece  ·  Eiichiro Oda / Toei Animation / Shueisha  ·  anime / manga
 
 ![One Piece — Toei Animation key visual](thumbnails/10_one_piece.jpg)
@@ -1505,6 +1541,7 @@ Sea Kings (CR-variable ocean megafauna), Marine Vice Admirals (Garp CR 25, Kizar
 
 ---
 
+<a id="ip-11-dwarf-fortress"></a>
 ## 11. Dwarf Fortress  ·  Bay 12 Games (Tarn + Zach Adams)  ·  video game
 
 ![Dwarf Fortress — Bay 12 Games / Kitfox Premium Edition art](thumbnails/11_dwarf_fortress.jpg)
@@ -1650,6 +1687,7 @@ DF is *built around* fortress maps — natural Sigil fit. Each succession-game's
 
 ---
 
+<a id="ip-12-demon-slayer"></a>
 ## 12. Demon Slayer  ·  Koyoharu Gotouge / Ufotable / Shueisha  ·  manga / anime / film
 
 ![Demon Slayer — Ufotable / Aniplex key visual](thumbnails/12_demon_slayer.jpg)
@@ -1798,6 +1836,7 @@ Period-Japan demonic-violence + Hashira self-sacrifice arcs are present in canon
 
 ---
 
+<a id="ip-13-pillars-of-eternity"></a>
 ## 13. Pillars of Eternity + Pillars of Eternity II: Deadfire  ·  Obsidian Entertainment  ·  video game  ·  paired entry
 
 ![Pillars of Eternity — Obsidian Entertainment key art](thumbnails/13_pillars_of_eternity.jpg)
@@ -1965,6 +2004,7 @@ Engwithan constructs (CR 10-18), Adragans, Eyeless, Sea Cave drakes, Oracle of W
 
 ---
 
+<a id="ip-14-dark-souls"></a>
 ## 14. Dark Souls  ·  FromSoftware  ·  video game series
 
 #### Strategic positioning note
@@ -2123,6 +2163,7 @@ Ornstein (CR 18), Smough (CR 17), Artorias (CR 22), Manus (CR 24), Sif (CR 14), 
 
 ---
 
+<a id="ip-15-hades"></a>
 ## 15. Hades + Hades II  ·  Supergiant Games  ·  video game  ·  paired entry
 
 ![Hades — Supergiant Games key art](thumbnails/15_hades.jpg)
@@ -2282,6 +2323,7 @@ Megaera (Fury, CR 12), Theseus + Asterius (paired CR 16/18), Hades (CR 24), Poly
 
 ---
 
+<a id="ip-16-persona-5"></a>
 ## 16. Persona 5 + Persona 5 Royal  ·  Atlus / Sega  ·  video game  ·  paired entry
 
 ![Persona 5 — Atlus / Sega key art](thumbnails/16_persona_5.jpg)
@@ -2444,6 +2486,7 @@ Each Palace is a complete dungeon set-piece — the IP is *built around* dungeon
 
 ---
 
+<a id="ip-17-sea-of-thieves"></a>
 ## 17. Sea of Thieves  ·  Rare / Microsoft  ·  video game
 
 ![Sea of Thieves — Rare / Microsoft key art](thumbnails/17_sea_of_thieves.jpg)
@@ -2587,6 +2630,7 @@ Skeleton Captain (CR 10), Megalodon (CR 12), The Kraken (CR 18 — existing 5.5e
 
 ---
 
+<a id="ip-18-ffxiv"></a>
 ## 18. Final Fantasy XIV  ·  Square Enix  ·  video game (MMORPG)
 
 ![Final Fantasy XIV — Square Enix key art](thumbnails/18_ffxiv.jpg)
@@ -2726,6 +2770,7 @@ Two FFXIV-signature mechanics that don't have direct 5.5e analogs:
 
 ---
 
+<a id="ip-19-house-of-the-dragon"></a>
 ## 19. House of the Dragon  ·  HBO  ·  TV / film (with Game of Thrones umbrella)
 
 ![House of the Dragon — HBO key art](thumbnails/19_house_of_the_dragon.png)
@@ -2891,25 +2936,25 @@ Valyrian steel weapons are generations-old named blades. **Slots into the same n
 
 | # | IP | Headline finding |
 |---|---|---|
-| 1 | Hollow Knight | **The hook.** Gold_mine quadrant + 47 D&D-sub posts (corpus-leading) + 1,161-up Way of the Needle Monk subclass; indie-Australian-studio narrative establishes Trusight's value prop |
-| 2 | Monster Hunter (World + Wilds) | **Strongest business case.** 27 D&D-sub strict-filter posts, 622-page community Monster Manual, 2,817-up viral DnD-one-shot; six channels of community signal |
-| 3 | Berserk | Highest fit (0.94) + reception (0.83) + `highly_corroborated`; the 1,489-up Standard Array thread citing Guts is the cleanest direct demand-supply citation by name |
-| 4 | Solo Leveling | **Corpus-leading single artifact** — 642-add Shadow Monarch Warlock subclass; clean-lane positioning (no competing TTRPG); peak anime momentum |
-| 5 | Elden Ring | 566-up community-built 3-rulebook 5.5e conversion is the killer artifact; mainstream IP (25M+ sales); GRR Martin lore layer |
-| 6 | Omniscient Reader's Viewpoint | Early-signal sleeper — 0.99% AO3 proportional rate (corpus-leading proportional); peak 2025 cultural momentum (anime + film) |
-| 7 | Bloodborne | Deep-data sleeper (5 sources, 71 DDB items); fills gothic-cosmic-horror gap; Sony IP-complexity is the honest caveat |
-| 8 | Mistborn | Highest fit (0.96 — top in corpus); Sanderson's pedigree; Brotherwise Cosmere RPG ecosystem-trap as honest caveat |
-| 9 | Deep Rock Galactic | Commercial-precedent-led — existing Mood Publishing board game; 2.99% AO3 rate; Spelljammer-adjacent sci-fi-fantasy |
-| 10 | One Piece | Largest AO3 fanbase (94,966) + corpus-leading forum signal (6,200); net-new-audience pitch (acquisition score 0.87) |
-| 11 | Dwarf Fortress | Highest AO3 rate (4.11%) on tiny volume; prestige/innovation play; Strange Mood Artifacts as genuinely novel mechanic |
-| 12 | Demon Slayer | Corpus-leading single-character DDB engagement (718-add Blood Hunter); passionate-subset pattern; thin reverse-funnel |
-| 13 | Pillars of Eternity + Deadfire | **Repositioned per strategic-timing note.** Pedigree pitch (Obsidian veterans literally built Baldur's Gate I/II) + 472-up Eora map artifact, but PoE1 (2015) / Deadfire (2018) are past commercial peak. See *Strategic positioning note* in the entry |
-| 14 | Dark Souls | **Repositioned per strategic-timing note.** Strong community signal but IP cultural-peak was a decade ago; better read as grimdark-genre-appetite measure than current acquisition case. See *Strategic positioning note* in the entry |
-| 15 | Hades + Hades II | Reception 0.35 explained — structural difficulty + Theros overlap, not community rejection; items-led conversion direction (309-up Aspect axe) |
-| 16 | Persona 5 + Persona 5 Royal | Off-DDB consolidation pattern; 0.081% AO3 rate but 217-up fan 5.5e Persona project; the convergence-threshold methodology IP |
-| 17 | Sea of Thieves | Market-opportunity-led; thinnest community-conversion signal in the corpus; naval-rules-replacement-for-Saltmarsh angle |
-| 18 | Final Fantasy XIV | **Ecosystem-trap** — Square Enix has officially-announced TTRPG in development with another partner; cannibalization-with-existing-D&D-players |
-| 19 | House of the Dragon | **Most problematic.** Engine-question structural mismatch + 6-channel community-silence pattern; negotiation-leverage framing carries but the empirical read is "don't do this without specific term-sheet structure" |
+| 1 | [Hollow Knight](#ip-01-hollow-knight) | **The hook.** Gold_mine quadrant + 47 D&D-sub posts (corpus-leading) + 1,161-up Way of the Needle Monk subclass; indie-Australian-studio narrative establishes Trusight's value prop |
+| 2 | [Monster Hunter (World + Wilds)](#ip-02-monster-hunter) | **Strongest business case.** 27 D&D-sub strict-filter posts, 622-page community Monster Manual, 2,817-up viral DnD-one-shot; six channels of community signal |
+| 3 | [Berserk](#ip-03-berserk) | Highest fit (0.94) + reception (0.83) + `highly_corroborated`; the 1,489-up Standard Array thread citing Guts is the cleanest direct demand-supply citation by name |
+| 4 | [Solo Leveling](#ip-04-solo-leveling) | **Corpus-leading single artifact** — 642-add Shadow Monarch Warlock subclass; clean-lane positioning (no competing TTRPG); peak anime momentum |
+| 5 | [Elden Ring](#ip-05-elden-ring) | 566-up community-built 3-rulebook 5.5e conversion is the killer artifact; mainstream IP (25M+ sales); GRR Martin lore layer |
+| 6 | [Omniscient Reader's Viewpoint](#ip-06-omniscient-reader) | Early-signal sleeper — 0.99% AO3 proportional rate (corpus-leading proportional); peak 2025 cultural momentum (anime + film) |
+| 7 | [Bloodborne](#ip-07-bloodborne) | Deep-data sleeper (5 sources, 71 DDB items); fills gothic-cosmic-horror gap; Sony IP-complexity is the honest caveat |
+| 8 | [Mistborn](#ip-08-mistborn) | Highest fit (0.96 — top in corpus); Sanderson's pedigree; Brotherwise Cosmere RPG ecosystem-trap as honest caveat |
+| 9 | [Deep Rock Galactic](#ip-09-deep-rock-galactic) | Commercial-precedent-led — existing Mood Publishing board game; 2.99% AO3 rate; Spelljammer-adjacent sci-fi-fantasy |
+| 10 | [One Piece](#ip-10-one-piece) | Largest AO3 fanbase (94,966) + corpus-leading forum signal (6,200); net-new-audience pitch (acquisition score 0.87) |
+| 11 | [Dwarf Fortress](#ip-11-dwarf-fortress) | Highest AO3 rate (4.11%) on tiny volume; prestige/innovation play; Strange Mood Artifacts as genuinely novel mechanic |
+| 12 | [Demon Slayer](#ip-12-demon-slayer) | Corpus-leading single-character DDB engagement (718-add Blood Hunter); passionate-subset pattern; thin reverse-funnel |
+| 13 | [Pillars of Eternity + Deadfire](#ip-13-pillars-of-eternity) | **Repositioned per strategic-timing note.** Pedigree pitch (Obsidian veterans literally built Baldur's Gate I/II) + 472-up Eora map artifact, but PoE1 (2015) / Deadfire (2018) are past commercial peak. See *Strategic positioning note* in the entry |
+| 14 | [Dark Souls](#ip-14-dark-souls) | **Repositioned per strategic-timing note.** Strong community signal but IP cultural-peak was a decade ago; better read as grimdark-genre-appetite measure than current acquisition case. See *Strategic positioning note* in the entry |
+| 15 | [Hades + Hades II](#ip-15-hades) | Reception 0.35 explained — structural difficulty + Theros overlap, not community rejection; items-led conversion direction (309-up Aspect axe) |
+| 16 | [Persona 5 + Persona 5 Royal](#ip-16-persona-5) | Off-DDB consolidation pattern; 0.081% AO3 rate but 217-up fan 5.5e Persona project; the convergence-threshold methodology IP |
+| 17 | [Sea of Thieves](#ip-17-sea-of-thieves) | Market-opportunity-led; thinnest community-conversion signal in the corpus; naval-rules-replacement-for-Saltmarsh angle |
+| 18 | [Final Fantasy XIV](#ip-18-ffxiv) | **Ecosystem-trap** — Square Enix has officially-announced TTRPG in development with another partner; cannibalization-with-existing-D&D-players |
+| 19 | [House of the Dragon](#ip-19-house-of-the-dragon) | **Most problematic.** Engine-question structural mismatch + 6-channel community-silence pattern; negotiation-leverage framing carries but the empirical read is "don't do this without specific term-sheet structure" |
 
 ### Pattern analysis across all 19 IPs
 
