@@ -28,6 +28,8 @@ antigravity-browser-profile/
 # Pitch report IP thumbnails — press-kit assets referenced by trusight_breakdowns_scratch.md
 !pitch/report/thumbnails/*.jpg
 !pitch/report/thumbnails/*.png
+# Pitch brand assets — Trusight beta logo used by all build scripts
+!pitch/assets/logos/*.png
 # Next.js app JSON configs — must be tracked
 !arcane/package.json
 !arcane/tsconfig.json

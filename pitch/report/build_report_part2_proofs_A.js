@@ -8,8 +8,11 @@
  */
 
 const fs = require("fs");
+const path = require("path");
+const LOGO_LIGHT_PATH = path.join(__dirname, "..", "assets", "logos", "trusight_logo_4k_light.png");
+
 const {
-  Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+  Document, Packer, Paragraph, ImageRun, TextRun, Table, TableRow, TableCell,
   AlignmentType, LevelFormat, HeadingLevel, BorderStyle, WidthType,
   ShadingType, PageBreak,
 } = require("docx");
@@ -172,7 +175,20 @@ const pageSetup = {
 // ═════════════════════════════════════════════════════════════════════
 
 const docChildren = [
-  // ── Cover ──
+  // Trusight logo on the cover
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 200, after: 200 },
+    children: [
+      new ImageRun({
+        type: "png",
+        data: fs.readFileSync(LOGO_LIGHT_PATH),
+        transformation: { width: 240, height: 39 },
+        altText: { title: "Trusight", description: "Trusight logo", name: "Trusight" },
+      }),
+    ],
+  }),
+    // ── Cover ──
   spacer(800),
   p([rt("PART 2 — PROOFS", { color: COLOR.ember, bold: true, font: FONT_HEAD, size: 22, characterSpacing: 80 })],
     { align: AlignmentType.CENTER, after: 120 }),

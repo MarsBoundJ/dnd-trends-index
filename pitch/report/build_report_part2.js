@@ -9,8 +9,11 @@
  */
 
 const fs = require("fs");
+const path = require("path");
+const LOGO_LIGHT_PATH = path.join(__dirname, "..", "assets", "logos", "trusight_logo_4k_light.png");
+
 const {
-  Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+  Document, Packer, Paragraph, ImageRun, TextRun, Table, TableRow, TableCell,
   AlignmentType, LevelFormat, HeadingLevel, BorderStyle, WidthType,
   ShadingType, PageBreak,
 } = require("docx");
@@ -215,7 +218,20 @@ const pageSetup = {
 // ═════════════════════════════════════════════════════════════════════
 
 const docChildren = [
-  // ── Section divider page ──
+  // Trusight logo on the cover
+  new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 200, after: 200 },
+    children: [
+      new ImageRun({
+        type: "png",
+        data: fs.readFileSync(LOGO_LIGHT_PATH),
+        transformation: { width: 240, height: 39 },
+        altText: { title: "Trusight", description: "Trusight logo", name: "Trusight" },
+      }),
+    ],
+  }),
+    // ── Section divider page ──
   ...sectionDivider("PART 2", "The Persona Playbooks"),
   spacer(400),
   p([rt("Three roles inside Wizards of the Coast each face a different decision every week. ", { color: COLOR.bodyText, italics: true, font: FONT_BODY, size: 24 }),

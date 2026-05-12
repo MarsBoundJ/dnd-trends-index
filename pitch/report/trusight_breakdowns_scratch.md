@@ -1,4 +1,8 @@
-# Trusight IP Breakdowns: 19 Licensing Candidates
+<div style="text-align: center; margin: 1em 0 1.5em 0;">
+<img src="../assets/logos/trusight_logo_4k_light.png" alt="Trusight" style="max-width: 360px; height: auto;" />
+</div>
+
+# IP Deep Dive: 19 Licensing Candidates
 
 This report presents 19 IP-licensing candidates selected from Trusight's 142-IP corpus, each examined across translation strategy, brand-integrity cost, and measured community signal.
 
@@ -21,8 +25,7 @@ Each IP entry uses a consistent structure:
 
 ---
 
-<a id="contents"></a>
-## Contents
+## Contents {#contents}
 
 The 19 IPs, in document order:
 
@@ -48,8 +51,7 @@ The 19 IPs, in document order:
 
 ---
 
-<a id="ip-01-hollow-knight"></a>
-## 1. Hollow Knight  ·  Team Cherry  ·  video game
+## 1. Hollow Knight  ·  Team Cherry  ·  video game {#ip-01-hollow-knight}
 
 ![Hollow Knight — Team Cherry key art](thumbnails/01_hollow_knight.jpg)
 
@@ -61,7 +63,7 @@ Hollow Knight (2017) and Hollow Knight: Silksong (2025) are Team Cherry's two-pe
 
 ### Marketing angle / D&D-universe niche
 
-Hollow Knight is the canonical Trusight Greenlight: the indie IP a Hollywood-driven licensing pipeline ~~cannot see~~ (might miss), with deep community-conversion infrastructure and zero existing tabletop ecosystem to fight. The harvest's killer single artifact is **a 1,161-up Silksong-inspired *"Monk: Way of the Needle"* subclass on r/UnearthedArcana** — the highest community-built D&D-subclass post in this batch. Hallownest's worldbuilding (Charms-as-magic-items, Soul-as-resource, Vessel-class characters) maps cleanly onto 5.5e mechanics. Niche it fills: a *bug-civilization fallen-kingdom* setting register that 5.5e doesn't currently have, with unusually clean translation paths. The licensing scope frames the Knight as a powerful NPC and player characters as *other Vessels / other denizens of Hallownest*; focus on monsters, environmental hazards, charms, and locations rather than recreating the lone-protagonist arc.
+Hollow Knight is the canonical Trusight Greenlight: the indie IP a Hollywood-driven licensing pipeline might miss, with deep community-conversion infrastructure and zero existing tabletop ecosystem to fight. The harvest's killer single artifact is **a 1,161-up Silksong-inspired *"Monk: Way of the Needle"* subclass on r/UnearthedArcana** — the highest community-built D&D-subclass post in this batch. Hallownest's worldbuilding (Charms-as-magic-items, Soul-as-resource, Vessel-class characters) maps cleanly onto 5.5e mechanics. Niche it fills: a *bug-civilization fallen-kingdom* setting register that 5.5e doesn't currently have, with unusually clean translation paths. The licensing scope frames the Knight as a powerful NPC and player characters as *other Vessels / other denizens of Hallownest*; focus on monsters, environmental hazards, charms, and locations rather than recreating the lone-protagonist arc.
 
 ### Translation challenges
 
@@ -122,7 +124,7 @@ The content surface above maps to specific 5.5e architectural slots. Each major 
 
 | # | Slot | Brand-integrity cost | Description |
 |---|---|---|---|
-| A | **Consumable magic items (potion~~-shelf~~ variant)** | **LOWEST** | Each Charm is a consumable; grants long-duration buff (1h-8h or until next long rest). ~10-12 named Charms across uncommon/rare/very-rare. Zero new attunement infrastructure. |
+| A | **Consumable magic items (potion variant)** | **LOWEST** | Each Charm is a consumable; grants long-duration buff (1h-8h or until next long rest). ~10-12 named Charms across uncommon/rare/very-rare. Zero new attunement infrastructure. |
 | B | **Standard attuned magic items** | LOW | Charms as standard 5.5e magic items using existing 3-attunement-slot limit. |
 | C | *New Charm-Notch attunement subsystem* | **HIGH — not recommended** | Invents new rules infrastructure to deliver the same flavor Option A delivers via the potion shelf. |
 
@@ -183,8 +185,7 @@ The content surface above maps to specific 5.5e architectural slots. Each major 
 
 ---
 
-<a id="ip-02-monster-hunter"></a>
-## 2. Monster Hunter: World + Monster Hunter Wilds  ·  Capcom  ·  video game  ·  paired entry
+## 2. Monster Hunter: World + Monster Hunter Wilds  ·  Capcom  ·  video game  ·  paired entry {#ip-02-monster-hunter}
 
 ![Monster Hunter — Capcom key art](thumbnails/02_monster_hunter.jpg)
 
@@ -346,8 +347,7 @@ This is the IP that maps most cleanly onto Sigil's encounter-map paradigm — ev
 
 ---
 
-<a id="ip-03-berserk"></a>
-## 3. Berserk  ·  Kentaro Miura / Kouji Mori (continuation) / Hakusensha  ·  manga / anime
+## 3. Berserk  ·  Kentaro Miura / Kouji Mori (continuation) / Hakusensha  ·  manga / anime {#ip-03-berserk}
 
 ![Berserk — Guts key visual](thumbnails/03_berserk.jpg)
 
@@ -500,8 +500,7 @@ Berserk's canon includes content (Eclipse arc sexual violence, Casca trauma arcs
 
 ---
 
-<a id="ip-04-solo-leveling"></a>
-## 4. Solo Leveling  ·  Chugong  ·  webtoon / web novel / anime
+## 4. Solo Leveling  ·  Chugong  ·  webtoon / web novel / anime {#ip-04-solo-leveling}
 
 ![Solo Leveling — Sung Jinwoo Shadow Monarch key visual](thumbnails/04_solo_leveling.jpg)
 
@@ -653,8 +652,7 @@ Igris (CR 18), Beru (CR 19), Kamish (CR 25), Iron-clad Knight (CR 12), Stone Gol
 
 ---
 
-<a id="ip-05-elden-ring"></a>
-## 5. Elden Ring  ·  FromSoftware / Bandai Namco / GRR Martin (lore)  ·  video game
+## 5. Elden Ring  ·  FromSoftware / Bandai Namco / GRR Martin (lore)  ·  video game {#ip-05-elden-ring}
 
 ![Elden Ring — FromSoftware / Bandai Namco key art](thumbnails/05_elden_ring.jpg)
 
@@ -808,8 +806,7 @@ Moonveil, Rivers of Blood, Sword of Night and Flame, Eclipse Shotel, Marais Exec
 
 ---
 
-<a id="ip-06-omniscient-reader"></a>
-## 6. Omniscient Reader's Viewpoint  ·  Chugong / singshong  ·  webtoon / web novel / anime / film
+## 6. Omniscient Reader's Viewpoint  ·  Chugong / singshong  ·  webtoon / web novel / anime / film {#ip-06-omniscient-reader}
 
 ![Omniscient Reader's Viewpoint — anime key visual](thumbnails/06_orv.jpg)
 
@@ -951,8 +948,7 @@ ORV's scenario-by-scenario structure maps unusually cleanly to one-shot adventur
 
 ---
 
-<a id="ip-07-bloodborne"></a>
-## 7. Bloodborne  ·  FromSoftware (Sony IP)  ·  video game
+## 7. Bloodborne  ·  FromSoftware (Sony IP)  ·  video game {#ip-07-bloodborne}
 
 ![Bloodborne — FromSoftware / Sony key art](thumbnails/07_bloodborne.jpg)
 
@@ -1107,8 +1103,7 @@ Father Gascoigne (CR 10), Vicar Amelia (CR 13 beastform), Blood-starved Beast (C
 
 ---
 
-<a id="ip-08-mistborn"></a>
-## 8. Mistborn  ·  Brandon Sanderson  ·  literature
+## 8. Mistborn  ·  Brandon Sanderson  ·  literature {#ip-08-mistborn}
 
 ![Mistborn — Brandon Sanderson / Dragonsteel cover art](thumbnails/08_mistborn.jpg)
 
@@ -1261,8 +1256,7 @@ Mistborn's secondary magic systems can be scoped in or out:
 
 ---
 
-<a id="ip-09-deep-rock-galactic"></a>
-## 9. Deep Rock Galactic  ·  Ghost Ship Games  ·  video game
+## 9. Deep Rock Galactic  ·  Ghost Ship Games  ·  video game {#ip-09-deep-rock-galactic}
 
 ![Deep Rock Galactic — Ghost Ship Games key art](thumbnails/09_deep_rock_galactic.png)
 
@@ -1407,8 +1401,7 @@ DRG is *built around* procedural cave-encounter maps — natural fit for Sigil's
 
 ---
 
-<a id="ip-10-one-piece"></a>
-## 10. One Piece  ·  Eiichiro Oda / Toei Animation / Shueisha  ·  anime / manga
+## 10. One Piece  ·  Eiichiro Oda / Toei Animation / Shueisha  ·  anime / manga {#ip-10-one-piece}
 
 ![One Piece — Toei Animation key visual](thumbnails/10_one_piece.jpg)
 
@@ -1562,8 +1555,7 @@ Sea Kings (CR-variable ocean megafauna), Marine Vice Admirals (Garp CR 25, Kizar
 
 ---
 
-<a id="ip-11-dwarf-fortress"></a>
-## 11. Dwarf Fortress  ·  Bay 12 Games (Tarn + Zach Adams)  ·  video game
+## 11. Dwarf Fortress  ·  Bay 12 Games (Tarn + Zach Adams)  ·  video game {#ip-11-dwarf-fortress}
 
 ![Dwarf Fortress — Bay 12 Games / Kitfox Premium Edition art](thumbnails/11_dwarf_fortress.jpg)
 
@@ -1710,8 +1702,7 @@ DF is *built around* fortress maps — natural Sigil fit. Each succession-game's
 
 ---
 
-<a id="ip-12-demon-slayer"></a>
-## 12. Demon Slayer  ·  Koyoharu Gotouge / Ufotable / Shueisha  ·  manga / anime / film
+## 12. Demon Slayer  ·  Koyoharu Gotouge / Ufotable / Shueisha  ·  manga / anime / film {#ip-12-demon-slayer}
 
 ![Demon Slayer — Ufotable / Aniplex key visual](thumbnails/12_demon_slayer.jpg)
 
@@ -1861,8 +1852,7 @@ Period-Japan demonic-violence + Hashira self-sacrifice arcs are present in canon
 
 ---
 
-<a id="ip-13-pillars-of-eternity"></a>
-## 13. Pillars of Eternity + Pillars of Eternity II: Deadfire  ·  Obsidian Entertainment  ·  video game  ·  paired entry
+## 13. Pillars of Eternity + Pillars of Eternity II: Deadfire  ·  Obsidian Entertainment  ·  video game  ·  paired entry {#ip-13-pillars-of-eternity}
 
 ![Pillars of Eternity — Obsidian Entertainment key art](thumbnails/13_pillars_of_eternity.jpg)
 
@@ -2031,8 +2021,7 @@ Engwithan constructs (CR 10-18), Adragans, Eyeless, Sea Cave drakes, Oracle of W
 
 ---
 
-<a id="ip-14-dark-souls"></a>
-## 14. Dark Souls  ·  FromSoftware  ·  video game series
+## 14. Dark Souls  ·  FromSoftware  ·  video game series {#ip-14-dark-souls}
 
 #### Strategic positioning note
 
@@ -2192,8 +2181,7 @@ Ornstein (CR 18), Smough (CR 17), Artorias (CR 22), Manus (CR 24), Sif (CR 14), 
 
 ---
 
-<a id="ip-15-hades"></a>
-## 15. Hades + Hades II  ·  Supergiant Games  ·  video game  ·  paired entry
+## 15. Hades + Hades II  ·  Supergiant Games  ·  video game  ·  paired entry {#ip-15-hades}
 
 ![Hades — Supergiant Games key art](thumbnails/15_hades.jpg)
 
@@ -2354,8 +2342,7 @@ Megaera (Fury, CR 12), Theseus + Asterius (paired CR 16/18), Hades (CR 24), Poly
 
 ---
 
-<a id="ip-16-persona-5"></a>
-## 16. Persona 5 + Persona 5 Royal  ·  Atlus / Sega  ·  video game  ·  paired entry
+## 16. Persona 5 + Persona 5 Royal  ·  Atlus / Sega  ·  video game  ·  paired entry {#ip-16-persona-5}
 
 ![Persona 5 — Atlus / Sega key art](thumbnails/16_persona_5.jpg)
 
@@ -2519,8 +2506,7 @@ Each Palace is a complete dungeon set-piece — the IP is *built around* dungeon
 
 ---
 
-<a id="ip-17-sea-of-thieves"></a>
-## 17. Sea of Thieves  ·  Rare / Microsoft  ·  video game
+## 17. Sea of Thieves  ·  Rare / Microsoft  ·  video game {#ip-17-sea-of-thieves}
 
 ![Sea of Thieves — Rare / Microsoft key art](thumbnails/17_sea_of_thieves.jpg)
 
@@ -2665,8 +2651,7 @@ Skeleton Captain (CR 10), Megalodon (CR 12), The Kraken (CR 18 — existing 5.5e
 
 ---
 
-<a id="ip-18-ffxiv"></a>
-## 18. Final Fantasy XIV  ·  Square Enix  ·  video game (MMORPG)
+## 18. Final Fantasy XIV  ·  Square Enix  ·  video game (MMORPG) {#ip-18-ffxiv}
 
 ![Final Fantasy XIV — Square Enix key art](thumbnails/18_ffxiv.jpg)
 
@@ -2807,8 +2792,7 @@ Two FFXIV-signature mechanics that don't have direct 5.5e analogs:
 
 ---
 
-<a id="ip-19-house-of-the-dragon"></a>
-## 19. House of the Dragon  ·  HBO  ·  TV / film (with Game of Thrones umbrella)
+## 19. House of the Dragon  ·  HBO  ·  TV / film (with Game of Thrones umbrella) {#ip-19-house-of-the-dragon}
 
 ![House of the Dragon — HBO key art](thumbnails/19_house_of_the_dragon.png)
 
