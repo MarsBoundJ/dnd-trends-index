@@ -2953,3 +2953,31 @@ Valyrian steel weapons are generations-old named blades. **Slots into the same n
 - Sigil VTT angle is genuinely additive — none of the AI cadre raised it in the original outline, but it sells the Hasbro-portfolio integration story. Worth keeping prominent in every entry.
 - The "ecosystem-trap" honest caveat (Mistborn's competing Cosmere RPG) is a feature not a bug — calibrated honesty is the report's voice. Each entry should surface the equivalent caveat where one exists (e.g., Dark Souls has nothing comparable; Persona 5 has no TTRPG; Hades has none).
 
+---
+
+## Image attributions
+
+Thumbnails throughout this document are sourced from publisher press kits and publicly available promotional materials, used in a fair-use context for the purpose of this licensing-pitch document. All depicted IPs remain the property of their respective rights holders.
+
+| # | IP | Source |
+|---|---|---|
+| 1 | Hollow Knight | *Hollow Knight: Silksong* key art (Team Cherry); [Wikipedia](https://upload.wikimedia.org/wikipedia/en/0/05/Silksong.jpg) |
+| 2 | Monster Hunter | Capcom; [IGDB *Monster Hunter Wilds* press kit](https://www.igdb.com/games/monster-hunter-wilds/presskit) |
+| 3 | Berserk | 2016 anime key art (Hakusensha / Liden Films); [Wikipedia](https://upload.wikimedia.org/wikipedia/en/3/33/Berserk_2016_anime_key_art.jpg) |
+| 4 | Solo Leveling | Season 2 Volume 1 Blu-ray cover (A-1 Pictures / Aniplex); [Wikipedia](https://upload.wikimedia.org/wikipedia/en/1/17/Solo_Leveling_season_2_Volume_1_Blu-ray.jpg) |
+| 5 | Elden Ring | Box art (FromSoftware / Bandai Namco); [Wikipedia](https://upload.wikimedia.org/wikipedia/en/b/b9/Elden_Ring_Box_art.jpg) |
+| 6 | Omniscient Reader's Viewpoint | Anime key visual; [Crunchyroll editorial CDN](https://a.storyblok.com/f/178900/1064x1505/e6bb5351c9/omniscient-reader-kv.png) |
+| 7 | Bloodborne | Key artwork (FromSoftware / Sony); via [Creative Uncut](https://www.creativeuncut.com/gallery-29/art/bb-key-artwork.jpg) |
+| 8 | Mistborn | Era 1 trilogy cover composite (Brandon Sanderson / Dragonsteel); [Dragonsteel store CDN](https://cdn.shopify.com/s/files/1/0886/8082/5106/files/Trilogy-Cover-e1569529482896.jpg) |
+| 9 | Deep Rock Galactic | Key art (Ghost Ship Games); official press kit (Google Drive) |
+| 10 | One Piece | Toei Animation promotional image; [toei-animation.com](https://www.toei-animation.com/wp-content/uploads/2019/02/one_piece_product.jpg) |
+| 11 | Dwarf Fortress | Premium Edition art (Bay 12 Games / Kitfox Publishing / Mike Mayday); [Kitfox press page](https://kitfoxgames.notion.site/) |
+| 12 | Demon Slayer | *Mugen Train Arc* / Infinity Castle theatrical poster (Aniplex / Ufotable); [Wikipedia](https://en.wikipedia.org/wiki/File:Kimetsu_No_Yaiba_Mugen_Jyo-hen_theatrical_poster.jpg) |
+| 13 | Pillars of Eternity | Cover art (Obsidian Entertainment); [Wikipedia](https://upload.wikimedia.org/wikipedia/en/c/ca/Pillars_of_Eternity.jpg) |
+| 14 | Dark Souls | Cover art (FromSoftware / Bandai Namco); [Wikipedia](https://upload.wikimedia.org/wikipedia/en/8/8d/Dark_Souls_Cover_Art.jpg) |
+| 15 | Hades | Cover art (Supergiant Games); [Wikipedia](https://upload.wikimedia.org/wikipedia/en/c/cc/Hades_cover_art.jpg) |
+| 16 | Persona 5 | Cover art (Atlus / Sega); [Wikipedia](https://upload.wikimedia.org/wikipedia/en/b/b0/Persona_5_cover_art.jpg) |
+| 17 | Sea of Thieves | Cover art (Rare / Microsoft); [Wikipedia](https://upload.wikimedia.org/wikipedia/en/7/77/Sea_of_thieves_cover_art.jpg) |
+| 18 | Final Fantasy XIV | *A Realm Reborn* box cover (Square Enix); [Wikipedia](https://upload.wikimedia.org/wikipedia/en/a/a1/Final_Fantasy_XIV%2C_A_Realm_Reborn_box_cover.jpg) |
+| 19 | House of the Dragon | Season 1 promotional poster (HBO); [Wikipedia](https://upload.wikimedia.org/wikipedia/en/d/df/House_of_the_Dragon_season_1.png) |
+
