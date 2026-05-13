@@ -2,7 +2,7 @@
  * Trusight one-pager #2 — What Else Trusight Does
  * Custom Letter portrait (8.5" × 11"), single page.
  * Three persona columns: Designers / Marketers / IP & Licensing.
- * Plus Playing-to-Win mapping + the OGL early-warning capability.
+ * Plus Playing-to-Win mapping + the trial-balloon reception capability.
  */
 
 const pptxgen = require("pptxgenjs");
@@ -100,11 +100,11 @@ const personas = [
     label: "MARKETERS",
     color: C.amber,
     sub: "What sells, and how do we say it?",
-    headline: "Backlash early warning",
+    headline: "Trial-balloon reception",
     cases: [
       {
-        head: "OGL-Tier Backlash Detector  ★",
-        body: "Daily-cadence community sentiment. If WotC pre-hints a move (Asmodee printing partnership, OGL revision, AI policy change), Trusight surfaces the reaction within 24 hours — before commitment. Not a minute-level crisis monitor; a trial-balloon detector.",
+        head: "Trial-Balloon Reception  ★",
+        body: "Daily-cadence community sentiment. When a strategic move goes public — a partnership announcement, a policy direction, a product strategy shift — Trusight surfaces the community's read within 24 hours, before commitment. Not a crisis monitor; a trial-balloon detector.",
       },
       {
         head: "Creator ROI Attribution",

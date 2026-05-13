@@ -40,10 +40,10 @@ export function SiteHeader() {
           className="group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember rounded-sm"
         >
           <Image
-            src="/logos/trusight_logo_4k_dark.png"
+            src="/logos/trusight_logo_solo_4k_dark.png"
             alt="Trusight"
-            width={180}
-            height={29}
+            width={72}
+            height={28}
             priority
             className="h-7 w-auto group-hover:opacity-90 transition-opacity"
           />
