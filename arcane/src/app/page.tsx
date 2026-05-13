@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import { redirect } from "next/navigation"
 
 import { auth } from "../../auth"
 import {
@@ -104,7 +103,7 @@ const REPORTS: Report[] = [
   {
     title: "Capabilities One-pager",
     blurb:
-      "Beyond IP & Licensing — what else Trusight does. Designers, marketers, OGL-style early-warning, Playing-to-Win mapping.",
+      "Beyond IP & Licensing — what else Trusight does. Designers, marketers, trial-balloon early-warning, Playing-to-Win mapping.",
     href: "/reports/trusight_onepager_capabilities.pdf",
     external: true,
     tag: "ONE-PAGER",
@@ -115,10 +114,11 @@ const REPORTS: Report[] = [
 export default async function RootPage() {
   const session = await auth()
 
-  // Authenticated users skip the marketing landing entirely.
-  if (session?.user) {
-    redirect("/overview")
-  }
+  // No auto-redirect for signed-in users. Auto-bouncing them to
+  // /overview breaks the Atlas's Home tile (clicking it would
+  // instantly redirect them back to /overview, making the tile a
+  // no-op). Signed-in users see the same marketing page with the
+  // bottom CTA swapped from "Sign in" to a Trends jump-link.
 
   return (
     <main className="bg-obsidian">
@@ -138,25 +138,24 @@ export default async function RootPage() {
       <section className="mx-auto max-w-3xl px-6 pb-20">
         <div className="space-y-6 font-sans text-lg leading-relaxed text-parchment sm:text-xl">
           <p>
-            What if you pulled EVERYTHING on the web that was about D&amp;D?
-            Then took all that EVERYTHING and stored it in massive databases?
-            What if you then used the most sophisticated AI to analyze, parse,
-            and understand the trends from that data?
+            What if we gathered EVERYTHING about D&amp;D on the web? Then took
+            that EVERYTHING and stored it in a database? Then, what if we asked
+            the most sophisticated AI to analyze, parse, and understand that
+            data?
           </p>
           <p className="font-display text-2xl font-semibold text-ember-bright sm:text-3xl">
             That&rsquo;s Trusight.
           </p>
           <p>
             With Trusight, if it&rsquo;s about D&amp;D, you can dive deep. Want
-            to know about IP &amp; Licensing prospects? Check. Want to know how
-            a UA landed? Or, know what the D&amp;D community is hotly searching
-            for this week? Check. Check. Check.
+            to learn more about IP &amp; Licensing prospects? Check. Want to
+            know how a UA landed? Check. Want to know what the community is
+            searching? Check!
           </p>
           <p>
-            Take a look at some recent reports we&rsquo;ve developed, then
-            imagine the possibilities.{" "}
+            Take a look at our reports, then imagine the possibilities.{" "}
             <span className="font-display font-semibold text-ember-bright">
-              Trusight, THE D&amp;D trendwatch.
+              Trusight, THE trendwatch for D&amp;D.
             </span>
           </p>
         </div>
@@ -205,18 +204,32 @@ export default async function RootPage() {
         </div>
       </section>
 
-      {/* ── Subtle sign-in for return visitors ─────────────────────── */}
+      {/* ── Bottom CTA — sign-in for anon, jump-to-app for signed-in ── */}
       <section className="border-t border-bronze/30 bg-onyx/40 py-10">
         <div className="mx-auto flex max-w-4xl flex-col items-center gap-3 px-6 text-center">
-          <p className="font-sans text-sm text-ash">
-            Already have an account?
-          </p>
-          <Link
-            href="/api/auth/signin"
-            className="font-sans text-sm font-medium text-ember-bright hover:text-ember-bright/80 hover:underline"
-          >
-            Sign in →
-          </Link>
+          {session?.user ? (
+            <>
+              <p className="font-sans text-sm text-ash">Welcome back.</p>
+              <Link
+                href="/overview"
+                className="font-sans text-sm font-medium text-ember-bright hover:text-ember-bright/80 hover:underline"
+              >
+                Continue to Trends →
+              </Link>
+            </>
+          ) : (
+            <>
+              <p className="font-sans text-sm text-ash">
+                Already have an account?
+              </p>
+              <Link
+                href="/api/auth/signin"
+                className="font-sans text-sm font-medium text-ember-bright hover:text-ember-bright/80 hover:underline"
+              >
+                Sign in →
+              </Link>
+            </>
+          )}
         </div>
       </section>
     </main>

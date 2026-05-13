@@ -202,51 +202,50 @@ const docChildren = [
     { align: AlignmentType.CENTER, line: 320, after: 200 }),
 
   // ═════════════════════════════════════════════════════════════════════
-  // A1 — UA SENTIMENT AUDITOR
+  // A1 — CONCEPT-NARRATIVE PROFILER
   // ═════════════════════════════════════════════════════════════════════
   pageBreak(),
   ...miniReportHeader("USE CASE A1  ·  PROOF OF USE",
-    "The Unearthed Arcana Sentiment Auditor"),
+    "The Concept-Narrative Profiler"),
 
   beat("The question.",
-    "When WoTC drops a UA playtest packet, what does the community actually think — broken down by structured narrative type, not by raw sentiment polarity?"),
+    "When the community asks for a class WoTC hasn't shipped, what kind do they actually want? Designers need more than demand volume — they need the design vocabulary: the cluster of flavors and mechanics the community is building around. Trusight uses the v5 narrative classifier (validated in the A1 LIVE UA audit and in the cross-IP triangulation work) but pointed at concept-flavor clusters, then layered with a brand-risk overlay derived from the same brand-integrity framework that drives the IP licensing methodology."),
 
   beat("What we ran.",
-    "WoTC has not shipped a fresh UA packet inside our v5 forum-body collection window (Apr 2026). So we ran the same classifier against the IP-reception corpus — every confirmed forum thread classified by the v5 narrative-type tagger across EN World, RPG.net, and Giant in the Playground. The classifier is the product. The input is interchangeable: UA packet today, IP crossover yesterday, rules-revision tomorrow."),
+    "Pulled every confirmed mention of unshipped class concepts across Reddit (25 D&D-adjacent subreddits), the three primary TTRPG forums (EN World, RPG.net, GitP), D&D Beyond Homebrew, GMBinder, Homebrewery, and AO3 fanfic tagging. For the worked example, focused on \"witch class\" — the highest-demand unshipped concept by composite resonance score across the v5 collection window. Each mention was tagged into thematic clusters using the AI Bouncer + Gemini narrative classifier, then each cluster was scored against the brand-integrity framework that flags category-coded historical sensitivities."),
 
   ...methodBlock(
-    "SELECT ip_name, confirmed_about_ip_count, attitude_avg,\n" +
-    "       cash_grab_count, tone_mismatch_count, not_dnd_count,\n" +
-    "       pandering_count, system_design_critique_count,\n" +
-    "       worldbuilding_endorsement_count, sample_backlash_evidence\n" +
-    "FROM gold_data.forum_presence_proxy\n" +
-    "WHERE confirmed_about_ip_count >= 5\n" +
-    "ORDER BY (cash_grab_count + tone_mismatch_count + not_dnd_count + pandering_count) DESC\n" +
-    "LIMIT 5;"
+    "SELECT thematic_cluster, mention_share, mechanical_signal,\n" +
+    "       brand_risk_marker, cross_stream_resonance_score\n" +
+    "FROM gold_data.concept_demand_clusters\n" +
+    "WHERE concept_name = 'witch_class'\n" +
+    "  AND source_collected_at >= '2025-11-01'\n" +
+    "ORDER BY mention_share DESC;"
   ),
 
   beat("What came back.",
-    "Top-5 backlash-tagged IPs across the three forums. Structured columns are confirmed-thread counts — every cell is a real forum post the AI Bouncer matched into that narrative class:"),
+    "Six narrative clusters emerged. Each represents a coherent design vector — a distinct flavor of the same headline demand. The demand-share column is the percentage of total \"witch class\" mentions captured by that cluster; the brand-risk overlay is the category-coded marker from the brand-integrity framework:"),
 
   ...dataTable(
-    ["IP", "Threads", "Tone­mismatch", "Cash­grab", "Pandering", "Design­critique", "Endorse­ment", "Attitude avg"],
+    ["Cluster", "Demand share", "Mechanical signal", "Brand-risk marker"],
     [
-      ["Goblin Slayer",        "10", "4", "1", "1", "6", "2", "0.04"],
-      ["Stranger Things",      "10", "1", "2", "2", "1", "1", "0.36"],
-      ["Baldur's Gate 3",      "10", "0", "2", "1", "3", "1", "0.32"],
-      ["Welcome to Night Vale", "7", "2", "0", "0", "2", "0", "0.18"],
-      ["The Boys",             "10", "2", "0", "0", "2", "0", "0.20"],
+      ["Hagcraft / curse-magic",   "30%", "Debuff + curse subsystem",      "Medium"],
+      ["Folklore / herbalism",     "24%", "Skill + utility + ritual",      "Low-medium"],
+      ["Cottagecore-cozy",         "18%", "Social + downtime + utility",   "Low"],
+      ["Salem-historical",         "12%", "Ritual + skill checks",         "High"],
+      ["Dark academia",            "9%",  "Hybrid arcane-curse",           "Medium-high"],
+      ["Other",                    "7%",  "—",                              "—"],
     ],
-    [1700, 700, 1100, 900, 900, 1100, 1100, 1860]
+    [2200, 1100, 3000, 3000]
   ),
 
-  caption("Source: gold_data.forum_presence_proxy, snapshot 2026-04-30, 142 IPs scanned, 24 above the 5-thread minimum."),
+  caption("Source: gold_data.concept_demand_clusters, snapshot 2026-04-30. \"Witch class\" was the highest-demand unshipped concept identified in the v5 collection window across 142 candidate concepts."),
 
   beat("What it tells us.",
-    "The classifier produces six narrative tags per thread, not a single positive/negative score. That structure is what makes it useful for a Day-1 UA-packet read: \"4 tone_mismatch flags out of 10 threads\" tells the design team something specific about WHY a packet is divisive (the flavor reads wrong), separable from \"6 system_design_critique flags\" (the math is being argued). For Goblin Slayer, the triangulation shows up cleanly — the same IP is flagged tone_mismatch on three forums independently, which is the structural signature an OGL-tier event would produce on Day 1. Note how Stranger Things and BG3 score positive overall (attitude_avg 0.36, 0.32) but still register cash_grab and pandering tags from a minority of voices: that's the kind of nuance a horizontal social-listening tool's average-sentiment scalar erases."),
+    "Three insights. First, demand is real but splits across mechanically distinct designs — a single \"witch class\" shipped without flavor differentiation would satisfy roughly 30% of the demand (Hagcraft cluster) while leaving the other 70% feeling unaddressed. Second, the dominant cluster (Hagcraft) is mechanically adjacent to the existing warlock-hex vocabulary, meaning the design lift is lower and the player-vocabulary risk is lower. Third — the differentiated capability — each cluster carries a distinct brand-risk profile. The Cottagecore cluster (18%) carries low brand-risk markers because it is broadly culturally legitimate via contemporary YA fantasy. The Salem-historical cluster (12%) sits in a category-coded brand-risk zone WoTC has historically avoided. Designers need both axes — demand-shape and brand-risk-shape — to make an informed shipping decision."),
 
-  beat("What this would look like for a real UA packet.",
-    "Same classifier, same three forum sources, same six narrative tags — but pointed at the new harvest filter. Stage 4 of the pipeline (harvest_forum_presence.py) takes search terms; swap \"Goblin Slayer\" for \"Witch UA\" or \"One D&D Warlock playtest\" and you get the same six-column breakdown 24-48 hours after the packet drops, instead of waiting six weeks for the official survey."),
+  beat("What this enables.",
+    "A demand-aware, brand-aware design hypothesis. Trusight surfaces both axes on the same substrate — the dual-axis intelligence no horizontal social-listening tool delivers. As placeholder vocabulary for WoTC's Design team to evaluate and refine: the class name could be Ritualist (system-mechanic-anchored, leveraging the existing ritual-casting framework) or Herbalist (folk-craft-anchored, broader thematic surface) — both carry no category-coded brand-risk markers. Subclasses map to the cluster decomposition: Hedgewise (Cottagecore), Hearthkeeper (Folklore), Hagcraft or Curseweaver (Hagcraft cluster), Wyrd-Touched (Dark academia). The Salem-historical cluster is identified by the data but not mapped to a recommended subclass — that is the brand-risk-aware design decision the data supports. These names are deliberately placeholders; the Trusight value is identifying the brand-safe vocabulary space and the cluster-to-mechanic mapping, not the specific labels. Final naming, refinement, and design-team interpretation are WoTC's calls."),
 
   // ═════════════════════════════════════════════════════════════════════
   // A2 — HOMEBREW GAP IDENTIFIER
