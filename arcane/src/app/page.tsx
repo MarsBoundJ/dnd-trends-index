@@ -4,6 +4,15 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 
 import { auth } from "../../auth"
+import {
+  SigilStackedCards,
+  SigilDecisionMatrix,
+  SigilSentimentWaveform,
+  SigilThreeSilhouettes,
+  SigilEvidenceLadder,
+  SigilPageWithStar,
+  SigilHexHub,
+} from "@/components/sigils"
 
 /*
  * Trusight — root landing page (cold-outreach version).
@@ -33,7 +42,8 @@ type Report = {
   blurb: string
   href: string
   external: boolean
-  badge: string
+  tag: string
+  Sigil: React.ComponentType<{ className?: string }>
 }
 
 const REPORTS: Report[] = [
@@ -43,7 +53,8 @@ const REPORTS: Report[] = [
       "Per-IP breakdowns of 19 licensing candidates — translation strategy, brand-integrity cost, and measured community signal. Includes Hollow Knight, Elden Ring, Berserk, Solo Leveling, Bloodborne, One Piece, FFXIV, House of the Dragon, and 11 more.",
     href: "/reports/ip_deep_dive.html",
     external: true,
-    badge: "Flagship report",
+    tag: "DEEP DIVE",
+    Sigil: SigilStackedCards,
   },
   {
     title: "IP & Licensing Report",
@@ -51,7 +62,8 @@ const REPORTS: Report[] = [
       "Six case studies. Four risks. One framework. The decision-engine view on which IPs to license, which to soft-pass, and why.",
     href: "/reports/trusight_report_ip_licensing.pdf",
     external: true,
-    badge: "Companion report",
+    tag: "REPORT",
+    Sigil: SigilDecisionMatrix,
   },
   {
     title: "UA Sentiment Audit (A1 LIVE)",
@@ -59,7 +71,8 @@ const REPORTS: Report[] = [
       "Live methodology proof on a contested IP — six channels of community signal, classifier-tagged sentiment, and forum-anonymized quotes.",
     href: "/reports/trusight_report_A1_LIVE_audit.pdf",
     external: true,
-    badge: "Methodology",
+    tag: "AUDIT",
+    Sigil: SigilSentimentWaveform,
   },
   {
     title: "Persona Playbooks",
@@ -67,7 +80,8 @@ const REPORTS: Report[] = [
       "Three roles inside WotC — Designers, Marketers, IP & Licensing — each face a different weekly decision. Three Trusight reads for three weekly questions.",
     href: "/reports/trusight_report_part2_personas.pdf",
     external: true,
-    badge: "Personas",
+    tag: "REPORT",
+    Sigil: SigilThreeSilhouettes,
   },
   {
     title: "Persona A: Worked Proofs",
@@ -75,7 +89,8 @@ const REPORTS: Report[] = [
       "Evidence stack for the Designer persona. Worked examples on what data Trusight surfaces and how it informs design-side decisions.",
     href: "/reports/trusight_report_part2_proofs_personaA.pdf",
     external: true,
-    badge: "Proofs",
+    tag: "REPORT",
+    Sigil: SigilEvidenceLadder,
   },
   {
     title: "IP One-pager",
@@ -83,7 +98,8 @@ const REPORTS: Report[] = [
       "The 12-candidate IP decision engine at a glance. Four-quadrant fit/reception map across an 8-source signal stack.",
     href: "/reports/trusight_onepager_ip.pdf",
     external: true,
-    badge: "One-pager",
+    tag: "ONE-PAGER",
+    Sigil: SigilPageWithStar,
   },
   {
     title: "Capabilities One-pager",
@@ -91,7 +107,8 @@ const REPORTS: Report[] = [
       "Beyond IP & Licensing — what else Trusight does. Designers, marketers, OGL-style early-warning, Playing-to-Win mapping.",
     href: "/reports/trusight_onepager_capabilities.pdf",
     external: true,
-    badge: "One-pager",
+    tag: "ONE-PAGER",
+    Sigil: SigilHexHub,
   },
 ]
 
@@ -165,9 +182,12 @@ export default async function RootPage() {
               rel="noopener noreferrer"
               className="group flex flex-col gap-3 rounded-lg border border-bronze/40 bg-iron/40 p-5 transition hover:border-ember hover:bg-iron/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian"
             >
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ember-bright">
-                {report.badge}
-              </span>
+              <div className="flex items-center gap-2 text-ember-bright">
+                <report.Sigil className="h-5 w-5 shrink-0" />
+                <span className="font-mono text-[10px] uppercase tracking-[0.18em]">
+                  {report.tag}
+                </span>
+              </div>
               <h3 className="font-display text-lg font-semibold leading-snug text-parchment group-hover:text-ember-bright">
                 {report.title}
               </h3>
