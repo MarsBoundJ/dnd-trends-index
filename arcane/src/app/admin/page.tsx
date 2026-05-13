@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Admin landing (Step 12).
+ * Trusight — Admin landing (Step 12).
  *
  * Tile grid of the available back-office surfaces. Two active tiles
  * (Harvesting Cockpit, BackerKit Console) + two planned tiles
@@ -75,7 +75,7 @@ const TILES: AdminTile[] = [
 ]
 
 export const metadata = {
-  title: "Admin · Arcane Analytics",
+  title: "Admin · Trusight",
 }
 
 export default function AdminIndexPage() {

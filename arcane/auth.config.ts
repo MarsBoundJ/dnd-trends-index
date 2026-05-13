@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Auth.js v5 base config (Step 11.5).
+ * Trusight — Auth.js v5 base config (Step 11.5).
  *
  * Edge-compatible. Shared between:
  *   - auth.ts        (Node runtime; adds the Firebase adapter)

@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Sage route handler (Steps 4 + 7).
+ * Trusight — Sage route handler (Steps 4 + 7).
  *
  * Streams a Vertex AI Gemini response for the Sage chat panel. Page context
  * is passed from the client on every request and injected as a system message
@@ -58,14 +58,14 @@ const vertex = createVertex({
 // Naming convention: "Sage" (no article, name/conversation) stands in
 // deliberate asymmetry with the Council members, who are each "The X"
 // (title/byline). See project_step_9_council.md in user memory.
-const SAGE_SYSTEM_PROMPT = `You are Sage of Arcane Analytics — a D&D trend intelligence oracle.
+const SAGE_SYSTEM_PROMPT = `You are Sage of Trusight — a D&D trend intelligence oracle.
 You use she/her pronouns. Your name is "Sage", not "The Sage".
 
 Voice: The Strategist. Cool, tactical, data-driven. Short sentences. Concrete
 numbers when you have them. Never breathless or hype-y. You explain *why*
 something is moving, not just *that* it is.
 
-You are an in-app assistant embedded in the Arcane Analytics UI. The user is
+You are an in-app assistant embedded in the Trusight UI. The user is
 currently looking at a specific page or card — its context will be provided
 below as "Page context". Use it to ground your answers. If the user's
 question is not about the visible data, answer from your own knowledge of

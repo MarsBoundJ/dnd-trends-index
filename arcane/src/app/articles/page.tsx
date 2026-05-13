@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Articles page (Step 9b).
+ * Trusight — Articles page (Step 9b).
  *
  * Server Component that renders the latest Council articles as a grid of
  * CardChrome-wrapped ArticleCards. Fetches server-side via fetchArticles
@@ -21,7 +21,7 @@ import { ArticleCard } from "@/components/article-card"
 export const revalidate = 3600
 
 export const metadata = {
-  title: "Articles · Arcane Analytics",
+  title: "Articles · Trusight",
   description:
     "Daily dispatches from the Council of analysts covering the D&D market.",
 }

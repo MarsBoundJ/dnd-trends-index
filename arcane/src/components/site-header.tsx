@@ -1,7 +1,7 @@
 "use client"
 
 /*
- * Arcane Analytics — Site header (Steps 10 + 11).
+ * Trusight — Site header (Steps 10 + 11).
  *
  * Persistent top bar mounted in the root layout. Carries:
  *   - Wordmark (Spectral) linking back to /
@@ -14,6 +14,7 @@
  * any page content below.
  */
 
+import Image from "next/image"
 import Link from "next/link"
 import { Compass } from "lucide-react"
 
@@ -35,11 +36,17 @@ export function SiteHeader() {
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 md:px-6">
         <Link
           href="/"
+          aria-label="Trusight — home"
           className="group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ember rounded-sm"
         >
-          <span className="font-display text-base font-semibold text-parchment group-hover:text-ember-bright transition-colors">
-            Arcane Analytics
-          </span>
+          <Image
+            src="/logos/trusight_logo_4k_dark.png"
+            alt="Trusight"
+            width={180}
+            height={29}
+            priority
+            className="h-7 w-auto group-hover:opacity-90 transition-opacity"
+          />
         </Link>
 
         <div className="flex items-center gap-2">

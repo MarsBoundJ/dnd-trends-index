@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Bag of Holding sign-in merge (Step 11).
+ * Trusight — Bag of Holding sign-in merge (Step 11).
  *
  * Called once per sign-in, from the client, with the user's current
  * localStorage items. Server reads the existing Firestore items,

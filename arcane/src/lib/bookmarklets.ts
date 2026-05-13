@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Bookmarklet registry (Step 12).
+ * Trusight — Bookmarklet registry (Step 12).
  *
  * The minified `javascript:` payloads live in `scripts/*.txt` at the repo
  * root — they're maintained there because the same files are installable

@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Firestore admin client (Step 11).
+ * Trusight — Firestore admin client (Step 11).
  *
  * Thin singleton wrapper around firebase-admin so every server route
  * gets the same initialized instance. The Firebase Admin SDK bypasses

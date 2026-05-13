@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Admin guard helpers (Step 12).
+ * Trusight — Admin guard helpers (Step 12).
  *
  * Thin wrapper over `auth()` + ADMIN_EMAILS check so every admin-only
  * route handler doesn't have to re-implement the allowlist logic. The

@@ -1,7 +1,7 @@
 "use client"
 
 /*
- * Arcane Analytics — Bookmarklet install card (Step 12).
+ * Trusight — Bookmarklet install card (Step 12).
  *
  * React strips `href="javascript:..."` from JSX in dev warnings and
  * future versions may strip it entirely as a security hardening. The

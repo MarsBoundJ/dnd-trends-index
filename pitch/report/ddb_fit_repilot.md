@@ -1,0 +1,305 @@
+# DDB Fit Methodology Reference
+
+Methodology documentation for the Trusight breakdowns' DDB Fit layer —
+the brand-integrity-cost-ranked options-framing for IP content elements.
+The per-IP applications now live inside the breakdowns doc itself
+(see `trusight_breakdowns_scratch.md`). This file documents the
+methodology, the cross-IP observations from the pilot, and the
+methodology notes that inform extension to additional IPs.
+
+For project-memory codification, see
+`memory/project_ddb_fit_methodology.md`.
+
+---
+
+## The methodology — four principles
+
+1. **Brand integrity is the dominant slot-budget constraint** — not
+   engineering cost. WoTC's curatorial restraint over D&D's official
+   corpus is what limits typical sourcebook content to ~15-25 monsters /
+   1-3 subclasses / 5-15 magic items / 5-20 spells / 1-2 player options.
+   The MTG Universes Beyond backlash is the live precedent WoTC is
+   watching.
+
+2. **Options, not prescriptions.** Each content element gets 2-4 ranked
+   options for which existing 5e slot it fits into, with brand-integrity
+   cost ranking. WoTC's design team makes the final choice. Trusight
+   surfaces the menu and the trade-offs.
+
+3. **Existing-slot-first hierarchy.** For every IP-derived element, the
+   methodology asks four questions in order: (a) Does an existing 5e
+   slot already hold this fantasy? (b) If yes, list 2-4 options for
+   which existing slot, ranked by brand-integrity cost. (c) If no — does
+   the addition genuinely need a new slot, or is that an over-reach?
+   (d) Surface contextual factors that bear on the choice but aren't
+   Trusight's call to make.
+
+4. **HIGH-cost options are surfaced, not hidden.** A complete option set
+   includes the high-brand-integrity-cost path so WoTC sees the breadth
+   of the analysis and the trade-off space. Surfacing a few HIGH-cost
+   options per IP demonstrates depth of signal without recommending them.
+
+## Brand-integrity cost ranking — concrete examples
+
+| Option pattern | Brand-integrity cost | Why |
+|---|---|---|
+| Reflavor existing magic item / spell / monster | **LOWEST** | Zero new content surface; pure IP-recognition layer |
+| Refresh / update existing official subclass | **LOWEST** | Builds on existing official content; no new slot |
+| Add to existing slot (one new subclass for existing class) | **LOW** | Fills a known slot; preserves class identity |
+| New magic-item category (e.g., Charms-as-Potion-variant) | **LOW-MID** | New flavor, existing rules infrastructure |
+| Multi-slot expansion at typical envelope (~15-25 monsters / 1-3 subclasses) | **LOW-MID** | Sits within historical crossover-sourcebook precedent |
+| New rules variant (optional, doesn't replace core rules) | **MID** | Tasha's-style optional rules; opt-in |
+| New base class (not subclass) | **HIGH** | Permanent commitment; rare in WoTC catalog (Artificer 2019 is the last) |
+| New gameplay subsystem (Carve-Craft, etc.) | **HIGH** | Permanent commitment; conflicts with every future book |
+| Multi-system overhaul (Souls-difficulty + crafting + ecology + ...) | **HIGHEST** | Effectively a new game-mode; brand-shifting |
+
+---
+
+## Where the per-IP analysis lives
+
+The DDB Fit options-framing is integrated into each IP's *Translation
+possibilities (DDB product surface)* section in the breakdowns doc.
+Pilot coverage so far:
+
+All 19 IPs in the breakdowns doc have integrated *Slot options — brand-integrity-cost framing* subsections inside their *Translation possibilities (DDB product surface)* sections.
+
+| Section | IP | Status |
+|---|---|---|
+| 1 | Mistborn | ✓ integrated |
+| 2 | Solo Leveling | ✓ integrated |
+| 3 | Dark Souls | ✓ integrated |
+| 4 | Persona 5 + Persona 5 Royal | ✓ integrated |
+| 5 | Monster Hunter pair | ✓ integrated |
+| 6 | Hades + Hades II | ✓ integrated |
+| 7 | Sea of Thieves | ✓ integrated |
+| 8 | Pillars of Eternity + Deadfire | ✓ integrated |
+| 9 | Deep Rock Galactic | ✓ integrated |
+| 10 | Dwarf Fortress | ✓ integrated |
+| 11 | Omniscient Reader's Viewpoint | ✓ integrated |
+| 12 | House of the Dragon | ✓ integrated |
+| 13 | Hollow Knight | ✓ integrated |
+| 14 | Bloodborne | ✓ integrated |
+| 15 | One Piece | ✓ integrated |
+| 16 | Elden Ring | ✓ integrated |
+| 17 | Final Fantasy XIV | ✓ integrated |
+| 18 | Berserk | ✓ integrated |
+| 19 | Demon Slayer | ✓ integrated |
+
+---
+
+## Cross-IP observations from the pilot
+
+### 1. Every IP's signature mechanic has a brand-integrity-friendly reframe
+
+The clearest pattern across all three pilot IPs:
+
+| IP | Original "new subsystem" framing | Brand-integrity-friendly reframe |
+|---|---|---|
+| Hollow Knight | Charm-Notch attunement subsystem | Charms as consumable magic items |
+| Monster Hunter | Carve-and-Craft full subsystem | Monster-Part Magic Items + Hunter Background "Carve" feature |
+| Berserk | Cost-of-Power rules subsystem | Berserker Armor as single cursed legendary item |
+
+**The lesson:** every "this IP needs a new subsystem" pitch should be
+challenged. The flavor delivers through existing slots more often than
+not.
+
+### 2. Refresh existing content beats expanding the subclass shelf
+
+Two of the three pilot IPs have a brand-integrity-friendlier option than
+"ship a new subclass": **refresh existing official content**.
+Hollow Knight can refresh an existing Monk subclass with Hornet-flavored
+options; Monster Hunter can refresh the existing Monster Slayer Ranger
+subclass from Xanathar's. Both options satisfy the recurring community
+sentiment that under-loved older subclasses deserve attention — at zero
+new-subclass-slot cost. **The refresh-existing pattern is a generalizable
+lowest-cost path** to surface in the broader breakdowns doc.
+
+### 3. Community-signal-strongest option ≠ brand-integrity-friendliest option
+
+In all three pilot IPs, the community-engagement-leading option (Way of
+the Needle Monk, weapon-class subclasses, Path of the Possessed
+Barbarian) is *usually* the LOW-cost option — but not always the LOWEST.
+The methodology's value is making this trade-off explicit so WoTC
+chooses intentionally.
+
+### 4. Slot-footprint discipline produces a cleaner pitch
+
+The original pilot's deliverable answered "what should WoTC ship?" The
+options-framed pilot answers "what's the lowest-cost option that
+delivers the IP fantasy?" The second framing matches WoTC's actual
+decision-rights better — they're the design experts; we surface the
+menu and the brand-integrity profile, they pick.
+
+### 5. Portfolio-level cross-IP mechanic-category bets
+
+Iconic-weapons-with-special-properties is the strongest cross-IP
+synergy pattern surfaced in the full pass. **10 of 19 IPs have iconic
+weapons that share a single new magic-item-category shape:**
+
+| IP | Iconic weapon-category |
+|---|---|
+| Bloodborne | Trick Weapons (paired-form magic weapons) |
+| Elden Ring | iconic-effect legendary weapons (Moonveil, Rivers of Blood) |
+| Berserk | Dragonslayer + Skull Knight's Sword (oversized cursed weapons) |
+| Hollow Knight | Pure Vessel sword + Hornet's needle |
+| Dark Souls | Boss-Soul weapons (Quelaag's Furysword, Artorias's Greatsword) |
+| Hades | Aspect weapons (multi-Aspect-variant transformations) |
+| House of the Dragon | Valyrian steel weapons (generations-old named blades) |
+| Pillars II | Soulbound weapons (level with the wielder) |
+| Demon Slayer | Nichirin Blades (color-changing affinity weapons) |
+| Final Fantasy XIV | Eikon-derived weapons (Bahamut's Wing, Ifrit's Tusk) |
+
+**The pitch implication:** WoTC could ship a single new magic-item
+mechanic-category (e.g., "Soulbound / iconic-affinity weapons that
+gain properties as wielder advances") once, and reuse it across all 10
+of these IPs. Per-IP brand-integrity cost is LOWEST once the category
+exists; first product carries the infrastructure cost; subsequent IPs
+slot in for free. **This is a portfolio-level synergy the per-IP
+framing doesn't surface but the cross-IP view makes clear.**
+
+### 6. "Refresh existing content" is the most-generalizable lowest-cost path
+
+Across the full 19-IP pass, **the LOWEST-cost option in nearly every
+subclass-tier decision is "refresh existing official content."**
+Specific instances:
+
+- Hollow Knight Way of the Needle → refresh existing Monk subclass
+- Monster Hunter Hunter archetype → refresh Monster Slayer Ranger
+- Monster Hunter Palico companion → refresh Beast Master Primal Companion
+- Mistborn Mistborn-subclass → refresh existing Monk subclass (Drunken Master)
+- Solo Leveling Shadow Monarch → refresh existing Warlock patron (Pact of the Undying)
+- Pillars II Cipher → refresh Soulknife Rogue
+- Elden Ring faction-subclasses → refresh existing Bard / Paladin subclasses
+- Bloodborne Hunter → refresh Monster Slayer Ranger
+- One Piece Devil Fruit types → refresh existing Sorcerer origins
+- Hades Olympian Patron → refresh existing Warlock patrons (Celestial, Genie)
+- Demon Slayer Hashira-aspirant → refresh existing Monk content
+- Dark Souls Pyromancer / Knight → refresh existing Cleric Light Domain / Eldritch Knight
+- HotD Targaryen Dragon-rider → refresh Drakewarden Ranger
+- DRG Bosco companion → refresh Battle Smith Mechanical Companion
+- DRG Industrial Dwarf → refresh existing Mountain Dwarf with subrace
+- FFXIV Job-themed subclasses → refresh existing Hexblade Warlock / College of Eloquence Bard
+- Dwarf Fortress Mountainhome Dwarf → refresh existing Mountain Dwarf
+
+**The pitch implication:** the recurring community sentiment that
+"under-loved older subclasses deserve attention" is a directly-actionable
+licensing-product strategy. Every IP-license has a default brand-integrity-
+friendly path that *also* refreshes existing 5e content. Two birds, one
+sourcebook.
+
+---
+
+## Source A demand harvest — expanded May 11 2026
+
+The original pilot identified 8 demand clusters from a 65-query Reddit
+wishlist harvest at ≥30 ups. The May 11 expansion targeted 5 additional
+demand-pattern categories and added r/DMAcademy as a 6th sub. 174 files
+harvested across 29 query patterns × 6 subs.
+
+### Expansion target categories
+
+1. Modern / urban-fantasy setting demand (relevant for P5, Solo Leveling, ORV)
+2. Anime / shonen / isekai demand (relevant for DS, OP)
+3. High-tier / epic-boss / Tier-4 demand
+4. Political intrigue / low-magic / faction demand (relevant for HotD, Pillars II)
+5. Cozy / relationship / social / downtime demand (relevant for P5 Confidants)
+
+### Honest finding from the expansion
+
+The expansion **validated** the original 8 clusters as the strongest
+signal in the demand space and **surfaced 2 new confirmed clusters** —
+but did **not** produce major new clusters for most patterns searched.
+Cross-IP Reddit-search is structurally noisy at this scope. Queries for
+"modern setting," "anime inspired," and "cozy fantasy" mostly caught
+DM-advice and homebrew-system posts that *mention* those terms
+tangentially rather than *articulating demand* for them.
+
+### Two new confirmed clusters (updated reference: 10 clusters total)
+
+| # | Cluster | Strongest evidence | Engagement |
+|---|---|---|---|
+| 9 | **High-tier / Tier-4 / endgame design** | r/DMAcademy *"How do I (mentally) prep for the final session of a 3 year, level 1-20 5e campaign ending tonight?"* + r/DnD *"Exploration and Survival in 5e: Under-Integrated, Not Under-Supported"* + r/dndnext *"The Arch-Hag: An Analysis"* (community celebrating 2025 MM Tier-4 monster) | 122u + 105u + 139u |
+| 10 | **Setting-variety / non-default-medieval** | r/DnD *"Why Dungeons and Dragons needs a Dark Sun setting"* — direct articulation of demand for non-medieval D&D settings | 147u, 246c |
+
+### Patterns that didn't surface in cross-IP search but exist via IP-home signal
+
+Three demand patterns are empirically real (visible in IP-home community
+signal) but the D&D-sub cross-IP search didn't catch them:
+
+- **Modern / urban-fantasy setting** (relevant to P5, Solo Leveling, ORV)
+  — visible in IP-home reverse-funnel signal (217-up Persona 5e fan
+  project, 126-up r/sololeveling DM-jokes) but not in cross-IP search
+- **Anime-IP-specific demand** (relevant to DS, OP) — community
+  vocabulary is different on anime subs; cross-IP search misses
+- **Cozy / relationship-driven mechanics** (relevant to P5 Confidants) —
+  too vague a search target; underlying demand exists culturally
+  (Stardew Valley fan-D&D content) but Reddit search doesn't isolate it
+
+**Implication for the Community Demand Match work:** the per-IP
+reverse-funnel signal (already in each IP entry's *Measured data*
+section) is the *stronger* source for IP-specific demand matching than
+cross-IP Reddit search. The expanded cluster list (now 10) serves as a
+cross-corpus reference; the per-IP signal carries the actual citation
+strength.
+
+### Updated 10-cluster demand reference with IP-supply mapping
+
+| # | Demand cluster | Citation strength | Top IPs that supply it |
+|---|---|---|---|
+| 1 | Missing class: Warlord | strong (121u r/3d6) | Pillars II (Sage / Chanter), Hades (House of Hades faction-Cleric) |
+| 2 | Missing class: Gish (arcane-martial hybrid) | strong (121u + 46u) | Mistborn (Mistborn-as-Wizard hybrid), Pillars II (Gun Mage), Elden Ring (Carian Sorcerer) |
+| 3 | Higher-power-level (Guts-tier) | **very strong — direct IP-citation (1,489u)** | **Berserk (direct empirical match)**, Elden Ring, Bloodborne, Dark Souls |
+| 4 | Active / dynamic martials | strong (multi-thread + 1,161u HK Way of the Needle) | **Hollow Knight (1,161u canonical)**, Monster Hunter (14 weapon-class subclasses), Berserk (Path of the Possessed) |
+| 5 | Drop-in low-prep content | mid (37u) | **Monster Hunter (episodic Hunting Commissions)**, Sea of Thieves (Tall Tales), ORV (per-scenario adventures), Dwarf Fortress (Strange Mood Artifact tables) |
+| 6 | Better Enchanter / charm-magic mechanics | strong (130u) | Hollow Knight (Charms-as-consumables), Hades (Boon-Pact) |
+| 7 | Stronger Artificer | mid (31u) | **Deep Rock Galactic (Engineer / Battle Smith refresh)**, Monster Hunter (crafting-loop is Artificer-adjacent) |
+| 8 | Player-facing magic-item wishlist | mid (66u) | Monster Hunter (Carve-and-Craft), Hades (Aspect-weapon variants), Bloodborne (Trick Weapons) |
+| 9 | **High-tier / Tier-4 / endgame design** | strong (122u + 105u + 139u) | **All IPs with CR 20+ bosses** — One Piece (Yonko CR 25-26), Berserk (Femto CR 25), Bloodborne (Orphan of Kos CR 24), Elden Ring (Elden Beast CR 24), Hades pair (Chronos CR 25, Hades CR 24), HotD (Vhagar CR 24), ORV (Outer-God Constellations CR 22-25), Solo Leveling (Kamish CR 25), FFXIV (Endsinger CR 25), Demon Slayer (Muzan CR 25) |
+| 10 | **Setting-variety / non-default-medieval** | strong (147u direct article) | **Persona 5 (modern-Tokyo)**, ORV (Star-Stream-Earth), Solo Leveling (modern-with-gates), Sea of Thieves (pirate-fantasy), Monster Hunter (frontier-hunting), Deep Rock Galactic (sci-fi-fantasy), Dwarf Fortress (procedural-medieval-with-deep-cosmology), Demon Slayer (Taisho-era Japan) |
+
+---
+
+## Methodology notes for extension
+
+**What worked:**
+- The options-framing per element (2-4 ranked options) is a cleaner
+  deliverable shape than prescriptive recommendations.
+- Brand-integrity-cost ranking gives WoTC's design team an intuitive
+  ordering they can reason about quickly.
+- Surfacing HIGH-cost options explicitly demonstrates breadth-of-analysis
+  without recommending them.
+- The "refresh existing content" path consistently lands as the LOWEST
+  cost option when one exists — and it often does.
+
+**What's hard / requires judgment:**
+- Identifying *which* existing 5e content is the right refresh target
+  requires both IP knowledge and current 5.5e architecture awareness
+  (e.g., recognizing that Monster Slayer Ranger from Xanathar's is
+  underused and a natural Monster-Hunter refresh anchor).
+- The "mechanical-flavor combination" taxonomy doesn't fully automate;
+  per-IP application is judgment-heavy work.
+- Mature-content scope-definition (relevant for Berserk and any other
+  adult-tone IP) is genuinely a separate analytical dimension that
+  Trusight surfaces but doesn't decide.
+
+**Honest scope estimate for full extension:**
+- ~2 hours per IP at the integrated depth (per-element options tables +
+  content surface preservation).
+- 16 remaining IPs × 2 hours = ~32 hours of focused analytical work.
+- Could be batched into 5-6 sessions of 5-6 hours each.
+
+---
+
+## Recommendation
+
+The methodology produces a sharper deliverable than the original
+breakdowns-only approach. Phased rollout:
+
+1. **Selective extension to 5 high-leverage IPs** (Mistborn, Solo
+   Leveling, ORV, Elden Ring, Pillars of Eternity pair) — the IPs most
+   likely to enter live licensing conversation near-term. ~10 hours.
+2. **Full extension across remaining 11 IPs** — only if the selective
+   pass demonstrates value beyond what the breakdowns already capture.
+3. **Park methodology as documented reference** — the methodology is
+   captured in memory + this doc, and can be applied on-demand when an
+   IP enters live conversation.

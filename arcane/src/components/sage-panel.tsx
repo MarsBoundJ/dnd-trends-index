@@ -1,7 +1,7 @@
 "use client"
 
 /*
- * Arcane Analytics — Sage panel (Steps 4 + 6.5 + 7).
+ * Trusight — Sage panel (Steps 4 + 6.5 + 7).
  *
  * Floating right-side chat panel. Talks to /api/sage via the Vercel AI SDK
  * `useChat` hook. Page context (a plain-text snapshot of the current page or

@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — AI Grounding Engine (Step 6.5).
+ * Trusight — AI Grounding Engine (Step 6.5).
  *
  * Scores how well AI-generated text (Sage responses, articles) is
  * grounded in the source data that was provided as context.
@@ -72,7 +72,7 @@ export interface GroundingResult {
  * - The headline score is the MINIMUM of per-claim confidences, matching
  *   the "chain = weakest link" philosophy from data_confidence.
  */
-export const GROUNDING_SYSTEM_PROMPT = `You are a fact-checking assistant for a D&D trend intelligence application called Arcane Analytics.
+export const GROUNDING_SYSTEM_PROMPT = `You are a fact-checking assistant for a D&D trend intelligence application called Trusight.
 
 Your job: given a piece of AI-generated text and the source data context that was available when it was written, identify the key factual claims and score how well each is grounded in the source data.
 

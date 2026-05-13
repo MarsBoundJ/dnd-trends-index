@@ -1,7 +1,7 @@
 "use client"
 
 /*
- * Arcane Analytics — Universes Beyond Matrix candidate card + detail sheet
+ * Trusight — Universes Beyond Matrix candidate card + detail sheet
  * (Step 9.9 Chunk E).
  *
  * One click target per IP on the Matrix grid. The card surface shows the

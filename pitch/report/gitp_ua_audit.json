@@ -1,0 +1,397 @@
+{
+  "audit_label": "Trusight A1 LIVE — UA 2026 Villainous Options 2",
+  "thread_url": "https://forums.giantitp.com/showthread.php?717528-UA-Villainous-Options-2",
+  "thread_id": "717528",
+  "thread_slug": "UA-Villainous-Options-2",
+  "thread_title": "UA Villainous Options 2",
+  "pages_walked": 2,
+  "total_posts": 48,
+  "harvested_at": "2026-05-04T17:11:26.383Z",
+  "forum": "forums.giantitp.com",
+  "posts": [
+    {
+      "post_num": "26399157",
+      "author": "Kane0",
+      "date": "2026-04-23, 01:12 PM (ISO 8601)",
+      "body": "https://media.dndbeyond.com/compendi...sOptions02.pdf Three subclasses for Barbarian, Monk and Warlock. Personally, the Toxin Monk is the standout for me here",
+      "body_chars": 158,
+      "page": 1
+    },
+    {
+      "post_num": "26399167",
+      "author": "Psyren",
+      "date": "2026-04-23, 01:28 PM (ISO 8601)",
+      "body": "The Primordial (Elements Warlock) is interesting. Is it just me or does the Elemental Overflow Invocation stack? So if you take it 5 times, every melee hit against you would take 5d4 thorns damage? Also, it just dawned on me that I have no idea how Planar Ally is supposed to work. Can you get theoretically any CR elemental in the game?",
+      "body_chars": 337,
+      "page": 1
+    },
+    {
+      "post_num": "26399174",
+      "author": "DarknessEternal",
+      "date": "2026-04-23, 01:52 PM (ISO 8601)",
+      "body": "If you cast a spell or spells doing all 5 of those damage types, yes. And if you did that, still vastly underpowered for what you're paying.",
+      "body_chars": 140,
+      "page": 1
+    },
+    {
+      "post_num": "26399178",
+      "author": "Psyren",
+      "date": "2026-04-23, 02:01 PM (ISO 8601)",
+      "body": "Oh it would 100% be a meme build. But you stack that with Armor of Agathys and Fire Shield... Anyway, I really like the Screambarian, the Venomonk is overtuned (Con save vs 1 min unconscious that doesn't get broken by damage), and the Bubblelock is fine.",
+      "body_chars": 254,
+      "page": 1
+    },
+    {
+      "post_num": "26399184",
+      "author": "Mastikator",
+      "date": "2026-04-23, 02:06 PM (ISO 8601)",
+      "body": "It's one of those \"the DM decides\", it also costs some amount of money to keep it loyal. You could get an elemental cataclysm or a mephit, but I'd probably go with just an elemental corresponding to your subclass.",
+      "body_chars": 213,
+      "page": 1
+    },
+    {
+      "post_num": "26399190",
+      "author": "ProsecutorGodot",
+      "date": "2026-04-23, 02:14 PM (ISO 8601)",
+      "body": "Well, the Barbarian at a glance seems pretty bad right up until the capstone where you become an undead and can't gain exhaustion levels. I'm sure there's something abusable there. Pretty unappealing to me overall. Edit: That's what I get for skimming - the banshee wail is spammable and every now and then it's just going to KO something between 20-40 hit points. It's pretty good actually. The Monk actually looks good. Really the only complaint I have is that the capstone seems pretty weak for the cost. Envenom weapon actually seems really strong, first time in a while I think I'd consider playing a class as is from a UA, more of this please. The warlock seems okay - damage wise the node seems pretty mediocre but the AC bonus and unlimited range teleport without a line of sight restriction are both good to great. At level 10 you get resistance or immunity to a damage type and a bigger sphere, also good. The capstone is basically ribbon features aside from the duration increase, but considering the utility of the sphere this is really good. Elemental Transmutation probably has something worth using it for but at a glance I can't think of anything that makes it worth taking over other invocations, Elemental Overflow is just bad considering the level requirement and conditions. It might be fun to tinker with a thorns build though, maybe potential for a one shot gimmick character. I am mostly impressed with these options, I hope things continue to trend in this direction.",
+      "body_chars": 1491,
+      "page": 1
+    },
+    {
+      "post_num": "26399205",
+      "author": "Mongobear",
+      "date": "2026-04-23, 02:28 PM (ISO 8601)",
+      "body": "Don't Invocations that you can take multiple times say that you can take them multiple times? The \"Swap X to Y\" Invocation is something I do a lot of times by house rule, because I hate the Warlock spell list vs the lore/fluff of their Patrons. Like, the whole spell list is creepy elder evils themed stuff, but that puts the poor Celestial Warlock acting like a Paladin in a weird spot when he summons Hunger of Hadar and a bunch of tentacles eat his enemies in the town square.",
+      "body_chars": 479,
+      "page": 1
+    },
+    {
+      "post_num": "26399207",
+      "author": "Psyren",
+      "date": "2026-04-23, 02:33 PM (ISO 8601)",
+      "body": "They do, and this one does! Again though, not a serious build idea.",
+      "body_chars": 67,
+      "page": 1
+    },
+    {
+      "post_num": "26399209",
+      "author": "Mongobear",
+      "date": "2026-04-23, 02:34 PM (ISO 8601)",
+      "body": "Oh, I missed that, didnt read it deeply enough.",
+      "body_chars": 47,
+      "page": 1
+    },
+    {
+      "post_num": "26399217",
+      "author": "T.G. Oskar",
+      "date": "2026-04-23, 02:51 PM (ISO 8601)",
+      "body": "I'm shocked and amused by the Lament Barbarian. Banshee's Wail deals some decent damage (starts at 2d12, grows to 6d12), uses your Constitution (which you want high anyways), has a pretty wide area (30 feet), requires only a bonus action and has a way to recharge it (by spending a use of Rage, arguably, but it lets you recover every use, which is promising). Horrifying Strike requires you to be Raging (but why wouldn't you want to Rage in battle?) and only works 1/turn, but Frighten is a pretty decent condition (especially if you can then add something like Topple!) and it works on Opportunity Attacks. Finally, Sorrow Form's Necrotic damage lets you remain in combat for a good while, especially if you get off-turn attacks; depending on whether the Necrotic damage stemming from Horrifying Strike triggers independently from its Frighten condition, you could use it even if the enemy's immune to the latter. (And, most importantly, you could use it as Legendary Resistance bait.) Venom Monk has some interesting disabling moves in Slowing Toxin (Slow effect until start of your next turn, no save!) and Sedative (requires touching and a Con save, but it's Unconscious for 1 minute or until awakened); having Poison damage dealt with the features or with Monk weapons become Acid damage is another interesting move. Also interesting to see non-combat uses for features, with Truth Serum basically acting as a more ambiguous Zone of Truth (since it doesn't say whether you can evade giving any answers) and Intoxicant helping with social interactions. Toxin Refiner pushes what you can do with resistances and immunities, since it not only grants immunity but (it suggests that) if you were to take Poison damage, you instead use it to empower your Envenom(ed) Weapons, and you can actually turn Basic Poisons and other potent poisons into makeshift Potions of Healing. Contrasting these, Primordial Warlocks aren't as interesting. You basically get Flaming Sphere, except the whole mechanic is to be inside (you take no damage, but most of the features involve standing inside the Node), which means you don't want it to move - when the idea is to ram it into any enemy you can and then have your allies ram enemies into it afterwards. Their spell list is decent (Fire gets all damaging Fire spells, Water gets Alter Self, and you get Chromatic Orb on a Warlock which is insane), but the reliance on being inside the Node puts you at risk. (Unless you're a Blade Pact Warlock, I guess, in which case the Charisma bonus to AC will probably help a lot.) As for the new Invocations - Elemental Overflow doesn't stack, but Elemental Transfusion can be scary. Elemental Transfusion + Cold Caster means you can turn virtually every one of your cantrips into Mind Sliver-esque effects. Mix this with War Caster and you get one heck of a debuffer. (And let's not speak about how this applies both to Greenflame Blade and Booming Blade - if these cantrips get upgraded, Blade Pact Warlocks will be cooking.)",
+      "body_chars": 3006,
+      "page": 1
+    },
+    {
+      "post_num": "26399229",
+      "author": "Dyslexicfaser00",
+      "date": "2026-04-23, 03:21 PM (ISO 8601)",
+      "body": "I like Lament Barbarian quite a bit. Deafened is a toothless condition, but spending a BA (or activating a Rage) to fire off a 2d12, 30ft emanation seems quite strong. Being able to refresh PB/day uses of it per Rage you burn is unusually lenient for abilities like this. Level 6 isn't especially impressive, but on-command Speak With Dead is cool, and a free Fear save per turn isn't nothing. It's better than what Wild Heart gets. At level 10, two resistances is already pretty good, and the almost-ribbon where your Wail now just kills things at 20hp or below (up to 40hp at level 20) is awesome. Level 14 isn't especially strong, but it's more damage and self-healing, which barbarians need a lot of.",
+      "body_chars": 704,
+      "page": 1
+    },
+    {
+      "post_num": "26399233",
+      "author": "Gignere",
+      "date": "2026-04-23, 03:34 PM (ISO 8601)",
+      "body": "Oh it�s more than PB times a day. 2024 Barbs recover 1 rage per short rest. However melee should be able to do cool things and this is a cool thing.",
+      "body_chars": 148,
+      "page": 1
+    },
+    {
+      "post_num": "26399259",
+      "author": "Evaar",
+      "date": "2026-04-23, 04:51 PM (ISO 8601)",
+      "body": "The Monk and Barbarian seem okay to good, with some tweaks warranted. The Warlock could be good but needs to loosen the restrictions. Almost every feature requires the node be active. The node lasts 1 minute and requires an action to summon - so that's your first action every combat, most likely. You get 1 free summon per short rest or expend a pact magic slot to recharge it. So... if you're doing 2-3 combats per short rest, you're spending round 1 summoning it and you're devoting all of your pact magic slots to doing so. Then you're spamming cantrips. Or pact weapon attacks. The node takes a bonus action to move and only moves 30 feet. You can teleport into it... with a bonus action. That tension isn't necessarily a dealbreaker, but it does mean you can't move it and teleport into it on the same turn. At level 14 the duration of the node extends to an hour. That solves the issue of needing to summon it every combat and devote basically all your spell slots to it. The 1-hour duration should be much sooner, if not the baseline duration at level 3. Rework the damage scaling on the presumption that it's always up if that's the concern. Because if it's not up, there's no subclass here. Warlocks in tiers 1 and 2 don't need taxing of their pact magic slots. They're extremely limited already.",
+      "body_chars": 1306,
+      "page": 1
+    },
+    {
+      "post_num": "26399260",
+      "author": "GooeyChewie",
+      "date": "2026-04-23, 04:52 PM (ISO 8601)",
+      "body": "Lament Barbarian looks pretty awesome. The scream does damage even if they fail the save, so you�re awesome against crowds. Resource-free Frighten chance on attacks, which you should be doing anyway, also seems really good. Level 10 is a bit iffy. With the hit point limit, creatures who fail your scream save are likely to go to 0 anyway. Possession won�t come up in most games anyway, and the Cold and Necrotic damage resistance is pretty campaign-dependent. Venom Monk could make for some very thematic builds, especially for Lizardfolk, Yuan-Ti and Grung. The Sedative poison is way too good, but otherwise I like this subclass. The ability to change the Poison damage to Acid is important because a lot of enemies won�t care about Poison. Primordial Warlock, I�m struggling to see the niche here. We already have Genie Warlocks to provide a �choose your element� Warlock Patron.",
+      "body_chars": 883,
+      "page": 1
+    },
+    {
+      "post_num": "26399344",
+      "author": "Amechra",
+      "date": "2026-04-23, 09:12 PM (ISO 8601)",
+      "body": "I'll echo everyone in saying the Lament Barbarian is pretty cool mechanically, though I'm a bit confused by the theming. Why is the depressed barbarian a \"villainous\" option? The Warrior of Venom seems kinda nuts, but in a good way? I like that Envenom Weapon actually poisons a weapon instead of giving you a 1/turn smite, even though it's going to boil down to the same thing most of the time - it still creates the dream that you can, say, poison a dart and then hand it off to an ally to do something cool with it. Toxic Touch is pretty cool, though they definitely did mess up with the sedative option - my suspicion is that whoever wrote the ability had a brain fart and only considered the out-of-battle uses of the options, and would probably houserule in the Unconsciousness only lasting until damage happens. Toxin Refiner is confusingly written (why doesn't it grant immunity to the poisoned condition? does the damage bonus apply to existing envenomed weapons or only new ones?), but I love a good Poison Healer reference and it'd be interesting to try to pair this with a way to deal poison damage to yourself every turn. Toxic Blood is cool and really punishes multiattacks since the damage is reactionless, and Hallucinogenic Breath is equally as \"take this guy out of the fight\" coded as Toxic Touch (which reinforces my thought that the sedative touch isn't intended to be that broken). Actually, let's go back to Envenom Weapon, which I think is awesome and that more martial abilities should emulate. The one-minute duration combined with the lack of an action cost means that you can store multiple poisoned weapons, which makes taking a turn off from damage dealing to hit someone with Toxic Touch even more attractive. It also protects you against really bad luck, since on turns where you flub both your weapon attacks you still have an envenomed weapon as a consolation prize. Part of me suspects that it's going to be closer to \"when you deal damage with a Monk weapon, you may pay 1f to apply one of the following toxin effects\" than it might initially seem. Primordial Warlock seems alright, though I'm surprised that they had the restraint to \"only\" let you repick your element once per level. It also feels a bit odd that its first ability is purely aoe damage when the rest of the subclass is focused on your node boosting your defenses.",
+      "body_chars": 2367,
+      "page": 1
+    },
+    {
+      "post_num": "26399346",
+      "author": "Arkhios",
+      "date": "2026-04-23, 09:22 PM (ISO 8601)",
+      "body": "Primordial Patron is by far my favorite of these. With that said, I don't see why would this be a \"villainous\" option, though. Aren't the elementals neutral? Or does villainous now mean all who aren't goody-two-shoes? Re: Elemental Transmutation: Although not the first of its kind (looking at you Scribe Wizard), there are too few of these kinds of class features that let the PC change the damage type of a spell. I WAN'T MORE!",
+      "body_chars": 429,
+      "page": 1
+    },
+    {
+      "post_num": "26399350",
+      "author": "Amechra",
+      "date": "2026-04-23, 09:32 PM (ISO 8601)",
+      "body": "I thought so too, but I'm not actually sure that's the case? It's obviously most useful as a way to get around psychic resistance or immunity, but also really ups the chance that weakened creatures end up dying without you or the rest of your party having to do anything. Here's a little chart: Level Banshee's Wail Damage Deathly Wail Threshold Chance a Creature at the Threshold Would've Survived the Damage 10 3d12 20 50% 11 3d12 22 62.4% 12 3d12 24 73.8% 13 3d12 26 83.5% 14 3d12 28 90.5% 15 3d12 30 95.1% 16 4d12 32 78% 17 4d12 34 85.5% 18 4d12 36 91.2% 19 4d12 38 95.2% 20 4d12 40 97.6% I mean, obviously this best case scenario isn't going to come up much, but the range between average damage and the maximum HP total affected gets pretty broad pretty quickly.",
+      "body_chars": 768,
+      "page": 1
+    },
+    {
+      "post_num": "26399357",
+      "author": "titi",
+      "date": "2026-04-23, 10:21 PM (ISO 8601)",
+      "body": "Isn't simply because it's themed around the banshee (thus all the undead stuff)",
+      "body_chars": 79,
+      "page": 1
+    },
+    {
+      "post_num": "26399358",
+      "author": "Kane0",
+      "date": "2026-04-23, 10:21 PM (ISO 8601)",
+      "body": "Where's Skrum? He might like the warlock's +Cha to AC while in their zone",
+      "body_chars": 73,
+      "page": 1
+    },
+    {
+      "post_num": "26399364",
+      "author": "T.G. Oskar",
+      "date": "2026-04-23, 10:53 PM (ISO 8601)",
+      "body": "It's less \"depressed Barbarian\" and more \"edgelord Barbarian\" - not the kind that claims life is pain, but the one that has embraced that pain and sorrow so much that it wants to deliver it because it's the only truth in the world. (Again, edgelord, but one that actually follows up to the word. Or, in other terms - a Goth Barbarian, not an Emo Barbarian.) I suppose that's one thing that'll be pointed out on the feedback, but I feel it's a way to see how much they can push a cool thing for Martials. At most, you're basically touching the enemy with a Lolth's Sting (aka, Drow) poison with a better Con save DC. Note that it takes a Magic action, meaning at best you're getting one attack during that round, or you'll be spending 2 FP to get the touch + a Flurry of Blows afterwards. There are a lot of hurdles to jump to trigger that move, unlike Stunning Strike which triggers as part of your normal Attack routine and has an effect on a failed save, so I wouldnt' say it's messed up - at the very least, it's a way to take a very powerful opponent out of combat by lowering your potential DPS, the same way you'd use Banishment or Banishing Smite. I had to double-check, but note that Monks eventually get to remove the Poisoned condition effortlessly (at the end of each of their turns), which is functionally like immunity. It exists so that any source of Poison damage that would otherwise trigger via the Poisoned condition can run its course, except you don't take damage but instead power up your Envenom Weapons feature. Speaking of ingested poisons: the three available ones that deal Poison damage are Assassin's Blood, Midnight Tears and Pale Tincture. Of these, Assassin's Blood costs 3 times more than a Potion of Healing for roughly the same average healing (1 minimum, 6.5 average, 12 maximum; compare to the PoH's 4 minimum, 7 average, 10 maximum). Midnight Tears is less expensive than a Rare Magic Item but heals up to 9d6 damage at the stroke of midnight, and Pale Tincutre costs 50 gp more than a Potion of Greater Healing but lets you heal 1d6 HP every day as long as you remain Poisoned. Unless you get those for free or new poisons become available, it's not an amazing amount of healing - if it applied to injury poisons, on the other hand, you'd have a LOT of fun tools to play with. It's par for the course for injury poisons, so it makes sense it works that way. If they revived the alchemical items that allowed you to coat your weapon with the equivalent of Alchemist's Fire or Acid, you could definitely let martial characters cook, as they could use one BA to gain a temporary source of extra damage without having to give them Elemental Weapon. That said, there could be ways to give martials cool features - the Lament Barbarian already does this with the Horrifying Strike feature (which stacks with Brutal Strikes, if you want to play with those), and while they could definitely extend the duration, Infernal Wounds also plays well on that regard. In fact, because of its supernatural origin, letting you spread Infernal Wounds dice to your allies could be interesting. With a source of recharging this feature, it could make for an interesting team player.",
+      "body_chars": 3199,
+      "page": 1
+    },
+    {
+      "post_num": "26399420",
+      "author": "SharkForce",
+      "date": "2026-04-24, 01:26 AM (ISO 8601)",
+      "body": "up to 4d12 only, it scales with rage damage bonus not proficiency bonus. Con modifier recharges per rage spent, not proficiency bonus. Still good, (probably better at level 3 for many barbarians), but doesn't scale as easily. Still, if you don't mind doing AoE damage instead of focused damage, it's pretty good damage in an area for the cost. Recovery from drinking poison has nothing to do with how powerful the poison is (always one roll of your martial arts die), so you just want cheap. That said, it just says you have to ingest the poison, not that you have to ingest an ingestion poison. Get yourself a spider or scorpion familiar and see how many doses your DM thinks they can produce per day, I guess. Maybe take up a hobby of growing poisonous plants. Or maybe just convince your DM that alcohol is poison. ------------------ Overall thoughts: Have to say I'm not really seeing things that make me think definitively villainous. The barbarian sorta becomes like a banshee, except that banshees typically have a hatred towards all living beings while the barbarian seems to have a hatred only towards very specific beings, who may or may not even be alive, and specifically because those things did something to make the barbarian hate them. For example, (and because I find this particular example slightly amusing) I'm pretty sure the lament barbarian can use their scream to kill a banshee if they so desire. Monk that uses poison, okay, I can see why I wouldn't want to invite them to a banquet if I was a king, but what makes them particularly evil? Heck, most of the creatures that are immune to poison damage are evil, so a monk that creates poison which works on many of them (because they can change the damage to acid) seems more like a monk that would specialize in killing evil things, if anything... The warlock... just seems to have a tie to some creature with elements, as someone noted. That *could* be evil, but isn't necessarily evil at all. I mean, if we can have good-aligned fiend warlocks, I'm definitely not going to argue that someone with ties to elemental beings must be evil. None of these seem *particularly* villainous. All of these could be evil, but mostly in the same way that, say, a battlemaster fighter could be evil, or a hunter ranger could be evil. The abilities don't seem to be inherently villainous, nor do they particularly encourage villainy.",
+      "body_chars": 2395,
+      "page": 1
+    },
+    {
+      "post_num": "26399424",
+      "author": "revcraver",
+      "date": "2026-04-24, 01:45 AM (ISO 8601)",
+      "body": "The Primordial Warlock's Elemental Spells seems like a straight downgrade compared to other subclasses' expanded spell list. Sure, overall it's potentially more spells, but at any given character level it's fewer spells known.",
+      "body_chars": 226,
+      "page": 1
+    },
+    {
+      "post_num": "26399440",
+      "author": "SharkForce",
+      "date": "2026-04-24, 03:15 AM (ISO 8601)",
+      "body": "You may not have read it right, they get the spells from the first column plus the spells from the column of their element... so basically, 2 extra spells known per spell level, gained at the level where they can first cast that spell (apart from 1st level spells which naturally come at level 3 since they don't have a subclass before that). Apart from some warlocks that get cantrips as well, that's basically the normal number of spells a warlock subclass gets. Now I'm not going to argue that the *quality* of those extra spells is particularly high (especially for certain element options), but the quantity is pretty normal.",
+      "body_chars": 630,
+      "page": 1
+    },
+    {
+      "post_num": "26399441",
+      "author": "diplomancer",
+      "date": "2026-04-24, 03:17 AM (ISO 8601)",
+      "body": "Elemental Transmutation is very nice for a Celestial Warlock. Fire Armor of Agathys anyone? That's a +5 damage you deal to every damage you take per turn. Also useful for more blasting warlocks, always nice to change Fireball damage to something else.",
+      "body_chars": 251,
+      "page": 1
+    },
+    {
+      "post_num": "26399464",
+      "author": "Boverk",
+      "date": "2026-04-24, 05:44 AM (ISO 8601)",
+      "body": "Or if you're multiclassing, Draconic Sorcerer X/ Warlock 2+ could go all in on cold damage with fireball, lightning bolt, scorching ray. Also, Elemental Transmutation doesn't require the elemental damage to be from Warlock abilities or Warlock Spells, so it could change the damage of your abilities from other classes or even magic items. Edit: I don't think it would work for every hit of the scorching ray, only 1.",
+      "body_chars": 417,
+      "page": 1
+    },
+    {
+      "post_num": "26399469",
+      "author": "diplomancer",
+      "date": "2026-04-24, 06:07 AM (ISO 8601)",
+      "body": "Sorcerers can change their damage with metamagic though. They get other nice stuff from the dip, true, but on its own I'm not sure it would be worth it.. But it's also good for Evocation Wizards, Light Clerics etc",
+      "body_chars": 213,
+      "page": 1
+    },
+    {
+      "post_num": "26399472",
+      "author": "Gignere",
+      "date": "2026-04-24, 06:12 AM (ISO 8601)",
+      "body": "The warlock dip is much less synergy with wizards and clerics. Need to waste points if point buy may work if you roll stats and rolled amazing. Would be good for a lore bard though.",
+      "body_chars": 181,
+      "page": 1
+    },
+    {
+      "post_num": "26399477",
+      "author": "diplomancer",
+      "date": "2026-04-24, 06:20 AM (ISO 8601)",
+      "body": "With point-buy, you need to sacrifice 1 AC or 1 hp/level. It's nothing dramatic, less of a sacrifice than the dip itself, I'd say. And if you roll, you don't need to roll \"amazing\"; slightly better than point-buy will do.",
+      "body_chars": 221,
+      "page": 1
+    },
+    {
+      "post_num": "26399482",
+      "author": "Gignere",
+      "date": "2026-04-24, 06:36 AM (ISO 8601)",
+      "body": "The dip would also delay spell progression, and additional spell list is largely redundant for the wizard, can�t even benefit from one of the best reason for dipping warlock, EB, unless you rolled amazingly.",
+      "body_chars": 207,
+      "page": 1
+    },
+    {
+      "post_num": "26399485",
+      "author": "GooeyChewie",
+      "date": "2026-04-24, 06:43 AM (ISO 8601)",
+      "body": "That is better than I was expecting. I still wouldn�t rate it as an incredible feature, but it could be nice if the DM likes to throw a bunch of minions out with the big bad.",
+      "body_chars": 174,
+      "page": 1
+    },
+    {
+      "post_num": "26399486",
+      "author": "Amechra",
+      "date": "2026-04-24, 06:52 AM (ISO 8601)",
+      "body": "Clearly the objectively correct combo is Warlock 2/Poison Monk X, turning Poison Acid damage into Cold damage to proc Cold Caster.",
+      "body_chars": 130,
+      "page": 2
+    },
+    {
+      "post_num": "26399487",
+      "author": "diplomancer",
+      "date": "2026-04-24, 06:55 AM (ISO 8601)",
+      "body": "Like I said at first before you decided to correct me- On its own, it's not that worth it for a Sorcerer, but they do get other things from the dip. As a sorcerer, if I decided to dip, it would not be for this particular invocation, nor would I likely get it from the 3 invocations I'd have. Delaying spell progression is a problem for all of them. Agonizing Blast on a full caster is overrated and not worth it on itself for casters in general. It's good for a Warlock because the Warlock has less slots- and no 1st level slots- and thus will use cantrips more often. It's usually not worth a 2 level dip for Bards, it may be for Sorcerers who get short level slots to convert to metamagic points. But there ARE good invocations to take that are not Cha dependant, like Pact of the Chain, Misty Visions, Mask of Many Faces, Otherworldly Leap for a Cleric using Spirit Guardians, etc.",
+      "body_chars": 884,
+      "page": 2
+    },
+    {
+      "post_num": "26399491",
+      "author": "ClaraTheVillain",
+      "date": "2026-04-24, 07:22 AM (ISO 8601)",
+      "body": "Most of what I can say about the Banshee Barm and Venom Monk has already said (More martials like this please, make it so the sleep option is less centralising etc etc), so I�ll focus on what seems to be the black sheep of this UA. I loooooove the Primordial Warlock. This is the kind of flavour I adore in a warlock subclass, and with the variety in choice of Expanded Spell lists and what the node can do for you I think it�s pretty well designed I do agree that some aren�t especially Villainous (not when compared to the previous UA�s subclasses at least) but the Primordial Warlock does specifically call out the Elemental Evils from Princes of the Apocalypse as potential patrons, so it kind of makes sense! General Spell list is very nice, Chromatic Orb upcasts well, and the other spells provide nice utility. The Elemental Spells vary from excellent (Air) to middling (RIP Water Warlocks, joining Marid Warlocks in being shafted by cold spells). Vitriolic Sphere being on a spell list is also nice, it�s a very cool spell they should give to more subclasses The node is a neat idea, there�s a soft spot in my heart for subclasses like Land Druid and Twilight Cleric with this persistent area mechanic. I think if the damage scaled a little better (starting at 2d6 and ending at 4d6 feels a little more reasonable) and it was summonable as a Bonus Action it�d be a lot more versatile, but everything else about it is super neat. Plus the capstone giving you a �summon a random CR elemental� button is ridiculously fun. If you�ve pleased your patron, they might send a leviathan to your aid! If you�ve pissed them off, it�s mephits for you. Elemental Overflow is a pretty bad invocation (maybe some synergy with AoA?) but Elemental Transmutation opens a whole lot of doors for Warlocks. Blade Cantrips, new options for Cold Caster, Celestial Warlocks Lv6 feature being applied more! I�m not a massive fan of 5.24�s obsession with features that switch damage types, but both options in this UA feel more reasonable than similar past options have been. Overall? Good subclass, node could use some tweaks and Water Spells could get a buff or two (bring back Tidal Wave from Xanathar�s!) but I like it a lot",
+      "body_chars": 2210,
+      "page": 2
+    },
+    {
+      "post_num": "26399495",
+      "author": "Waterdeep Merch",
+      "date": "2026-04-24, 07:35 AM (ISO 8601)",
+      "body": "Barbarian and monk are fairly neat takes with numbers to back them up- venom monk might be a little too strong, but I like the interpretation. These are great. Primordial warlock... it's not that the mechanics are necessarily bad or the concept is poor, it's just that it now has the unenviable position of sharing a lot of overlap with the genie patron. Mechanically it's doing different things, but I'm somewhat amused that they're basically just using Flaming Sphere but felt the need to not call it that and develop unique ruled around it, while in every other case in '24 they've done the opposite. I'm hopeful it's because feedback has shown that approach to be unpopular, and we're going to see things written more like this.",
+      "body_chars": 732,
+      "page": 2
+    },
+    {
+      "post_num": "26399643",
+      "author": "ZRN",
+      "date": "2026-04-24, 01:06 PM (ISO 8601)",
+      "body": "The venomonk sleep thing clearly should break similar to the sleep spell, hopefully that gets caught from feedback.",
+      "body_chars": 115,
+      "page": 2
+    },
+    {
+      "post_num": "26399677",
+      "author": "Caelic",
+      "date": "2026-04-24, 02:33 PM (ISO 8601)",
+      "body": "Elemental Transmutation intrigues me--not in conjunction with the Primordial warlock, but in conjunction with the Celestial warlock. It synergizes remarkably well with Radiant Soul; pretty much ANY \"elemental\" spell can now be used for the extra damage by swapping in fire, and since it works once per turn, it can be used to take full advantage of RS's \"once per turn\" rider.",
+      "body_chars": 376,
+      "page": 2
+    },
+    {
+      "post_num": "26399694",
+      "author": "ClaraTheVillain",
+      "date": "2026-04-24, 03:12 PM (ISO 8601)",
+      "body": "It�s already been mentioned but adding a +5 damage boost to an Armor of Agathys or even to a Hunger of Hadar (which I believe you could make 100% fire damage if you wished) creates some very strong combos. Hell, most sorlocks would be happy choosing this Invocation too, given that it practically gives them an extra Metamagic to use if they wanted to",
+      "body_chars": 351,
+      "page": 2
+    },
+    {
+      "post_num": "26399716",
+      "author": "Elenian",
+      "date": "2026-04-24, 04:22 PM (ISO 8601)",
+      "body": "Primordial Herald says \"While you�re within your node�s area, you can cast the Planar Ally spell without expending a spell slot. When you cast the spell in this way, you speak the name of your patron.\" I assume that the last sentence refers to the clause of Planar Ally that \"you can speak that name when you cast this spell to request that creature\" (rather than just being a fluffed verbal component), so you can't request a specific creature other than your probably-pretty-busy (and, like, CR 20 for elemental evils up to gods-in-all-but-name for beings like Kossuth) patron?",
+      "body_chars": 579,
+      "page": 2
+    },
+    {
+      "post_num": "26399722",
+      "author": "T.G. Oskar",
+      "date": "2026-04-24, 04:28 PM (ISO 8601)",
+      "body": "This seems to be the intention behind ET: figure out as many ways to exploit it (for a given definition of exploit). ET + Cold Caster means you can turn any targeted spell into a Mind Sliver equivalent. You can then combine it with something like Scorching Ray and fire up as many rays as you want while triggering that effect, for example. Also, since it applies to spells, that means you can combine it with Elemental Adept and bypass resistance to those attacks. That said, damage swaps are only as exploitable as the features that focus on a single element over others. I'd be more worried about Warlocks getting Chromatic Orb, since they can cast it per Short Rest, auto-boosted to 5th level, causing it to bounce all around almost effortlessly.",
+      "body_chars": 750,
+      "page": 2
+    },
+    {
+      "post_num": "26399727",
+      "author": "ClaraTheVillain",
+      "date": "2026-04-24, 05:08 PM (ISO 8601)",
+      "body": "Personally if I were DM I�d interpret it as the Warlock beseeching the Elemental Patron for it to send a subject down to it, like a Salamander or even just an Elemental Myrmidon kind of thing. Something strong enough to justify a feature that can take up to 8 LR to recharge, but not something that could trivialise fighting a given BBEG or whatnot However there�s nothing that says you can�t actually just bring down Yan-C-Bin and it�s 22AC 100ft radius Thunder damage attack. And I can think of very interesting scenarios THAT could cause for a party�",
+      "body_chars": 553,
+      "page": 2
+    },
+    {
+      "post_num": "26399748",
+      "author": "Elenian",
+      "date": "2026-04-24, 06:25 PM (ISO 8601)",
+      "body": "I think this is probably the intent. As a DM I personally would allow \"Lord Yan-C-Bin, I humbly beseech you to send your minister Harplox, with whom I have dealt before, into the world, that she might visit destruction on our foes\", but I'm wondering whether the intent of the UA is that you *have* to ask for Yan-C-Bin himself (and then make do with whatever he inevitably sends in his place)",
+      "body_chars": 393,
+      "page": 2
+    },
+    {
+      "post_num": "26399759",
+      "author": "SharkForce",
+      "date": "2026-04-24, 07:01 PM (ISO 8601)",
+      "body": "Sure, you *could* take them as patrons. But you could also take some random elemental lord that is neither good nor evil, or even an elemental lord that is aligned with the forces of good. In contrast, the PHB has Great Old One and Fiend as patron options. I'm having a hard time seeing this UA as more villainous than what is already in the PHB. Fey can be quite villainous as well, depending on what fey you're talking about. Even if your patron *is* an evil elemental lord, are they more evil than a literal demon lord? If you can serve a demon lord and just do good stuff as much as you feel like, why should these elementals be any different? If this subclass had some \"villainous\" mechanics to it (like the lich feats that required devouring people's souls to have any effect), that would make it distinctly villainous, but this? This is basically as villainous as a sword. Sure, you *could* do evil things with a sword, but there's nothing about a sword that inherently makes it evil.",
+      "body_chars": 991,
+      "page": 2
+    },
+    {
+      "post_num": "26399786",
+      "author": "Caelic",
+      "date": "2026-04-24, 08:43 PM (ISO 8601)",
+      "body": "Heck, even there, they make sure to note that being a soul-devouring lich doesn't NECESSARILY make you evil. ;)",
+      "body_chars": 111,
+      "page": 2
+    },
+    {
+      "post_num": "26399878",
+      "author": "Millstone85",
+      "date": "2026-04-25, 02:25 AM (ISO 8601)",
+      "body": "Probably a leftover from 4e, where most primordials had a \"We made the world, it is our right to unmake it\" mentality.",
+      "body_chars": 118,
+      "page": 2
+    },
+    {
+      "post_num": "26399886",
+      "author": "Arkhios",
+      "date": "2026-04-25, 03:08 AM (ISO 8601)",
+      "body": "That did cross my mind, to be honest. I guess that makes sense.",
+      "body_chars": 63,
+      "page": 2
+    },
+    {
+      "post_num": "26399910",
+      "author": "ClaraTheVillain",
+      "date": "2026-04-25, 05:44 AM (ISO 8601)",
+      "body": "Looking over Primordial Warlock again, I think the only feature that really needs work done for it is the Lv 3 feature of creating the Node. 1d6 element damage with a Dex Save for half in a 5ft space isn�t really worth the opportunity cost of summoning it until you get to Lv6 with the teleport and AC bonus features As has been mentioned, this feature is essentially just the Flaming Sphere spell but without that language, so giving it similar Scaling (start at 2d6 elemental, increase up to 4d6 or potentially even 6d6 if we feel especially spicy) would make it feel more worth it to spend an action on at those earlier levels",
+      "body_chars": 629,
+      "page": 2
+    },
+    {
+      "post_num": "26403193",
+      "author": "T.G. Oskar",
+      "date": "2026-05-01, 08:16 PM (ISO 8601)",
+      "body": "Survey is up for anyone who wishes to give their opinion.",
+      "body_chars": 57,
+      "page": 2
+    },
+    {
+      "post_num": "26403349",
+      "author": "ClaraTheVillain",
+      "date": "2026-05-02, 06:04 AM (ISO 8601)",
+      "body": "Rated almost everything green, barring the Monk's capstone feature and a few of the Elemental Features (Node, Water Spells and Overflow to be precise) I recommended adding your CHA mod to the node damage (plus BA to summon and 10 minute duration) and having Overflow deal your CHA mod damage because it helps out both features massively",
+      "body_chars": 336,
+      "page": 2
+    }
+  ]
+}

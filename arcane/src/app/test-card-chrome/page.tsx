@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Step 2 CardChrome verification harness.
+ * Trusight — Step 2 CardChrome verification harness.
  *
  * Renders CardChrome with five wildly different content types to prove
  * the container is truly universal (§4.4 — Strict Chrome, Loose Content).

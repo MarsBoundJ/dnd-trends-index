@@ -153,7 +153,7 @@ export interface CardChromeProps {
 // ─── CardChrome ──────────────────────────────────────────────────────────────
 /**
  * Universal card container. Every data card, article card, and AI-summary card
- * in Arcane Analytics renders inside CardChrome. This is the visual contract
+ * in Trusight renders inside CardChrome. This is the visual contract
  * described in §4.4 (Strict Chrome, Loose Content): consistent border, padding,
  * corner radius, header bar, two icon slots, confidence pip, and action buttons
  * — regardless of what lives inside.

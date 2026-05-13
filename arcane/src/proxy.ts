@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Admin gate (Step 12).
+ * Trusight — Admin gate (Step 12).
  *
  * Next 16 Proxy (formerly Middleware — file convention was renamed; see
  * `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/proxy.md`).

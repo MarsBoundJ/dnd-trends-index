@@ -1,7 +1,7 @@
 "use client"
 
 /*
- * Arcane Analytics — BackerKit Harvest Console (Step 12).
+ * Trusight — BackerKit Harvest Console (Step 12).
  *
  * Terminal-styled card with a single Run button and a live readout of
  * recent runs. Fire-and-forget — the Run button POSTs to

@@ -1,7 +1,7 @@
 "use client"
 
 /*
- * Arcane Analytics — landing page sign-in CTA (Step 14 landing polish).
+ * Trusight — landing page sign-in CTA (Step 14 landing polish).
  *
  * Prominent "Sign in" button for the unauthenticated root landing page.
  * Larger and more visually weighted than the SignInMenu pill in the
@@ -24,7 +24,7 @@ export function LandingCta() {
     <button
       type="button"
       onClick={() => signIn(undefined, { callbackUrl: "/overview" })}
-      aria-label="Sign in to Arcane Analytics"
+      aria-label="Sign in to Trusight"
       className={cn(
         "inline-flex items-center gap-2.5 rounded-lg px-6 py-3",
         "border border-ember bg-ember/15",

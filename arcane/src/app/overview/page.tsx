@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Overview lens (Step 3 + Step 6 confidence wiring).
+ * Trusight — Overview lens (Step 3 + Step 6 confidence wiring).
  *
  * Server Component. Fetches from the Bouncer API (1-hr revalidation) and
  * renders three CardChrome cards with real D&D trend data:
@@ -107,7 +107,7 @@ export default async function OverviewPage() {
       {/* Page header */}
       <header className="space-y-3">
         <p className="font-mono text-xs uppercase tracking-widest text-ember-bright">
-          Arcane Analytics · Overview
+          Trusight · Overview
         </p>
         <h1 className="font-display text-4xl font-semibold tracking-tight text-parchment">
           State of the D&amp;D Multiverse

@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Articles API (Step 9b).
+ * Trusight — Articles API (Step 9b).
  *
  * Thin Next 16 proxy over the Bouncer `/articles` endpoint. Kept as its
  * own route (rather than the Articles page calling Bouncer directly)

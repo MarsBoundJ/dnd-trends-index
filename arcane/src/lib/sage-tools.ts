@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Sage Tool Definitions (Step 7).
+ * Trusight — Sage Tool Definitions (Step 7).
  *
  * ~8 tools that let the Sage query live BigQuery data via the Bouncer
  * API instead of hallucinating numbers. Each tool has:

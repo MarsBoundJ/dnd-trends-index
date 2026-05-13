@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Concept Detail API (Step 8).
+ * Trusight — Concept Detail API (Step 8).
  *
  * Server-side aggregation route that fetches data for a single concept
  * from multiple Bouncer endpoints and returns a unified payload for

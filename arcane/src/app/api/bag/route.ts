@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Bag of Holding API (Step 11).
+ * Trusight — Bag of Holding API (Step 11).
  *
  * Server-only CRUD for a signed-in user's Bag of Holding items. Each
  * item is a single Firestore document at `users/{uid}/bag/{id}` where

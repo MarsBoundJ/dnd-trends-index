@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Bouncer API client.
+ * Trusight — Bouncer API client.
  *
  * Typed fetch helper for the Bouncer REST API. All reads are server-side
  * (Next 16 Server Components) with 1-hour ISR revalidation.

@@ -1,5 +1,5 @@
 /*
- * Arcane Analytics — Sage grounding check route (Step 6.5).
+ * Trusight — Sage grounding check route (Step 6.5).
  *
  * Called by the Sage panel AFTER a streaming response completes.
  * Takes the generated text + the pageContext and returns a

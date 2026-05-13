@@ -1,7 +1,7 @@
 "use client"
 
 /*
- * Arcane Analytics — Atlas navigation (Step 10).
+ * Trusight — Atlas navigation (Step 10).
  *
  * The Atlas is the site's full site-map card. It expands from the top-right
  * Compass trigger (in SiteHeader) into a glassmorphic sheet — full-screen
