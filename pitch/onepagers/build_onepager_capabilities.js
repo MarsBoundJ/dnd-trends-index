@@ -245,8 +245,8 @@ slide.addText([
 // Contact line
 slide.addText([
   { text: "Phil Trubbel  ·  ", options: { color: C.cream, bold: true, fontFace: FONT_BODY } },
-  { text: "phil@trusight.ai",  options: { color: C.cream, fontFace: FONT_BODY } },
-  { text: "  ·  trusight.ai",  options: { color: C.cream, fontFace: FONT_BODY } },
+  { text: "phil@trusightdata.ai",  options: { color: C.cream, fontFace: FONT_BODY } },
+  { text: "  ·  trusightdata.ai",  options: { color: C.cream, fontFace: FONT_BODY } },
 ], {
   x: 0.5, y: 10.62, w: 7.5, h: 0.28,
   fontSize: 11, align: "center", margin: 0,

@@ -40,10 +40,30 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+// Canonical site URL. Vercel preview deploys can override via the
+// NEXT_PUBLIC_SITE_URL env var so OG images and canonical tags resolve
+// against the preview host instead of production.
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://trusightdata.ai";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Trusight: a D&D Trendwatch",
   description:
     "Data-driven intelligence for the D&D ecosystem. IP & licensing analysis, sentiment audits, and weekly community-signal reads for Hasbro, WotC, and the people who love the game.",
+  openGraph: {
+    title: "Trusight: a D&D Trendwatch",
+    description:
+      "Data-driven intelligence for the D&D ecosystem. IP & licensing analysis, sentiment audits, and weekly community-signal reads for Hasbro, WotC, and the people who love the game.",
+    url: SITE_URL,
+    siteName: "Trusight",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Trusight: a D&D Trendwatch",
+    description:
+      "Data-driven intelligence for the D&D ecosystem. IP & licensing analysis, sentiment audits, and weekly community-signal reads for Hasbro, WotC, and the people who love the game.",
+  },
 };
 
 export default function RootLayout({

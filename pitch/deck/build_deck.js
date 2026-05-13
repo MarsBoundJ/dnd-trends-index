@@ -985,12 +985,11 @@ function newContentSlide(slideNum) {
     color: C.mutedGray, align: "left", margin: 0,
   });
 
-  // Contact lines — domain TBD, easily updated when Phil locks it.
-  // (Email + Calendly + URL all swap as one block when domain finalizes.)
+  // Contact lines.
   slide.addText([
-    { text: "phil@trusight.ai",     options: { color: C.cream, bold: true, breakLine: true, fontFace: FONT_BODY } },
-    { text: "calendly.com/trusight", options: { color: C.cream, breakLine: true, fontFace: FONT_BODY } },
-    { text: "trusight.ai",           options: { color: C.cream, fontFace: FONT_BODY } },
+    { text: "phil@trusightdata.ai",     options: { color: C.cream, bold: true, breakLine: true, fontFace: FONT_BODY } },
+    { text: "calendly.com/trusight",     options: { color: C.cream, breakLine: true, fontFace: FONT_BODY } },
+    { text: "trusightdata.ai",           options: { color: C.cream, fontFace: FONT_BODY } },
   ], {
     x: 0.5, y: 3.60, w: 9, h: 1.1,
     fontSize: 14, align: "left", margin: 0,
