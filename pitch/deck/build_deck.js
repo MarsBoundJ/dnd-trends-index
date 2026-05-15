@@ -14,7 +14,7 @@ const pres = new pptxgen();
 
 const LOGO_DARK_PATH = path.join(__dirname, "..", "assets", "logos", "trusight_logo_4k_dark.png");
 pres.layout = "LAYOUT_16x9"; // 10" × 5.625" — Google Slides default
-pres.author = "Phil Trubbel (Yorri)";
+pres.author = "Phil Jones (Trusight)";
 pres.title = "Trusight: a D&D Trendwatch";
 
 // ── Palette ───────────────────────────────────────────────────────────
@@ -124,7 +124,7 @@ function newContentSlide(slideNum) {
   });
 
   // Author + date
-  slide.addText("Phil Trubbel  ·  May 2026", {
+  slide.addText("Phil Jones  ·  May 2026", {
     x: 0.5, y: 4.95, w: 9, h: 0.3,
     fontSize: 12, fontFace: FONT_BODY,
     color: C.mutedGray, align: "left", margin: 0,
@@ -974,7 +974,7 @@ function newContentSlide(slideNum) {
   });
 
   // Contact block
-  slide.addText("Phil Trubbel", {
+  slide.addText("Phil Jones", {
     x: 0.5, y: 2.75, w: 9, h: 0.4,
     fontSize: 22, fontFace: FONT_HEAD, bold: true,
     color: C.white, align: "left", margin: 0,
