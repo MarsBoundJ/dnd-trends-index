@@ -43,7 +43,7 @@ function footer() {
     new Paragraph({
       alignment: AlignmentType.CENTER,
       children: [
-        new TextRun({ text: "Phil Trubbel  ·  ", bold: true }),
+        new TextRun({ text: "Phil Jones  ·  ", bold: true }),
         new TextRun({ text: "phil@trusightdata.ai" }),
         new TextRun({ text: "  ·  trusightdata.ai" }),
       ],

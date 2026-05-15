@@ -13,7 +13,7 @@ const LOGO_DARK_PATH = path.join(__dirname, "..", "assets", "logos", "trusight_l
 
 pres.defineLayout({ name: "LETTER_P", width: 8.5, height: 11 });
 pres.layout = "LETTER_P";
-pres.author = "Phil Trubbel (Trusight)";
+pres.author = "Phil Jones (Trusight)";
 pres.title = "Trusight — Capability Sweep";
 
 const C = {
@@ -225,7 +225,7 @@ slide.addShape(pres.shapes.RECTANGLE, {
   fill: { color: C.ember }, line: { type: "none" },
 });
 slide.addText([
-  { text: "12+ LIVE SIGNAL STREAMS",   options: { color: C.ember, bold: true, fontFace: FONT_HEAD, charSpacing: 2 } },
+  { text: "25+ LIVE SIGNAL STREAMS",   options: { color: C.ember, bold: true, fontFace: FONT_HEAD, charSpacing: 2 } },
   { text: "  ·  ",   options: { color: C.mutedGray } },
   { text: "8-STAGE BIGQUERY PIPELINE",  options: { color: C.ember, bold: true, fontFace: FONT_HEAD, charSpacing: 2 } },
   { text: "  ·  ",   options: { color: C.mutedGray } },
@@ -244,7 +244,7 @@ slide.addText([
 
 // Contact line
 slide.addText([
-  { text: "Phil Trubbel  ·  ", options: { color: C.cream, bold: true, fontFace: FONT_BODY } },
+  { text: "Phil Jones  ·  ", options: { color: C.cream, bold: true, fontFace: FONT_BODY } },
   { text: "phil@trusightdata.ai",  options: { color: C.cream, fontFace: FONT_BODY } },
   { text: "  ·  trusightdata.ai",  options: { color: C.cream, fontFace: FONT_BODY } },
 ], {

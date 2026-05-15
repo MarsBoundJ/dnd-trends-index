@@ -17,7 +17,7 @@ const LOGO_DARK_PATH = path.join(__dirname, "..", "assets", "logos", "trusight_l
 
 pres.defineLayout({ name: "LETTER_P", width: 8.5, height: 11 });
 pres.layout = "LETTER_P";
-pres.author = "Phil Trubbel (Trusight)";
+pres.author = "Phil Jones (Trusight)";
 pres.title = "Trusight — The IP Decision Engine";
 
 const C = {
