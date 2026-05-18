@@ -11,8 +11,8 @@ UID:trusight-expo@trusightdata.ai
 DTSTAMP:20260518T120000Z
 DTSTART;VALUE=DATE:20260519
 DTEND;VALUE=DATE:20260522
-SUMMARY:[P] Licensing Expo — digital tools, get-on-radar
-DESCRIPTION:Phase 0. Get on WotC radar via Expo digital tools. No methodology through vendor forms.
+SUMMARY:Expo week — DO NOT outreach (WotC slammed in Vegas; we are not attending)
+DESCRIPTION:Licensing Expo firmly skipped May 18 2026 (floor-only meetings, gated contact, no remote value). Negative timing constraint only — no sends May 19-21.
 END:VEVENT
 BEGIN:VEVENT
 UID:trusight-shavuot@trusightdata.ai
@@ -26,12 +26,12 @@ UID:trusight-outreach-begin@trusightdata.ai
 DTSTAMP:20260518T120000Z
 DTSTART;VALUE=DATE:20260526
 DTEND;VALUE=DATE:20260527
-SUMMARY:[P] Post-Expo outreach BEGINS — Tier-1 (Kenna/Earp/Ayoub)
-DESCRIPTION:LinkedIn connects + emails per Downloads/trusight_outreach_tracker.csv. Channel A.
+SUMMARY:[P] Direct outreach BEGINS — Tier-1 (Kenna/Earp/Ayoub)
+DESCRIPTION:Expo week over\, targets resurface. LinkedIn connects + emails per Downloads/trusight_outreach_tracker.csv. Channel A — now the near-only WotC channel.
 BEGIN:VALARM
 TRIGGER:-P1D
 ACTION:DISPLAY
-DESCRIPTION:Post-Expo outreach starts tomorrow
+DESCRIPTION:Direct outreach starts tomorrow (Expo week over)
 END:VALARM
 END:VEVENT
 BEGIN:VEVENT
