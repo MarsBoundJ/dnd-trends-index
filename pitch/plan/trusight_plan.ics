@@ -1,0 +1,233 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Trusight//Execution Plan v1//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Trusight Execution Plan
+X-WR-CALDESC:Go-to-market + 4-stage sim roadmap + data maintenance (2026-05 -> 2027-Q1)
+X-WR-TIMEZONE:America/Chicago
+BEGIN:VEVENT
+UID:trusight-expo@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260519
+DTEND;VALUE=DATE:20260522
+SUMMARY:[P] Licensing Expo — digital tools, get-on-radar
+DESCRIPTION:Phase 0. Get on WotC radar via Expo digital tools. No methodology through vendor forms.
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-shavuot@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260522
+DTEND;VALUE=DATE:20260525
+SUMMARY:Shavuot / Shabbat — blackout (no work tasks)
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-outreach-begin@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260526
+DTEND;VALUE=DATE:20260527
+SUMMARY:[P] Post-Expo outreach BEGINS — Tier-1 (Kenna/Earp/Ayoub)
+DESCRIPTION:LinkedIn connects + emails per Downloads/trusight_outreach_tracker.csv. Channel A.
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Post-Expo outreach starts tomorrow
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-sim-unstall@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260527
+DTEND;VALUE=DATE:20260528
+SUMMARY:[C] Sim un-stall — reconcile combat-sim CONTEXT/SESSIONS + pillars-reconciliation
+DESCRIPTION:Prerequisite to Sim Stage 1. Stale docs frozen 2026-03-30.
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-publish-readiness@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260601
+DTEND;VALUE=DATE:20260606
+SUMMARY:[C] Publish-readiness sprint — HTML+PDF parity, string scrub, beta logo, newsletter standup
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-sim-stage1-scaffold@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260608
+DTEND;VALUE=DATE:20260609
+SUMMARY:[C] Sim Stage 1 — engine scaffold (SRD/Open5e ingest, clean-room spec)
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-flagship-draft@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260612
+DTEND;VALUE=DATE:20260613
+SUMMARY:[C] Flagship methodology piece — DRAFT due
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-flagship-tone@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260617
+DTEND;VALUE=DATE:20260618
+SUMMARY:[P+C] Flagship — tone review (neutral-measurement)
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-publish-1@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260619
+DTEND;VALUE=DATE:20260620
+SUMMARY:[P] PUBLISH #1 — flagship methodology (LinkedIn + site + newsletter launch)
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Publish #1 tomorrow
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-design-outreach@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260624
+DTEND;VALUE=DATE:20260625
+SUMMARY:[P] Design-team champion outreach wave (UA report asset) — Channel B
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-sim-first-reading@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260706
+DTEND;VALUE=DATE:20260707
+SUMMARY:[C] Sim Stage 1 — first internal eHP reading (validation milestone)
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-publish-2@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260717
+DTEND;VALUE=DATE:20260718
+SUMMARY:[P] PUBLISH #2 — State of Community Wants
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Publish #2 tomorrow
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-marketing-outreach@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260722
+DTEND;VALUE=DATE:20260723
+SUMMARY:[P] Marketing-angle outreach wave (zeitgeist/timing) — Channel C
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-sim-stage1-gate@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260803
+DTEND;VALUE=DATE:20260804
+SUMMARY:[P+C] Sim Stage 1 GATE — rigorous & defensible? (Capability Gate 1)
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-publish-3@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260814
+DTEND;VALUE=DATE:20260815
+SUMMARY:[P] PUBLISH #3 — quarterly zeitgeist read
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-fork5@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260904
+DTEND;VALUE=DATE:20260905
+SUMMARY:[P+C] FORK-5 CHECKPOINT — assess A/B/C, set volume dial, Stage 1->2
+DESCRIPTION:>=1 bit -> stay soft. All cold -> turn loud. Criteria in trusight_execution_plan.md.
+BEGIN:VALARM
+TRIGGER:-P3D
+ACTION:DISPLAY
+DESCRIPTION:Fork-5 strategic checkpoint in 3 days — prep A/B/C outcomes
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-sim-stage2@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260914
+DTEND;VALUE=DATE:20260915
+SUMMARY:[C] Sim Stage 2 — published-analysis-grade outputs (if dial=loud)
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-publish-4@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260918
+DTEND;VALUE=DATE:20260919
+SUMMARY:[P] PUBLISH #4 — first reception+power dual reading (moat)
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Publish #4 tomorrow
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-youtube-decision@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20261005
+DTEND;VALUE=DATE:20261006
+SUMMARY:[P+C] YouTube channel launch DECISION (one-way door — deliberate)
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-counsel-reminder@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20261102
+DTEND;VALUE=DATE:20261103
+SUMMARY:[P] Legal-counsel pre-engagement reminder — before money/Stage 3/Stage 4
+BEGIN:VALARM
+TRIGGER:-P7D
+ACTION:DISPLAY
+DESCRIPTION:Legal counsel checkpoint in 1 week
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-stage3-scoping@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20261201
+DTEND;VALUE=DATE:20261202
+SUMMARY:[P] Stage 3 scoping — ONLY if traction met; counsel engaged before money/Stage 4
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-q1-2027-review@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20270108
+DTEND;VALUE=DATE:20270109
+SUMMARY:[P+C] Q1 2027 strategic review — re-plan next horizon
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-weekly-data@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260601
+DTEND;VALUE=DATE:20260602
+RRULE:FREQ=WEEKLY;BYDAY=MO;UNTIL=20271231
+SUMMARY:[C] Data maintenance — bookmarklet harvest (GitP/RPG.net/EN World) + flow check
+DESCRIPTION:3 TTRPG forums via bookmarklet + Reddit/AO3/BGG flow check. Log anomalies.
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-weekly-outreach@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260527
+DTEND;VALUE=DATE:20260528
+RRULE:FREQ=WEEKLY;BYDAY=WE;UNTIL=20271231
+SUMMARY:[P+C] Outreach tracker review + follow-up sequencing
+DESCRIPTION:connect -> accept -> DM -> email. Update Downloads/trusight_outreach_tracker.csv.
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-monthly-retro@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260626
+DTEND;VALUE=DATE:20260627
+RRULE:FREQ=MONTHLY;BYDAY=-1FR;UNTIL=20271231
+SUMMARY:[P+C] Monthly retro + full data-stream health audit + KPI log
+DESCRIPTION:KPIs: outreach response rate, newsletter subs/opens, piece engagement, sim status, stream health.
+END:VEVENT
+BEGIN:VEVENT
+UID:trusight-quarterly-integrity@trusightdata.ai
+DTSTAMP:20260518T120000Z
+DTSTART;VALUE=DATE:20260629
+DTEND;VALUE=DATE:20260703
+RRULE:FREQ=MONTHLY;INTERVAL=3;UNTIL=20271231
+SUMMARY:[P+C] Quarterly: registry/BQ export-integrity check + BUFFER/catch-up week
+DESCRIPTION:Data integrity (not just freshness). No hard deadlines this week — caretaking resilience.
+END:VEVENT
+END:VCALENDAR
