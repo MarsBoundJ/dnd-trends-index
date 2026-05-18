@@ -12,20 +12,21 @@ Companion to `trusight_execution_plan.md` (the *why*) and `trusight_plan.ics` (t
 
 ---
 
-## PHASE 0 — Expo + immediate post-Expo
+## PHASE 0 — Direct-outreach launch
+*(Licensing Expo firmly skipped May 18 2026 — floor-only meetings, gated contact, no remote value. Expo week = a "do-not-send" timing constraint only; not attending.)*
 
 **WEEK 1 — Mon May 18 → Sun May 24, 2026**
 - Mon May 18 — Plan baseline set (today)
-- Tue May 19 — **[P] Licensing Expo** day 1 (digital tools, get-on-radar)
-- Wed May 20 — [P] Licensing Expo day 2
-- Thu May 21 — [P] Licensing Expo day 3
+- Tue May 19 — Expo week — **DO NOT outreach** (WotC slammed in Vegas; not attending)
+- Wed May 20 — Expo week — hold outreach
+- Thu May 21 — Expo week — hold outreach
 - Fri May 22 — Shavuot / Shabbat — **blackout begins**
 - Sat May 23 — Shabbat — clear
 - Sun May 24 — Shavuot/blackout ends
 
 **WEEK 2 — Mon May 25 → Sun May 31, 2026**
 - Mon May 25 — US Memorial Day (low-response — intentionally no sends)
-- Tue May 26 — **[P] POST-EXPO OUTREACH BEGINS** — Tier-1 LinkedIn connects + emails (Kenna #1 / Earp / Ayoub)
+- Tue May 26 — **[P] DIRECT OUTREACH BEGINS** (Expo week over, targets resurface) — Tier-1 LinkedIn connects + emails (Kenna #1 / Earp / Ayoub)
 - Wed May 27 — [C] Sim un-stall: reconcile combat-sim CONTEXT/SESSIONS + pillars-reconciliation · *Wed: outreach review (1st)*
 - Thu May 28 — —
 - Fri May 29 — [P+C] Week-1 tracker update

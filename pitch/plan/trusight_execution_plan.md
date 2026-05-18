@@ -12,7 +12,7 @@
 
 - **Shabbat/observance blackout:** no work tasks Fri sunset → Sat nightfall. Saturdays are clear in the calendar; Fridays are light (review/publish only, no heavy build). Phil adjusts around Jewish holidays as they fall.
 - **Caretaking resilience:** Phil is solo + home-based with caretaking duties. One **buffer/catch-up week per quarter** with zero hard deadlines. Travel ≤ 1 night, late-stage high-probability meetings only.
-- **Ownership legend:** **[P]** Phil-only (sends as himself, Expo presence, phone, final publish click, legal counsel, money decisions) · **[C]** Claude-executable (drafting, sim build, data/SQL, tracker upkeep, calendar) · **[P+C]** joint (review, strategic checkpoints).
+- **Ownership legend:** **[P]** Phil-only (sends as himself, phone, final publish click, legal counsel, money decisions) · **[C]** Claude-executable (drafting, sim build, data/SQL, tracker upkeep, calendar) · **[P+C]** joint (review, strategic checkpoints).
 
 ---
 
@@ -36,18 +36,20 @@ Direct WotC channels and the quiet community track run **in parallel**. Communit
 - **B. Design teams** — UA reception+power value prop. Target as **champions/internal advocates**, not buyers. *Sharpest tone risk: you'd be scoring the work of the people you're courting — visibly on their side.*
 - **C. Marketing** — zeitgeist/timing-intelligence value prop.
 
-**Fork-5 checkpoint criteria** (assessed 2026-09-04): for each of A/B/C, "bit" = a substantive reply, a call booked, or a stated interest in a trial. "Cold" = no substantive engagement after the full post-Expo follow-up arc. **If ≥1 bit → stay soft, do not complicate a live thread.** **If all cold → turn the dial loud.**
+**Fork-5 checkpoint criteria** (assessed 2026-09-04): for each of A/B/C, "bit" = a substantive reply, a call booked, or a stated interest in a trial. "Cold" = no substantive engagement after the full follow-up arc (≈ the quarter following the May-26 outreach start). **If ≥1 bit → stay soft, do not complicate a live thread.** **If all cold → turn the dial loud.**
 
 ---
 
 ## Phased timeline
 
-### Phase 0 — Expo + immediate post-Expo (now → end May)
+### Phase 0 — Direct-outreach launch (now → end May)
+> **Licensing Expo firmly skipped (May 18 2026).** Verified: $90 Event Planner = floor-only in-person meetings, contact gated to in-platform messaging, no virtual meetings; $500 only adds in-person invite quota — near-zero value for a non-attending remote founder. Direct LinkedIn/email to named targets is now the *near-only* WotC channel (raises the weight of the parallel community/load-bearing track). Expo's only surviving role is a *negative* timing constraint.
+
 | Date | Task | Own |
 |---|---|---|
-| May 19–21 | Licensing Expo — digital tools, get-on-radar | [P] |
+| May 19–21 | Expo week — WotC licensing/creative in Vegas & slammed → **do NOT send outreach** (timing constraint only; we are not attending) | — |
 | May 22–24 | Shavuot / Shabbat — blackout | — |
-| May 26 | **Post-Expo outreach begins** — Tier-1 LinkedIn connects + emails (Kenna/Earp/Ayoub) per tracker | [P] |
+| May 26 | **Direct outreach begins** (Expo week over, targets resurface) — Tier-1 LinkedIn connects + emails (Kenna/Earp/Ayoub) per tracker | [P] |
 | May 27 | Sim un-stall #1 — reconcile combat-sim `CONTEXT.md`/`SESSIONS.md` + `pillars-reconciliation.md` | [C] |
 | May 29 | Week-1 tracker update | [P+C] |
 
