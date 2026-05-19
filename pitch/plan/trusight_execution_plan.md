@@ -95,6 +95,18 @@ Direct WotC channels and the quiet community track run **in parallel**. Communit
 | **Monthly — last Fri** | Mini-retro + full data-stream health audit | [P+C] |
 | **Quarterly** | Strategic review + **registry/BigQuery export-integrity check** + buffer/catch-up week | [P+C] |
 
+### Harvester operating rules (structural — not advisory)
+
+**DDB homebrew capture — the most ToS-fragile stream. Failure = WAIT, never retry-harder. Gentle cadence only.**
+- DDB ToS is personal/non-commercial; the bookmarklet rides Phil's signed-in session. Treat it like a guest in someone's house, not an API.
+- **Must be signed in to DDB before running** (unauthenticated → 100% timeout: hits a login/Cloudflare wall). Confirmed cause of the May 18 re-run wipeout.
+- **A failed/timed-out run means back off, do not re-run.** Wait ≥ several hours (≥24h if a full run was already throttled). Re-running immediately escalates a soft throttle into a hard IP/session block. (May 18: 200-capture run took 42 min vs ~5–7 expected = throttled; immediate re-run → total timeout.)
+- **Never the 200-in-one-blast pattern after a failure.** Retry only the missing combos (skip-logic already isolates them — empties + saves are persisted as measured-zeros in `dnd_trends_raw.ddb_homebrew_counts`; only true failures rewrite), in **small spaced batches**.
+- **Section-aware:** `/magic-items` is the heavy section (biggest DDB pages) and times out first under throttle — May 18 gap was 18/21 there. Give magic-items extra per-request time / smallest batch / run it last or alone.
+- Diagnostic before any retry: load a DDB `/homebrew/...` page **manually as a human** first. Slow/challenged for you too → IP block, keep waiting. Loads fine → session-pattern issue, proceed gently.
+
+**General manual-harvester principle:** AO3 / FFN / forum bookmarklets are *human-wielded UI tooling by deliberate ToS/ethics design — never auto-iterating scrapers.* "Make it automatic" is not a fix; it reintroduces the exact risk the manual design exists to avoid (see legal-firewall posture, memory spine). The intended convenience is the generated deep-link list (`scripts/print_fanfic_capture_urls.py`), not automation.
+
 ---
 
 ## Things you were missing (now folded in)
@@ -112,3 +124,4 @@ Direct WotC channels and the quiet community track run **in parallel**. Communit
 
 ## Change log
 - 2026-05-18 — v1 created (Phil + Claude). Consolidates: 4-stage sim roadmap, layered GTM, publishing menu, five forks, legal posture, data-maintenance cadence.
+- 2026-05-18 — v1.1: Licensing Expo de-scoped (PR #77 — firmly skipped; floor-only/no-remote-value). Added **Harvester operating rules** (DDB failure=wait/gentle-cadence/signed-in/section-aware; general manual-harvester = no-auto-iteration by design) after a real DDB throttle→block incident.
