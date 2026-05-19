@@ -107,6 +107,8 @@ Direct WotC channels and the quiet community track run **in parallel**. Communit
 
 **General manual-harvester principle:** AO3 / FFN / forum bookmarklets are *human-wielded UI tooling by deliberate ToS/ethics design — never auto-iterating scrapers.* "Make it automatic" is not a fix; it reintroduces the exact risk the manual design exists to avoid (see legal-firewall posture, memory spine). The intended convenience is the generated deep-link list (`scripts/print_fanfic_capture_urls.py`), not automation.
 
+**Server-side harvester hard-block rule (generalizes "never retry-harder" beyond DDB).** A **403 / Cloudflare challenge** on a server-side fetch (Cloud Function / Python `requests`) is a *deterministic* block, not a transient timeout — retrying the identical request only yields the identical 403 and can escalate. Root cause is usually datacenter-IP fingerprinting (GCP egress ranges) or an anti-bot edge. **The proven mitigation is migrating the harvester to the human-wielded bookmarklet pattern** (real residential browser + real session, same-origin) — the same move already made for the Cloudflare-blocked TTRPG forums (`project_post_expo_bookmarklet_strategy.md`). **Live instance:** the BackerKit harvester (`cloud_functions/backerkit_harvester/main.py`) started returning `403 Forbidden` on its Inertia endpoint May 18 2026 → flagged for bookmarklet migration mirroring the existing Kickstarter bookmarklet (separate work item; do NOT keep re-running the Cloud Function).
+
 ---
 
 ## Things you were missing (now folded in)
@@ -124,4 +126,4 @@ Direct WotC channels and the quiet community track run **in parallel**. Communit
 
 ## Change log
 - 2026-05-18 — v1 created (Phil + Claude). Consolidates: 4-stage sim roadmap, layered GTM, publishing menu, five forks, legal posture, data-maintenance cadence.
-- 2026-05-18 — v1.1: Licensing Expo de-scoped (PR #77 — firmly skipped; floor-only/no-remote-value). Added **Harvester operating rules** (DDB failure=wait/gentle-cadence/signed-in/section-aware; general manual-harvester = no-auto-iteration by design) after a real DDB throttle→block incident.
+- 2026-05-18 — v1.1: Licensing Expo de-scoped (PR #77 — firmly skipped; floor-only/no-remote-value). Added **Harvester operating rules** (DDB failure=wait/gentle-cadence/signed-in/section-aware; general manual-harvester = no-auto-iteration by design; **server-side hard-block rule** — 403/Cloudflare = deterministic, don't retry, migrate to bookmarklet) after a real DDB throttle→block incident + the BackerKit Cloud Function 403'ing same day.
