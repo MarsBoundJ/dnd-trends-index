@@ -81,6 +81,16 @@ export function getBookmarklets(): Bookmarklet[] {
       href: readBookmarklet("kickstarter_bookmarklet.txt"),
     },
     {
+      id: "backerkit",
+      name: "BackerKit RPG Harvester",
+      targetHost: "backerkit.com",
+      description:
+        "Replaces the server-side BackerKit Cloud Function (deterministically 403'd by BackerKit's edge — GCP datacenter IPs flagged). Same-origin-fetches BackerKit's RPG-collection Inertia JSON in your signed-in browser, classifies/normalises to the backerkit_projects schema, and POSTs to Bouncer via a CSP-free popup. Field-parity with the old Cloud Function so all downstream crowdfunding views keep working.",
+      usage:
+        "Drag the pill to your bookmarks bar. Visit backerkit.com while signed in, then click the bookmark. Watch the send popup for the ingest confirmation.",
+      href: readBookmarklet("backerkit_bookmarklet.txt"),
+    },
+    {
       id: "dmsguild-dtrpg",
       name: "DMsGuild / DTRPG Incursion",
       targetHost: "dmsguild.com · drivethrurpg.com",

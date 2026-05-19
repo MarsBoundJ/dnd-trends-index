@@ -167,6 +167,8 @@ def bouncer_api(request):
             path = 'system/amazon/ingest-ranks'
         elif 'kickstarter/ingest-projects' in full_path:
             path = 'system/kickstarter/ingest-projects'
+        elif 'backerkit/ingest-projects' in full_path:
+            path = 'system/backerkit/ingest-projects'
         elif 'fanfic/ingest-crossover-count' in full_path:
             path = 'system/fanfic/ingest-crossover-count'
         elif 'homebrew/ip-list' in full_path:
@@ -1381,6 +1383,70 @@ def bouncer_api(request):
         if errors:
             return (json.dumps({"error": str(errors)}), 500, headers)
         return (json.dumps({"inserted": len(rows)}), 200, headers)
+
+    elif path == 'system/backerkit/ingest-projects':
+        # Bookmarklet replacement for the cloud_functions/backerkit_harvester
+        # Cloud Function, which gets a deterministic 403 from BackerKit's
+        # edge (GCP datacenter IPs flagged; persistent since >=May 13 2026).
+        # Phil runs the BackerKit bookmarklet in his signed-in browser
+        # (residential IP, real session) and POSTs the parsed projects here.
+        # Writes the SAME commercial_data.backerkit_projects table the dead
+        # Cloud Function targeted, so silver_data.norm_crowdfunding and all
+        # downstream views keep working unchanged.
+        if request.method != 'POST':
+            return (json.dumps({"error": "POST required"}), 405, headers)
+        ritual_key = request.headers.get('X-Ritual-Key', '')
+        if ritual_key != 'ArcaneLibrarian2026':
+            return (json.dumps({"error": "Unauthorized"}), 403, headers)
+        rows = request.get_json()
+        if not rows:
+            return (json.dumps({"error": "No data"}), 400, headers)
+        if isinstance(rows, dict):
+            rows = [rows]
+        today = datetime.datetime.utcnow().date().isoformat()
+        now_ts = datetime.datetime.utcnow().isoformat() + 'Z'
+        # backerkit_projects.scraped_at is REQUIRED TIMESTAMP — stamp it
+        # (the Cloud Function set it; the bookmarklet does not send it).
+        cleaned = []
+        for r in rows:
+            pid = str(r.get('project_id', '')).strip()
+            title = str(r.get('title', '')).strip()
+            if not pid or not title:
+                continue  # project_id + title are REQUIRED in the schema
+            cleaned.append({
+                'project_id': pid,
+                'title': title,
+                'creator': str(r.get('creator', ''))[:500],
+                'funding_usd': float(r.get('funding_usd') or 0.0),
+                'backers_count': int(r.get('backers_count') or 0),
+                'days_remaining': int(r.get('days_remaining') or 0),
+                'system_tag': str(r.get('system_tag', 'RPG (Other)'))[:100],
+                'scraped_at': now_ts,
+                'source_url': str(r.get('source_url', ''))[:1000],
+            })
+        if not cleaned:
+            return (json.dumps({"error": "No valid rows (project_id + title required)"}), 400, headers)
+        # Dedup guard: skip if we already have BackerKit data from today
+        # (mirrors the Kickstarter route; tolerate first-run no-table).
+        try:
+            check = list(client.query(
+                "SELECT COUNT(*) as n FROM"
+                " `dnd-trends-index.commercial_data.backerkit_projects`"
+                f" WHERE DATE(scraped_at) = '{today}'"
+            ).result())
+            if check and check[0].n > 0:
+                return (json.dumps({"skipped": True, "reason": f"BackerKit projects already ingested for {today}"}), 200, headers)
+        except Exception as e:
+            print(f"DEBUG: backerkit dedup check skipped (ok if first run): {e}")
+        errors = client.insert_rows_json(
+            'dnd-trends-index.commercial_data.backerkit_projects',
+            cleaned,
+            skip_invalid_rows=True,
+            ignore_unknown_values=True,
+        )
+        if errors:
+            return (json.dumps({"error": str(errors)}), 500, headers)
+        return (json.dumps({"inserted": len(cleaned)}), 200, headers)
 
     elif path == 'system/fanfic/ingest-crossover-count':
         # Ingest one or more (ip_name, platform) crossover counts from a
