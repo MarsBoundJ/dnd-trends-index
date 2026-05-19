@@ -23,7 +23,7 @@ BLACKOUT  =  Friday 21:30 UTC  →  Sunday 03:45 UTC
 - `Friday 21:30 UTC` = the **earliest possible** Friday Halachic sundown across the whole year.
 - `Sunday 03:45 UTC` = the **latest possible** Saturday-night Halachic twilight across the whole year.
 - Fixed worst-case bounds so no per-week sundown calculation is ever needed.
-- **Location caveat:** computed for Iowa (Council Bluffs / Cedar Rapids). Iowa is north of Kansas, so its seasonal daylight swing is larger and the window is *more conservative* than Kansas requires (safe). **OPEN ITEM:** confirm the intended location/coordinates; re-verify bounds if it should be Kansas-specific.
+- **Location — RESOLVED (Phil, 2026-05-19): Iowa is intentional and correct.** Shabbat is observed at the location where the scrape *physically executes* — Google Cloud `us-central1` (Council Bluffs, Iowa) — not the operator's home (Kansas). The bounds are therefore Iowa-correct by design, not an approximation to revisit. If the GCP region ever changes, re-verify the bounds for the new datacenter location.
 
 ## Canonical cron pattern (apply to EVERY stream)
 
@@ -36,7 +36,7 @@ Two recurring Cloud Scheduler jobs per stream, both in UTC:
 
 Rules:
 
-1. **`H:M` must be before 21:30 UTC.** This guarantees Friday's run is always pre-Shabbat *and* every Sunday/weekday run is well clear of the window. **Proposed default: `15:00 UTC`** (already used by several streams; Fri 15:00 ≪ 21:30 ✓, Sun 15:00 ≫ 03:45 ✓). Pick one time and use it for all streams.
+1. **`H:M` must be before 21:30 UTC.** This guarantees Friday's run is always pre-Shabbat *and* every Sunday/weekday run is well clear of the window. **Canonical time: `15:00 UTC` — CONFIRMED (Phil, 2026-05-19).** Chosen because several streams already run at 15:00 UTC, so the whole fleet converges on one time (Fri 15:00 ≪ 21:30 ✓, Sun 15:00 ≫ 03:45 ✓). Use `15:00 UTC` for every stream unless a specific stream documents a reason otherwise.
 2. **Saturday is never scheduled** (excluded by `0-5`).
 3. **The Sunday 04:00 UTC catch-up** runs just after the blackout ends (03:45). In Phil's Central time this is "late Saturday night." It backfills everything since Friday's run: with the 15:00 default, Fri 15:00 → Sun 04:00 ≈ **37 hours** (the required ">24h, ~30h" catch-up). Sunday also gets its normal 15:00 run — a harmless second pass for watermark-based streams.
 
