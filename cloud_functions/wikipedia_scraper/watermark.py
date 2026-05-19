@@ -25,8 +25,20 @@ class HighWatermark:
             if self.blob.exists():
                 data = json.loads(self.blob.download_as_text())
                 start_time_str = data.get('last_successful_timestamp')
-                # Parse to ensure valid, but return string for ISO compatibility
-                # start_time = datetime.datetime.fromisoformat(start_time_str)
+                # The marker can exist but carry a null/empty
+                # last_successful_timestamp (e.g. created by a failed
+                # run, or a manual reset that didn't set it). Returning
+                # that None crashed the caller at
+                # datetime.fromisoformat(None) — the bug that left the
+                # Wikipedia stream silently dead since ~Mar 29 2026.
+                # Treat a falsy timestamp as "no usable watermark" so we
+                # fall through to the default-lookback path and never
+                # return None.
+                if not start_time_str:
+                    raise ValueError(
+                        "marker present but last_successful_timestamp is "
+                        "missing/empty"
+                    )
                 start_time = start_time_str
                 print(f"🌊 High Watermark Found: Resuming from {start_time}")
             else:
