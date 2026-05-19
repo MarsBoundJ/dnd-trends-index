@@ -71,40 +71,56 @@ export async function POST() {
     return NextResponse.json({ error: "run log init failed" }, { status: 500 })
   }
 
-  // Fire-and-forget trigger. We attach `.catch()` so unhandled promise
-  // rejections don't spam Vercel's error reporter, but otherwise we
-  // don't need to await — the harvester self-reports completion to
-  // Firestore directly.
+  // AWAIT the trigger. The old code fired this fetch fire-and-forget
+  // and returned immediately — but on Vercel the lambda is frozen the
+  // instant the response flushes, which could kill the un-awaited
+  // fetch BEFORE it was even sent. The harvester then never ran for
+  // this runId, the doc sat "running", and 5 min later the /status
+  // stale-detector mislabeled it "harvester may have crashed before
+  // writing status" (misleading: it was never triggered at all).
   //
-  // Cloud Run receives the request within ~50-200ms of dispatch, so
-  // even if Vercel tears down our function immediately after the
-  // response, the trigger has already landed. The status-tracking
-  // responsibility now lives with the harvester; our job is only to
-  // initiate + log.
-  //
-  // The harvester reads `run_id` from its request body and writes
-  // its own status updates to admin/runs/backerkit/{runId}. See
-  // cloud_functions/backerkit_harvester/main.py::_report_run_status.
-  fetch(BACKERKIT_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ run_id: runId }),
-  }).catch((err) => {
-    console.error("[backerkit/run] trigger dispatch failed:", err)
-    // Best-effort: try to mark the run as failed so the UI doesn't
-    // spin forever. This itself is fire-and-forget — if Vercel has
-    // already killed us, the /status route's stale-run detector
-    // (defense in depth) will eventually heal it.
-    runRef
-      .update({
-        status: "failed",
-        finishedAt: FieldValue.serverTimestamp(),
-        error: `trigger dispatch failed: ${err instanceof Error ? err.message : String(err)}`,
-      })
-      .catch(() => {
-        /* swallow — dead lambda, nothing we can do */
-      })
-  })
+  // Awaiting keeps the lambda alive through dispatch. The BackerKit
+  // harvest is fast (~2-4s) and maxDuration is 15s, so in the normal
+  // case the fetch even resolves with the harvester's result before
+  // we return. AbortSignal.timeout caps the wait safely under
+  // maxDuration. The harvester still self-reports terminal status to
+  // admin/runs/backerkit/{runId} (see backerkit_harvester/main.py);
+  // the /status stale-detector remains the final backstop.
+  try {
+    await fetch(BACKERKIT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ run_id: runId }),
+      signal: AbortSignal.timeout(12_000),
+    })
+    // Resolved (any HTTP status) → trigger delivered and the harvester
+    // ran; it self-reports the terminal status to the same doc.
+  } catch (err) {
+    const name = err instanceof Error ? err.name : ""
+    if (name === "TimeoutError" || name === "AbortError") {
+      // Request WAS dispatched (connection opened, Cloud Run is
+      // processing) — we just didn't wait for the full harvest. The
+      // self-report closes the loop; stale-detector is the backstop.
+      // NOT a failure — do not mark the run failed here.
+      console.warn(
+        "[backerkit/run] trigger dispatched; harvest still running at 12s cutoff — self-report will close the loop",
+      )
+    } else {
+      // Genuine dispatch failure (DNS / connection refused) — the
+      // harvester never received the request. Mark it failed now;
+      // we awaited, so the lambda is still alive to write this.
+      console.error("[backerkit/run] trigger dispatch failed:", err)
+      try {
+        await runRef.update({
+          status: "failed",
+          finishedAt: FieldValue.serverTimestamp(),
+          error: `trigger dispatch failed: ${err instanceof Error ? err.message : String(err)}`,
+        })
+      } catch {
+        /* swallow — best effort */
+      }
+    }
+  }
 
   return NextResponse.json({ runId, status: "running" })
 }

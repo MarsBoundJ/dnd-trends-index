@@ -125,7 +125,7 @@ export async function GET(req: Request) {
         : data.durationSec ?? null,
       summary: data.summary,
       error: isStale
-        ? "Self-report not received within 5 minutes — harvester may have crashed before writing status. Check Cloud Run logs for actual outcome."
+        ? "No self-report after 5 minutes — the harvester was either never triggered (serverless cold-freeze dropped the dispatch) or it failed before self-reporting. Check Cloud Run logs for the actual outcome."
         : data.error,
       stdout: data.stdout,
     }
@@ -145,7 +145,7 @@ export async function GET(req: Request) {
           status: "failed",
           finishedAt: nowTimestamp,
           error:
-            "Self-report not received within 5 minutes — harvester may have crashed before writing status. Check Cloud Run logs for actual outcome.",
+            "No self-report after 5 minutes — the harvester was either never triggered (serverless cold-freeze dropped the dispatch) or it failed before self-reporting. Check Cloud Run logs for the actual outcome.",
         }),
       ),
     ).then((results) => {
