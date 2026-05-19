@@ -45,17 +45,30 @@ def audit_all_streams():
         },
         {
             "name": "Fandom",
-            "table_id": "dnd-trends-index.social_data.fandom_trending",
-            "date_col": "snapshot_date",
+            # REPOINTED 2026-05-19: the old social_data.fandom_trending
+            # is a DEAD legacy table (last write Jan 1) that nothing
+            # writes to anymore — the live fandom_scraper /
+            # fandom_view_fetcher pipeline writes here. The freshness
+            # audit's first run correctly exposed the stale target
+            # (it was never "Fandom dead 138d" — the audit was just
+            # watching the wrong table).
+            "table_id": "dnd-trends-index.dnd_trends_raw.fandom_daily_metrics",
+            "date_col": "extraction_date",
             "keyword_col": "article_title",
         },
         {
             "name": "YouTube",
-            "table_id": "dnd-trends-index.social_data.youtube_videos",
+            # REPOINTED 2026-05-19: social_data.youtube_videos does not
+            # exist (audit was 404ing). youtube_listener writes here;
+            # this table is fresh (newest video same-day). NOTE: this
+            # table has NO ingest timestamp — published_at is the
+            # video's publish date, so freshness_check stays False.
+            # TODO: add an ingested_at column to dnd_trends_raw.
+            # youtube_videos so this stream gets real staleness
+            # monitoring (currently only Error/empty is detectable).
+            "table_id": "dnd-trends-index.dnd_trends_raw.youtube_videos",
             "date_col": "published_at",
             "keyword_col": "video_id",
-            # published_at is the video's publish date, NOT our scrape
-            # time — old values are normal even when scraping is healthy.
             "freshness_check": False,
         },
         {
