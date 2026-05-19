@@ -1,0 +1,11 @@
+# Never commit pulled data — copyrighted creator content (derive-and-
+# discard; legal posture in project_yt_transcript_poc.md). Raw pulls
+# default to ~/yt_poc_data (OUTSIDE the repo) anyway; this is belt-and-
+# suspenders in case YT_POC_DATA_DIR is ever pointed in-tree.
+data/
+*.norm.json
+*.entities.json
+*.llm.json
+glossary_cache.json
+__pycache__/
+*.pyc
