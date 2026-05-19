@@ -183,10 +183,22 @@ def pull(n: int | None = None, force: bool = False) -> dict:
     for i, v in enumerate(vids, 1):
         vid = v["video_id"]
         dest = config.RAW_DIR / f"{vid}.json"
+        # Only skip when cached AND the transcript actually succeeded
+        # last time. A cached-but-blocked entry (segments empty) should
+        # auto-retry on a later cooldown run without needing --force
+        # (which would refetch everything). This is what makes the
+        # gentle-cadence + cooldown loop converge over time.
         if dest.exists() and not force:
-            summary["skipped"].append(vid)
-            print(f"  [{i}/{len(vids)}] {vid}  (cached, skip)")
-            continue
+            try:
+                prev_tr = json.loads(dest.read_text(encoding="utf-8")).get(
+                    "transcript", {}) or {}
+            except Exception:
+                prev_tr = {}
+            if prev_tr.get("segments"):
+                summary["skipped"].append(vid)
+                print(f"  [{i}/{len(vids)}] {vid}  (cached+ok, skip)")
+                continue
+            # else: cached but blocked/empty -> retry below
         if fetched_count > 0:  # pace between live fetches, not the first
             time.sleep(random.uniform(PACE_MIN_SEC, PACE_MAX_SEC))
         fetched_count += 1
