@@ -38,17 +38,28 @@ except ImportError:  # pragma: no cover
 
 
 def _download_audio(video_id: str) -> tuple[bool, str | None, str | None]:
-    """Returns (ok, audio_path, error). Prefer native m4a (no ffmpeg
-    re-encode needed); fall back to whatever bestaudio offers. yt-dlp
-    handles network retries internally."""
+    """Returns (ok, audio_path, error). Robust against YouTube SABR:
+    YT now serves combined audio+video streams to many clients and
+    hides clean audio-only streams (verified during smoke test —
+    bestaudio[ext=m4a] failed with 'Requested format is not available'
+    on a recent Treantmonk video). Strategy: prefer audio-only m4a;
+    if SABR forces combined, FFmpegExtractAudio (ffmpeg required, we
+    have it) pulls the audio track to m4a. Always yields {id}.m4a
+    that Gemini ingests directly."""
     import yt_dlp
 
     url = f"https://www.youtube.com/watch?v={video_id}"
     out_tmpl = str(config.AUDIO_DIR / "%(id)s.%(ext)s")
     opts = {
-        # m4a/AAC is what Gemini ingests cleanly with no transcode.
-        "format": "bestaudio[ext=m4a]/bestaudio[acodec=aac]/bestaudio",
+        # Try audio-only first; fall through to combined ("best") if
+        # SABR has hidden the audio-only streams from our client.
+        "format": "bestaudio[ext=m4a]/bestaudio/best",
         "outtmpl": out_tmpl,
+        "postprocessors": [{
+            "key": "FFmpegExtractAudio",
+            "preferredcodec": "m4a",
+            "preferredquality": "0",
+        }],
         "quiet": True,
         "noprogress": True,
         "no_warnings": True,
@@ -59,7 +70,7 @@ def _download_audio(video_id: str) -> tuple[bool, str | None, str | None]:
             info = ydl.extract_info(url, download=True)
         if not info:
             return False, None, "yt-dlp returned no info"
-        # Discover the actual on-disk filename (extension varies).
+        # After FFmpegExtractAudio runs, the m4a is the canonical output.
         for ext in ("m4a", "mp4", "webm", "opus", "ogg", "mp3"):
             cand = config.AUDIO_DIR / f"{video_id}.{ext}"
             if cand.exists():
@@ -77,18 +88,87 @@ def _existing_audio_path(video_id: str) -> str | None:
     return None
 
 
-def pull_audio(n: int | None = None, force: bool = False) -> dict:
+def _list_videos_since(channel_url: str, since_yyyymmdd: str,
+                       n_max: int = 400) -> list[dict]:
+    """Walk channel newest-first; per-video metadata fetch to get
+    upload_date; STOP early when a video is older than `since` (since
+    /videos is sorted newest-first, everything after is older too).
+
+    Returns [{video_id, title, upload_date}] sorted newest-first.
+    Per-video extraction is sequential — yt-dlp metadata calls aren't
+    rate-limited the same way the captions endpoint is, but we still
+    pace lightly to be kind.
+    """
+    import time as _time
+    flat = pull._list_latest_video_ids(channel_url, n_max)
+    out: list[dict] = []
+    print(f"[audio_pull] walking {len(flat)} flat entries; filter "
+          f"upload_date >= {since_yyyymmdd}")
+    for i, v in enumerate(flat, 1):
+        try:
+            meta = pull._full_metadata(v["video_id"])
+        except Exception:
+            continue
+        ud = meta.get("upload_date", "") or ""
+        if not ud:
+            continue
+        if ud < since_yyyymmdd:
+            print(f"[audio_pull]   stopped at #{i}: {v['video_id']} "
+                  f"upload_date={ud} < {since_yyyymmdd}")
+            break
+        out.append({"video_id": v["video_id"], "title": meta["title"],
+                    "upload_date": ud})
+        if i % 25 == 0:
+            print(f"[audio_pull]   ... {i} scanned, {len(out)} matched")
+        _time.sleep(0.4)  # gentle pace; metadata endpoint isn't the
+                          # transcript-endpoint rate-limiter
+    return out
+
+
+def _stratified_pick(sorted_list: list[dict], n: int) -> list[dict]:
+    """Pick n items evenly spaced by index from a sorted list. Used to
+    smoke-test ASR/extract quality across the corpus's full date span
+    cheaply before committing to the full batch."""
+    if len(sorted_list) <= n:
+        return sorted_list
+    step = (len(sorted_list) - 1) / (n - 1)
+    return [sorted_list[int(round(i * step))] for i in range(n)]
+
+
+def pull_audio(n: int | None = None, force: bool = False,
+               since: str | None = None,
+               stratified_sample: int | None = None,
+               dry_run: bool = False) -> dict:
     config.ensure_dirs()
-    n = n or config.N_VIDEOS
-    print(f"[audio_pull] channel={config.CHANNEL_URL} n={n} -> {config.AUDIO_DIR}")
+    n_max = n or (400 if since else config.N_VIDEOS)
+    print(f"[audio_pull] channel={config.CHANNEL_URL} n_max={n_max}"
+          f"{' since=' + since if since else ''}"
+          f"{' stratified=' + str(stratified_sample) if stratified_sample else ''}"
+          f"{' DRY-RUN' if dry_run else ''}"
+          f" -> {config.AUDIO_DIR}")
 
-    try:
-        vids = pull._list_latest_video_ids(config.CHANNEL_URL, n)
-    except Exception as e:
-        print(f"[audio_pull] FATAL: could not list channel videos: {e}")
-        return {"ok": False, "error": str(e)}
+    if since:
+        candidates = _list_videos_since(config.CHANNEL_URL, since, n_max)
+        print(f"[audio_pull] {len(candidates)} videos with upload_date >= {since}")
+        if stratified_sample:
+            vids = _stratified_pick(candidates, stratified_sample)
+            print(f"[audio_pull] stratified sample of {len(vids)}:")
+            for v in vids:
+                print(f"  {v['upload_date']}  {v['video_id']}  "
+                      f"\"{v['title'][:55]}\"")
+        else:
+            vids = candidates
+    else:
+        try:
+            vids = pull._list_latest_video_ids(config.CHANNEL_URL, n_max)
+        except Exception as e:
+            print(f"[audio_pull] FATAL: could not list channel videos: {e}")
+            return {"ok": False, "error": str(e)}
+        print(f"[audio_pull] found {len(vids)} videos")
 
-    print(f"[audio_pull] found {len(vids)} videos")
+    if dry_run:
+        print(f"[audio_pull] DRY-RUN — no downloads.")
+        return {"ok": True, "dry_run": True, "selected": vids}
     summary = {"ok": True, "channel": config.CHANNEL_LABEL,
                "downloaded": [], "skipped": [], "failed": []}
 
@@ -162,8 +242,23 @@ def pull_audio(n: int | None = None, force: bool = False) -> dict:
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--n", type=int, default=None)
-    ap.add_argument("--force", action="store_true")
+    ap.add_argument("--n", type=int, default=None,
+                    help="Cap on flat-listing scan. Default 400 with --since, "
+                         "or N_VIDEOS from config without.")
+    ap.add_argument("--force", action="store_true",
+                    help="Re-download even if audio is already cached.")
+    ap.add_argument("--since", type=str, default=None,
+                    help="YYYYMMDD — only include videos uploaded on/after "
+                         "this date. e.g. --since 20240618 (anchor: 2024 PHB "
+                         "Weapon Mastery official rules).")
+    ap.add_argument("--stratified-sample", type=int, default=None,
+                    help="Pick N videos evenly spaced by upload_date across "
+                         "the --since-filtered set. Used to smoke-test "
+                         "quality across the date span cheaply before "
+                         "committing to the full batch.")
+    ap.add_argument("--dry-run", action="store_true",
+                    help="List the selection without downloading audio.")
     a = ap.parse_args()
-    r = pull_audio(n=a.n, force=a.force)
+    r = pull_audio(n=a.n, force=a.force, since=a.since,
+                   stratified_sample=a.stratified_sample, dry_run=a.dry_run)
     sys.exit(0 if r.get("ok") else 1)
