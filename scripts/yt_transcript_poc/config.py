@@ -34,16 +34,43 @@ DATA_DIR = Path(
     os.environ.get("YT_POC_DATA_DIR", str(Path.home() / "yt_poc_data"))
 ).resolve()
 RAW_DIR = DATA_DIR / CHANNEL_LABEL / "raw"          # per-video {id}.json
+AUDIO_DIR = DATA_DIR / CHANNEL_LABEL / "audio"      # *.m4a (yt-dlp -x output)
 DERIVED_DIR = DATA_DIR / CHANNEL_LABEL / "derived"  # normalized + extracted
 GLOSSARY_CACHE = DATA_DIR / "glossary_cache.json"
 
 # BQ project for the glossary pull (read-only).
 BQ_PROJECT = "dnd-trends-index"
 
-# Gemini model for the (separate, gated) LLM parse step.
+# Gemini model for the (separate, gated) LLM parse step (aspect/stance).
 LLM_MODEL = os.environ.get("YT_POC_LLM_MODEL", "gemini-2.5-flash")
+
+# Option D — ASR-on-audio (production path; replaces the IpBlocked-prone
+# YT captions endpoint). Flash-Lite is the right tier for transcription
+# alone — Phil-verified pricing (May 2026): ~$1.38 for 75×35-min batch
+# at $0.30/1M audio input + $0.40/1M text output. The aspect/stance
+# parse step that follows uses LLM_MODEL above (Flash) separately.
+ASR_MODEL = os.environ.get("YT_POC_ASR_MODEL", "gemini-2.5-flash-lite")
+
+# Dynamic micro-glossary seed: a small curated default set of core D&D
+# mechanics/classes that are valuable for ANY video. Per-video glossary
+# = this set + the primary entities already extracted from metadata
+# (registry aliases + concept_library categories) — see transcribe.py.
+# Kept small (~30 terms) so the per-video glossary stays under the
+# ~50-100 term sweet spot identified in the red-team-hardened spec.
+DEFAULT_GLOSSARY_SEED = [
+    # Action economy + core mechanics
+    "action", "bonus action", "reaction", "concentration", "saving throw",
+    "armor class", "hit points", "advantage", "disadvantage", "initiative",
+    "attack roll", "ability check", "proficiency bonus", "passive perception",
+    "difficult terrain", "opportunity attack",
+    # 13 core classes (registry-aliases catches subclasses; classes are flat)
+    "Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin",
+    "Ranger", "Rogue", "Sorcerer", "Warlock", "Wizard", "Artificer",
+    # Optimizer / sim-feed jargon
+    "DPR", "eHP", "nova", "action economy",
+]
 
 
 def ensure_dirs() -> None:
-    for d in (RAW_DIR, DERIVED_DIR):
+    for d in (RAW_DIR, AUDIO_DIR, DERIVED_DIR):
         d.mkdir(parents=True, exist_ok=True)

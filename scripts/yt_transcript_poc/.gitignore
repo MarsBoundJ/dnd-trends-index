@@ -9,3 +9,15 @@ data/
 glossary_cache.json
 __pycache__/
 *.pyc
+
+# Local secrets — Gemini API key, never committed. See .env.example.
+.env
+
+# Audio files (any that leak into the tree; defaults are out-of-repo).
+*.m4a
+*.mp4
+*.webm
+*.opus
+*.ogg
+*.mp3
+*.wav
