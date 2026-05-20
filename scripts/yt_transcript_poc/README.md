@@ -15,18 +15,26 @@ internal-only. Raw pulls live OUTSIDE the repo (`~/yt_poc_data`, override
 `YT_POC_DATA_DIR`) and are NEVER committed. Publish aggregate signals
 only — never verbatim quotes.** `.gitignore` is belt-and-suspenders.
 
-## Pipeline
+## Pipeline (two acquisition paths)
 
 | Step | File | API? | What |
 |---|---|---|---|
-| Acquire | `pull.py` | no | yt-dlp metadata + youtube-transcript-api v1.x transcript → `RAW_DIR` |
-| Glossary | `glossary.py` | BQ read | partitioned closed term-sets (List A rare / List B common-collisions) |
-| Normalize | `normalize.py` | no | split clean uploader text vs noisy transcript |
-| Extract | `extract.py` | no | deterministic, provenance-tagged entities (metadata-primary + speech-only) |
-| Parse LLM | `parse_llm.py` | Gemini | **scaffold** — aspect/stance/comparison/rule-ambiguity, hardened, API-gated |
+| **Acquire — POC fallback** | `pull.py` | no | yt-dlp metadata + youtube-transcript-api v1.x transcript → `RAW_DIR`. **Rate-limited** (see below); kept for low-volume / no-key smoke tests. |
+| **Acquire — production (Option D)** | `audio_pull.py` → `transcribe.py` | Gemini Flash-Lite | yt-dlp `-x` downloads native m4a audio (no captions endpoint, no IP block) → Gemini 2.5 Flash-Lite ASR with the dynamic per-video micro-glossary in the system instruction → transcript written into the same `RAW_DIR/{id}.json` schema. **Cost (verified May 2026): ~$3–8 for the full 75 × 35-min Treantmonk batch.** |
+| Glossary | `glossary.py` | BQ read | partitioned closed term-sets (List A rare / List B common-collisions); seeds the micro-glossary above |
+| Normalize | `normalize.py` | no | split clean uploader text vs transcript |
+| Extract | `extract.py` | no | deterministic, provenance-tagged entities + comparative_pairs + rule_ambiguity_flags |
+| Parse LLM | `parse_llm.py` | Gemini Flash | aspect/stance/comparison schema; hardened prompt; API-gated |
 | Orchestrate | `run_poc.py` | — | normalize+extract+summary (+`--llm`) |
 
-Run order: `pull.py` (separate, deliberate) → `run_poc.py`.
+Production run order (Option D): `audio_pull.py` → `transcribe.py` → `run_poc.py`.
+Smoke run order (no key needed): `pull.py` → `run_poc.py`.
+
+## Setting up the Gemini API key (one time)
+
+1. Visit https://aistudio.google.com/app/apikey, sign in, "Create API key" → pick/create a Cloud project. **Enable billing** on that project so the batch isn't free-tier-throttled.
+2. Copy this folder's `.env.example` → `.env` and paste the key. `.env` is gitignored — never committed.
+3. `transcribe.py` auto-loads it on import; nothing else to wire.
 
 ## Known finding (2026-05-19, first run): transcript endpoint rate-limits
 
