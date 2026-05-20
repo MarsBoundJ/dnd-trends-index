@@ -171,6 +171,19 @@ def build(refresh: bool = False) -> dict:
     ):
         add(row["term"], row["term"], "jargon", "tier2")
 
+    # 6) Core-class kind correction. `add()` is setdefault (first-writer
+    #    wins); concept_library also lists some class names under its
+    #    Monster category, which is processed in step 2 BEFORE the core
+    #    classes in step 4 — so "Ranger"/"Sorcerer" land as kind=monster
+    #    and step 4 cannot override. A core class is unambiguously a
+    #    class: force-correct kind/canonical/tier here, after all adds.
+    for c in CORE_CLASSES:
+        meta = terms.get(c.lower())
+        if meta is not None:
+            meta["kind"] = "class"
+            meta["canonical"] = c
+            meta["tier"] = "tier1"
+
     list_a, list_b = {}, {}
     for t, meta in terms.items():
         (list_b if _is_list_b(t) else list_a)[t] = meta
