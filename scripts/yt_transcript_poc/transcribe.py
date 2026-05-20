@@ -24,6 +24,7 @@ import datetime as dt
 import glob
 import json
 import os
+import subprocess
 import sys
 import time
 import traceback
@@ -33,6 +34,27 @@ try:
     from . import config
 except ImportError:  # pragma: no cover
     import config  # type: ignore
+
+# Long-audio chunking. Gemini 2.5 Flash-Lite enters soft-repetition
+# loops on long-form transcription — first observed on Treantmonk's
+# "Wizard Tier 3" (50 min) → output cap 65k tokens. 15-min chunks
+# helped some chunks but the middle chunk still looped 9× on a
+# repetitive-discourse pattern. Two-part fix:
+#   1) smaller chunks (8 min) — lowers probability of latching onto
+#      a loop pattern in the first place;
+#   2) per-call max_output_tokens proportional to chunk duration —
+#      hard ceiling that stops runaway loops WITHOUT losing audio
+#      content (the next chunk's boundary determines coverage).
+# ffmpeg -c copy is lossless + fast (no transcode).
+CHUNK_MAX_SEC = int(os.environ.get("YT_POC_CHUNK_MAX_SEC", "480"))  # 8 min
+# Output cap formula: normal English speech is ~4 output tokens/sec
+# of audio (200 wpm × ~1.3 tok/word ÷ 60s). 25 tok/sec is ~6x normal
+# headroom — generous for verbose-speech videos but TIGHT enough that
+# a loop hits the cap within ~5x the clean transcript length, not
+# the model's 65k natural ceiling. Result: clean transcripts cost
+# nothing extra; loops are bounded.
+OUTPUT_TOKEN_BUDGET_PER_SEC = 25
+MAX_OUTPUT_TOKENS_CEILING = 20000  # hard ceiling regardless of duration
 
 
 # ── Minimal .env loader (no python-dotenv dependency) ───────────────────────
@@ -101,7 +123,75 @@ SYSTEM_INSTRUCTION = (
 )
 
 
-def _transcribe_one(client, audio_path: str, glossary: list[str]) -> dict:
+def _ffmpeg_chunk(input_path: str, start_sec: float, dur_sec: float,
+                  output_path: str) -> None:
+    """Lossless audio slice via ffmpeg -c copy — fast, no re-encode.
+    Required to keep long videos under Gemini's clean-output window."""
+    cmd = [
+        "ffmpeg", "-y", "-loglevel", "error",
+        "-ss", str(start_sec), "-i", input_path,
+        "-t", str(dur_sec), "-c", "copy", output_path,
+    ]
+    subprocess.run(cmd, check=True)
+
+
+def _transcribe_long(client, audio_path: str, duration_sec: float,
+                     glossary: list[str]) -> dict:
+    """Chunk + transcribe + stitch for videos > CHUNK_MAX_SEC. Returns
+    the same shape as _transcribe_one (text/usage/cost merged across
+    chunks)."""
+    chunks_dir = Path(audio_path).parent
+    base = Path(audio_path).stem
+    parts: list[str] = []
+    usage_total = {"prompt_tokens": 0, "candidates_tokens": 0,
+                   "total_tokens": 0}
+    errors: list[str] = []
+
+    start = 0.0
+    idx = 0
+    while start < duration_sec:
+        dur = min(CHUNK_MAX_SEC, duration_sec - start)
+        chunk_path = str(chunks_dir / f"{base}.chunk{idx:02d}.m4a")
+        try:
+            _ffmpeg_chunk(audio_path, start, dur, chunk_path)
+        except subprocess.CalledProcessError as e:
+            return {"ok": False, "text": "",
+                    "error": f"ffmpeg chunk failed: {e}", "usage": None}
+        sub = _transcribe_one(client, chunk_path, glossary,
+                              max_output_tokens=_budget_for_duration(dur))
+        # Cleanup chunk file regardless of result (keep disk clean).
+        try:
+            os.unlink(chunk_path)
+        except OSError:
+            pass
+        if not sub["ok"]:
+            errors.append(f"chunk {idx}: {sub.get('error')}")
+            # Continue; partial transcript is better than nothing.
+        else:
+            parts.append(sub["text"])
+        if sub.get("usage"):
+            for k in usage_total:
+                usage_total[k] += sub["usage"].get(k) or 0
+        start += dur
+        idx += 1
+
+    full_text = "\n\n".join(parts)
+    return {
+        "ok": bool(full_text),
+        "text": full_text,
+        "error": "; ".join(errors) if errors else None,
+        "usage": usage_total if any(usage_total.values()) else None,
+    }
+
+
+def _budget_for_duration(duration_sec: float) -> int:
+    """Per-call max_output_tokens cap proportional to audio duration."""
+    return min(int(duration_sec * OUTPUT_TOKEN_BUDGET_PER_SEC) + 500,
+               MAX_OUTPUT_TOKENS_CEILING)
+
+
+def _transcribe_one(client, audio_path: str, glossary: list[str],
+                    max_output_tokens: int | None = None) -> dict:
     """Returns {ok, text, error, usage}. Caller handles retries."""
     out = {"ok": False, "text": "", "error": None, "usage": None}
     try:
@@ -111,13 +201,16 @@ def _transcribe_one(client, audio_path: str, glossary: list[str]) -> dict:
             "Transcribe this D&D YouTube video. "
             f"Canonical D&D terms to use when heard: {', '.join(glossary)}."
         )
+        gen_config = {
+            "system_instruction": SYSTEM_INSTRUCTION,
+            "temperature": 0.0,
+        }
+        if max_output_tokens:
+            gen_config["max_output_tokens"] = max_output_tokens
         resp = client.models.generate_content(
             model=config.ASR_MODEL,
             contents=[audio_file, user_prompt],
-            config={
-                "system_instruction": SYSTEM_INSTRUCTION,
-                "temperature": 0.0,
-            },
+            config=gen_config,
         )
         out["text"] = (resp.text or "").strip()
         out["ok"] = bool(out["text"])
@@ -209,8 +302,17 @@ def run(force: bool = False, max_videos: int | None = None) -> dict:
             continue
 
         glossary = _per_video_glossary(vid, meta)
+        duration_sec = float(meta.get("duration_sec") or 0.0)
         t0 = time.time()
-        result = _transcribe_one(client, audio_path, glossary)
+        if duration_sec > CHUNK_MAX_SEC:
+            n_chunks = int((duration_sec + CHUNK_MAX_SEC - 1) // CHUNK_MAX_SEC)
+            print(f"  [{i}/{len(targets)}] {vid}  long audio "
+                  f"({duration_sec/60:.1f} min) -> {n_chunks}-chunk")
+            result = _transcribe_long(client, audio_path, duration_sec, glossary)
+        else:
+            result = _transcribe_one(client, audio_path, glossary,
+                                     max_output_tokens=_budget_for_duration(
+                                         duration_sec))
         dt_s = time.time() - t0
 
         if not result["ok"]:
