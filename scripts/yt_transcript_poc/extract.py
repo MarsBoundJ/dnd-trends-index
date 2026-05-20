@@ -17,9 +17,11 @@ Fixes vs v1:
 NEW passes (Tier-1 entities only; high-precision, sim-direct):
   - comparative_pairs : two Tier-1 entities adjacent (≤60 chars apart)
     with a comparative trigger BETWEEN them ("vs / better than / worse
-    than / like / unlike / instead of / stronger than / weaker than /
-    compared to"). The "X is like/worse than Y" structure the cadre
+    than / unlike / instead of / stronger than / weaker than /
+    compared to"). The "X is worse than Y" structure the cadre
     red-team flagged as the highest-value speech-only signal.
+    Overlapping substring matches are collapsed to the longest span
+    first (see _collapse_overlaps) so one comparison is one pair.
   - rule_ambiguity_flags : an ambiguity marker ("RAW / RAI / Crawford
     said / ask your DM / unclear / ambiguous / depends how / errata /
     sage advice") within ±80 chars of a Tier-1 entity. Directly feeds
@@ -40,9 +42,15 @@ except ImportError:  # pragma: no cover
     import glossary as glossary_mod  # type: ignore
 
 
+# NOTE: bare " like " was removed (iter-3). In spoken English it is
+# three different words — preposition, discourse-filler, verb — and is
+# ungateable without POS tagging the POC deliberately does not build.
+# On live Treantmonk data every " like "-triggered pair was noise
+# (filler "like", word-fragments). Precision >> recall (Principle #0).
+# " more like " is kept: a low-frequency 2-word n-gram, far safer.
 COMPARATIVE_TRIGGERS = [
     " vs ", " versus ", "better than", "worse than", "compared to",
-    "compared with", "instead of", "more like", " unlike ", " like ",
+    "compared with", "instead of", "more like", " unlike ",
     "as good as", "as bad as", "stronger than", "weaker than",
     "preferable to", "outperforms", "outclasses",
 ]
@@ -107,6 +115,30 @@ def _match_list_b(text_l: str, list_b: dict, triggers: list[str]) -> dict:
     return hits
 
 
+def _collapse_overlaps(
+    positions: list[tuple[int, int, str]],
+) -> list[tuple[int, int, str]]:
+    """When several entity occurrences cover overlapping character spans
+    — e.g. "leather" ⊂ "studded leather" ⊂ "studded leather armor" all
+    matching the same words — keep only the longest (most specific) one.
+
+    Without this, one sentence ("studded leather armor ... better than
+    light armor") yields a cartesian product of fragment pairs: every
+    {Leather|Studded Leather|Studded Leather Armor} × {Light|Light
+    Armor} combination. Collapsing to the longest span per text region
+    is loss-free for distinct entities (distinct non-nested entities
+    never share characters) and kills the substring explosion."""
+    kept: list[tuple[int, int, str]] = []
+    # Longest spans first; a shorter span is dropped if it overlaps one
+    # already kept (i.e. it is a fragment of a more specific match).
+    for s, e, c in sorted(positions, key=lambda p: p[1] - p[0], reverse=True):
+        if any(s < ke and ks < e for ks, ke, _ in kept):
+            continue
+        kept.append((s, e, c))
+    kept.sort()
+    return kept
+
+
 def _comparative_pairs(text_l: str, tier1_canonicals: list[str]) -> list[dict]:
     """Find Tier-1 entity pairs (X, Y) with a comparative trigger
     BETWEEN them in the text. Only Tier-1 endpoints to keep precision
@@ -117,7 +149,9 @@ def _comparative_pairs(text_l: str, tier1_canonicals: list[str]) -> list[dict]:
     for canon in tier1_canonicals:
         for m in _wb(canon.lower()).finditer(text_l):
             positions.append((m.start(), m.end(), canon))
-    positions.sort()
+    # Collapse nested/overlapping matches to the longest span — kills the
+    # substring-fragment cartesian explosion before pairing.
+    positions = _collapse_overlaps(positions)
 
     pairs: list[dict] = []
     seen: set[tuple[str, str, str]] = set()  # case-insensitive
@@ -125,8 +159,15 @@ def _comparative_pairs(text_l: str, tier1_canonicals: list[str]) -> list[dict]:
         for sb, eb, cb in positions[i + 1:]:
             if sb - ea > 60:  # too far apart -> not a comparison
                 break
-            if ca.lower() == cb.lower():
-                continue  # self-pair via case variant ("X" vs "x")
+            cal, cbl = ca.lower(), cb.lower()
+            if cal == cbl or cal in cbl or cbl in cal:
+                # Self-pair via case variant, OR a term compared to a
+                # sub/superstring of itself ("Light Armor" vs "Armor",
+                # "Resistance" vs "damage resistance"). _collapse_overlaps
+                # only merges same-position matches; this catches the
+                # same substring noise when the two occurrences sit at
+                # different positions in the sentence.
+                continue
             between = text_l[ea:sb]
             trig_hit = next((t.strip() for t in COMPARATIVE_TRIGGERS
                              if t.strip() in between), None)
