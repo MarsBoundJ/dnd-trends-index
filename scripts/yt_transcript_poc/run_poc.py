@@ -36,13 +36,22 @@ def main(run_llm: bool = False) -> None:
         print(f"\n• {n['title'][:66]}{flag}")
         print(f"    cap={n.get('caption_source')} "
               f"views={n.get('view_count')} "
-              f"primary={c.get('primary',0)} speech_only={c.get('speech_only',0)}")
+              f"primary={c.get('primary',0)} "
+              f"speech_only={c.get('speech_only',0)} "
+              f"comp_pairs={c.get('comparative_pairs',0)} "
+              f"rule_flags={c.get('rule_ambiguity_flags',0)}")
         prim = [x["canonical"] for x in e.get("primary_entities", [])][:10]
         spch = [x["canonical"] for x in e.get("speech_only_entities", [])][:10]
         if prim:
             print(f"    primary[meta]: {', '.join(prim)}")
         if spch:
             print(f"    speech-only  : {', '.join(spch)}")
+        comps = e.get("comparative_pairs", [])[:3]
+        for cp in comps:
+            print(f"    [vs]  {cp['a']} ~{cp['trigger']}~ {cp['b']}")
+        rules = e.get("rule_ambiguity_flags", [])[:3]
+        for rf in rules:
+            print(f"    [?]   {rf['feature']}  ({rf['marker']})")
 
     if run_llm:
         print("\n---- LLM step ----")

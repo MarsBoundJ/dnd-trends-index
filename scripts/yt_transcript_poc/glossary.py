@@ -1,21 +1,30 @@
 """
-YT Transcript POC — glossary loader (the closed, curated term sets).
+YT Transcript POC — glossary v2 (sim-feed precision).
 
-Pulls (read-only) from BQ and PARTITIONS per the red-team-hardened design
-(project_yt_transcript_poc.md):
+Iteration 1 used `concept_library` as a flat ~11k wide net → flooded the
+speech-only pass with ambient vocabulary ("Action / Armor Class / Buff /
+Adventure / Background / Adept ..."), and generic tokens ("Reaction",
+"Subclasses", "Spell") leaked into primary. The fix tiers the source by
+the categories concept_library already carries.
 
-  List A — rare / fantasy proper nouns (Aarakocra, Mordenkainen, Bigby,
-           "Path of the World Tree"): safe to match directly / phonetically.
-  List B — D&D terms that are ALSO common English words (Shield, Wish,
-           Bane, Bless, Hide, Rage, Command, Slow, Fear, Light, Hold...):
-           NEVER bare-match — require a trigger-word gate (see extract.py),
-           else false-positive rate approaches 100% on stance-heavy speech.
+Tiers (sim-feed first):
+  Tier-1   precision-trusted:
+           - game_registry.subclasses canonical+aliases (purpose-built)
+           - concept_library WHERE category IN (Spell, Feat, MagicItem,
+             Monster, Equipment, Background, Species & Lineage,
+             Invocations and Pacts)
+           - concept_library WHERE category='Mechanic'  AND multi-word
+             (multi-word filter is the precision lever — excludes bare
+             "Action / Adventure / Background" while keeping "Bonus
+             Action / Action Economy / passive perception / fall damage")
+  Tier-2   jargon: vocabulary_lexicon (DPR/eHP/nova/...).
+  DROPPED  Location / NPC / Faction / Villain / Deity / Influencer /
+           Convention / AI Tool / Art / Third Party / Youtube / Build /
+           UA Content / Other / Subclass (use registry instead). Lore
+           and community concepts are noise for mechanics extraction.
 
-Sources: game_registry.subclasses (canonical + aliases), game_registry.
-vocabulary_lexicon (jargon), dnd_trends_categorized.concept_library (~11k
-wide net). Cached to GLOSSARY_CACHE; refresh with --refresh.
-
-Uses the `bq` CLI (proven robust this session) — no python BQ client dep.
+Also: hardcoded AMBIENT_STOPLIST for tokens that leak no matter the
+tier ("reaction" / "spell" / "level" / "class" / "subclass" alone).
 """
 
 from __future__ import annotations
@@ -31,49 +40,73 @@ except ImportError:  # pragma: no cover
 
 _BQ = None
 
-# D&D terms that collide with ordinary English. Hand-curated for the POC
-# (the partition heuristic also catches single common words, but these
-# are the load-bearing collisions called out in the red-team).
-COMMON_ENGLISH_COLLISIONS = {
-    "shield", "wish", "bane", "bless", "hide", "rage", "command", "dash",
-    "slow", "fear", "hold", "light", "darkness", "guidance", "sleep",
-    "haste", "bond", "guard", "hunter", "fighter", "ranger", "thief",
-    "barbarian", "champion", "grave", "life", "war", "light", "knowledge",
-    "nature", "tempest", "death", "order", "peace", "twilight", "forge",
-    "blade", "shadow", "dawn", "moon", "land", "sea", "stars", "open hand",
-    "berserker", "assassin", "soul knife", "hunter", "beast master",
-    "true strike", "find", "aid", "heal", "longstrider", "enlarge",
+# Sim-feed Tier-1 categories from concept_library.
+TIER1_CONCEPT_CATEGORIES = (
+    "Spell", "Feat", "MagicItem", "Monster", "Equipment",
+    "Background", "Species & Lineage", "Invocations and Pacts",
+)
+MECHANIC_CATEGORY = "Mechanic"  # multi-word filter applied below
+
+# The 13 5e core classes — central sim/optimizer entities, not in
+# concept_library's Tier-1 categories. Tiny curated inline list so
+# primary doesn't show `0` on a video that's clearly "about the Wizard".
+CORE_CLASSES = (
+    "Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin",
+    "Ranger", "Rogue", "Sorcerer", "Warlock", "Wizard", "Artificer",
+)
+
+# Ambient tokens that leak as "entities" regardless of source — generic
+# nouns that match within their own trigger context. Hardcoded denylist;
+# we never emit these as canonical entities. Compounds like "Bonus
+# Action" / "Action Surge" / "Attack Action" still match — this only
+# blocks the BARE single-word form.
+AMBIENT_STOPLIST = {
+    "reaction", "subclass", "subclasses", "spell", "spells", "level",
+    "levels", "class", "classes", "feat", "feats", "creature", "creatures",
+    "concept", "build", "builds", "character sheet", "campaign",
+    "creation", "die", "dice", "stat", "stats", "score", "scores",
+    "ability", "abilities", "round", "rounds", "turn", "turns",
+    "encounter", "encounters", "rule", "rules", "feature", "features",
+    "case", "cases", "moment", "use", "uses", "way", "ways",
 }
 
 TRIGGER_WORDS = [
-    "cast", "casting", "casts", "spell", "use", "uses", "using", "take",
-    "takes", "taking", "pick", "picks", "build", "subclass", "feat",
-    "the ", "a ", "an ", "your ", "this ", "level", "concentration",
-    "bonus action", "reaction", "action",
+    "cast", "casting", "casts", "use", "uses", "using", "take", "takes",
+    "pick", "picks", "build", "subclass", "feat", "level",
+    "concentration", "bonus action", "reaction", "action",
 ]
 
 
-def _bq_csv(sql: str) -> list[dict]:
-    """Read-only BQ via the Python client (cross-platform; the `bq` CLI
-    is a .CMD wrapper Python subprocess can't resolve on Windows). Uses
-    the ambient ADC creds already configured in this environment."""
+def _bq(sql: str) -> list[dict]:
     global _BQ
     if _BQ is None:
         _BQ = bigquery.Client(project=config.BQ_PROJECT)
-    return [dict(row) for row in _BQ.query(sql).result()]
+    return [dict(r) for r in _BQ.query(sql).result()]
+
+
+def _split_slash(term: str) -> list[str]:
+    """ "WoF / Wall of Force" -> ["WoF", "Wall of Force"] (both alias the
+    same canonical). Common in concept_library."""
+    if not term:
+        return []
+    if " / " in term:
+        return [p.strip() for p in term.split(" / ") if p.strip()]
+    return [term.strip()]
+
+
+def _is_multi_word(t: str) -> bool:
+    return " " in t.strip()
 
 
 def _is_list_b(term: str) -> bool:
+    """Multi-word -> List A (safe). Short single tokens -> List B
+    (collision-risk, trigger-gated only)."""
     t = term.strip().lower()
     if not t:
         return True
-    if t in COMMON_ENGLISH_COLLISIONS:
-        return True
-    # single short common-looking word -> treat as collision-risk (List B);
-    # multi-word or long/rare tokens -> List A.
-    if " " not in t and len(t) <= 6:
-        return True
-    return False
+    if " " in t:
+        return False
+    return len(t) <= 6
 
 
 def build(refresh: bool = False) -> dict:
@@ -81,54 +114,87 @@ def build(refresh: bool = False) -> dict:
     if config.GLOSSARY_CACHE.exists() and not refresh:
         return json.loads(config.GLOSSARY_CACHE.read_text(encoding="utf-8"))
 
-    terms: dict[str, dict] = {}  # lower term -> {canonical, kind}
+    terms: dict[str, dict] = {}     # lower -> {canonical, kind, tier}
+    tier1_canon: set[str] = set()   # for comparative + rule-ambiguity passes
 
-    def add(term: str, canonical: str, kind: str):
+    def add(term: str, canonical: str, kind: str, tier: str):
         t = (term or "").strip()
         if len(t) < 3:
             return
-        terms.setdefault(t.lower(), {"canonical": canonical or t, "kind": kind})
+        if t.lower() in AMBIENT_STOPLIST:
+            return
+        terms.setdefault(t.lower(), {
+            "canonical": canonical or t, "kind": kind, "tier": tier,
+        })
+        if tier == "tier1" and canonical:
+            tier1_canon.add(canonical)
 
-    # 1) subclasses: canonical + aliases (purpose-built this session)
-    for row in _bq_csv(
+    # 1) Registry subclasses (canonical + aliases) — purpose-built.
+    for row in _bq(
         "SELECT canonical_name, alias FROM "
         "`dnd-trends-index.game_registry.subclasses`, "
         "UNNEST(aliases) AS alias"
     ):
-        add(row["canonical_name"], row["canonical_name"], "subclass")
-        add(row["alias"], row["canonical_name"], "subclass")
+        for piece in _split_slash(row["alias"]):
+            add(piece, row["canonical_name"], "subclass", "tier1")
+        add(row["canonical_name"], row["canonical_name"], "subclass", "tier1")
 
-    # 2) jargon lexicon (DPR/eHP/nova/Striker...)
-    for row in _bq_csv(
+    # 2) concept_library Tier-1 categories.
+    cats_sql = ", ".join(f"'{c}'" for c in TIER1_CONCEPT_CATEGORIES)
+    for row in _bq(
+        f"SELECT DISTINCT concept_name, category FROM "
+        f"`dnd-trends-index.dnd_trends_categorized.concept_library` "
+        f"WHERE concept_name IS NOT NULL AND category IN ({cats_sql})"
+    ):
+        for piece in _split_slash(row["concept_name"]):
+            add(piece, row["concept_name"], row["category"].lower(), "tier1")
+
+    # 3) Mechanic: multi-word ONLY (precision filter; bare single-word
+    #    Mechanic terms are mostly ambient — those that matter live in
+    #    vocabulary_lexicon).
+    for row in _bq(
+        "SELECT DISTINCT concept_name FROM "
+        "`dnd-trends-index.dnd_trends_categorized.concept_library` "
+        f"WHERE category = '{MECHANIC_CATEGORY}' AND concept_name IS NOT NULL"
+    ):
+        for piece in _split_slash(row["concept_name"]):
+            if _is_multi_word(piece):
+                add(piece, row["concept_name"], "mechanic", "tier1")
+
+    # 4) Core classes — curated, central sim/optimizer entities.
+    for c in CORE_CLASSES:
+        add(c, c, "class", "tier1")
+
+    # 5) Jargon (Tier-2).
+    for row in _bq(
         "SELECT term FROM `dnd-trends-index.game_registry.vocabulary_lexicon`"
     ):
-        add(row["term"], row["term"], "jargon")
-
-    # 3) concept_library wide net (~11k)
-    try:
-        for row in _bq_csv(
-            "SELECT DISTINCT concept_name FROM "
-            "`dnd-trends-index.dnd_trends_categorized.concept_library` "
-            "WHERE concept_name IS NOT NULL"
-        ):
-            add(row["concept_name"], row["concept_name"], "concept")
-    except Exception as e:  # wide net optional for POC
-        print(f"[glossary] concept_library skipped: {e}")
+        add(row["term"], row["term"], "jargon", "tier2")
 
     list_a, list_b = {}, {}
     for t, meta in terms.items():
         (list_b if _is_list_b(t) else list_a)[t] = meta
+    # Core classes are proper-noun + sim-central — force List A regardless
+    # of their short length, so "Wizard Flagship Tier 3" yields `Wizard`
+    # without needing an adjacent trigger word in the title.
+    for c in CORE_CLASSES:
+        cl = c.lower()
+        if cl in list_b:
+            list_a[cl] = list_b.pop(cl)
 
     gloss = {
         "built_terms": len(terms),
-        "list_a_rare": list_a,            # direct/phonetic-safe
-        "list_b_collisions": list_b,      # trigger-gated only
+        "tier1_canonicals": sorted(tier1_canon),
+        "list_a_rare": list_a,
+        "list_b_collisions": list_b,
         "trigger_words": TRIGGER_WORDS,
+        "ambient_stoplist": sorted(AMBIENT_STOPLIST),
     }
     config.GLOSSARY_CACHE.write_text(
         json.dumps(gloss, ensure_ascii=False), encoding="utf-8")
-    print(f"[glossary] terms={len(terms)} listA={len(list_a)} "
-          f"listB={len(list_b)} -> {config.GLOSSARY_CACHE}")
+    print(f"[glossary] v2 built: terms={len(terms)} "
+          f"listA={len(list_a)} listB={len(list_b)} "
+          f"tier1_canon={len(tier1_canon)} -> {config.GLOSSARY_CACHE}")
     return gloss
 
 
