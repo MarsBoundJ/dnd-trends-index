@@ -55,8 +55,15 @@ COMPARATIVE_TRIGGERS = [
     "preferable to", "outperforms", "outclasses",
 ]
 
+# NOTE: bare "raw" was removed (iter-4). It is an ordinary English word
+# Treantmonk uses constantly in a NON-ruling sense ("raw damage", "raw
+# numbers", "raw DPR") — even word-bounded it is a false-positive magnet.
+# "rai" is kept: it is NOT an English word, so word-bounded (see the
+# _wb() fix in _rule_ambiguity) it safely catches only the genuine RAI
+# abbreviation. The multi-word "rules as written/intended" and "raw vs
+# rai / rai vs raw" forms carry the spelled-out RAW/RAI discourse.
 AMBIGUITY_MARKERS = [
-    "raw", "rai", "rules as written", "rules as intended",
+    "rai", "rules as written", "rules as intended",
     "jeremy crawford", "crawford said", "crawford clarified",
     "ask your dm", "dm allows", "dm ruling", "dm's discretion",
     "dm rules", "depends how", "depends on the dm", "unclear",
@@ -192,9 +199,12 @@ def _rule_ambiguity(text_l: str, tier1_canonicals: list[str]) -> list[dict]:
     config-layer signal (which rules the community treats as unclear)."""
     flags: list[dict] = []
     # Locate marker occurrences first (markers are scarce; entities are many).
+    # _wb() word-boundaries the match — iter-4 fix: bare re.finditer let
+    # "rai" match inside traits/trail/raised and "raw" inside crawl,
+    # which made 96% of rule-ambiguity flags substring false positives.
     marker_hits: list[tuple[int, int, str]] = []
     for marker in AMBIGUITY_MARKERS:
-        for m in re.finditer(re.escape(marker), text_l):
+        for m in _wb(marker).finditer(text_l):
             marker_hits.append((m.start(), m.end(), marker))
     if not marker_hits:
         return flags
