@@ -1,7 +1,7 @@
 import google.generativeai as genai
 import os
 
-API_KEY = "AIzaSyCIGyZyvf4m13f46pb0GAVGy4lsd88yQJ8"
+API_KEY = os.getenv("GEMINI_API_KEY")
 
 def list_gemini_models():
     print(f"Listing models for Gemini Developer API...")

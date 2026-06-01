@@ -1,7 +1,7 @@
 import google.generativeai as genai
 import os
 
-API_KEY = "AIzaSyCIGyZyvf4m13f46pb0GAVGy4lsd88yQJ8"
+API_KEY = os.getenv("GEMINI_API_KEY")
 
 def test_gemini_api():
     print(f"Testing Gemini Developer API with key ending in ...{API_KEY[-4:]}")

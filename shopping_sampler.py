@@ -5,7 +5,7 @@ import datetime
 
 # --- Configuration ---
 # NOTE: Keys provided by user
-API_KEY = "AIzaSyCIGyZyvf4m13f46pb0GAVGy4lsd88yQJ8"
+API_KEY = os.getenv("YOUTUBE_API_KEY")
 CX_ID = "e1a6d54ae95c1451d"
 BQ_TABLE_ID = "dnd-trends-index.commercial_data.google_shopping_snapshots"
 

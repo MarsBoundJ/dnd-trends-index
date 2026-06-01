@@ -1,10 +1,10 @@
-îimport os
+ï¿½import os
 from googleapiclient.discovery import build
 from google.cloud import bigquery
 import datetime
 
 # Using the API Key provided by user
-API_KEY = "AIzaSyCIGyZyvf4m13f46pb0GAVGy4lsd88yQJ8"
+API_KEY = os.getenv("YOUTUBE_API_KEY")
 
 CHANNELS = [
     # Tier 1
@@ -88,4 +88,4 @@ def seed_registry():
 
 if __name__ == "__main__":
     seed_registry()
-î"(0346c7b262db785b9f82b154e34994382565350e27file:///C:/Users/Yorri/.gemini/seed_youtube_channels.py:file:///C:/Users/Yorri/.gemini
+ï¿½"(0346c7b262db785b9f82b154e34994382565350e27file:///C:/Users/Yorri/.gemini/seed_youtube_channels.py:file:///C:/Users/Yorri/.gemini

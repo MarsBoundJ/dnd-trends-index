@@ -1,10 +1,10 @@
-€$import os
+ï¿½$import os
 import datetime
 from googleapiclient.discovery import build
 from google.cloud import bigquery
 
 # Config
-API_KEY = "AIzaSyCIGyZyvf4m13f46pb0GAVGy4lsd88yQJ8"
+API_KEY = os.getenv("YOUTUBE_API_KEY")
 PROJECT_ID = "dnd-trends-index"
 VIDEOS_TABLE = f"{PROJECT_ID}.social_data.youtube_videos"
 
@@ -137,4 +137,4 @@ def run_updater():
 
 if __name__ == "__main__":
     run_updater()
-€$"(0346c7b262db785b9f82b154e34994382565350e27file:///C:/Users/Yorri/.gemini/youtube_stats_updater.py:file:///C:/Users/Yorri/.gemini
+ï¿½$"(0346c7b262db785b9f82b154e34994382565350e27file:///C:/Users/Yorri/.gemini/youtube_stats_updater.py:file:///C:/Users/Yorri/.gemini

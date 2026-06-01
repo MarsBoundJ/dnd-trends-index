@@ -1,11 +1,11 @@
-Î from googleapiclient.discovery import build
+ï¿½ from googleapiclient.discovery import build
 from google.cloud import bigquery
 import os
 import datetime
 
 # --- Configuration ---
 # NOTE: Keys provided by user
-API_KEY = "AIzaSyCIGyZyvf4m13f46pb0GAVGy4lsd88yQJ8"
+API_KEY = os.getenv("YOUTUBE_API_KEY")
 CX_ID = "e1a6d54ae95c1451d"
 BQ_TABLE_ID = "dnd-trends-index.commercial_data.google_shopping_snapshots"
 
@@ -124,4 +124,4 @@ def run_sampler():
 
 if __name__ == "__main__":
     run_sampler()
-Î "(0346c7b262db785b9f82b154e34994382565350e22file:///C:/Users/Yorri/.gemini/shopping_sampler.py:file:///C:/Users/Yorri/.gemini
+ï¿½ "(0346c7b262db785b9f82b154e34994382565350e22file:///C:/Users/Yorri/.gemini/shopping_sampler.py:file:///C:/Users/Yorri/.gemini

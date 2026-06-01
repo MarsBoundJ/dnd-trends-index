@@ -5,7 +5,7 @@ from google.cloud import bigquery
 from dateutil import parser as date_parser
 
 # Configuration
-API_KEY = "AIzaSyCIGyZyvf4m13f46pb0GAVGy4lsd88yQJ8"
+API_KEY = os.getenv("YOUTUBE_API_KEY")
 PROJECT_ID = "dnd-trends-index"
 REGISTRY_TABLE = f"{PROJECT_ID}.dnd_trends_raw.channel_registry"
 VIDEOS_TABLE = f"{PROJECT_ID}.dnd_trends_raw.youtube_videos"

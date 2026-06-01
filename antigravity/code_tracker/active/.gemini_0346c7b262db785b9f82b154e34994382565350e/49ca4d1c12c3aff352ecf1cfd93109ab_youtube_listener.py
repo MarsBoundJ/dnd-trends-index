@@ -1,11 +1,11 @@
-ªimport os
+ï¿½import os
 import datetime
 from googleapiclient.discovery import build
 from google.cloud import bigquery
 from dateutil import parser as date_parser
 
 # Configuration
-API_KEY = "AIzaSyCIGyZyvf4m13f46pb0GAVGy4lsd88yQJ8"
+API_KEY = os.getenv("YOUTUBE_API_KEY")
 PROJECT_ID = "dnd-trends-index"
 REGISTRY_TABLE = f"{PROJECT_ID}.social_data.youtube_channel_registry"
 VIDEOS_TABLE = f"{PROJECT_ID}.social_data.youtube_videos"
@@ -112,4 +112,4 @@ def run_listener():
 
 if __name__ == "__main__":
     run_listener()
-ª"(0346c7b262db785b9f82b154e34994382565350e22file:///C:/Users/Yorri/.gemini/youtube_listener.py:file:///C:/Users/Yorri/.gemini
+ï¿½"(0346c7b262db785b9f82b154e34994382565350e22file:///C:/Users/Yorri/.gemini/youtube_listener.py:file:///C:/Users/Yorri/.gemini

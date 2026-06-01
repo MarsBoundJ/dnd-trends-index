@@ -5,7 +5,7 @@ import os
 PROJECT_ID = "dnd-trends-index"
 DATASET_ID = "dnd_trends_raw"
 REGISTRY_TABLE = f"{PROJECT_ID}.{DATASET_ID}.channel_registry"
-YOUTUBE_API_KEY = "AIzaSyCIGyZyvf4m13f46pb0GAVGy4lsd88yQJ8"
+YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 
 def audit():
     client = bigquery.Client()

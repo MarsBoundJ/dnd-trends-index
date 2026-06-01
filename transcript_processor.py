@@ -15,7 +15,7 @@ LOCATION = "us-central1"
 DATASET_ID = "dnd_trends_raw"
 INDEX_TABLE = f"{PROJECT_ID}.{DATASET_ID}.yt_video_index"
 SILVER_TABLE = f"{PROJECT_ID}.{DATASET_ID}.yt_video_intelligence"
-GENAI_API_KEY = "AIzaSyCIGyZyvf4m13f46pb0GAVGy4lsd88yQJ8"
+GENAI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 SYSTEM_INSTRUCTION = """
 ROLE: You are an expert Dungeons & Dragons 5e Mechanic and Meta-Analyst.

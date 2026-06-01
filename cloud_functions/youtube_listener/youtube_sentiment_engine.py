@@ -5,7 +5,7 @@ from googleapiclient.discovery import build
 from google.cloud import bigquery
 
 # Config
-API_KEY = "AIzaSyCIGyZyvf4m13f46pb0GAVGy4lsd88yQJ8"
+API_KEY = os.getenv("YOUTUBE_API_KEY")
 PROJECT_ID = "dnd-trends-index"
 VIDEOS_TABLE = f"{PROJECT_ID}.dnd_trends_raw.youtube_videos"
 

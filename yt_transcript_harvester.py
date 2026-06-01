@@ -17,7 +17,7 @@ REGISTRY_TABLE = f"{PROJECT_ID}.{DATASET_ID}.channel_registry"
 INDEX_TABLE = f"{PROJECT_ID}.{DATASET_ID}.yt_video_index"
 
 # Attempt to load API Key from environment or fallback to found sentinel
-YOUTUBE_API_KEY = "AIzaSyCIGyZyvf4m13f46pb0GAVGy4lsd88yQJ8"
+YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 
 class TranscriptHarvester:
     def __init__(self):

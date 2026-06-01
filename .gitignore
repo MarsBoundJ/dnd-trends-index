@@ -46,6 +46,11 @@ dnd-key.json
 # Token / credential-adjacent scratch files
 token*.txt
 
+# Debug output files (may contain API keys in error messages)
+sampler_debug*.txt
+sampler_test*.txt
+seeding_output.txt
+
 # Scratch output and audit artifacts
 audit_results*.txt
 audit_diversity_results.txt

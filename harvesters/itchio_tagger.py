@@ -4,7 +4,7 @@ import time
 from google.cloud import bigquery
 import google.generativeai as genai
 
-GENAI_API_KEY = "AIzaSyCIGyZyvf4m13f46pb0GAVGy4lsd88yQJ8"
+GENAI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 PROJECT_ID = "dnd-trends-index"
 

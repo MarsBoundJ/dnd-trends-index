@@ -8,7 +8,7 @@ from dateutil import parser as date_parser
 
 # Configuration
 # Prefer Environment Variable, fallback to hardcoded (legacy)
-API_KEY = os.getenv("YOUTUBE_API_KEY", "AIzaSyCIGyZyvf4m13f46pb0GAVGy4lsd88yQJ8")
+API_KEY = os.getenv("YOUTUBE_API_KEY")
 PROJECT_ID = "dnd-trends-index"
 REGISTRY_TABLE = f"{PROJECT_ID}.social_data.youtube_channel_registry"
 VIDEOS_TABLE = f"{PROJECT_ID}.social_data.youtube_videos"

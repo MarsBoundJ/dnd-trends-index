@@ -1,11 +1,11 @@
-’import os
+ï¿½import os
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 from googleapiclient.discovery import build
 from google.cloud import bigquery
 
 # Config
-API_KEY = "AIzaSyCIGyZyvf4m13f46pb0GAVGy4lsd88yQJ8"
+API_KEY = os.getenv("YOUTUBE_API_KEY")
 PROJECT_ID = "dnd-trends-index"
 VIDEOS_TABLE = f"{PROJECT_ID}.social_data.youtube_videos"
 
@@ -122,4 +122,4 @@ def run_sentiment_engine():
 
 if __name__ == "__main__":
     run_sentiment_engine()
-’"(0346c7b262db785b9f82b154e34994382565350e2:file:///C:/Users/Yorri/.gemini/youtube_sentiment_engine.py:file:///C:/Users/Yorri/.gemini
+ï¿½"(0346c7b262db785b9f82b154e34994382565350e2:file:///C:/Users/Yorri/.gemini/youtube_sentiment_engine.py:file:///C:/Users/Yorri/.gemini
