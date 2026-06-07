@@ -16,7 +16,14 @@ PROJECT_ID = "dnd-trends-index"
 MAP_TABLE = f"{PROJECT_ID}.dnd_trends_categorized.bgg_id_map"
 BGG_TOKEN = "ca8375ce-62f6-485a-8c54-ebf23209419f"
 
-PROXY_URL = os.getenv("PROXY_URL", "http://oxsjenoi-residential-US-rotate:yw72fdfu37vt@p.webshare.io:80")
+PROXY_URL = os.getenv("PROXY_URL")
+
+if not PROXY_URL and os.environ.get("ALLOW_DIRECT") != "1":
+    raise SystemExit(
+        "PROXY_URL is not set. Refusing to run unproxied (would send traffic "
+        "from your raw IP and risk rate-limiting / abuse flags). Set PROXY_URL "
+        "(see .env.example), or set ALLOW_DIRECT=1 to override."
+    )
 PROXIES = {"http": PROXY_URL, "https": PROXY_URL}
 HEADERS = {
     "Authorization": f"Bearer {BGG_TOKEN}",

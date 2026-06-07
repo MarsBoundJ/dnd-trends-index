@@ -1,9 +1,10 @@
 
+import os
 import requests
 import time
 
 # Base Config
-PASSWORD = "yw72fdfu37vt"
+PASSWORD = os.environ.get("WEBSHARE_PROXY_PASS", "")
 HOST = "p.webshare.io:80"
 
 # Variants to test
@@ -54,4 +55,4 @@ for u in usernames:
         break
 
 if not success:
-    print("\nNo username format worked for US filtering. We might need to rely on Dashboard settings (Port 9999).")
+    print("\nNo username format worked for US filtering. We might need to rely on Dashboard settings (Port 80).")

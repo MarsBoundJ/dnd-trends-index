@@ -1,10 +1,11 @@
 
+import os
 import requests
 import time
 
 # IP Auth Proxy Endpoint
 # No username/password needed if IP is whitelisted
-PROXY_URL = "http://p.webshare.io:9999"
+PROXY_URL = os.environ.get("PROXY_URL")
 
 print(f"Testing IP Auth Proxy: {PROXY_URL}")
 

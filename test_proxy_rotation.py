@@ -1,14 +1,11 @@
 
+import os
 import time
 import random
 from pytrends.request import TrendReq
 
 # Pool of static proxies to rotate through
-PROXY_POOL = [
-    "http://oxsjenoi-residential-1:yw72fdfu37vt@p.webshare.io:80",
-    "http://oxsjenoi-residential-2:yw72fdfu37vt@p.webshare.io:80",
-    "http://oxsjenoi-residential-3:yw72fdfu37vt@p.webshare.io:80",
-]
+PROXY_POOL = [os.environ.get("PROXY_URL")]
 
 test_terms = [
     ["Wizard 5e", "Wizard 2024", "Wizard build", "Fighter 5e", "Fighter 2024"],

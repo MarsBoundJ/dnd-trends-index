@@ -18,7 +18,7 @@ def fetch_batch(batch_kws, term_map, dest_table, use_proxy=True):
     batch_id = str(uuid.uuid4())
     print(f"  Fetching: {batch_kws} (proxy={use_proxy})", flush=True)
     try:
-        proxies = ["http://p.webshare.io:9999"] if use_proxy else []
+        proxies = [os.environ.get("PROXY_URL")] if use_proxy else []
         # Initialize without proxies if list is empty to avoid NoneType issues in some environments
         if proxies:
             pytrends = TrendReq(hl='en-US', tz=360, retries=3, backoff_factor=5, proxies=proxies)

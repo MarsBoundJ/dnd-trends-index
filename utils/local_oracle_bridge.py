@@ -5,6 +5,7 @@ import random
 import time
 import os
 import sys
+from urllib.parse import urlparse
 
 from curl_cffi import requests as c_requests
 from playwright.async_api import async_playwright
@@ -13,7 +14,7 @@ from google.cloud import bigquery
 
 # Authentication Details
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"c:\Users\Yorri\dnd-trends\dnd-key.json"
-PROXY_SOCKS = "socks5://lcbaurkt-US-rotate:q8aa993piq8h@p.webshare.io:9999"
+PROXY_URL = os.environ.get("PROXY_URL", "")
 
 # Core Keywords for Test
 TARGET_KEYWORDS = ['Fighter', 'Monk', 'Wizard', 'Fireball', 'Dragon']
@@ -57,7 +58,7 @@ async def fetch_trends_data(keyword, start_date, end_date):
     try:
         c_session = c_requests.Session(
             impersonate="firefox",
-            proxies={"http": PROXY_SOCKS, "https": PROXY_SOCKS}
+            proxies={"http": PROXY_URL, "https": PROXY_URL}
         )
         c_res = c_session.get(url, timeout=30)
         print(f"  [curl_cffi] Status: {c_res.status_code}")
@@ -84,9 +85,9 @@ async def fetch_trends_data(keyword, start_date, end_date):
         browser = await p.firefox.launch(
             headless=True,
             proxy={
-                "server": "socks5://p.webshare.io:9999",
-                "username": "lcbaurkt-US-rotate",
-                "password": "q8aa993piq8h"
+                "server": f"http://{urlparse(PROXY_URL).hostname}:{urlparse(PROXY_URL).port or 80}",
+                "username": urlparse(PROXY_URL).username,
+                "password": urlparse(PROXY_URL).password
             }
         )
         context = await browser.new_context(

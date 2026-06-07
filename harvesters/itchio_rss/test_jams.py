@@ -1,7 +1,8 @@
+import os
 import feedparser
 import cloudscraper
 
-PROXY_URL = "http://lcbaurkt-US-rotate:q8aa993piq8h@p.webshare.io:80"
+PROXY_URL = os.environ.get("PROXY_URL")
 PROXIES = {"http": PROXY_URL, "https": PROXY_URL}
 
 url = "https://itch.io/jams.xml"

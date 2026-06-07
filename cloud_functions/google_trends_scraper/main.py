@@ -18,8 +18,15 @@ SOURCE_TABLE = f"{PROJECT_ID}.{DATASET_ID}.expanded_search_terms"
 DEST_TABLE = f"{PROJECT_ID}.{DATASET_ID}.trend_data_pilot"
 
 # Proxy configuration
-PROXY_URL = os.getenv("PROXY_URL", "http://oxsjenoi-residential-US-rotate:yw72fdfu37vt@p.webshare.io:80")
+PROXY_URL = os.getenv("PROXY_URL")
 if PROXY_URL == "None": PROXY_URL = None
+
+if not PROXY_URL and os.environ.get("ALLOW_DIRECT") != "1":
+    raise SystemExit(
+        "PROXY_URL is not set. Refusing to run unproxied (would send traffic "
+        "from your raw IP and risk rate-limiting / abuse flags). Set PROXY_URL "
+        "(see .env.example), or set ALLOW_DIRECT=1 to override."
+    )
 
 def get_bq_client():
     return bigquery.Client(project=PROJECT_ID)

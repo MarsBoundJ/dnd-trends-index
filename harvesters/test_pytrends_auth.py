@@ -3,7 +3,7 @@ from pytrends.request import TrendReq
 import time
 import os
 
-PROXY_URL = "http://oxsjenoi-residential-US-rotate:yw72fdfu37vt@p.webshare.io:80"
+PROXY_URL = os.environ.get("PROXY_URL")
 
 def test_pytrends_auth():
     print(f"[*] Testing Pytrends with Auth Proxy: {PROXY_URL}")

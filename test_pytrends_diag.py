@@ -1,10 +1,11 @@
+import os
 from pytrends.request import TrendReq
 import logging
 
 # Enable logging to see the requests
 logging.basicConfig(level=logging.DEBUG)
 
-proxy_url = "http://oxsjenoi-residential-US-rotate:yw72fdfu37vt@p.webshare.io:80"
+proxy_url = os.environ.get("PROXY_URL")
 
 print("Starting pytrends diagnostic with residential proxy...")
 

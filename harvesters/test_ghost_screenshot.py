@@ -1,8 +1,11 @@
+import os
 import asyncio
 from playwright.async_api import async_playwright
 from playwright_stealth import Stealth
 
-PROXY = {"server": "socks5://p.webshare.io:1080", "username": "lcbaurkt-US-rotate", "password": "q8aa993piq8h"}
+from urllib.parse import urlparse
+_p = urlparse(os.environ.get("PROXY_URL", ""))
+PROXY = {"server": f"http://{_p.hostname}:{_p.port or 80}", "username": _p.username, "password": _p.password}
 
 async def test_ghost_walk():
     print("Testing Ghost Walk Navigation...")

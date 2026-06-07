@@ -1,7 +1,8 @@
+import os
 from pytrends.request import TrendReq
 import logging
 
-proxy_url = "http://oxsjenoi-residential-US-rotate:yw72fdfu37vt@p.webshare.io:80"
+proxy_url = os.environ.get("PROXY_URL")
 
 term = "D&D Battle Maps"
 start_date = '2026-02-01'

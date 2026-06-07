@@ -11,7 +11,7 @@ import cloudscraper
 from bs4 import BeautifulSoup
 
 PROJECT_ID = "dnd-trends-index"
-PROXY_URL = os.getenv("PROXY_URL", "http://oxsjenoi-residential-US-rotate:yw72fdfu37vt@p.webshare.io:80")
+PROXY_URL = os.getenv("PROXY_URL")
 PROXIES = {
     "http": PROXY_URL,
     "https": PROXY_URL

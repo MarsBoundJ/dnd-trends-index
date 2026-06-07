@@ -6,7 +6,7 @@ from google.cloud import bigquery
 import json
 
 PROJECT_ID = "dnd-trends-index"
-PROXY_URL = "http://lcbaurkt-US-rotate:q8aa993piq8h@p.webshare.io:80"
+PROXY_URL = os.environ.get("PROXY_URL")
 PROXIES = {"http": PROXY_URL, "https": PROXY_URL}
 
 def get_bq_client():
