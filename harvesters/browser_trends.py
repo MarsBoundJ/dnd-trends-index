@@ -33,9 +33,10 @@ def fetch_terms_to_process(client, limit=100):
     """
     return list(client.query(query).result())
 
-# Task 1: The SOCKS5 Pivot and Protocol Hardening to Port 9999
-PROXY_SOCKS = {"server": "socks5://p.webshare.io:9999", "username": "lcbaurkt-US-rotate", "password": "q8aa993piq8h"}
-PROXY_HTTP = {"server": "http://p.webshare.io:80", "username": "lcbaurkt-US-rotate", "password": "q8aa993piq8h"}
+# Webshare residential proxy — authenticated HTTP endpoint on port 80
+from urllib.parse import urlparse as _urlparse
+_pp = _urlparse(os.environ.get("PROXY_URL", ""))
+PROXY_HTTP = {"server": f"http://{_pp.hostname}:{_pp.port or 80}", "username": _pp.username, "password": _pp.password}
 
 async def human_mimicry(page):
     """Task 3: Implement 'Human-Like' Interaction."""
@@ -57,9 +58,8 @@ async def human_mimicry(page):
 async def scrape_with_retry(term_info, retries=1):
     term = term_info['search_term']
     
-    # Phase 51.1 - Using SOCKS5 port 9999
+    # Authenticated Webshare HTTP proxy on port 80
     proxy_options = [
-        PROXY_SOCKS,
         PROXY_HTTP
     ]
     

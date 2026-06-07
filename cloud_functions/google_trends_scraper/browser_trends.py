@@ -34,7 +34,7 @@ def fetch_terms_to_process(client, limit=100):
 
 # Proxy — read from env var set by Cloud Run job
 # Format: http://user:pass@host:port
-_PROXY_URL_ENV = os.environ.get("PROXY_URL", "http://oxsjenoi-residential-US-rotate:yw72fdfu37vt@p.webshare.io:80")
+_PROXY_URL_ENV = os.environ.get("PROXY_URL")
 
 def _parse_proxy(url: str) -> dict:
     """Parse http://user:pass@host:port into Playwright proxy dict with explicit username/password fields."""

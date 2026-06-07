@@ -16,7 +16,7 @@ SOURCE_TABLE = f"{PROJECT_ID}.{DATASET_ID}.expanded_search_terms"
 DEST_TABLE = f"{PROJECT_ID}.{DATASET_ID}.trend_data_pilot"
 
 # Proxy - Use user's Webshare proxy
-PROXY_URL = "http://p.webshare.io:9999"
+PROXY_URL = os.environ.get("PROXY_URL")
 
 def get_bq_client():
     return bigquery.Client(project=PROJECT_ID)

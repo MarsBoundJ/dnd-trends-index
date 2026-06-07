@@ -2,7 +2,7 @@ import asyncio
 from playwright.async_api import async_playwright
 import os
 
-PROXY_URL = "http://oxsjenoi-residential-US-rotate:yw72fdfu37vt@p.webshare.io:80"
+PROXY_URL = os.environ.get("PROXY_URL")
 
 async def debug_scrape(term):
     print(f"[*] Debugging: {term}")

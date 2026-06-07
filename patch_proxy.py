@@ -5,7 +5,7 @@ with open(filepath, 'r') as f:
     content = f.read()
 
 # Patch 1: fix _build_proxy_url to return None when no host
-old1 = 'def _build_proxy_url() -> str:\n    # Webshare IP-authenticated endpoint — no user/pass needed, port 9999\n    return f"http://{PROXY_HOST}:{PROXY_PORT}"'
+old1 = 'def _build_proxy_url() -> str:\n    # Webshare IP-authenticated endpoint — no user/pass needed, port 80\n    return f"http://{PROXY_HOST}:{PROXY_PORT}"'
 new1 = """def _build_proxy_url():
     if not PROXY_HOST or not PROXY_PORT:
         return None

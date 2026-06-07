@@ -3,7 +3,7 @@ import time
 from pytrends.request import TrendReq
 
 # IP AUTH PROXY (matches recover_global_pillars.py)
-PROXY_URL = "http://p.webshare.io:9999"
+PROXY_URL = os.environ.get("PROXY_URL")
 
 def main():
     print("Testing 'Tier of Play' variant with Proxy...")

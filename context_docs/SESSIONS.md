@@ -64,7 +64,7 @@ Note: `one dnd` returns 0 rows — Google Trends has no related query data for t
 
 - `discover-related-queries` Cloud Function fully deployed and verified ACTIVE (revision 00015+)
 - Dry run confirmed working: `{"status": "dry_run", "run_id": "...", "seeds": [...], "message": "No data written."}`
-- Webshare proxy connectivity confirmed from Cloud Run: `curl -x "http://oxsjenoi-residential-US-rotate:yw72fdfu37vt@p.webshare.io:80" https://httpbin.org/ip` returned a US residential IP
+- Webshare proxy connectivity confirmed from Cloud Run: `curl -x "http://<user>-rotate:<password>@p.webshare.io:80" https://httpbin.org/ip` returned a US residential IP
 - `dnd_trends_raw.related_queries` and `dnd_trends_raw.emerging_terms` tables created in BigQuery (via `_ensure_tables()`)
 - Function reached `status: ok` — pytrends connected through proxy successfully
 - All code patches committed to GitHub (commit `ce7b035`)

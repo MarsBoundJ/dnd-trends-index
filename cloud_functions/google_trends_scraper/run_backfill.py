@@ -1,3 +1,4 @@
+import os
 import traceback
 import datetime
 import uuid
@@ -38,7 +39,7 @@ terms = list(client.query(query).result())
 batch_id = str(uuid.uuid4())
 print(f"🚀 Starting STEALTH backfill for {len(terms)} terms: {start_date} to {end_date}.")
 
-proxy_url = "http://oxsjenoi-residential-US-rotate:yw72fdfu37vt@p.webshare.io:80"
+proxy_url = os.environ.get("PROXY_URL")
 
 success_count = 0
 

@@ -4,7 +4,7 @@ import os
 
 # Test 1: Original Rotating Endpoint (with '-rota' suffix)
 print("=== Test 1: Rotating Endpoint (Original) ===")
-proxy_url_rota = "http://oxsjenoi-residential-rota:yw72fdfu37vt@p.webshare.io:80"
+proxy_url_rota = os.environ.get("PROXY_URL")
 print(f"Proxy: {proxy_url_rota.split('@')[1]}")
 proxies = {"http": proxy_url_rota, "https": proxy_url_rota}
 try:
@@ -16,7 +16,7 @@ except Exception as e:
 
 # Test 2: Rotating Endpoint WITHOUT the '-rota' suffix (base username)
 print("\n=== Test 2: Base Username (no suffix) ===")
-proxy_url_base = "http://oxsjenoi-residential:yw72fdfu37vt@p.webshare.io:80"
+proxy_url_base = os.environ.get("PROXY_URL")
 print(f"Proxy: {proxy_url_base.split('@')[1]}")
 proxies = {"http": proxy_url_base, "https": proxy_url_base}
 try:
@@ -28,7 +28,7 @@ except Exception as e:
 
 # Test 3: Static proxy (known working - control)
 print("\n=== Test 3: Static Proxy -1 (Control) ===")
-proxy_url_static = "http://oxsjenoi-residential-1:yw72fdfu37vt@p.webshare.io:80"
+proxy_url_static = os.environ.get("PROXY_URL")
 print(f"Proxy: {proxy_url_static.split('@')[1]}")
 proxies = {"http": proxy_url_static, "https": proxy_url_static}
 try:

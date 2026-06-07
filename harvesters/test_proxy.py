@@ -1,3 +1,4 @@
+import os
 import asyncio
 from playwright.async_api import async_playwright
 
@@ -21,9 +22,10 @@ async def test_proxy(proxy_cfg):
         print(f"  [!] Error: {e}")
 
 async def main():
+    from urllib.parse import urlparse
+    _p = urlparse(os.environ.get("PROXY_URL", ""))
     proxy_options = [
-        {"server": "socks5://p.webshare.io:1080", "username": "lcbaurkt-US-rotate", "password": "q8aa993piq8h"},
-        {"server": "http://p.webshare.io:80", "username": "lcbaurkt-US-rotate", "password": "q8aa993piq8h"}
+        {"server": f"http://{_p.hostname}:{_p.port or 80}", "username": _p.username, "password": _p.password}
     ]
     for cfg in proxy_options:
         await test_proxy(cfg)

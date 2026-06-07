@@ -1,3 +1,4 @@
+import os
 import requests
 import urllib3
 
@@ -5,9 +6,10 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Test proxy from your proxies.txt file (using original username format)
+proxy_url = os.environ.get("PROXY_URL")
 proxies = {
-    "http": "http://oxsjenoi-1:yw72fdfu37vt@p.webshare.io:80",
-    "https": "http://oxsjenoi-1:yw72fdfu37vt@p.webshare.io:80",
+    "http": proxy_url,
+    "https": proxy_url,
 }
 
 print("=" * 60)

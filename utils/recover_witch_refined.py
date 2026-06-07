@@ -8,7 +8,7 @@ from pytrends.request import TrendReq
 from google.cloud import bigquery
 
 # IP AUTH PROXY
-PROXY_URL = "http://p.webshare.io:9999"
+PROXY_URL = os.environ.get("PROXY_URL")
 PROJECT_ID = "dnd-trends-index"
 DATASET_ID = "dnd_trends_categorized"
 

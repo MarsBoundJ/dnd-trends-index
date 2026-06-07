@@ -1,6 +1,7 @@
+import os
 from pytrends.request import TrendReq
 import json
-p = 'http://oxsjenoi-residential-1-session-1762255993:yw72fdfu37vt@p.webshare.io:80'
+p = os.environ.get("PROXY_URL")
 pt = TrendReq(proxies={'https': p, 'http': p}, requests_args={'verify': True})
 pt.build_payload(['dnd 5e'], timeframe='today 3-m', geo='US')
 print('--- Related Topics ---')

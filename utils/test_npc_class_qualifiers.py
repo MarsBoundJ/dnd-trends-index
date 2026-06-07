@@ -3,7 +3,7 @@ import time
 from pytrends.request import TrendReq
 
 # IP AUTH PROXY
-PROXY_URL = "http://p.webshare.io:9999"
+PROXY_URL = os.environ.get("PROXY_URL")
 
 def main():
     print("Testing NPC Title + 'class' qualifiers...")

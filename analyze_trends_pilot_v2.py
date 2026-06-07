@@ -21,18 +21,7 @@ BATCH_SIZE = 5
 PAUSE_SECONDS = 15
 
 # Pool of static proxies to rotate through (simulating rotation)
-PROXY_POOL = [
-    "http://oxsjenoi-residential-1:yw72fdfu37vt@p.webshare.io:80",
-    "http://oxsjenoi-residential-2:yw72fdfu37vt@p.webshare.io:80",
-    "http://oxsjenoi-residential-3:yw72fdfu37vt@p.webshare.io:80",
-    "http://oxsjenoi-residential-4:yw72fdfu37vt@p.webshare.io:80",
-    "http://oxsjenoi-residential-5:yw72fdfu37vt@p.webshare.io:80",
-    "http://oxsjenoi-residential-6:yw72fdfu37vt@p.webshare.io:80",
-    "http://oxsjenoi-residential-7:yw72fdfu37vt@p.webshare.io:80",
-    "http://oxsjenoi-residential-8:yw72fdfu37vt@p.webshare.io:80",
-    "http://oxsjenoi-residential-9:yw72fdfu37vt@p.webshare.io:80",
-    "http://oxsjenoi-residential-10:yw72fdfu37vt@p.webshare.io:80",
-]
+PROXY_POOL = [os.environ.get("PROXY_URL")]
 proxy_index = 0
 
 client = bigquery.Client(project=PROJECT_ID)

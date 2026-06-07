@@ -16,7 +16,7 @@ PROJECT_ID = "dnd-trends-index"
 MAP_TABLE = f"{PROJECT_ID}.dnd_trends_categorized.bgg_id_map"
 BGG_TOKEN = "ca8375ce-62f6-485a-8c54-ebf23209419f"
 
-PROXY_URL = os.getenv("PROXY_URL", "http://oxsjenoi-residential-US-rotate:yw72fdfu37vt@p.webshare.io:80")
+PROXY_URL = os.getenv("PROXY_URL")
 PROXIES = {"http": PROXY_URL, "https": PROXY_URL}
 HEADERS = {
     "Authorization": f"Bearer {BGG_TOKEN}",

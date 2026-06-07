@@ -18,7 +18,7 @@ SOURCE_TABLE = f"{PROJECT_ID}.{DATASET_ID}.expanded_search_terms"
 DEST_TABLE = f"{PROJECT_ID}.{DATASET_ID}.trend_data_pilot"
 
 # Proxy configuration
-PROXY_URL = os.getenv("PROXY_URL", "http://oxsjenoi-residential-US-rotate:yw72fdfu37vt@p.webshare.io:80")
+PROXY_URL = os.getenv("PROXY_URL")
 if PROXY_URL == "None": PROXY_URL = None
 
 def get_bq_client():

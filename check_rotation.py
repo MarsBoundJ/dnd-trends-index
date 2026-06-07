@@ -1,7 +1,8 @@
+import os
 import requests
 import time
 
-proxy_url = "http://oxsjenoi-residential-US-rotate:yw72fdfu37vt@p.webshare.io:80"
+proxy_url = os.environ.get("PROXY_URL")
 proxies = {
     "http": proxy_url,
     "https": proxy_url

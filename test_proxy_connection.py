@@ -2,10 +2,8 @@
 import requests
 import os
 
-# Hardcoded static user for debugging
-# Username from Screenshot 4: oxsjenoi-residential-1
-# Password from Screenshot 4: yw72fdfu37vt
-proxy_url = "http://oxsjenoi-residential-1:yw72fdfu37vt@p.webshare.io:80"
+# Proxy is read from the PROXY_URL environment variable (see .env.example)
+proxy_url = os.environ.get("PROXY_URL")
 
 print(f"Testing Proxy (Static User): {proxy_url.split('@')[1]}")
 
