@@ -18,6 +18,13 @@ DEST_TABLE = f"{PROJECT_ID}.{DATASET_ID}.trend_data_pilot"
 # Proxy - Use user's Webshare proxy
 PROXY_URL = os.environ.get("PROXY_URL")
 
+if not PROXY_URL and os.environ.get("ALLOW_DIRECT") != "1":
+    raise SystemExit(
+        "PROXY_URL is not set. Refusing to run unproxied (would send traffic "
+        "from your raw IP and risk rate-limiting / abuse flags). Set PROXY_URL "
+        "(see .env.example), or set ALLOW_DIRECT=1 to override."
+    )
+
 def get_bq_client():
     return bigquery.Client(project=PROJECT_ID)
 

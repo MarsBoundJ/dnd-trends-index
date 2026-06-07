@@ -36,6 +36,11 @@ def fetch_terms_to_process(client, limit=100):
 # Webshare residential proxy — authenticated HTTP endpoint on port 80
 from urllib.parse import urlparse as _urlparse
 _pp = _urlparse(os.environ.get("PROXY_URL", ""))
+if not _pp.hostname and os.environ.get("ALLOW_DIRECT") != "1":
+    raise SystemExit(
+        "PROXY_URL is not set. Refusing to launch the browser unproxied. "
+        "Set PROXY_URL (see .env.example), or ALLOW_DIRECT=1 to override."
+    )
 PROXY_HTTP = {"server": f"http://{_pp.hostname}:{_pp.port or 80}", "username": _pp.username, "password": _pp.password}
 
 async def human_mimicry(page):

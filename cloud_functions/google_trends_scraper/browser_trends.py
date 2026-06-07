@@ -38,6 +38,11 @@ _PROXY_URL_ENV = os.environ.get("PROXY_URL")
 
 def _parse_proxy(url: str) -> dict:
     """Parse http://user:pass@host:port into Playwright proxy dict with explicit username/password fields."""
+    if not url and os.environ.get("ALLOW_DIRECT") != "1":
+        raise SystemExit(
+            "PROXY_URL is not set. Refusing to launch the browser unproxied. "
+            "Set PROXY_URL (see .env.example), or ALLOW_DIRECT=1 to override."
+        )
     from urllib.parse import urlparse
     p = urlparse(url)
     proxy = {"server": f"{p.scheme}://{p.hostname}:{p.port}"}

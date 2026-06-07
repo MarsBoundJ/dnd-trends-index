@@ -11,6 +11,13 @@ from google.cloud import bigquery
 # IP AUTH PROXY
 PROXY_URL = os.environ.get("PROXY_URL")
 
+if not PROXY_URL and os.environ.get("ALLOW_DIRECT") != "1":
+    raise SystemExit(
+        "PROXY_URL is not set. Refusing to run unproxied (would send traffic "
+        "from your raw IP and risk rate-limiting / abuse flags). Set PROXY_URL "
+        "(see .env.example), or set ALLOW_DIRECT=1 to override."
+    )
+
 # Configuration
 PROJECT_ID = "dnd-trends-index"
 DATASET_ID = "dnd_trends_categorized"
