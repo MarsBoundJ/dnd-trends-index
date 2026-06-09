@@ -18,8 +18,16 @@ SOURCE_TABLE = f"{PROJECT_ID}.{DATASET_ID}.expanded_search_terms"
 
 def fetch_terms_to_process(client, limit=100):
     yesterday = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
+    # Dedupe by search_term: expanded_search_terms can hold more than one
+    # is_pilot row per term, and without grouping each duplicate becomes a
+    # separate scrape — burning proxy bandwidth re-fetching the same keyword.
+    # GROUP BY collapses to one scrape per unique term per run, regardless of
+    # how many duplicate rows exist in the source table.
     query = f"""
-        SELECT e.term_id, e.search_term, t.last_date
+        SELECT
+            ANY_VALUE(e.term_id) AS term_id,
+            e.search_term,
+            MAX(t.last_date) AS last_date
         FROM `{SOURCE_TABLE}` e
         LEFT JOIN (
             SELECT search_term, MAX(date) as last_date
@@ -27,7 +35,8 @@ def fetch_terms_to_process(client, limit=100):
             GROUP BY search_term
         ) t ON e.search_term = t.search_term
         WHERE e.is_pilot = TRUE
-          AND (t.last_date IS NULL OR t.last_date < '{yesterday}')
+        GROUP BY e.search_term
+        HAVING last_date IS NULL OR last_date < '{yesterday}'
         LIMIT {limit}
     """
     return list(client.query(query).result())
