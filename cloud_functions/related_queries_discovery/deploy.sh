@@ -78,40 +78,7 @@ curl -s -X POST "${FUNCTION_URL}" \
     -d '{"dry_run": true}' | jq .
 
 echo ""
-echo "--- Creating Cloud Scheduler job (daily Mon–Fri + Sunday 06:00 UTC) ---"
-
-FUNCTION_URL=$(gcloud functions describe "${FUNCTION}" \
-    --region="${REGION}" --project="${PROJECT}" \
-    --format="value(serviceConfig.uri)")
-
-SCHEDULER_JOB="discover-related-queries-daily"
-
-# Create or update the scheduler job
-if gcloud scheduler jobs describe "${SCHEDULER_JOB}" --location="${REGION}" --project="${PROJECT}" &>/dev/null; then
-    echo "Scheduler job exists — updating..."
-    gcloud scheduler jobs update http "${SCHEDULER_JOB}" \
-        --project="${PROJECT}" \
-        --location="${REGION}" \
-        --schedule="0 6 * * 0-5" \
-        --uri="${FUNCTION_URL}" \
-        --http-method=POST \
-        --message-body='{}' \
-        --oidc-service-account-email="${SA}" \
-        --oidc-token-audience="${FUNCTION_URL}" \
-        --time-zone="UTC"
-else
-    echo "Creating scheduler job..."
-    gcloud scheduler jobs create http "${SCHEDULER_JOB}" \
-        --project="${PROJECT}" \
-        --location="${REGION}" \
-        --schedule="0 6 * * 0-5" \
-        --uri="${FUNCTION_URL}" \
-        --http-method=POST \
-        --headers="Content-Type=application/json" \
-        --message-body='{}' \
-        --oidc-service-account-email="${SA}" \
-        --oidc-token-audience="${FUNCTION_URL}" \
-        --time-zone="UTC"
-fi
-
-echo "✓ Scheduler job '${SCHEDULER_JOB}' set to run Mon–Fri + Sunday at 06:00 UTC (Shabbat skipped)"
+echo "✓ Done. Scheduling is NOT managed here."
+echo "  The Cloud Scheduler job 'discover-related-queries-weekly' is maintained"
+echo "  out-of-band so its Shabbat-aware cadence (Fri sundown → Sat twilight pause"
+echo "  with a post-twilight catch-up) is never overwritten by a redeploy."
