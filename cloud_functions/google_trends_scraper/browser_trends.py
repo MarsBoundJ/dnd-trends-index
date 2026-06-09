@@ -152,7 +152,12 @@ async def scrape_term(page, term_info):
 async def check_proxy_health():
     """Quick proxy health check before processing any terms. Fail fast if dead."""
     import urllib.request
-    proxy_handler = urllib.request.ProxyHandler({"https": "http://localhost:3128"})
+    if not _PROXY_URL_ENV:
+        # No proxy configured — _parse_proxy already enforces ALLOW_DIRECT, so a
+        # direct (unproxied) run was explicitly opted into. Skip the proxy check.
+        print("[*] No PROXY_URL set (ALLOW_DIRECT) — skipping proxy health check.")
+        return True
+    proxy_handler = urllib.request.ProxyHandler({"http": _PROXY_URL_ENV, "https": _PROXY_URL_ENV})
     opener = urllib.request.build_opener(proxy_handler)
     try:
         opener.open("https://trends.google.com/trends/", timeout=15)
@@ -268,7 +273,7 @@ async def main(limit=50, keyword=None):
         print(f"\n[*] Batch complete. Session closed.")
 
 
-    print(f"[*] Done. Processed {terms_processed} terms in {(datetime.datetime.now() - start_time).total_seconds() / 60:.1f}m.")
+    print(f"[*] Done. Processed {len(terms)} terms in {(datetime.datetime.now() - start_time).total_seconds() / 60:.1f}m.")
 
 if __name__ == "__main__":
     import argparse
