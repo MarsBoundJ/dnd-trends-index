@@ -21,6 +21,27 @@ export interface BouncerItem {
   rank: number
   source: string
   opportunity_index: number
+  /** Category this item belongs to. Not always populated by older endpoints. */
+  category?: string
+  // ─── Source-specific optional extras (returned by /leaderboards?source=X) ──
+  /** Reddit source: compound sentiment score. Higher = more positive chatter. */
+  sentiment?: number
+  /** Reddit source: binary daily-appearance history for last 7 days. */
+  history?: number[]
+  /** YouTube source: number of distinct creators who mentioned this concept. */
+  creator_count?: number
+  /** YouTube source: per-category normalized consensus score (0-100). */
+  consensus_score?: number
+  /** BGG / RPGGeek source: how many users own this item. */
+  owned?: number
+  /** BGG / RPGGeek source: quality rating (mean user rating). */
+  quality?: number
+  /** Amazon source: current sales rank on Amazon. Lower = better. */
+  sales_rank?: number
+  /** Amazon source: current price in USD. */
+  price?: number
+  /** Amazon source: pre-formatted price string for display. */
+  formatted_price?: string
 }
 
 export interface BouncerCategory {
@@ -135,6 +156,140 @@ export interface Article {
    * Step 9.8b. This field is plumbing-ready ahead of that step.
    */
   co_authors?: (CouncilAuthorName | string)[]
+}
+
+// ─── Leaderboards (multi-source) ─────────────────────────────────────────────
+
+/**
+ * Supported source keys for the `/leaderboards?source=X` Bouncer endpoint.
+ * Each source returns the same top-level shape (`BouncerCategory[]`) but
+ * items may carry source-specific extras (e.g. Reddit adds `sentiment`,
+ * YouTube adds `consensus_score` + `creator_count`, BGG adds `owned`).
+ * For the /overview page cards we only use the common fields (name, score,
+ * rank); richer rendering by source is a later polish pass.
+ */
+export type LeaderboardSource =
+  | "google"
+  | "reddit"
+  | "youtube"
+  | "fandom"
+  | "wikipedia"
+  | "bgg"
+  | "rpggeek"
+  | "amazon"
+
+/**
+ * Fetch category/item leaderboards from the Bouncer /leaderboards endpoint,
+ * scoped to a given source. Returns an empty array on error so consumer
+ * pages still render with an empty-state rather than hard-failing.
+ *
+ * Cached server-side for 1 hour via Next 16 ISR, matching fetchBouncerData.
+ */
+export async function fetchLeaderboards(
+  source: LeaderboardSource,
+): Promise<BouncerCategory[]> {
+  const url = `${BOUNCER_URL}/leaderboards?source=${source}`
+  try {
+    const res = await fetch(url, { next: { revalidate: 3600 } })
+    if (!res.ok) {
+      console.error(
+        `[bouncer] /leaderboards?source=${source} returned ${res.status} ${res.statusText}`,
+      )
+      return []
+    }
+    const body = (await res.json()) as BouncerCategory[] | { error: string }
+    if (!Array.isArray(body)) {
+      console.error(`[bouncer] /leaderboards?source=${source} error payload:`, body)
+      return []
+    }
+    return body
+  } catch (err) {
+    console.error(`[bouncer] /leaderboards?source=${source} fetch failed:`, err)
+    return []
+  }
+}
+
+/**
+ * Helper: take leaderboard categories and return a flat top-N list of items
+ * globally deduplicated by name. Used by the /overview cards where we want
+ * one "top 5 across all categories for this source" rather than per-category.
+ */
+export function flattenTopItems(
+  data: BouncerCategory[],
+  limit = 5,
+): BouncerItem[] {
+  const byName = new Map<string, BouncerItem>()
+  for (const cat of data) {
+    for (const item of cat.items) {
+      const existing = byName.get(item.name)
+      if (!existing || item.score > existing.score) {
+        byName.set(item.name, { ...item, category: item.category ?? cat.category })
+      }
+    }
+  }
+  return Array.from(byName.values())
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+}
+
+/**
+ * YouTube-specific filter: drop items that have only one creator mentioning
+ * them. "Consensus" is meaningless at creator_count=1 — per-category
+ * normalization pins such items at score=100 even though they're one-
+ * creator drive-bys. Filtering to >=2 creators surfaces concepts where
+ * multiple tracked voices actually agree, which is the point of a
+ * consensus card. Items without creator_count (shouldn't happen from this
+ * endpoint but defensive) pass through unfiltered.
+ */
+export function filterYouTubeConsensus(
+  data: BouncerCategory[],
+  minCreators = 2,
+): BouncerCategory[] {
+  return data
+    .map((cat) => ({
+      ...cat,
+      items: cat.items.filter(
+        (item) =>
+          item.creator_count === undefined || item.creator_count >= minCreators,
+      ),
+    }))
+    .filter((cat) => cat.items.length > 0)
+}
+
+/**
+ * Fandom-specific filter: filter by source field to TTRPG-adjacent wikis,
+ * dropping entries from Stranger Things / Severance / other non-TTRPG
+ * wikis. The Fandom leaderboard inherently surfaces Cross-medium signals
+ * (which IS valuable for the UB Matrix context), but for a generic Top on
+ * Fandom card in Overview we want clean TTRPG-core content. Non-TTRPG
+ * signals are better surfaced on /matrix/universes-beyond where they
+ * belong thematically.
+ */
+const TTRPG_FANDOM_SOURCES = new Set([
+  "dnd5e",
+  "dndnext",
+  "dnd",
+  "pathfinder",
+  "5point5",
+  "forgottenrealms",
+  "criticalrole",
+  "dragonlance",
+  "eberron",
+  "ravenloft",
+  "spelljammer",
+])
+
+export function filterFandomTTRPG(
+  data: BouncerCategory[],
+): BouncerCategory[] {
+  return data
+    .map((cat) => ({
+      ...cat,
+      items: cat.items.filter((item) =>
+        item.source ? TTRPG_FANDOM_SOURCES.has(item.source.toLowerCase()) : true,
+      ),
+    }))
+    .filter((cat) => cat.items.length > 0)
 }
 
 // ─── Universes Beyond Matrix (Step 9.9) ──────────────────────────────────────
