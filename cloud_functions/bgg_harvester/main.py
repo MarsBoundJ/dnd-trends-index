@@ -73,7 +73,14 @@ def bgg_harvester_http(request):
     HTTP entry point for BGG/RPGGeek Harvester.
     Accepts JSON: {"rpg": true/false}
     """
-    data = request.get_json(silent=True) or {}
+    # force=True: Cloud Scheduler's HTTP target for this function sends
+    # Content-Type: application/octet-stream rather than application/json,
+    # which makes Flask's default get_json() silently return None (so
+    # is_rpg always fell back to False — the RPGGeek-flagged job was
+    # silently re-running the BGG branch on every invocation since at
+    # least 2026-03-30). force=True parses the body as JSON regardless
+    # of Content-Type, independent of whatever the scheduler job sends.
+    data = request.get_json(silent=True, force=True) or {}
     is_rpg = data.get("rpg", False)
     
     logger.info(f"🚀 Starting BGG Harvester (RPG: {is_rpg})")
