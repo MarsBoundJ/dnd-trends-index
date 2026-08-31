@@ -1,7 +1,67 @@
 # Data Streams Health Report
 
-**Date:** 2026-08-31
-**Method:** Static code + git-history audit (see "What I could NOT verify" below — this is not a live BigQuery pull)
+**Date:** 2026-08-31 (updated same day with live data once credentials were granted)
+**Method:** Originally a static code + git-history audit (kept below for the "why" behind each stream). A `claude-code` service account was granted BigQuery/Scheduler/Logging read access later the same day, so the sections below now include a real `stream_health_audit.py` run plus a live Cloud Scheduler + Cloud Logging investigation.
+
+---
+
+## LIVE RESULTS (2026-08-31, run with real credentials)
+
+Full `stream_health_audit.py` output against production BigQuery. 7 of 24 streams are STALE:
+
+| Stream | Status | Rows | Latest Data | Days Stale | Threshold |
+|---|---|---|---|---|---|
+| Google Trends | Healthy | 1,258,134 | 2026-08-31 | 0 | 4 |
+| Wikipedia | Healthy | 983,847 | 2026-08-30 | 1 | 3 |
+| Twitch | Healthy | 3,610 | 2026-08-31 | 0 | 14 |
+| **Emerging Terms** | **STALE** | 116 | 2026-04-12 | **141** | 9 |
+| Reddit | Healthy | 20,420 | 2026-08-31 | 0 | 3 |
+| Fandom | Healthy | 383,156 | 2026-08-31 | 0 | 4 |
+| YouTube | Healthy (no freshness check) | 3,213 | 2026-05-31 (content date) | n/a | n/a |
+| Itch.io Products | Healthy | 170 | 2026-08-31 | 0 | 5 |
+| Itch.io Jams | Healthy (no freshness check) | 2,060 | n/a (content date) | n/a | n/a |
+| mod.io | Healthy | 12,100 | 2026-08-31 | 0 | 14 |
+| Nexus Mods | Healthy | 3,242 | 2026-08-31 | 0 | 14 |
+| AO3 | Healthy | 390 | 2026-08-30 | 1 | 14 |
+| BGG | Healthy | 3,398 | 2026-08-31 | 0 | 4 |
+| **RPGGeek** | **STALE** | 45 | 2026-03-30 | **154** | 4 |
+| Roll20 | Healthy | 13,400 | 2026-08-31 | 0 | 4 |
+| Steam | Healthy | 23,478 | 2026-08-31 | 0 | 14 |
+| **Kickstarter** | **STALE** | 1,485 | 2026-05-18 | **105** | 30 |
+| **BackerKit** | **STALE** | 378 | 2026-05-19 | **104** | 30 |
+| **Amazon** | **STALE** | 2,319 | 2026-05-18 | **105** | 30 |
+| **DMs Guild** | **STALE** | 22,374 (shared table) | 2026-05-19 | **104** | 30 |
+| **DriveThruRPG** | **STALE** | 22,374 (shared table) | 2026-05-19 | **104** | 30 |
+| D&D Beyond Catalog | Healthy | 417 | 2026-08-31 | 0 | 14 |
+| Freight Index | Healthy (close to threshold) | 60 | 2026-08-23 | 8 | 9 |
+| Daily Articles (AI) | Healthy | 293 | — | — | — |
+
+**The 5 manual streams are exactly what you told me at the start** — Amazon, Kickstarter, BackerKit, DMs Guild, DriveThruRPG all stopped the moment the bookmarklets stopped being run, right around 2026-05-18/19. Expected, not broken.
+
+**The "6 unverified cadence" concern from the static audit is now closed.** `gcloud`-equivalent scheduler listing (via the Python client) shows all of them — Steam, mod.io, Nexus, Twitch, AO3, D&D Beyond Catalog — have real, enabled Cloud Scheduler jobs, following a consistent pattern: a `-shabbat`-suffixed weekday job plus a `-motzei-shabbat` Saturday-night catch-up job. They were just never captured in the repo (created directly via `gcloud`/Console). No action needed there beyond, optionally, documenting them in version control.
+
+### New finding #1 — RPGGeek: root-caused, one-line fix
+
+`rpggeek-harvester-schedule` fires correctly on schedule (confirmed: last fired today, 2026-08-31 03:15 UTC, right after `bgg-harvester-schedule` at 03:00). But 2 weeks of Cloud Run logs for the `bgg-harvester` service show **every single invocation — both the BGG and RPGGeek triggers — logs `RPG: False`.** The RPGGeek path has never actually executed.
+
+Root cause: the Cloud Scheduler job's HTTP target sends `Content-Type: application/octet-stream` instead of `application/json` (confirmed on both `bgg-harvester-schedule` and `rpggeek-harvester-schedule`). `cloud_functions/bgg_harvester/main.py:76` calls `request.get_json(silent=True)`, which Flask silently returns `None` for when the Content-Type isn't `application/json` — so `data` falls back to `{}` and `is_rpg = data.get("rpg", False)` is always `False`, regardless of the `{"rpg":true}` body Cloud Scheduler is actually sending. The RPGGeek job has therefore been a wasted duplicate BGG no-op (it hits the "data already exists for today" dedup check right after BGG's own run and skips) since whenever this Content-Type misconfiguration was introduced — at least back to 2026-03-30, the last date RPGGeek data actually landed.
+
+**Proposed fix (pending your go-ahead — this is a `gcloud`/deploy action, gated by your own CLAUDE.md):**
+1. Code fix: change `request.get_json(silent=True)` to `request.get_json(silent=True, force=True)` in `cloud_functions/bgg_harvester/main.py` — makes the function robust to Content-Type regardless of how it's invoked (defense in depth).
+2. Infra fix: update `rpggeek-harvester-schedule`'s (and `bgg-harvester-schedule`'s, for consistency) Content-Type header to `application/json` via `gcloud scheduler jobs update http ...`.
+3. Redeploy `bgg-harvester` Cloud Run service with the code fix.
+
+### New finding #2 — Emerging Terms: root-caused, not a quick fix
+
+`discover-related-queries-weekly` also fires correctly (confirmed: today, 06:00 UTC). Logs show it runs to completion without crashing, but **every seed keyword's `related_queries()`/`related_topics()` pytrends call is being rate-limited by Google Trends** — the first seed gets two `429 Too Many Requests` responses and is skipped; every subsequent seed's `related_topics()` returns an empty result set (Google's soft-block behavior — no error, just nothing). Net effect: the function has been running on schedule since April but discovering 0 new terms every time.
+
+This is the same class of problem your team already fought for the main Google Trends scraper and BGG (aggressive rate-limiting on pytrends specifically) — not a one-line fix. It likely needs the same treatment those got: better proxy rotation/backoff tuned for this specific endpoint, spacing requests out further, or accepting a lower per-run success rate. Flagging it root-caused rather than proposing a fix outright, since this deserves a real decision on approach rather than a quick patch.
+
+### Still valid from the original audit — Freight Index
+
+Confirmed live: 8 days stale against a 9-day threshold (weekly cadence, last run 2026-08-23) — cutting it close, consistent with the cron-drift concern flagged below. The no-dedup-guard and Content-Type-adjacent cron-vs-Shabbat-window concern from the static audit still stands and hasn't been touched.
+
+---
 
 ---
 
@@ -16,7 +76,7 @@
 
 ---
 
-## What I could NOT verify (read this first)
+## What I could NOT verify (original limitation — resolved later the same day, see LIVE RESULTS above)
 
 This session is a sandboxed remote container with:
 - No `dnd-key.json` / `GOOGLE_APPLICATION_CREDENTIALS` — can't authenticate a BigQuery client.
@@ -88,12 +148,12 @@ Legend: **Trigger** = how the code says it runs. "UNVERIFIED" means the Cloud Fu
 
 ---
 
-## Two things worth a decision regardless of live numbers
+## Two things worth a decision (updated post-live-check)
 
-1. **Six built Cloud Functions have no scheduler evidence** (Steam, mod.io, Nexus, Twitch, AO3, D&D Beyond Catalog). Either they're triggered via `gcloud` outside version control, or `gold_views/digital_streams_health.sql`'s "latest" numbers for these six could be arbitrarily old without anyone noticing — that view only checks "what's the newest row," it doesn't flag staleness the way `stream_health_audit.py` does. `gcloud scheduler jobs list --location=us-central1` resolves this in one command.
-2. **Freight Index has no dedup guard and a cron that may drift into the Shabbat blackout** in summer CDT, despite the docstring claiming it's idempotent. Small fix (a `WHERE NOT EXISTS` guard + pinning the cron to an explicit UTC time well clear of 21:30–03:45 UTC) next time someone's in that file.
-
-Neither of these needed live data to find — they're structural.
+1. ~~Six built Cloud Functions have no scheduler evidence~~ — **RESOLVED.** Confirmed live: all six have real, enabled, Shabbat-aware Cloud Scheduler jobs. Just undocumented in the repo — a nice-to-have to capture in version control, not an operational problem.
+2. **Freight Index has no dedup guard and a cron sitting close to its own staleness threshold** (8/9 days) and possibly the Shabbat blackout in summer CDT. Small fix (a `WHERE NOT EXISTS` guard + pinning the cron to an explicit UTC time well clear of 21:30–03:45 UTC) next time someone's in that file.
+3. **NEW — RPGGeek is silently broken** (Content-Type misconfiguration on its Cloud Scheduler job — see LIVE RESULTS above). One-line code fix + a scheduler config update, both pending your go-ahead.
+4. **NEW — Emerging Terms discovery has been finding nothing since April** due to Google Trends rate-limiting the `related_queries`/`related_topics` pytrends calls. Root-caused, but needs a real decision on approach (proxy/backoff tuning), not a quick patch.
 
 ---
 
