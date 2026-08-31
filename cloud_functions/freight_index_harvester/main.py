@@ -37,7 +37,13 @@ DATASET_ID = "gold_data"
 TABLE_ID = "freight_index_daily"
 TABLE_REF = f"{PROJECT_ID}.{DATASET_ID}.{TABLE_ID}"
 
-FBX_URL = "https://fbx.freightos.com/"
+# fbx.freightos.com was retired at some point after this was first written —
+# confirmed 2026-08-31 (Phil checked in a browser) the FBX page now lives
+# under the main marketing site. The lane-code ticker (FBX03 etc.) is still
+# present there, so the parsing approach is likely still salvageable — see
+# parse_freightos_values()'s docstring for the open question on whether the
+# ticker JSON is still embedded server-side or now purely client-rendered.
+FBX_URL = "https://www.freightos.com/enterprise/terminal/freightos-baltic-index-global-container-pricing-index/"
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -85,6 +91,18 @@ def parse_freightos_values(html: str) -> list[dict]:
     We extract that JSON array via regex and filter to the lanes in LANE_CODES.
     Returns a list of dicts: {lane_code, lane_name, index_value, wow_delta_pct}.
     Missing lanes are skipped (logged), not raised.
+
+    OPEN QUESTION (2026-08-31): the page moved to FBX_URL's new location and
+    this regex started returning nothing — logs show only ~12KB fetched with
+    no frProductIntroTickerData assignment present. The lane values (FBX03
+    etc.) are visibly rendered in a real browser at the new URL, so either
+    (a) the variable name/JSON shape changed but the data is still embedded
+    server-side somewhere in the raw HTML — a regex/selector update fixes
+    it, or (b) the ticker is now populated client-side after JS execution
+    and never appears in the plain-HTTP response at all — this needs a
+    headless-browser fetch (Playwright, like google_trends_scraper /
+    dtrpg_scraper) instead of requests.get(). Confirm by viewing the page
+    *source* (not the rendered/inspected DOM) at the new FBX_URL.
     """
     rows: list[dict] = []
 
