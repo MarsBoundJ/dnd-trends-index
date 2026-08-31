@@ -5,8 +5,10 @@ TTRPG fulfillment — primarily China / East Asia → North America (West and Ea
 coasts). Feeds The Quartermaster's articles on shipping disruption and fulfillment
 margin pressure. See project_step_9_council.md in user memory for context.
 
-Schedule: Saturday 22:00 CST (Sun 03:00 UTC). FBX publishes Fridays in Israel
-time, so Sat night gives the value a full day to stabilize. Cron: `0 3 * * 0`.
+Schedule: Sunday 04:00 UTC (`0 4 * * 0`, fixed UTC — not `America/Chicago`,
+which drifted this job's actual fire time into the Shabbat blackout window
+in summer CDT; see context_docs/SCHEDULING.md). FBX publishes Fridays in
+Israel time, so this gives the value more than a full day to stabilize.
 
 BigQuery sink: gold_data.freight_index_daily. Create table via
 setup_freight_index_daily.py before first run.
@@ -210,6 +212,23 @@ def freight_index_harvester(request):
     HTML length so Cloud Scheduler retry logic and alerts kick in.
     """
     try:
+        today = datetime.date.today().isoformat()
+        client = bigquery.Client(project=PROJECT_ID)
+
+        # Dedup guard — a manual re-trigger (or a Cloud Scheduler retry) on
+        # the same day used to double-insert every lane, since insert_rows()
+        # has no such check of its own. Mirrors the date-scoped guard used
+        # by the other harvesters (e.g. bgg_harvester).
+        dedup_check = client.query(
+            f"SELECT COUNT(*) as cnt FROM `{TABLE_REF}` WHERE date = @date",
+            job_config=bigquery.QueryJobConfig(
+                query_parameters=[bigquery.ScalarQueryParameter("date", "DATE", today)]
+            ),
+        ).result()
+        if next(iter(dedup_check)).cnt > 0:
+            logger.info(f"Data already exists for {today} — skipping run.")
+            return json.dumps({"status": "skipped", "reason": "already ran today", "date": today}), 200
+
         logger.info("Fetching Freightos FBX page...")
         html = fetch_freightos_html()
         logger.info(f"  Got {len(html)} bytes")
@@ -224,12 +243,11 @@ def freight_index_harvester(request):
                 "html_bytes": len(html),
             }), 500
 
-        client = bigquery.Client(project=PROJECT_ID)
         inserted = insert_rows(client, rows, html)
 
         return json.dumps({
             "status": "Success",
-            "date": datetime.date.today().isoformat(),
+            "date": today,
             "rows_inserted": inserted,
             "lanes": rows,
         }), 200
