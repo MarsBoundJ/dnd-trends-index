@@ -92,17 +92,19 @@ def parse_freightos_values(html: str) -> list[dict]:
     Returns a list of dicts: {lane_code, lane_name, index_value, wow_delta_pct}.
     Missing lanes are skipped (logged), not raised.
 
-    OPEN QUESTION (2026-08-31): the page moved to FBX_URL's new location and
-    this regex started returning nothing — logs show only ~12KB fetched with
-    no frProductIntroTickerData assignment present. The lane values (FBX03
-    etc.) are visibly rendered in a real browser at the new URL, so either
-    (a) the variable name/JSON shape changed but the data is still embedded
-    server-side somewhere in the raw HTML — a regex/selector update fixes
-    it, or (b) the ticker is now populated client-side after JS execution
-    and never appears in the plain-HTTP response at all — this needs a
-    headless-browser fetch (Playwright, like google_trends_scraper /
-    dtrpg_scraper) instead of requests.get(). Confirm by viewing the page
-    *source* (not the rendered/inspected DOM) at the new FBX_URL.
+    CONFIRMED 2026-08-31: fbx.freightos.com was retired; the ticker moved to
+    FBX_URL's new location but kept the same frProductIntroTickerData
+    variable name and JSON shape, still embedded server-side (inside a
+    <script type="text/rocketlazyloadscript"> tag — a WP Rocket deferred-
+    execution trick that only affects when a real browser *runs* the
+    script, not whether a plain HTTP fetch can read its literal text
+    content). Verified this regex against a real snippet of the new page —
+    all 3 target lanes (FBX, FBX01, FBX03) parse correctly. No further
+    parsing changes needed, just the FBX_URL update above.
+
+    The new page also tracks several lanes beyond the 3 in LANE_CODES
+    (FBX02/04/11-14/21/22/24/26) — left untouched since which of those are
+    worth adding is a product decision, not a scrape-fixing one.
     """
     rows: list[dict] = []
 
