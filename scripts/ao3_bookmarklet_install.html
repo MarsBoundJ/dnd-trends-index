@@ -1,0 +1,83 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Install: AO3 Batch Capture bookmarklet</title>
+<style>
+  body { font: 15px/1.6 "Segoe UI", system-ui, sans-serif; max-width: 760px;
+         margin: 40px auto; padding: 0 20px; color: #1a1a2e; }
+  h1 { font-size: 22px; margin-bottom: 4px; }
+  .sub { color: #606070; margin-top: 0; }
+  .drag { display:inline-block; background:#0d0d1a; color:#e0e0ff !important;
+           padding:12px 22px; border-radius:8px; text-decoration:none;
+           font-weight:600; font-family:ui-monospace,Consolas,monospace;
+           box-shadow:0 3px 10px rgba(0,0,0,.25); cursor:grab; }
+  .box { background:#f6f3ee; border-left:4px solid #C46419; padding:12px 16px;
+          border-radius:0 6px 6px 0; margin:18px 0; }
+  .bad { border-left-color:#C44949; background:#fbf0f0; }
+  .good { border-left-color:#2A8B4D; background:#f0f8f2; }
+  code { background:#eee9e1; padding:1px 5px; border-radius:3px;
+          font-family:ui-monospace,Consolas,monospace; font-size:13px; }
+  table { border-collapse:collapse; width:100%; margin:14px 0; font-size:14px; }
+  th,td { text-align:left; padding:7px 10px; border-bottom:1px solid #ddd6cc; }
+  th { background:#efe4d2; }
+  .prov { font-family:ui-monospace,Consolas,monospace; font-size:11px;
+           color:#606070; border-top:1px solid #ddd6cc; margin-top:36px;
+           padding-top:12px; white-space:pre-wrap; }
+</style>
+
+<h1>AO3 Batch Capture — install</h1>
+<p class="sub">There is exactly <strong>one</strong> AO3 bookmarklet in the repo. This is it.</p>
+
+<div class="box">
+  <strong>Drag the button below onto your bookmarks bar.</strong><br>
+  Clicking it here will not work — browsers block <code>javascript:</code> links
+  from being followed. Dragging is the install.
+</div>
+
+<p><a class="drag" href="javascript:(async%20function()%7Bconst%20BOUNCER%3D&#x27;https%3A%2F%2Fus-central1-dnd-trends-index.cloudfunctions.net%2Fbouncer-api&#x27;%3Bconst%20KEY%3D&#x27;ArcaneLibrarian2026&#x27;%3Bconst%20PLATFORM%3D&#x27;ao3&#x27;%3Bconst%20STASH%3D&#x27;arcane_ao3_batch&#x27;%3Bconst%20load%3D()%3D%3E%7Btry%7Breturn%20JSON.parse(localStorage.getItem(STASH)%7C%7C&#x27;%5B%5D&#x27;)%3B%7Dcatch(_)%7Breturn%5B%5D%3B%7D%7D%3Bconst%20save%3D(rows)%3D%3ElocalStorage.setItem(STASH%2CJSON.stringify(rows))%3Bconst%20old%3Ddocument.getElementById(&#x27;__ao3_batch__&#x27;)%3Bif(old)old.remove()%3Bconst%20ui%3Ddocument.createElement(&#x27;div&#x27;)%3Bui.id%3D&#x27;__ao3_batch__&#x27;%3BObject.assign(ui.style%2C%7Bposition%3A&#x27;fixed&#x27;%2Ctop%3A&#x27;12px&#x27;%2Cright%3A&#x27;12px&#x27;%2CzIndex%3A999999%2Cbackground%3A&#x27;%230d0d1a&#x27;%2Ccolor%3A&#x27;%23e0e0ff&#x27;%2Cpadding%3A&#x27;14px%2016px&#x27;%2CborderRadius%3A&#x27;10px&#x27;%2CfontFamily%3A&#x27;monospace&#x27;%2CfontSize%3A&#x27;13px&#x27;%2Cwidth%3A&#x27;460px&#x27;%2CmaxHeight%3A&#x27;86vh&#x27;%2CoverflowY%3A&#x27;auto&#x27;%2CboxShadow%3A&#x27;0%208px%2032px%20rgba(0%2C0%2C0%2C0.7)&#x27;%2ClineHeight%3A&#x27;1.45&#x27;%2C%7D)%3Bdocument.body.appendChild(ui)%3Bconst%20esc%3D(s)%3D%3EString(s%3D%3Dnull%3F&#x27;&#x27;%3As).replace(%2F%26%2Fg%2C&#x27;%26amp%3B&#x27;).replace(%2F%3C%2Fg%2C&#x27;%26lt%3B&#x27;).replace(%2F%3E%2Fg%2C&#x27;%26gt%3B&#x27;).replace(%2F%22%2Fg%2C&#x27;%26quot%3B&#x27;)%3Bfunction%20extractWorkCount()%7Bfor(const%20h%20of%20document.querySelectorAll(&#x27;h2.heading%2C%20h3.heading&#x27;))%7Bconst%20m%3Dh.textContent.match(%2Fof%5Cs%2B(%5B%5Cd%2C%5D%2B)%5Cs%2BWorks%3F%5Cs%2Bin%5Cb%2Fi)%3Bif(m)return%20parseInt(m%5B1%5D.replace(%2F%2C%2Fg%2C&#x27;&#x27;)%2C10)%3B%7Dfor(const%20h%20of%20document.querySelectorAll(&#x27;h2.heading%2C%20h3.heading&#x27;))%7Bconst%20m%3Dh.textContent.trim().match(%2F%5E(%5B%5Cd%2C%5D%2B)%5Cs%2BWorks%3F%5Cs%2Bin%5Cb%2Fi)%3Bif(m)return%20parseInt(m%5B1%5D.replace(%2F%2C%2Fg%2C&#x27;&#x27;)%2C10)%3B%7Dfor(const%20h%20of%20document.querySelectorAll(&#x27;h2.heading%2C%20h3.heading&#x27;))%7Bconst%20m%3Dh.textContent.match(%2F%5E(%5B%5Cd%2C%5D%2B)%5Cs%2BFound%5Cb%2F)%3Bif(m)return%20parseInt(m%5B1%5D.replace(%2F%2C%2Fg%2C&#x27;&#x27;)%2C10)%3B%7Dfor(const%20h%20of%20document.querySelectorAll(&#x27;h2.heading%2C%20h3.heading&#x27;))%7Bif(%2F0%5Cs%2B(works%7Cfound)%2Fi.test(h.textContent))return%200%3Bif(%2Fno%20works%20found%2Fi.test(h.textContent))return%200%3B%7Dconst%20pag%3Ddocument.querySelector(&#x27;ol.pagination%20li.next&#x27;)%3Bif(pag)%7Bconst%20t%3Dpag.textContent.match(%2Fof%5Cs%2B(%5B%5Cd%2C%5D%2B)%2Fi)%3Bif(t)return%20parseInt(t%5B1%5D.replace(%2F%2C%2Fg%2C&#x27;&#x27;)%2C10)%3B%7Dreturn%20null%3B%7Dconst%20params%3Dnew%20URLSearchParams(location.search)%3Bconst%20ipFilter%3D(params.get(&#x27;work_search%5Bother_tag_names%5D&#x27;)%7C%7C&#x27;&#x27;).trim()%3Blet%20notice%3D&#x27;&#x27;%3Bif(location.hostname.endsWith(&#x27;archiveofourown.org&#x27;))%7Bconst%20ip%3D(params.get(&#x27;_arcane_ip&#x27;)%7C%7C&#x27;&#x27;).trim()%3Bconst%20count%3DextractWorkCount()%3Bif(!ipFilter)%7Bnotice%3D&#x27;%3Cb%20style%3D%22color%3A%23ff8888%22%3ENot%20captured%20%E2%80%94%20no%20IP%20filter%20on%20this%20URL.%3C%2Fb%3E%3Cbr%3E&#x27;%2B&#x27;This%20page%20is%20every%20D%26amp%3BD%20crossover%20on%20AO3%2C%20not%20a%20D%26amp%3BD%20%C3%97%20IP%20count.%20&#x27;%2B&#x27;Use%20a%20deep%20link%20from%20%3Ccode%3Eprint_fanfic_capture_urls.py%3C%2Fcode%3E.&#x27;%3B%7Delse%20if(!ip)%7Bnotice%3D&#x27;%3Cb%20style%3D%22color%3A%23ff8888%22%3ENot%20captured%20%E2%80%94%20no%20%3Ccode%3E_arcane_ip%3C%2Fcode%3E%20marker.%3C%2Fb%3E%3Cbr%3E&#x27;%2B&#x27;Use%20a%20generated%20deep%20link%20so%20attribution%20cannot%20be%20mistyped.&#x27;%3B%7Delse%20if(count%3D%3D%3Dnull)%7Bnotice%3D&#x27;%3Cb%20style%3D%22color%3A%23ff8888%22%3ENot%20captured%20%E2%80%94%20could%20not%20read%20a%20work%20count.%3C%2Fb%3E%3Cbr%3E&#x27;%2B&#x27;Make%20sure%20the%20results%20header%20is%20visible.&#x27;%3B%7Delse%7Bconst%20rows%3Dload()%3Bconst%20prev%3Drows.findIndex((r)%3D%3Er.ip_name%3D%3D%3Dip)%3Bconst%20row%3D%7Bip_name%3Aip%2Cplatform%3APLATFORM%2Cplatform_canonical%3AdecodeURIComponent(ipFilter)%2Cwork_count%3Acount%2Csource_url%3Alocation.href%2Cscraped_by%3A&#x27;ao3_bookmarklet_batch&#x27;%2C%7D%3Bif(prev%3E%3D0)%7Brows%5Bprev%5D%3Drow%3Bnotice%3D%60Updated%20%3Cb%3E%24%7Besc(ip)%7D%3C%2Fb%3E%20%E2%86%92%20%24%7Bcount.toLocaleString()%7D%60%3B%7Delse%7Brows.push(row)%3Bnotice%3D%60Captured%20%3Cb%3E%24%7Besc(ip)%7D%3C%2Fb%3E%20%E2%86%92%20%24%7Bcount.toLocaleString()%7D%60%3B%7Dsave(rows)%3B%7D%7Delse%7Bnotice%3D&#x27;Not%20on%20AO3%20%E2%80%94%20showing%20the%20current%20batch.&#x27;%3B%7Dfunction%20flagsFor(r%2Call)%7Bconst%20f%3D%5B%5D%3Bif(r.work_count%3D%3D%3D0)%7Bf.push(%5B&#x27;%23ff8888&#x27;%2C&#x27;ZERO%20%E2%80%94%20every%20AO3%20zero%20so%20far%20was%20a%20stale%20or%20unfilterable%20tag%2C%20never%20a%20real%20absence&#x27;%5D)%3B%7Dconst%20others%3Dall.filter((x)%3D%3Ex!%3D%3Dr).map((x)%3D%3Ex.work_count).sort((a%2Cb)%3D%3Ea%20-b)%3Bconst%20med%3Dothers.length%3Fothers%5BMath.floor(others.length%2F2)%5D%3Anull%3Bif(med%26%26med%3E0%26%26r.work_count%3Emed*50)%7Bf.push(%5B&#x27;%23ff8888&#x27;%2C%60%24%7BMath.round(r.work_count%20%2F%20med)%7D%C3%97%20the%20batch%20median%20(%24%7Bmed%7D)%20%E2%80%94%20likely%20metatag%20inflation%60%5D)%3B%7Delse%20if(med%26%26med%3E0%26%26r.work_count%3Emed*10)%7Bf.push(%5B&#x27;%23d9a64a&#x27;%2C%60%24%7B(r.work_count%20%2F%20med).toFixed(1)%7D%C3%97%20the%20batch%20median%20(%24%7Bmed%7D)%60%5D)%3B%7Dreturn%20f%3B%7Dfunction%20render()%7Bconst%20rows%3Dload()%3Bconst%20flagged%3Drows.map((r)%3D%3E(%7Br%2Cf%3AflagsFor(r%2Crows)%7D))%3Bconst%20anyCritical%3Dflagged.some((x)%3D%3Ex.f.some((y)%3D%3Ey%5B0%5D%3D%3D%3D&#x27;%23ff8888&#x27;))%3Bui.innerHTML%3D%60%0A%20%20%20%20%20%20%3Cdiv%20style%3D%22display%3Aflex%3Bjustify-content%3Aspace-between%3Balign-items%3Acenter%3Bmargin-bottom%3A8px%22%3E%0A%20%20%20%20%20%20%20%20%3Cb%20style%3D%22color%3A%233b82f6%3Bfont-size%3A14px%22%3E%F0%9F%93%9A%20AO3%20Batch%20Capture%3C%2Fb%3E%0A%20%20%20%20%20%20%20%20%3Cbutton%20id%3D%22__x%22%20style%3D%22background%3Anone%3Bborder%3Anone%3Bcolor%3A%23888%3Bfont-size%3A18px%3Bcursor%3Apointer%22%3E%C3%97%3C%2Fbutton%3E%0A%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%20%20%3Cdiv%20style%3D%22background%3A%231a1a2e%3Bpadding%3A7px%209px%3Bborder-radius%3A6px%3Bmargin-bottom%3A9px%22%3E%24%7Bnotice%7D%3C%2Fdiv%3E%0A%20%20%20%20%20%20%3Cdiv%20style%3D%22margin-bottom%3A6px%3Bcolor%3A%23aaa%22%3EBatch%3A%20%3Cb%20style%3D%22color%3A%23e0e0ff%22%3E%24%7Brows.length%7D%3C%2Fb%3E%20IP(s)%3C%2Fdiv%3E%0A%20%20%20%20%20%20%24%7Brows.length%20%3F%20%60%3Ctable%20style%3D%22width%3A100%25%3Bborder-collapse%3Acollapse%3Bfont-size%3A12px%22%3E%24%7B%0A%20%20%20%20%20%20%20%20flagged.sort((a%2C%20b)%20%3D%3E%20b.r.work_count%20-%20a.r.work_count).map((%7B%20r%2C%20f%20%7D)%20%3D%3E%20%60%0A%20%20%20%20%20%20%20%20%20%20%3Ctr%20style%3D%22border-bottom%3A1px%20solid%20%232a2a4a%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Ctd%20style%3D%22padding%3A3px%200%22%3E%24%7Besc(r.ip_name)%7D%24%7Bf.map((x)%20%3D%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%60%3Cdiv%20style%3D%22color%3A%24%7Bx%5B0%5D%7D%3Bfont-size%3A11px%22%3E%E2%9A%A0%20%24%7Besc(x%5B1%5D)%7D%3C%2Fdiv%3E%60).join(&#x27;&#x27;)%7D%3C%2Ftd%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Ctd%20style%3D%22text-align%3Aright%3Bpadding%3A3px%200%203px%208px%3Bwhite-space%3Anowrap%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%24%7Br.work_count.toLocaleString()%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20data-del%3D%22%24%7Besc(r.ip_name)%7D%22%20style%3D%22background%3Anone%3Bborder%3Anone%3Bcolor%3A%23666%3Bcursor%3Apointer%22%3E%E2%9C%95%3C%2Fbutton%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Ftd%3E%0A%20%20%20%20%20%20%20%20%20%20%3C%2Ftr%3E%60).join(&#x27;&#x27;)%7D%3C%2Ftable%3E%60%20%3A%20&#x27;%3Ci%20style%3D%22color%3A%23666%22%3ENothing%20captured%20yet.%3C%2Fi%3E&#x27;%7D%0A%20%20%20%20%20%20%24%7BanyCritical%20%3F%20&#x27;%3Cdiv%20style%3D%22color%3A%23ff8888%3Bmargin-top%3A8px%3Bfont-size%3A12px%22%3E%E2%9A%A0%20Resolve%20or%20remove%20flagged%20rows%20before%20sending.%3C%2Fdiv%3E&#x27;%20%3A%20&#x27;&#x27;%7D%0A%20%20%20%20%20%20%3Cdiv%20style%3D%22display%3Aflex%3Bgap%3A6px%3Bmargin-top%3A11px%22%3E%0A%20%20%20%20%20%20%20%20%3Cbutton%20id%3D%22__send%22%20%24%7Brows.length%20%3F%20&#x27;&#x27;%20%3A%20&#x27;disabled&#x27;%7D%20style%3D%22flex%3A1%3Bbackground%3A%24%7Brows.length%20%3F%20&#x27;%233b82f6&#x27;%20%3A%20&#x27;%23333&#x27;%7D%3Bcolor%3A%23fff%3Bborder%3Anone%3Bpadding%3A9px%3Bborder-radius%3A5px%3Bcursor%3Apointer%3Bfont-weight%3A600%22%3ESend%20all%20%24%7Brows.length%20%7C%7C%20&#x27;&#x27;%7D%3C%2Fbutton%3E%0A%20%20%20%20%20%20%20%20%3Cbutton%20id%3D%22__clr%22%20style%3D%22background%3A%231a1a2e%3Bcolor%3A%23d9a64a%3Bborder%3A1px%20solid%20%232a2a4a%3Bpadding%3A9px%2011px%3Bborder-radius%3A5px%3Bcursor%3Apointer%22%3EClear%3C%2Fbutton%3E%0A%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%20%20%3Cdiv%20id%3D%22__status%22%20style%3D%22margin-top%3A8px%3Bcolor%3A%23aaa%22%3E%3C%2Fdiv%3E%60%3Bui.querySelector(&#x27;%23__x&#x27;).onclick%3D()%3D%3Eui.remove()%3Bui.querySelectorAll(&#x27;%5Bdata-del%5D&#x27;).forEach((b)%3D%3E%7Bb.onclick%3D()%3D%3E%7Bsave(load().filter((r)%3D%3Er.ip_name!%3D%3Db.dataset.del))%3Bnotice%3D&#x27;Removed.&#x27;%3Brender()%3B%7D%3B%7D)%3Bui.querySelector(&#x27;%23__clr&#x27;).onclick%3D()%3D%3E%7Bsave(%5B%5D)%3Bnotice%3D&#x27;Batch%20cleared.&#x27;%3Brender()%3B%7D%3Bui.querySelector(&#x27;%23__send&#x27;).onclick%3Dsend%3B%7Dasync%20function%20send()%7Bconst%20rows%3Dload()%3Bif(!rows.length)return%3Bconst%20st%3Dui.querySelector(&#x27;%23__status&#x27;)%3Bst.textContent%3D%60Sending%20%24%7Brows.length%7D%E2%80%A6%60%3Btry%7Bconst%20resp%3Dawait%20fetch(%60%24%7BBOUNCER%7D%2Fsystem%2Ffanfic%2Fingest-crossover-count%60%2C%7Bmethod%3A&#x27;POST&#x27;%2Cheaders%3A%7B&#x27;Content-Type&#x27;%3A&#x27;application%2Fjson&#x27;%2C&#x27;X-Ritual-Key&#x27;%3AKEY%7D%2Cbody%3AJSON.stringify(rows)%2C%7D)%3Bconst%20data%3Dawait%20resp.json()%3Bif(resp.ok%26%26data.inserted)%7Bsave(%5B%5D)%3Bst.innerHTML%3D%60%3Cb%20style%3D%22color%3A%235fdc7c%22%3E%E2%9C%85%20Saved%20%24%7Bdata.inserted%7D.%20Batch%20cleared.%3C%2Fb%3E%60%3B%7Delse%7Bst.innerHTML%3D%60%3Cb%20style%3D%22color%3A%23ff8888%22%3E%E2%9A%A0%20Bouncer%3A%20%24%7Besc(data.error%20%7C%7C%20resp.status)%7D%3C%2Fb%3E%3Cbr%3EBatch%20kept%20%E2%80%94%20retry.%60%3B%7D%7Dcatch(e)%7Bst.innerHTML%3D%60%3Cb%20style%3D%22color%3A%23ff8888%22%3E%E2%9A%A0%20Network%3A%20%24%7Besc(e.message)%7D%3C%2Fb%3E%3Cbr%3EBatch%20kept%20%E2%80%94%20retry.%60%3B%7D%7Drender()%3B%7D)()%3B">📚 AO3 Batch Capture</a></p>
+
+<h2>Which of your existing ones is this?</h2>
+<p>Click a bookmark while on an AO3 results page and look at what appears:</p>
+
+<table>
+  <tr><th>What you see</th><th>Verdict</th></tr>
+  <tr><td>Dark panel, top-right, titled <strong>📚 AO3 Batch Capture</strong>, with a
+      table and a <code>Send all N</code> button</td>
+      <td><strong>Current.</strong> Keep it.</td></tr>
+  <tr><td>A browser <em>dialog</em> asking OK/Cancel</td>
+      <td><strong>Old.</strong> Delete it.</td></tr>
+  <tr><td>A small status box that posts immediately with no review step</td>
+      <td><strong>Old.</strong> Delete it.</td></tr>
+</table>
+
+<div class="box bad">
+  <strong>Delete the old ones rather than leaving them.</strong> On Sep 2 an old
+  copy was clicked instead of this one: it posted each IP separately with no
+  batch, and when one send failed there was no stash holding it, so
+  Spy&nbsp;x&nbsp;Family was silently lost. Two bookmarks that look alike is the
+  whole problem.
+</div>
+
+<div class="box good">
+  <strong>Why this version.</strong> It stashes each capture in
+  <code>localStorage</code> and sends once, so you review all of them together —
+  a 49,020 sitting next to an 84 is obvious in a list and invisible one dialog at
+  a time. It uses no native dialogs (they freeze CDP-driven browsers and are
+  auto-dismissed in others), flags outliers and zeros at capture time, and only
+  clears the stash on a confirmed successful send.
+</div>
+
+<h2>Using it</h2>
+<ol>
+  <li>Open each capture URL (from <code>print_fanfic_capture_urls.py</code>)</li>
+  <li>Click the bookmarklet on each — it stashes silently, no prompt</li>
+  <li>On the last one, review the table and click <strong>Send all</strong></li>
+</ol>
+<p>Re-clicking on a page you already captured <em>updates</em> that row rather
+than adding a duplicate.</p>
+
+<div class="prov"><strong>Provenance</strong>
+Source    : scripts/ao3_bookmarklet.txt @ 8b28c20 (2026-09-02)
+Readable  : scripts/ao3_bookmarklet.js
+Page built: 2026-09-02
+Rebuild   : python scripts/make_bookmarklet_install_page.py
+Verified  : node --check passed; contains batch stash key and no confirm()/prompt()</div>
