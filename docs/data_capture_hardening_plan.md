@@ -284,6 +284,69 @@ the current set, including every literature IP.
 
 ---
 
+## Work item E — revisit the FFN exclusion (its stated rationale is invalid)
+
+`gold_views/fanfic_crossover_proxy.sql` excludes FFN from the score, and the
+in-file rationale says:
+
+> FFN excluded from the score (Apr 28, 2026)… when Phil first captured FFN data
+> via the index page bookmarklet, only 6 of 142 IPs had ANY FFN crossover with
+> D&D, and their counts maxed out at 7. Compared to **AO3's max of 47,660 works
+> on a single IP**, that's a **6,800:1** ratio — too sparse for meaningful
+> triangulation.
+
+**That 47,660 is April's BG3 metatag artifact** — the row quarantined Sep 2, 2026.
+It was never a real crossover count; it was the entire BG3 fandom. With the true
+AO3 maximum of 84, the observed ratio on the two IPs carrying both signals is:
+
+| IP | AO3 | FFN | ratio |
+|---|---:|---:|---:|
+| The Lord of the Rings | 84 | 7 | 12:1 |
+| Doctor Who | 13 | 2 | 6.5:1 |
+
+**~10:1, not 6,800:1.** FFN is a smaller archive, not a different universe — an
+entirely ordinary cross-platform scale difference, well within triangulation
+range. The headline argument for exclusion was an artifact of the same corrupted
+row that was compressing every AO3 score.
+
+### What still stands
+
+Sparsity is real: only 6 IPs have any FFN data. And the log-normalisation
+pathology is real — with a dataset max of 7, whichever IP holds 7 works scores
+1.0 and would falsely boost anything captured on both platforms. Note this is the
+*same* normalise-by-dataset-max fragility BG3 exploited on AO3, approached from
+the other end: AO3 had one absurdly large max, FFN has a tiny noisy one.
+
+### Proposed reframe
+
+Use FFN as a **corroboration flag** — "does D&D crossover fic exist here at all?"
+— rather than a scored magnitude. Presence/absence is robust at small N in a way
+magnitude is not, and it sidesteps the normalisation problem entirely because
+nothing is divided by a noisy max. 6 of 142 IPs having *any* FFN crossover is
+itself information.
+
+### Ordering — after A–D, not before
+
+1. **D is blocking.** The taxonomic level must be settled before the next AO3
+   capture; starting FFN leaves AO3 half-finished with a known bias in it.
+2. **FFN reuses everything A–D builds** — pre-flight verification, batch confirm,
+   denominators, ratio, confidence tiers. Doing it first means building twice.
+3. **FFN has its own version of every bug found Sep 1–2.** Its own script warns
+   index counts can be off ±1 against pair pages; fandom IDs can go stale exactly
+   as AO3 tags did; and the existing 6 values have never been checked against the
+   failure modes we now know to look for.
+
+FFN is cheap when we get there — index mode captured 51 fandoms from a single
+page on Sep 1, so it is closer to an afternoon than a project.
+
+### Whatever is decided, fix the comment
+
+Even if FFN stays excluded, the rationale in `fanfic_crossover_proxy.sql` must be
+corrected. A documented decision resting on a number since proven false will
+quietly mislead the next person who reads it — including us.
+
+---
+
 ## Constraints (non-negotiable)
 
 - **Human-wielded by design.** AO3's ToS forbids automated scraping. The
