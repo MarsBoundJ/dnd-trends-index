@@ -111,6 +111,31 @@ WITH
   -- IS the FFN dataset max), which would falsely boost any IP captured
   -- on both AO3 and FFN.
   --
+  -- ⚠️ CORRECTION (Sep 2, 2026) — the 6,800:1 figure above is WRONG.
+  -- That "AO3 max of 47,660" was Baldur's Gate 3, and it was never a
+  -- crossover count: AO3 wrangles Baldur's Gate (Video Games) under the
+  -- Dungeons & Dragons (Roleplaying Game) metatag, so the D&D x BG3
+  -- filter returned the entire BG3 fandom. The row is now quarantined in
+  -- dnd_trends_raw.fanfic_crossover_quarantine.
+  --
+  -- Against the true AO3 max of 84 (The Lord of the Rings), the real
+  -- ratio on the two IPs carrying both signals is ~10:1 — LotR 84:7 and
+  -- Doctor Who 13:2. That is an ordinary cross-platform scale gap, well
+  -- within triangulation range.
+  --
+  -- The SECOND argument still stands and is why this exclusion is left
+  -- in place for now: sparsity (6 of 142 IPs), plus the normalization
+  -- pathology described above, which is genuinely independent of AO3's
+  -- max. Note it is the same normalize-by-dataset-max fragility that let
+  -- BG3 distort AO3 — approached from the other end (one absurdly large
+  -- max there, a tiny noisy one here).
+  --
+  -- Revisiting the exclusion is work item E in
+  -- docs/data_capture_hardening_plan.md. Likely reframe: use FFN as a
+  -- corroboration flag ("does D&D crossover fic exist here at all?")
+  -- rather than a scored magnitude — robust at small N, and nothing gets
+  -- divided by a noisy max. NO BEHAVIOUR CHANGE in this edit.
+  --
   -- The captured FFN rows stay in dnd_trends_raw.fanfic_crossover_counts
   -- for historical record + data-trail visibility (see per_platform_pivot
   -- below — ffn_work_count is still surfaced in the output schema). They

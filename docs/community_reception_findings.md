@@ -179,6 +179,8 @@ Same ethical pattern as the project's existing Amazon, Kickstarter, and DMs Guil
 
 **Score formula:** `log10(work_count + 1) / log10(MAX(work_count + 1))` per-platform normalization. AO3-only after we determined FFN's signal was too thin to triangulate (max 7 works vs AO3's max 47,660 = 6,800:1 ratio).
 
+> ⚠️ **CORRECTION (Sep 2, 2026) — the 6,800:1 ratio is wrong.** That "AO3 max of 47,660" was Baldur's Gate 3, and it was never a crossover count (see the BG3 correction below). Against the true AO3 max of **84**, the real ratio is **~10:1** — LotR 84:7, Doctor Who 13:2 — an ordinary cross-platform scale gap. FFN remains excluded for a *different* reason that still holds: sparsity (6 of 142 IPs) plus the normalization pathology, where FFN's dataset max of 7 gives that IP a score of 1.0. Revisiting it is work item E in [`data_capture_hardening_plan.md`](data_capture_hardening_plan.md).
+
 **Strongest insights:**
 
 - **Baldur's Gate 3 dominates** with 47,660 works (600× the next-highest IP). Expected — BG3 IS D&D-licensed content. Calibration anchor, not a crossover candidate.
@@ -186,6 +188,23 @@ Same ethical pattern as the project's existing Amazon, Kickstarter, and DMs Guil
 - **The zero-count negatives** (huge fandoms with NO D&D crossover): **Severance, Jujutsu Kaisen, Demon Slayer, Spy x Family**. These IPs are gigantic on AO3 individually, but their communities don't bridge to D&D.
 
 The zero-count finding is a strong negative signal: "These IPs may have huge cultural footprints, but the organic demand to mash them into D&D doesn't exist."
+
+> ⚠️ **CORRECTION (Sep 2, 2026) — two of the three bullets above are artifacts, not findings.**
+>
+> **BG3's 47,660 was never a crossover count.** AO3 wrangles `Baldur's Gate (Video Games)` under the `Dungeons & Dragons (Roleplaying Game)` metatag, so the D&D × BG3 filter returned the *entire BG3 fandom* — confirmed against the plain tag page. The "600× the next-highest IP" gap was the artifact, and the reasoning that made it look plausible ("expected — BG3 IS D&D-licensed content") is exactly what let it pass unchallenged for four months. The conclusion *"not a crossover candidate"* happens to survive, but for the opposite reason: the intersection is **unmeasurable**, not overwhelming. Both BG3 rows are quarantined.
+>
+> **The zero-count negatives were all bugs.** Every one of those four tags had become an AO3 *synonym* or was not marked common, and AO3 returns 0 for such a filter with no error. Re-captured with canonical tags on Sep 2:
+>
+> | IP | Reported | Actual |
+> |---|---:|---|
+> | Jujutsu Kaisen | 0 | **54** — 3rd strongest in the whole set |
+> | Demon Slayer | 0 | **21** |
+> | Spy x Family | 0 | **2** |
+> | Severance | 0 | **unmeasurable** — AO3 cannot filter on the tag at all |
+>
+> So *"the organic demand to mash them into D&D doesn't exist"* is the reverse of the truth. JJK carries one of the strongest crossover signals we have. **None of the five AO3 zeros was ever a real zero.**
+>
+> Also note the **Witcher 48** above is not comparable to today's 24: April measured a broader tag that AO3 has since re-wrangled to a narrower games-only canonical. Treat Sep 2, 2026 as the first trustworthy AO3 baseline; see [`data_capture_hardening_plan.md`](data_capture_hardening_plan.md).
 
 ### Stage 5 Phase 1 — Reddit D&D-community sentiment
 
@@ -364,9 +383,13 @@ For any LLM-generated keyword/tag system, generate per-entity aliases AND ambigu
 
 When aggregating across sources with very different scales (AO3's 47,660 vs Reddit's 20 mentions), per-platform log-scale normalization is more honest than raw averaging. The log scale represents the heavy-tailed nature of fandom data correctly.
 
+> ⚠️ **CORRECTION (Sep 2, 2026):** the 47,660 example is the quarantined BG3 artifact; AO3's true max is **84**, so the real cross-source spread is far narrower than this implies. The normalization principle still holds, but it carries a hazard learned the hard way: `MAX(...) OVER (PARTITION BY platform)` means **a single bad row sets the denominator for an entire platform**. BG3 alone was compressing every other AO3 score ~2.4× (LotR read 0.411; it is 1.000 once removed). Normalizing to a dataset max assumes the max is trustworthy — validate the extremes before relying on it.
+
 ### 4. Honest abstention over fake precision
 
 Multiple times during build we hit the question "what if a source has no data for this IP?" The answer should always be "return NULL, not 0." Forcing scores onto thin data is worse than admitting "we don't measure this IP yet."
+
+> **Sep 2, 2026 — this principle was right, and we did not enforce it.** Five AO3 zeros were recorded as measured zeros; every one was either a stale-tag bug or a tag AO3 cannot filter on at all. Severance is the clearest case: the correct value was never 0, it was NULL — *"we cannot measure this IP."* The capture path had no way to tell "measured zero" apart from "measurement failed," so it defaulted to the more confident of the two. `seed_fanfic_canonical_tags.py` now carries `ao3_filterable`, and the rule going forward is: **treat any 0 as unverified until the tag is confirmed canonical.**
 
 This is implemented consistently across all 6 sources via `status='insufficient_data'` and `confidence='NONE'` flags.
 
