@@ -104,6 +104,87 @@ designing the stash format twice.
 
 ---
 
+## Work item C — fandom total + D&D-affinity ratio
+
+### The gap
+
+The crossover count conflates two things: **how big a fandom is** and **how
+D&D-affiliated it is**. LotR's 84 and Mistborn's 2 are not comparable — LotR is
+one of AO3's largest fandoms, Mistborn is small. Two works out of a small fandom
+may represent far stronger affinity than 84 out of an enormous one. We currently
+rank on the confounded number.
+
+### The metric
+
+Capture the fandom total alongside the crossover count, giving three values:
+
+| Metric | Measures |
+|---|---|
+| `fandom_total` | audience size / creative energy |
+| `work_count` (existing) | absolute D&D affinity |
+| ratio = `work_count / fandom_total` | affinity **per unit of fandom** |
+
+Consistent with the project's dual-axis principle (a single metric is always the
+trap). The ratio is a second axis, not a better version of the first — a small
+high-affinity fandom and a huge low-affinity one are different licensing
+propositions, not better/worse ones.
+
+### Why it is nearly free
+
+The fandom total lives on `/tags/<tag>/works` — **the same page work item A needs
+for tag verification**. One visit yields both:
+
+1. canonical / synonym / not-common status → work item A
+2. total works → the denominator here
+
+This is not a second capture pass. It makes A cheaper to justify, not more
+expensive.
+
+### It resolves the BG3 decision
+
+"Track both" stops being a special case for one IP and becomes the general shape
+of the metric. See the open-decision section below.
+
+### Design rules
+
+- **Measure the denominator with the SAME tag used in `other_tag_names`**, so
+  numerator and denominator match by construction. Cross-IP comparison is still
+  not perfectly level (LotR is All-Media-Types, The Witcher is games-only) —
+  document that caveat rather than pretending it away.
+- **Never rank on ratio alone.** Require both axes.
+- **A ratio near 1.0 is a metatag-inflation detector, not a finding.** BG3 would
+  read 49,020/49,020 ≈ 1.0 — that is failure mode 2, caught for free.
+
+### Small-N handling
+
+Observed crossover counts (24 IPs, Sep 2 2026): **2 – 84, median ~15.** These are
+small counts, so the ratio is a proportion estimated from few events. Relative
+standard error ≈ `1/√k`:
+
+| k | RSE | Reading |
+|---:|---:|---|
+| 84 | 11% | solid |
+| 30 | 18% | usable |
+| 10 | 32% | shaky |
+| 2 | 71% | noise |
+
+A fandom with 40 works and 2 crossovers reads as 5% and would outrank almost
+everything — on the strength of two works. Two mitigations, use both:
+
+1. **Smooth the ratio** (additive / empirical-Bayes shrinkage toward the global
+   D&D-crossover rate). Pulls small-k estimates toward the mean in proportion to
+   how little evidence they carry. Nothing is discarded, and k=84 barely moves.
+2. **Carry a confidence tier** derived from k, matching the existing confidence
+   pattern in the codebase:
+   - **HIGH** k ≥ 25 (RSE ≤ 20%) — 6 of 24 IPs today
+   - **MEDIUM** k 9–24 — 10 of 24
+   - **LOW** k < 9 — 8 of 24
+
+Prefer smoothing over a hard cutoff: a k ≥ 10 threshold would discard a third of
+the current set, including every literature IP.
+
+---
+
 ## Constraints (non-negotiable)
 
 - **Human-wielded by design.** AO3's ToS forbids automated scraping. The
@@ -144,12 +225,17 @@ mechanics (spells, classes, subclasses, species), so some crossover attribution 
 legitimate. Wants the video game distinguished from the TTRPG, possibly tracking
 both.
 
-Realistic shape: record BG3 **fandom size** as its own labelled metric rather than
-pretending it is a crossover count. The two quarantined rows (49,020 Sep 2,
-47,660 Apr 28) are the back-data if that happens — preserved in
-`dnd_trends_raw.fanfic_crossover_quarantine`, not deleted.
+**Work item C largely answers this.** Recording `fandom_total` for every IP makes
+BG3 an ordinary row rather than a special case: its fandom total is a real,
+useful measurement, and its ratio of ~1.0 flags the intersection as unmeasurable
+rather than reporting a false crossover count. The two quarantined rows (49,020
+Sep 2, 47,660 Apr 28) become the back-data for the fandom-total series —
+preserved in `dnd_trends_raw.fanfic_crossover_quarantine`, not deleted.
 
-Blocked on deciding whether a crossover number is obtainable for BG3 at all.
+What remains open is narrower: whether a *genuine* D&D × BG3 crossover number is
+obtainable at all through some other tag combination, and whether BG3's D&D-native
+mechanics (spells, classes, subclasses, species) warrant treating it as a
+different category from ordinary crossover IPs.
 
 ---
 
