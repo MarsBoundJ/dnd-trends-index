@@ -149,8 +149,11 @@ WITH
     SELECT
       ip_name,
       ROUND(AVG(platform_score), 4) AS fanfic_proxy_score,
-      COUNT(DISTINCT platform) AS platforms_present,
-      STRING_AGG(platform, ',' ORDER BY platform) AS platforms_list,
+      -- Renamed Sep 2, 2026. These are computed AFTER the allow-list below,
+      -- so they describe what fed the SCORE, not what was captured. The old
+      -- name (platforms_present) made that indistinguishable from coverage.
+      COUNT(DISTINCT platform) AS platforms_scored,
+      STRING_AGG(platform, ',' ORDER BY platform) AS platforms_scored_list,
       SUM(work_count) AS total_works_across_platforms,
       MAX(work_count) AS max_works_single_platform,
       MAX(scraped_at) AS latest_scrape
@@ -160,6 +163,33 @@ WITH
     -- bring a new platform into the score, add it here AND verify the
     -- platform has comparable scale + meaningful coverage first.
     WHERE platform IN ('ao3')
+    GROUP BY ip_name
+  ),
+
+  -- ────────────────────────────────────────────────────────────────────
+  -- Platform COVERAGE — deliberately computed BEFORE the scoring allow-list.
+  --
+  -- BUG FIXED Sep 2, 2026. platforms_present used to be computed inside
+  -- per_ip_aggregated, i.e. AFTER `WHERE platform IN ('ao3')`, so it was
+  -- always exactly 1. Every IP read LOW and the HIGH/MEDIUM tiers were
+  -- unreachable by construction: the scale advertised four tiers and could
+  -- emit two. Verified live before the fix — all 24 AO3 IPs returned
+  -- platforms_present = 1, platforms_list = 'ao3'.
+  --
+  -- It stood from April to September because a column that never varies
+  -- looks like a column nobody needs to check.
+  --
+  -- The tier is meant to express HOW MUCH CORROBORATION EXISTS, not how many
+  -- platforms fed the score. An IP captured on both AO3 and FFN is better
+  -- corroborated than one captured on AO3 alone, even while FFN is excluded
+  -- from the score (see work item E in docs/data_capture_hardening_plan.md).
+  -- ────────────────────────────────────────────────────────────────────
+  platform_coverage AS (
+    SELECT
+      ip_name,
+      COUNT(DISTINCT platform) AS platforms_present,
+      STRING_AGG(DISTINCT platform, ',' ORDER BY platform) AS platforms_list
+    FROM latest_per_pair
     GROUP BY ip_name
   ),
 
@@ -194,8 +224,10 @@ WITH
       s.tier,
       s.disambiguation,
       a.fanfic_proxy_score,
-      a.platforms_present,
-      a.platforms_list,
+      c.platforms_present,
+      c.platforms_list,
+      a.platforms_scored,
+      a.platforms_scored_list,
       a.total_works_across_platforms,
       a.max_works_single_platform,
       a.latest_scrape,
@@ -208,7 +240,8 @@ WITH
       ROUND(p.wattpad_platform_score, 4) AS wattpad_score
     FROM `dnd-trends-index.dnd_trends_raw.ub_candidate_seeds` s
     LEFT JOIN per_ip_aggregated a ON a.ip_name = s.ip_name
-    LEFT JOIN per_platform_pivot p ON p.ip_name = s.ip_name
+    LEFT JOIN platform_coverage   c ON c.ip_name = s.ip_name
+    LEFT JOIN per_platform_pivot  p ON p.ip_name = s.ip_name
   )
 
 SELECT
@@ -227,6 +260,10 @@ SELECT
   END AS fanfic_signal_confidence,
 
   u.platforms_present,
+  -- How many platforms actually contributed to fanfic_proxy_score. Differs
+  -- from platforms_present whenever a captured platform is excluded from
+  -- scoring (FFN today), which is exactly the gap the old code hid.
+  u.platforms_scored,
   u.platforms_list,
   u.total_works_across_platforms,
   u.max_works_single_platform,
