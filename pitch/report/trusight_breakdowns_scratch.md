@@ -1549,6 +1549,20 @@ Sea Kings (CR-variable ocean megafauna), Marine Vice Admirals (Garp CR 25, Kizar
 | DMs Guild + DTRPG confirmed products | 0 | Clean lane on 5.5e content |
 | External licensed product | **none** in 5.5e (Bandai-licensed Japanese tabletop games exist but not Western 5.5e) | Clean lane on the WoTC-side license |
 
+> ⚠️ **CORRECTION (Sep 2, 2026) — the rate was right; the interpretation was not.**
+>
+> The measurement above holds up. A Sep 2 re-capture with AO3's canonical tag returns **52 D&D-crossover works against 99,964 total = 0.052%** — the May figures (46 / 94,966 / 0.048%) confirmed after four months of growth.
+>
+> What does not hold up is the reading built on top of it:
+>
+> - **"Lowest of any IP measured" is wrong.** Demon Slayer's entry claims the same title at 0.040%, and a 0% appears elsewhere in this doc. The two claims contradict each other.
+> - **"The rate underestimates conversion" / "unreliable for ship-fic-dominated fandoms" explains away something that needs no explaining.** 46 crossover works against a ~95,000-work fandom *is* a low rate. That is arithmetic, not a pathology, and the ship-fic hypothesis was constructed to account for a defect that was never there.
+> - **One Piece ranks 5th of 24 IPs by absolute crossover count** (52), above Cyberpunk 2077, Persona 5, Elden Ring and The Witcher. The "fanbase isn't converting" story is contradicted by volume.
+>
+> **The real lesson is dual-axis.** Rate misleads in *both* directions: Dwarf Fortress's 4.11% is 3 works against 73 — a high rate on trivial volume; One Piece is a low rate on substantial volume. Neither rate is unreliable. They answer a different question from the absolute count, and both need reporting. See `docs/data_capture_hardening_plan.md` work item C.
+>
+> **Footnote on how this was missed:** the gold table carried `5` for One Piece until Sep 2 (a stale AO3 tag), while this doc carried `46`. Two sources disagreed by 9x for four months and nothing compared them.
+
 **Cross-channel reading.** One Piece is the **largest-fanbase / lowest-AO3-rate / highest-Reddit-engagement** anomaly. The 0.048% AO3 proportional rate is misleading — the fanbase is heavily ship-fic-dominated on AO3, not crossover-fic-dominated. **The Reddit signal tells the actual story:** 4,130-up viral D&D-campaign-art post + 6,200 forum results + 0.87 acquisition score + 95K-AO3-fanbase scale. Greenlight-tier; **the largest net-new-audience-import opportunity in the entire breakdown corpus.**
 
 [↑ Back to Contents](#contents)
@@ -2986,6 +3000,8 @@ Valyrian steel weapons are generations-old named blades. **Slots into the same n
 **Four "ecosystem-trap" caveats** (Mistborn — Brotherwise Cosmere RPG; Dark Souls — Steamforged 5e RPG; Hades — Theros overlap; **FFXIV — announced official FFXIV TTRPG, the strongest in the doc**). Each gets specific honest-caveat treatment.
 
 **Three "ship-fic-dominated AO3 underestimates conversion" IPs** (One Piece 0.048%, FFXIV 0.063%, Demon Slayer 0.040%) — methodological note: AO3 proportional rate is unreliable for ship-fic-heavy fandoms; Reddit + DDB are load-bearing.
+
+> ⚠️ **CORRECTION (Sep 2, 2026):** this grouping does not survive. One Piece re-measures at **52 crossover works — 5th of 24 IPs by absolute count**, and Demon Slayer at **21**. Their rates are low because their fandoms are enormous (~100k and ~50k), which is arithmetic rather than a measurement defect. "AO3 underestimates conversion for ship-fic-heavy fandoms" was a hypothesis invented to explain a low rate that a large denominator produces on its own. Report rate **and** absolute count as separate axes instead — see work item C.
 
 **Two "market-opportunity-led / thin signal" IPs** (Sea of Thieves 0%, House of the Dragon 0.13% with 0 D&D-sub posts) — useful Trusight reads showing how the framework handles soft-pass cases honestly.
 
