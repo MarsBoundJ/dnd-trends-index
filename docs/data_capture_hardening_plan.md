@@ -894,3 +894,95 @@ The full 51-fandom index could be ingested rather than just seed-list matches,
 which would give a complete FFN picture for discovery. Not done: it would change
 `fanfic_crossover_counts` from seed-scoped to mixed-scope, and that is an item H
 decision about the sampling frame rather than an item E fix.
+
+---
+
+## Work item D — DECIDED (Sep 2, 2026)
+
+### The rule
+
+**Measure at the broadest AO3 umbrella for the same licensable entity.**
+
+AO3 publishes umbrellas under **two** suffixes and both count:
+
+| Suffix | Meaning | Tags |
+|---|---|---|
+| `- All Media Types` | same entity, aggregated across media | 257 |
+| `& Related Fandoms` | entity plus its spin-offs / related works | 65 |
+
+A parent **franchise** is not an umbrella for a property inside it.
+`Star Wars - All Media Types` is not the denominator for The Mandalorian, and
+A Song of Ice and Fire is not the denominator for House of the Dragon — those
+measure a different entity's affinity.
+
+### Two corrections to this item's own premise
+
+The section above listed **three** IPs sitting below an available umbrella
+(One Piece, The Witcher, Spy x Family). Checking against the census, both halves
+of that were wrong.
+
+**1. Avatar was never below its umbrella.** It is measured at
+`Avatar: The Last Airbender & Related Fandoms` (64,594) — already the broadest
+tag. It only *looked* wrong because `measured_at_umbrella_level` read `false`.
+
+**2. Doctor Who is a fourth case, and the second-largest.** Measured at
+`Doctor Who (2005)` (61,401) with `Doctor Who & Related Fandoms` (109,819) sitting
+unused — a **+79%** denominator gap that nobody had noticed.
+
+Both trace to one bug: `is_umbrella` was `name.endswith(" - All Media Types")`,
+so **65 of 322 umbrellas — 20% — were flagged as non-umbrella.** The flag that
+existed to make level problems visible was hiding one of them.
+
+That is the more useful lesson than the level rule itself. A verification column
+that is silently wrong is worse than no column, because it converts an open
+question into a settled-looking answer. `platforms_present` did the same thing
+for five months.
+
+### What changes
+
+| IP | Was | Now | Denominator change |
+|---|---|---|---|
+| The Witcher | `Wiedźmin \| The Witcher (Video Game)` 10,538 | `… - All Media Types` 42,482 | **+303%** |
+| Doctor Who | `Doctor Who (2005)` 61,401 | `Doctor Who & Related Fandoms` 109,819 | **+79%** |
+| Spy x Family | `SPY x FAMILY (Manga)` 8,053 | `… - All Media Types` 8,899 | +10.5% |
+| One Piece | `One Piece (Anime & Manga)` 99,968 | `… - All Media Types` 101,017 | +1.0% |
+
+Already compliant: LotR, Dune, Percy Jackson, Avatar. Every other IP has no
+umbrella — the level is moot.
+
+**One Piece is switched despite a 1.0% gap.** Applying the rule only where the
+gap looks large would make the level a post-hoc judgement, and *"we used what we
+already had unless it looked wrong"* is not a rule anyone can check. The cost of
+uniformity here is four bookmarklet clicks.
+
+### Re-capture is required, not optional
+
+Rule 4 of the methodology is that numerator and denominator share scope. Moving
+the denominator to the umbrella while the numerator still comes from a
+medium-specific filter would produce a ratio between two different populations —
+a subtler version of exactly the mistake this whole plan exists to prevent.
+
+So all four IPs need their crossover count re-captured against the umbrella tag.
+Both halves move together; the view picks the newest capture per IP, so old
+medium-level rows stay in the raw table and simply stop being selected.
+
+**Expect the rates to FALL for The Witcher and Doctor Who.** An umbrella pulls in
+media whose D&D affinity is lower than the flagship's, so denominators grow
+faster than numerators. The Witcher's 0.228% will drop substantially. That is a
+scope correction, not a decline — and it must not be read as one.
+
+### Series break
+
+Sep 2, 2026 umbrella-level captures are not comparable with earlier
+medium-level ones for these four IPs. This compounds the break already recorded
+in `docs/fanfic_methodology.md`: pre-Sep-2 AO3 data was already unusable for
+trends because of the stale-tag zeros.
+
+### No metatag-inflation risk from this change
+
+Worth stating explicitly, since umbrellas *are* metatags and metatag inflation
+was the day's worst bug. Inflation happens when the two tags being intersected
+are ancestor/descendant of each other — D&D is a metatag of Baldur's Gate, so
+`D&D + BG3` returned all of BG3. None of these four umbrellas has any ancestry
+relationship with the D&D tag, so intersecting them is a genuine intersection.
+`fanfic_capture_guard` will confirm this at capture time regardless.
