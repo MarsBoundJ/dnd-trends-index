@@ -37,9 +37,43 @@ from dataclasses import dataclass
 @dataclass(frozen=True)
 class FanficCanonical:
     ip_name: str               # MUST match seed_ub_candidate_ips.py
-    ao3_tag: str               # AO3 canonical tag name (URL-encoded form)
+    ao3_tag: str               # AO3 CANONICAL tag — see warning below
     ffn_id: int | None = None  # FFN fandom ID (int) or None if unknown
     notes: str = ""
+    # False when AO3 cannot filter on this tag at all (tag exists but is not
+    # marked "common"). Such an IP is UNMEASURABLE, not zero — the generator
+    # skips it so it can never be recorded as a measured zero.
+    ao3_filterable: bool = True
+    # Date the ao3_tag was last confirmed canonical + filterable on AO3.
+    ao3_verified_on: str = ""
+
+
+# ────────────────────────────────────────────────────────────────────────
+# ⚠️  ao3_tag MUST be AO3's CANONICAL tag, never a synonym.
+#
+# AO3 merges tags over time. A synonym still resolves when you *browse*
+# /tags/<name>, so it looks perfectly healthy — but passed to
+# work_search[other_tag_names] it matches nothing and the filter returns
+# 0 results with no error. A stale tag is therefore indistinguishable
+# from "this IP has no D&D crossover fic".
+#
+# That is not theoretical. On Sep 2, 2026, 4 of 26 seed tags (15%) had
+# become synonyms and were all silently reporting 0:
+#     The Witcher    0 -> 48
+#     Jujutsu Kaisen 0 -> 54
+#     Demon Slayer   0 -> 24
+#     Spy x Family   0 ->  2
+# Every failure was an English-only name whose canonical carries the
+# original-language title (Wiedźmin, 呪術廻戦, 鬼滅の刃) or a suffix.
+#
+# To verify a tag, open https://archiveofourown.org/tags/<tag> and look for:
+#   - a "Mergers" section  -> it is a SYNONYM; use the canonical it names
+#   - "has not been marked common and can't be filtered on" -> set
+#     ao3_filterable=False; the IP cannot be measured at all
+#   - neither          -> canonical and filterable; stamp ao3_verified_on
+#
+# Treat any 0 from a capture as UNVERIFIED until the tag is re-checked.
+# ────────────────────────────────────────────────────────────────────────
 
 
 # ────────────────────────────────────────────────────────────────────────
@@ -91,7 +125,13 @@ MAPPINGS: list[FanficCanonical] = [
         ip_name="Severance",
         ao3_tag="Severance (TV 2022)",
         ffn_id=None,
-        notes="Apple TV+; AO3 fandom is small but present.",
+        ao3_filterable=False,
+        ao3_verified_on="2026-09-02",
+        notes="UNMEASURABLE on AO3: the tag exists but AO3 reports it 'has not "
+              "been marked common and can't be filtered on (yet)', so "
+              "other_tag_names returns 0 regardless of how much fic exists. "
+              "That is absence of measurement, NOT a measured zero. Re-check "
+              "once AO3 wranglers mark it common.",
     ),
 
     # ─── Video games (CRPG / FromSoft / mainstream gaming) ────────────────
@@ -109,9 +149,13 @@ MAPPINGS: list[FanficCanonical] = [
     ),
     FanficCanonical(
         ip_name="The Witcher",
-        ao3_tag="The Witcher (Video Games)",
+        ao3_tag="Wiedźmin | The Witcher (Video Game)",
         ffn_id=None,
-        notes="Three umbrella tags exist (books, Netflix, video games).",
+        ao3_verified_on="2026-09-02",
+        notes="Three umbrella tags exist (books, Netflix, video games). "
+              "'The Witcher (Video Games)' is a SYNONYM of this canonical and "
+              "silently returned 0; corrected Sep 2 2026 -> 48 works. Note the "
+              "canonical is singular 'Video Game'.",
     ),
     FanficCanonical(
         ip_name="Dark Souls",
@@ -159,15 +203,20 @@ MAPPINGS: list[FanficCanonical] = [
     ),
     FanficCanonical(
         ip_name="Jujutsu Kaisen",
-        ao3_tag="Jujutsu Kaisen (Manga)",
+        ao3_tag="呪術廻戦 | Jujutsu Kaisen (Anime & Manga)",
         ffn_id=None,
-        notes="",
+        ao3_verified_on="2026-09-02",
+        notes="'Jujutsu Kaisen (Manga)' is a SYNONYM of this canonical and "
+              "silently returned 0; corrected Sep 2 2026 -> 54 works.",
     ),
     FanficCanonical(
         ip_name="Demon Slayer",
-        ao3_tag="Kimetsu no Yaiba | Demon Slayer",
+        ao3_tag="鬼滅の刃 | Demon Slayer: Kimetsu no Yaiba (Anime & Manga)",
         ffn_id=None,
-        notes="",
+        ao3_verified_on="2026-09-02",
+        notes="'Kimetsu no Yaiba | Demon Slayer' is a SYNONYM of this canonical "
+              "and silently returned 0; corrected Sep 2 2026 -> 24 works. The "
+              "'&' encodes as %26 in other_tag_names (the *a* form is tag_id-only).",
     ),
     FanficCanonical(
         ip_name="One Piece",
@@ -177,9 +226,12 @@ MAPPINGS: list[FanficCanonical] = [
     ),
     FanficCanonical(
         ip_name="Spy x Family",
-        ao3_tag="SPY x FAMILY",
+        ao3_tag="SPY x FAMILY (Manga)",
         ffn_id=None,
-        notes="AO3 uses the all-caps stylization.",
+        ao3_verified_on="2026-09-02",
+        notes="AO3 uses the all-caps stylization. Bare 'SPY x FAMILY' is a "
+              "SYNONYM of this canonical and silently returned 0; corrected "
+              "Sep 2 2026 -> 2 works.",
     ),
 
     # ─── Literature (smaller AO3 fandoms but signal-rich) ─────────────────
