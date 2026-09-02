@@ -13,22 +13,51 @@ is about freshness.
 
 ### 1. Published artifacts are not reproducible from the repo
 
-`arcane/public/reports/ip_deep_dive.html` was last committed in May (#73). Its
-apparent source, `pitch/report/trusight_breakdowns_scratch.md`, was edited
-Sep 2 (#103). No build script anywhere references `ip_deep_dive` — only
-`arcane/src/app/page.tsx`, which links to it. Text counts between the two do not
-reconcile (`naval`: 24 in the markdown, 34 in the HTML).
+> **Corrected Sep 2, 2026.** This section first claimed the published page could
+> not be regenerated from the repo, citing text counts that "do not reconcile".
+> That was wrong twice over, and the way it was wrong is worth keeping.
+>
+> The counts came from `grep -c`, which counts *matching lines* — and markdown
+> paragraphs are single long lines while pandoc wraps its output. Comparing that
+> number across two formats measures line-wrapping, not content. Counting actual
+> occurrences, the two files agree to within the three commits the HTML is
+> behind. **The artifact is fully reproducible.**
+>
+> Which is the same error the reports themselves made: a number that was real,
+> attached to a claim it did not support.
 
-**Nobody can regenerate the published page from this repository.** That is the
-root problem. Everything else is a consequence.
+`arcane/public/reports/ip_deep_dive.html` is pandoc output — the file says so
+(`<meta name="generator" content="pandoc" />`) — built from
+`pitch/report/trusight_breakdowns_scratch.md` by `make_html.ps1`, which passes
+`--metadata 'pagetitle=IP Deep Dive: 19 Licensing Candidates'`, matching the
+HTML `<title>` exactly.
 
-There are currently three parallel pipelines:
+The real defect is narrower and entirely fixable:
+
+1. The script wrote `trusight_breakdowns.html`; the site serves
+   `ip_deep_dive.html`. **The rename was a manual step recorded nowhere.**
+2. So the published page is whatever someone last copied by hand — a May build
+   (#73), while the source was corrected in September (#103).
+3. Nothing in the artifact said which source or which commit it came from, so
+   nobody could tell it was stale by looking at it.
+
+**The pipeline was reproducible; the recipe was not written down.** The wrong
+prose is still live not because it cannot be rebuilt, but because rebuilding
+required knowledge that existed only in someone's memory.
+
+Both halves are now closed: `make_html.ps1` publishes to
+`arcane/public/reports/ip_deep_dive.html` directly, and stamps a provenance
+footer (`docs/provenance_convention.md`) naming source, commit SHA, build time
+and rebuild command. `make_html.bat` is now a thin wrapper rather than a second
+copy of the same build.
+
+Three pipelines remain, and consolidating them is still the goal:
 
 | Pipeline | Input | Output |
 |---|---|---|
 | `pitch/report/build_*.js` (`docx` lib) | values hardcoded in JS | `.docx` → PDF |
-| `pitch/report/make_html.ps1` (pandoc) | `*_scratch.md` + `pdf_style.css` | self-contained HTML |
-| hand-copied | unknown | `arcane/public/reports/*` |
+| `pitch/report/make_html.ps1` (pandoc) | `*_scratch.md` + `pdf_style.css` | HTML → published |
+| the other six PDFs | unestablished | `arcane/public/reports/*` |
 
 ### 2. Data is embedded in generator source
 
@@ -234,10 +263,11 @@ will tell us the real per-report cost.
 
 ## Open questions
 
-1. **Where does `ip_deep_dive.html` actually come from?** Unresolved. Its text
-   does not reconcile with the markdown, and no script builds it. Worth ten
-   minutes before the port, since the answer determines whether the markdown is
-   the source of truth or another artifact.
+1. ~~Where does `ip_deep_dive.html` come from?~~ **Answered Sep 2, 2026** —
+   pandoc, from `trusight_breakdowns_scratch.md`, via `make_html.ps1`, with a
+   hand-copy step that is now automated. The markdown is the source of truth,
+   so the port starts there. Provenance of the other six reports is still
+   unestablished.
 2. **Is the `.docx` path still required?** If WotC wants Word files, that is a
    separate output and this design does not replace it.
 3. **Auth.** Reports are currently public static files; the app uses next-auth.
