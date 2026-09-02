@@ -144,14 +144,40 @@
       : decodeURIComponent(otherTagsParam);
   }
 
-  // ── Sanity guard: refuse to save unfiltered site-wide counts ────────────
-  // The original print_fanfic_capture_urls.py used the wrong AO3 URL
-  // pattern, which AO3 silently treated as no-filter — bookmarklet saw
-  // 15M counts (AO3 site-wide). Catch this loudly before saving:
-  //   - if no canonical tag was detected (page H2 didn't contain "in <tag>")
-  //   - AND the work count is unrealistically high (>100k)
-  // both true → abort with explanation. A real D&D × IP crossover count
-  // is in the hundreds-to-low-thousands range.
+  // ── Sanity guard 1: the IP filter must actually be present ──────────────
+  // `work_search[other_tag_names]` IS the D&D × IP filter — it is what makes
+  // this a crossover query rather than "every D&D crossover work on AO3".
+  // AO3 silently ignores a missing/malformed filter and returns the site-wide
+  // set, with no visible error, so an unfiltered page looks exactly like a
+  // filtered one.
+  //
+  // This is not hypothetical: on Sep 1, 2026 a capture from a hand-navigated
+  // D&D tag page (other_tag_names empty) stored 10,886 as if it were one IP's
+  // crossover count — the site-wide D&D total. Guard 2 below missed it because
+  // 10,886 sits under the 100k threshold.
+  //
+  // Deliberately strict: refuse whenever the filter is absent, at any count.
+  // A false refusal costs one re-click; a false accept silently poisons the
+  // composite with a number ~1000x the real scale. Capture URLs from
+  // `scripts/print_fanfic_capture_urls.py` always carry this param.
+  const ipFilter = (params.get('work_search[other_tag_names]') || '').trim();
+  if (!ipFilter) {
+    log(
+      '⚠️ No IP filter on this search — nothing saved.<br>' +
+      `This page shows <b>${work_count.toLocaleString()}</b> works, which is ` +
+      'every D&D crossover on AO3, not a D&D × IP count.<br>' +
+      'AO3 drops a missing filter silently, so the page looks normal.<br>' +
+      'Use a deep-link from <code>print_fanfic_capture_urls.py</code> ' +
+      '(it carries <code>other_tag_names</code> + <code>_arcane_ip</code>).'
+    );
+    close(20000);
+    return;
+  }
+
+  // ── Sanity guard 2: refuse implausibly high counts ──────────────────────
+  // Kept as a backstop for the case where a filter IS present but AO3 still
+  // returned something site-wide-shaped. A real D&D × IP crossover count is
+  // in the hundreds-to-low-thousands range.
   if (!canonical && work_count > 100000) {
     log(
       '⚠️ Likely unfiltered AO3 search.<br>' +

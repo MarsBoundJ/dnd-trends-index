@@ -167,7 +167,12 @@ const rows = [];
 for (const jsFile of files) {
   const jsPath = path.join(SCRIPTS_DIR, jsFile);
   const txtPath = jsPath.replace(/\.js$/, '.txt');
-  const src = fs.readFileSync(jsPath, 'utf8');
+  // Normalise CRLF → LF on read. Template-literal contents are preserved
+  // byte for byte, so on a Windows checkout (git autocrlf) the \r\n inside a
+  // multi-line template would be encoded as %0D%0A and the generated .txt
+  // would differ purely because of the checkout's line endings. Normalising
+  // here keeps output identical across platforms.
+  const src = fs.readFileSync(jsPath, 'utf8').replace(/\r\n/g, '\n');
 
   const hazards = asiHazards(src);
   const packed = pack(src);
