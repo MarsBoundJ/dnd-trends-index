@@ -36,6 +36,49 @@ bad row silently rescales the whole dimension.**
 
 ---
 
+## The media listing pages change the shape of this plan
+
+**Confirmed Sep 2, 2026:** `https://archiveofourown.org/media/<Category>/fandoms`
+lists fandoms with work counts, and all our IPs appear. Five pages cover the set:
+
+```
+/media/Video%20Games/fandoms
+/media/Anime%20*a*%20Manga/fandoms
+/media/TV%20Shows/fandoms
+/media/Books%20*a*%20Literature/fandoms
+/media/Movies/fandoms
+```
+
+(`*a*` for `&`, AO3's usual convention.)
+
+If those pages list **canonical fandoms only** — AO3's convention, since synonyms
+redirect rather than getting their own listing — then five page loads supply both
+the work item C denominators **and** a canonical-tag registry for work item A,
+turning per-capture verification into a cheap pre-flight audit.
+
+Coverage under that approach:
+
+| Failure mode | Caught by |
+|---|---|
+| 1 — unfiltered search | Sep-1 `other_tag_names` guard (shipped) |
+| 2 — metatag inflation | ratio ≈ 1.0 (work item C) |
+| 3 — synonym tag | absent from listing (pre-flight audit) |
+| 4 — non-common tag | absent from listing (pre-flight audit) |
+
+All four, with no DOM-reading engineering. That would demote work item A from
+"the plan" to belt-and-braces.
+
+**OPEN — verify before relying on this:** do the listings carry canonicals only?
+Test: the Video Games page should show `Wiedźmin | The Witcher (Video Game)` and
+**not** `The Witcher (Video Games)`; Anime & Manga should show
+`SPY x FAMILY (Manga)` and not bare `SPY x FAMILY`. If synonyms also appear, the
+listings are a denominator table only and read-back verification stays necessary.
+
+Secondary benefit: ~5 page loads instead of 25+ is materially less load on AO3,
+which matters given the human-wielded constraint below.
+
+---
+
 ## Work item A — read-back filter verification
 
 ### The gap
