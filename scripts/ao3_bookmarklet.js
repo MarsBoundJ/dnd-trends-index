@@ -223,5 +223,36 @@
     }
   }
 
+  // ── Cross-tab sync ──────────────────────────────────────────────────────
+  // A capture round has ~25 AO3 tabs open at once, each with its own panel.
+  // localStorage is shared across them, but a panel holds whatever it rendered
+  // when it was drawn — so removing an IP in one tab left it visible in the
+  // other 24, and each of those stale panels was one click away from sending a
+  // batch the user thought they had edited.
+  //
+  // The `storage` event fires in every OTHER tab of the origin when the stash
+  // changes, and deliberately NOT in the tab that wrote it (that one re-renders
+  // directly). So this is exactly the right hook: one listener per panel, and
+  // every open panel converges on the same batch.
+  //
+  // It covers sending too. When one tab sends and clears, every other panel
+  // empties rather than continuing to display rows that are already in BigQuery.
+  //
+  // Re-clicking the bookmarklet in a tab replaces the panel, so the previous
+  // handler is removed first — otherwise each click would leave a listener
+  // behind, closed over a detached panel, re-rendering something nobody sees.
+  if (window.__ao3BatchSync) {
+    window.removeEventListener('storage', window.__ao3BatchSync);
+  }
+  window.__ao3BatchSync = (e) => {
+    if (e.key && e.key !== STASH) return;      // e.key is null on clear()
+    if (!document.body.contains(ui)) return;   // panel closed in this tab
+    notice = load().length
+      ? '<span style="color:#d9a64a">Batch updated in another tab.</span>'
+      : '<span style="color:#d9a64a">Batch cleared or sent in another tab.</span>';
+    render();
+  };
+  window.addEventListener('storage', window.__ao3BatchSync);
+
   render();
 })();
