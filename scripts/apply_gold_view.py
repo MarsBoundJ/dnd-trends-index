@@ -88,14 +88,34 @@ def main() -> int:
 
     print("view created.")
 
-    # Row count is the meaningful check for a guard view: 0 == nothing flagged.
-    n = list(client.query(f"SELECT COUNT(*) AS n FROM `{view}`").result())[0].n
-    print(f"\nrows currently returned: {n}")
-    if n == 0:
-        print("  clean — no findings against current data.")
+    # For a guard view the meaningful signal is the SEVERITY breakdown, not the
+    # row count. Guards legitimately emit INFO rows by design — this one reports
+    # NO_FANDOM_TOTAL for every IP whose fandom total is not yet loaded — so a
+    # bare count reads as "32 problems" when the real answer is "none".
+    try:
+        rows = list(client.query(f"""
+            SELECT severity, COUNT(*) AS n
+            FROM `{view}` GROUP BY severity
+        """).result())
+        counts = {r.severity: r.n for r in rows}
+    except Exception:
+        n = list(client.query(f"SELECT COUNT(*) AS n FROM `{view}`").result())[0].n
+        print(f"\nrows returned: {n}")
+        return 0
+
+    crit = counts.get("CRITICAL", 0)
+    warn = counts.get("WARN", 0)
+    info = counts.get("INFO", 0)
+    print(f"\nfindings: CRITICAL={crit}  WARN={warn}  INFO={info}")
+
+    if crit == 0 and warn == 0:
+        print("  CLEAN — nothing actionable flagged against current data.")
+        if info:
+            print(f"  ({info} INFO row(s) — hygiene/coverage, expected.)")
     else:
-        print(f"  {n} finding(s). Inspect with:")
-        print(f"    SELECT * FROM `{view}` ORDER BY severity, work_count DESC")
+        print("  ACTION REQUIRED. Inspect with:")
+        print(f"    SELECT * FROM `{view}`\n"
+              f"    WHERE severity IN ('CRITICAL','WARN') ORDER BY severity, work_count DESC")
     return 0
 
 
