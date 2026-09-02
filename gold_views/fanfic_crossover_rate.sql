@@ -44,6 +44,29 @@
 -- is explicitly not the default. Rank within an evidence tier rather than
 -- shrinking across tiers.
 --
+-- ── THE TAXONOMIC LEVEL RULE (work item D, decided Sep 2, 2026) ───────
+-- Measure at the BROADEST AO3 umbrella for the SAME LICENSABLE ENTITY.
+-- AO3 publishes umbrellas under two suffixes and both count:
+--     "<Name> - All Media Types"   same entity across media
+--     "<Name> & Related Fandoms"   entity plus its spin-offs
+--
+-- A parent FRANCHISE is not an umbrella for a property inside it. "Star Wars -
+-- All Media Types" is not the denominator for The Mandalorian, and A Song of
+-- Ice and Fire is not the denominator for House of the Dragon — those would
+-- measure a different entity's affinity, not this one's.
+--
+-- The rule is applied wherever an umbrella exists, INCLUDING where the gap is
+-- trivial (One Piece moved 99,968 -> 101,017, +1.0%). Applying it only where
+-- the gap looked large would make the level a post-hoc judgement call, and
+-- "we used whatever we already had unless it looked wrong" is not a rule
+-- anyone can check.
+--
+-- measured_at_umbrella_level is derived from the TAG STRING here, not read
+-- from ao3_fandom_totals.is_umbrella. That column was wrong for 65 of 322
+-- umbrellas (every "& Related Fandoms" one) in every partition written before
+-- Sep 2, 2026. Deriving it makes historical snapshots read correctly without
+-- rewriting them.
+--
 -- Scope: AO3 only. FFN carries no fandom totals and is excluded from scoring
 -- (see work item E).
 -- ═══════════════════════════════════════════════════════════════════════
@@ -73,7 +96,9 @@ joined AS (
     c.platform_canonical AS ao3_tag,
     c.crossover_works,
     t.fandom_total,
-    t.is_umbrella AS measured_at_umbrella_level,
+    (ENDS_WITH(c.platform_canonical, ' - All Media Types')
+     OR ENDS_WITH(c.platform_canonical, '& Related Fandoms'))
+      AS measured_at_umbrella_level,
     c.scraped_at AS crossover_captured_at,
     t.fetch_date AS fandom_total_as_of
   FROM latest_capture c

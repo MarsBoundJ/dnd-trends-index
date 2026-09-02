@@ -57,7 +57,39 @@ CATEGORIES = [
     "Cartoons *a* Comics *a* Graphic Novels",
 ]
 
-UMBRELLA_SUFFIX = " - All Media Types"
+# AO3 publishes umbrellas under TWO suffixes, not one.
+#
+#   "<Name> - All Media Types"   same entity, aggregated across media (257 tags)
+#   "<Name> & Related Fandoms"   entity plus its spin-offs/related works (65 tags)
+#
+# Only the first was recognised until Sep 2, 2026, so 65 umbrellas — 20% of all
+# 322 — were flagged is_umbrella=False. That is not cosmetic: it hid the fact
+# that Doctor Who was being measured at "Doctor Who (2005)" (61,401 works) while
+# "Doctor Who & Related Fandoms" (109,819) sat unused, and it mislabelled Avatar
+# as non-umbrella when it was already correctly at the broadest level.
+#
+# The two forms are NOT interchangeable and downstream consumers may care which
+# one they got, so the distinction is preserved in umbrella_kind rather than
+# collapsed into the boolean.
+UMBRELLA_SUFFIXES = (" - All Media Types", "& Related Fandoms")
+
+
+def umbrella_kind(name: str) -> str:
+    """'all_media' | 'related_fandoms' | '' — '' means not an umbrella."""
+    if name.endswith(" - All Media Types"):
+        return "all_media"
+    if name.endswith("& Related Fandoms"):
+        return "related_fandoms"
+    return ""
+
+
+def umbrella_base(name: str) -> str:
+    """The franchise stem, or '' if name is not an umbrella."""
+    for suf in UMBRELLA_SUFFIXES:
+        if name.endswith(suf):
+            return name[: -len(suf)].strip()
+    return ""
+
 
 # Entries look like:  <a class="tag" href="/tags/Foo/works">Foo</a>&nbsp;(1,234)
 ENTRY_RE = re.compile(
@@ -108,7 +140,7 @@ def fetch_category(session, category: str) -> str:
 
 # ── Franchise grouping ──────────────────────────────────────────────────────
 # A franchise is a SET of tags, not a tag. Where AO3 publishes an umbrella
-# ("<Name> - All Media Types") its wranglers have already done the entity
+# ("- All Media Types" or "& Related Fandoms") its wranglers have already done the entity
 # resolution and the umbrella IS the union — use it. Children are detected by
 # name prefix.
 #
@@ -120,9 +152,9 @@ def group_franchises(rows: list[dict]) -> dict[str, dict]:
     franchises: dict[str, dict] = {}
 
     for name, row in by_name.items():
-        if not name.endswith(UMBRELLA_SUFFIX):
+        base = umbrella_base(name)
+        if not base:
             continue
-        base = name[: -len(UMBRELLA_SUFFIX)]
         children = [
             r for n, r in by_name.items()
             if n != name and (n == base or n.startswith(base + " ") or n.startswith(base + "("))

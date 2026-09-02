@@ -115,9 +115,15 @@ MAPPINGS: list[FanficCanonical] = [
     ),
     FanficCanonical(
         ip_name="Doctor Who",
-        ao3_tag="Doctor Who (2005)",
+        ao3_tag="Doctor Who & Related Fandoms",
         ffn_id=None,
-        notes="Multiple Doctor Who eras — using new-Who as primary.",
+        ao3_verified_on="2026-09-02",
+        notes="LEVEL SWITCH Sep 2 2026 (work item D): was 'Doctor Who (2005)' "
+              "(61,401 works, new-Who only). The umbrella carries 109,819 — it "
+              "includes Classic Who and the spin-offs, which is the entity a "
+              "licence would actually cover. This case was INVISIBLE until the "
+              "same day, because is_umbrella only recognised '- All Media Types' "
+              "and missed the '& Related Fandoms' form entirely.",
     ),
     FanficCanonical(
         ip_name="House of the Dragon",
@@ -155,7 +161,7 @@ MAPPINGS: list[FanficCanonical] = [
     ),
     FanficCanonical(
         ip_name="The Witcher",
-        ao3_tag="Wiedźmin | The Witcher (Video Game)",
+        ao3_tag="Wiedźmin | The Witcher - All Media Types",
         ffn_id=None,
         ao3_verified_on="2026-09-02",
         notes="Three umbrella tags exist (books, Netflix, video games). "
@@ -163,9 +169,9 @@ MAPPINGS: list[FanficCanonical] = [
               "silently returned 0; corrected Sep 2 2026 -> 24 works (NOT 48 — "
               "that was April's value under the older, broader tag AO3 has since "
               "re-wrangled). Note the canonical is singular 'Video Game'. "
-              "UMBRELLA AVAILABLE: 'Wiedźmin | The Witcher - All Media Types' "
-              "(42,481 vs this tag's 10,538) — left at medium level; switching "
-              "is the work item D decision, not a tag correction.",
+              "LEVEL SWITCH Sep 2 2026 (work item D): was "
+              "'Wiedźmin | The Witcher (Video Game)' at 10,538 works — a QUARTER "
+              "of the 42,482-work franchise. The largest level gap in the set.",
     ),
     FanficCanonical(
         ip_name="Dark Souls",
@@ -233,25 +239,26 @@ MAPPINGS: list[FanficCanonical] = [
     ),
     FanficCanonical(
         ip_name="One Piece",
-        ao3_tag="One Piece (Anime & Manga)",
+        ao3_tag="One Piece - All Media Types",
         ffn_id=None,
         ao3_verified_on="2026-09-02",
-        notes="Bare 'One Piece' was NOT the canonical; corrected Sep 2 2026 from "
-              "the fandom listing (99,964 works). UMBRELLA AVAILABLE: "
-              "'One Piece - All Media Types' (101,013) — left at medium level to "
-              "preserve the existing measurement scope. Switching to the umbrella "
-              "is the work item D level decision, not a tag correction.",
+        notes="Bare 'One Piece' was NOT the canonical. LEVEL SWITCH Sep 2 2026 "
+              "(work item D): was 'One Piece (Anime & Manga)' at 99,968. The "
+              "umbrella is 101,017 — only +1.0%, so this switch changes almost "
+              "nothing numerically. It is made anyway, because the rule is "
+              "'umbrella where AO3 provides one' and applying it only where the "
+              "gap looks large would make the level a post-hoc judgement call "
+              "rather than a rule.",
     ),
     FanficCanonical(
         ip_name="Spy x Family",
-        ao3_tag="SPY x FAMILY (Manga)",
+        ao3_tag="SPY x FAMILY - All Media Types",
         ffn_id=None,
         ao3_verified_on="2026-09-02",
         notes="AO3 uses the all-caps stylization. Bare 'SPY x FAMILY' is a "
               "SYNONYM of this canonical and silently returned 0; corrected "
-              "Sep 2 2026 -> 2 works. UMBRELLA AVAILABLE: 'SPY x FAMILY - All Media Types' "
-              "(8,898 vs this tag's 8,052) — left at medium level; switching is "
-              "the item D decision.",
+              "Sep 2 2026 -> 2 works. LEVEL SWITCH same day (work item D): was "
+              "'SPY x FAMILY (Manga)' at 8,053; umbrella is 8,899 (+10.5%).",
     ),
 
     # ─── Literature (smaller AO3 fandoms but signal-rich) ─────────────────
