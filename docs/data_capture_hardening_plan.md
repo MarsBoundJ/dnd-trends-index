@@ -347,6 +347,100 @@ quietly mislead the next person who reads it — including us.
 
 ---
 
+## Work item F — Wattpad: decided against, and say so in the code
+
+Wattpad is **fully plumbed but was never captured**. `gold_data.fanfic_crossover_proxy`
+carries `wattpad_work_count` and `wattpad_platform_score`, the bouncer's
+`/system/fanfic/ingest-crossover-count` route accepts `'wattpad'` as a valid
+platform, and the confidence scale is defined around it (`HIGH: 3 platforms
+present (AO3 + FFN + Wattpad)`). The entire recorded rationale is four words:
+*"no captures planned."*
+
+Four places in the view say "future Wattpad", which reads as a roadmap item
+rather than a rejected option. It should say what was actually decided.
+
+### Assessment (Sep 2, 2026): not a viable source for this metric
+
+The metric needs four things from a platform:
+
+| Requirement | AO3 | Wattpad |
+|---|---|---|
+| Canonical fandom taxonomy | community tag-wrangled | freeform hashtags |
+| Way to express an intersection | `work_search[other_tag_names]` | no real equivalent |
+| Reliably exposed totals | `"N Works in X"` header | infinite scroll, no total |
+| Volume of D&D crossover fic | sufficient | thin — skews teen / romance / mobile |
+
+**Row 1 is the disqualifier, and it is exactly what Sep 1–2 taught us.** On
+Wattpad `Baldur's Gate` might be `#bg3`, `#baldursgate`, `#baldursgate3`,
+`#BaldursGateIII` — with **no canonical to correct toward**, because Wattpad has
+no tag-wrangling process. Every failure mode we just eliminated on AO3 exists
+there permanently and by design.
+
+We could fix the AO3 synonym bug only because AO3 *told us* the canonical name,
+and could audit in bulk only because `/media/<Category>/fandoms` exists. Wattpad
+offers neither. Capturing it would reintroduce unverifiable counts into a
+pipeline we just made verifiable.
+
+### Where it would deserve a second look
+
+As a **demographic reach** signal, not a crossover count — Wattpad's audience
+skews younger and more female than AO3's, so presence there says something real
+about market breadth. That is a different metric with a different definition, and
+capturing `work_count` does not deliver it.
+
+### Action
+
+Documentation only. Replace "future Wattpad" phrasing with the decision and its
+reasoning. Leave the columns and the bouncer's `valid_platforms` alone — they
+cost nothing and keep the option open if the demographic-reach framing is ever
+wanted.
+
+---
+
+## Work item G — `platforms_present` is degenerate (a real behaviour bug)
+
+`per_ip_aggregated` applies the platform allow-list **before** counting
+platforms:
+
+```sql
+COUNT(DISTINCT platform) AS platforms_present,
+...
+FROM per_platform_normalized
+WHERE platform IN ('ao3')
+```
+
+So `platforms_present` is always 1. Verified against the live view: **all 24 IPs
+return `platforms_present = 1`, `platforms_list = 'ao3'`.**
+
+The documented confidence scale is:
+
+```
+HIGH:   3 platforms present (AO3 + FFN + Wattpad)
+MEDIUM: 2 platforms present
+LOW:    1 platform present
+NONE:   0 platforms
+```
+
+**HIGH and MEDIUM are unreachable by construction.** The scale advertises four
+tiers and can only ever emit two — and since every IP scores LOW, the dimension
+carries no information at all.
+
+### The fix, and the question it raises
+
+Count platforms **captured** rather than platforms **scored**: compute
+`platforms_present` over `latest_per_pair` before the allow-list, so an IP with
+both AO3 and FFN data reads MEDIUM even while FFN is excluded from the score.
+That is arguably what the tier was always meant to express — *how much
+corroboration exists*, not *how many platforms fed the number*.
+
+Note this interacts with work item E: if FFN returns as a corroboration flag,
+MEDIUM becomes reachable without Wattpad, and the tier starts doing real work.
+
+**Not a comments-only change** — it alters view output, so it needs deciding
+deliberately rather than folding into a documentation pass.
+
+---
+
 ## Constraints (non-negotiable)
 
 - **Human-wielded by design.** AO3's ToS forbids automated scraping. The
