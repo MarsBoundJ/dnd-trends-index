@@ -24,12 +24,12 @@
 --   WARN     — plausible but unusual; verify the tag before relying on it
 --   INFO     — hygiene
 --
--- Coverage note: the fandom-total join currently resolves only for tags present
--- in dnd_trends_raw.ao3_tag_counts (23 D&D-native tags — it covers BG3, which is
--- the case that mattered). Coverage widens automatically once the AO3 fandom
--- listing (scripts/ao3_fandom_listing.py) is promoted to a Cloud Function and
--- lands fandom totals for the full seed list. The magnitude and zero checks need
--- no fandom totals and work across every IP today.
+-- Coverage: the fandom-total join reads dnd_trends_raw.ao3_fandom_totals, the full
+-- AO3 canonical census (~59k fandoms, loaded weekly by
+-- cloud_functions/ao3_fandom_listing), falling back to ao3_tag_counts for tags the
+-- listing does not carry. Before that table existed the inflation check resolved
+-- for 1 of 26 AO3 IPs — a smoke detector wired to one room.
+-- The magnitude and zero checks need no fandom totals and cover every IP regardless.
 -- ═══════════════════════════════════════════════════════════════════════
 
 CREATE OR REPLACE VIEW `dnd-trends-index.gold_data.fanfic_capture_guard` AS
@@ -43,12 +43,31 @@ WITH latest AS (
   ) = 1
 ),
 
-fandom_totals AS (
-  -- Latest known total for each AO3 fandom tag we track.
+listing_totals AS (
+  -- PRIMARY source: the full AO3 canonical fandom census (~59k fandoms),
+  -- loaded weekly by cloud_functions/ao3_fandom_listing. A fandom is listed
+  -- under several media categories with the same count, so take one row per
+  -- fandom from the newest snapshot.
+  SELECT fandom AS tag_name, work_count AS fandom_total
+  FROM `dnd-trends-index.dnd_trends_raw.ao3_fandom_totals`
+  QUALIFY ROW_NUMBER() OVER (PARTITION BY fandom ORDER BY fetch_date DESC, work_count DESC) = 1
+),
+
+tag_totals AS (
+  -- FALLBACK: the 23 D&D-native tags tracked by cloud_functions/ao3_harvester.
+  -- Kept because it covers tags that are not fandoms in the listing sense, and
+  -- because it is the independent source that corroborated the BG3 artifact.
   SELECT tag_name, work_count AS fandom_total
   FROM `dnd-trends-index.dnd_trends_raw.ao3_tag_counts`
   WHERE tag_type = 'fandom'
   QUALIFY ROW_NUMBER() OVER (PARTITION BY tag_name ORDER BY fetch_date DESC) = 1
+),
+
+fandom_totals AS (
+  SELECT * FROM listing_totals
+  UNION ALL
+  SELECT t.* FROM tag_totals t
+  WHERE NOT EXISTS (SELECT 1 FROM listing_totals l WHERE l.tag_name = t.tag_name)
 ),
 
 platform_stats AS (
