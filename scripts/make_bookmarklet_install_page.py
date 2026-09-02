@@ -27,6 +27,12 @@ def git(*a):
 
 sha = git("log", "-1", "--format=%h", "--", "scripts/ao3_bookmarklet.txt")
 when = git("log", "-1", "--format=%ad", "--date=short", "--", "scripts/ao3_bookmarklet.txt")
+
+# Flag uncommitted source. Without this the footer cites the last COMMIT while
+# embedding newer working-tree content — provenance that is confidently wrong,
+# which the convention rates as worse than none because it gets believed.
+if git("status", "--porcelain", "scripts/ao3_bookmarklet.txt"):
+    sha += " + UNCOMMITTED CHANGES"
 # Date only, not second precision. The page is committed, so a timestamp that
 # changes on every run would dirty git each time it is regenerated — churn that
 # says nothing, since git already records when the file was committed. The

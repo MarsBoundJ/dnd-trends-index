@@ -137,9 +137,30 @@ findings AS (
   FROM enriched WHERE x_median >= 10 AND x_median < 50
 
   -- ── 4. Hygiene ──────────────────────────────────────────────────────
+  -- Severity raised INFO -> WARN and the message rewritten, Sep 2 2026.
+  --
+  -- The old text read "Widens when the AO3 listing scrape lands", which was
+  -- true when written and stopped being true the moment the census shipped.
+  -- ao3_fandom_totals now carries ~59,000 fandoms and the listings are
+  -- CANONICALS ONLY, so for an AO3 row this no longer means "census pending" —
+  -- it means the captured platform_canonical is NOT a canonical fandom tag.
+  --
+  -- That is a bad capture, and it is not cosmetic: fanfic_crossover_rate
+  -- filters on `fandom_total IS NOT NULL`, so such an IP DISAPPEARS FROM THE
+  -- RANKING ENTIRELY. It happened twice on Sep 2 — a stale bookmark captured
+  -- Avatar against the bare synonym `Avatar: The Last Airbender` (15 works)
+  -- instead of `Avatar: The Last Airbender & Related Fandoms` (60), and Avatar
+  -- silently vanished from 4th place. The guard saw it both times and filed it
+  -- as routine.
+  --
+  -- An IP dropping out of a leaderboard is exactly the silent absence this view
+  -- exists to catch. INFO was the wrong altitude for it.
   UNION ALL
-  SELECT *, 'NO_FANDOM_TOTAL', 'INFO',
-         'No fandom total available — the metatag-inflation check cannot run for this IP. Widens when the AO3 listing scrape lands.'
+  SELECT *, 'NO_FANDOM_TOTAL', 'WARN',
+         FORMAT('Tag "%s" is not a canonical AO3 fandom, so no total joins — '
+                || 'this IP is DROPPED from fanfic_crossover_rate. Re-capture '
+                || 'using a URL from print_fanfic_capture_urls.py.',
+                platform_canonical)
   FROM enriched WHERE fandom_total IS NULL AND platform = 'ao3'
 
   UNION ALL

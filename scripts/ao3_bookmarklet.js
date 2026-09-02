@@ -185,8 +185,15 @@
 
   async function send() {
     const rows = load();
-    if (!rows.length) return;
     const st = ui.querySelector('#__status');
+    if (!rows.length) {
+      // Say so. A silent return here reads EXACTLY like a failed send, and on
+      // Sep 2 that is how a successful batch got reported as broken: the first
+      // click sent nine rows and cleared the stash, the panel did not redraw,
+      // so the second click landed on an empty batch and did nothing visible.
+      st.innerHTML = '<b style="color:#d9a64a">Nothing to send — the batch is empty.</b>';
+      return;
+    }
     st.textContent = `Sending ${rows.length}…`;
     try {
       const resp = await fetch(`${BOUNCER}/system/fanfic/ingest-crossover-count`, {
@@ -199,7 +206,15 @@
         // Only clear on confirmed success. Clearing optimistically would lose a
         // whole round of captures to one transient failure.
         save([]);
-        st.innerHTML = `<b style="color:#5fdc7c">✅ Saved ${data.inserted}. Batch cleared.</b>`;
+        // RE-RENDER. Clearing the stash without redrawing leaves the full table
+        // on screen, so a successful send looks identical to a no-op — the one
+        // status line reporting it sits at the bottom of a scrolling panel and
+        // is usually out of view. The entire value of a batch table is that the
+        // screen reflects the state; it has to keep doing that after the send.
+        notice = `<b style="color:#5fdc7c">✅ Sent ${data.inserted} to BigQuery. Batch cleared.</b>`;
+        render();
+        ui.scrollTop = 0;   // notice renders at the top; make sure it is seen
+        return;
       } else {
         st.innerHTML = `<b style="color:#ff8888">⚠ Bouncer: ${esc(data.error || resp.status)}</b><br>Batch kept — retry.`;
       }
