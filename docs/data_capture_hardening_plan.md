@@ -653,3 +653,179 @@ semantics. See also the proportional-rate calibration band in the breakdowns not
 **Ahead of A–C.** Those build capture machinery; this decides which existing
 numbers are trustworthy and whether anything already sent to a counterparty needs
 correcting. Sequence it against D, which is the other blocking decision.
+
+---
+
+## Work item I — FINDINGS (investigated Sep 2, 2026)
+
+### Where the 0.040% came from: manual searches, May 2026
+
+Not a pipeline. The AO3 proportional rates were gathered by **hand in May 2026**
+and typed directly into `pitch/report/build_ip_licensing_report.js` and
+`pitch/report/trusight_breakdowns_scratch.md`. The report's own caption says so:
+
+> "AO3 search, May 2026. Both IPs above 0.90 baseline fit."
+
+No table, no script, no ingestion, not reproducible. `fanfic_crossover_counts`
+never held these numbers, which is why Demon Slayer could read `0` there while the
+breakdowns carried 0.040%.
+
+### Work item C already existed — with explicit numerator/denominator pairs
+
+The breakdowns record both halves, not just the ratio:
+
+| IP | crossover / total | rate |
+|---|---|---:|
+| Omniscient Reader's Viewpoint | 13 / 1,316 | 0.99% |
+| House of the Dragon | 44 / 34,294 | 0.13% |
+| Monster Hunter World | 1 / 124 | 0.81% |
+| Deep Rock Galactic | 2 / 67 | 2.99% |
+| Dwarf Fortress | 3 / 73 | 4.11% |
+| Demon Slayer | ~20 / 49,611 | 0.040% |
+
+It also already handles the multi-tag problem ad hoc — line 2486 reads
+"AO3 total works **(combined fandom)**", i.e. summing across tags for some IPs.
+
+### The paths AGREE where the level matches — and that validates the synonym fix
+
+| IP | May manual | Sep 2 bookmarklet | |
+|---|---:|---:|---|
+| Demon Slayer | ~20 (0.040% x 49,611) | **21** | match |
+| House of the Dragon | **44** | **15** | ~3x apart |
+
+Demon Slayer matching is meaningful: an independent measurement taken *before the
+synonym bug was known* lands within rounding of the canonical-tag re-capture. The
+Sep 2 correction is corroborated.
+
+**The HotD divergence is work item D, not a method difference.** The report's
+34,294 denominator is far larger than a `House of the Dragon (TV)` tag alone
+carries — it is a broader or combined tag, consistent with the "(combined fandom)"
+note. The two paths agree when they measure at the same taxonomic level and
+diverge when they do not.
+
+**Consequence: D now blocks reconciliation as well as capture.** Comparing May
+numbers to Sep numbers is meaningless until the level is fixed.
+
+### The genuinely undocumented stream: `dnd_trends_raw.ao3_tag_counts`
+
+A deployed `cloud_functions/ao3_harvester/main.py` has been running since
+**Apr 13, 2026**, last fetch **Aug 30** — 390 rows, 23 D&D-*native* tags across
+20 fetch days, typed `fandom` / `character` / `relationship`:
+
+- fandoms: Dungeons & Dragons (RPG) **69,804**, Forgotten Realms 51,024,
+  Baldur's Gate (Video Games) **48,997**, Critical Role 30,585
+- characters: Astarion 27,102, Gale 17,111, Shadowheart 11,784, Karlach, Wyll,
+  Dark Urge, Lae'zel, Halsin, Raphael, Minthara, Strahd, Jarlaxle, Drizzt, Vecna
+- relationships: Astarion/Tav 11,420, Gale/Tav, Astarion/Gale, Shadowheart/Tav
+
+This answers a **different question** — how much fic exists about D&D itself and
+its characters — and is not the rate source. Memory and
+`project_digital_streams_plan` list AO3 as *planned*; it has been live for five
+months.
+
+**It independently confirms the BG3 artifact.** `Baldur's Gate (Video Games)` =
+**48,997** against our "crossover" capture of 49,020. A join between
+`ao3_tag_counts` and `fanfic_crossover_counts` would have caught the metatag
+inflation in April. Two tables in the same dataset held the answer; nothing
+compared them.
+
+### Revised tasks
+
+1. ~~Trace the provenance of the AO3 proportional rates~~ — **DONE**: manual, May 2026
+2. Decide whether the May manual numbers are retained, re-measured, or discarded.
+   They are unreproducible and level-inconsistent, but Demon Slayer corroborates.
+3. Re-measure at a single settled taxonomic level (blocked on D)
+4. Check the six PDFs by hand
+5. Align item C with the existing proportional-rate definition, including the
+   "(combined fandom)" convention
+6. Fix the internal inconsistency at breakdowns lines 1717 vs 1838
+7. **NEW:** document `ao3_tag_counts` as a live stream, and add a guard view that
+   flags any crossover count within ~1% of that IP's fandom total — the
+   metatag-inflation detector, using data already collected
+
+---
+
+# PLAN REVISION (Sep 2, 2026) — most of this is automatable
+
+Investigating item I surfaced `cloud_functions/ao3_harvester/main.py`, which has
+been scraping AO3 **politely and automatically since April**: 5-second delay,
+identifying User-Agent with contact address, 429 backoff. That forces a useful
+distinction the project had made implicitly but never written down.
+
+## The endpoint distinction — browse vs search
+
+| Endpoint | Nature | Status |
+|---|---|---|
+| `/tags/<slug>/works` | reading a public aggregate | **automatable** (the harvester already does) |
+| `/media/<Category>/fandoms` | browse listing | **automatable** — same class |
+| `/works?tag_id=…&other_tag_names=…` | a **search query** | **human-wielded** — expensive server-side |
+
+*Browse* is cheap and cacheable; *search* is the thing archives guard. This is why
+the crossover bookmarklet must stay human-clicked while a tag-count harvester can
+run weekly — not an inconsistency, a correct line nobody had articulated.
+
+**Verify against AO3's live `robots.txt` before scaling up.** The harvester's
+docstring asserts ToS permission; that assertion should be re-checked, not
+inherited.
+
+## Consequence: A, C, D and H become one automated stream
+
+All four read from listing/tag pages, not search:
+
+- **A** canonicality audit — a tag absent from the listing is a synonym or
+  non-common
+- **C** denominators — fandom totals come straight off the listings
+- **D** taxonomic level — the listings expose every level per franchise
+- **H** discovery census — the listings *are* the census
+
+**Only the crossover numerators need a human.** That collapses the manual burden
+from ~142 IPs to just the numerators, and makes everything else a weekly Cloud
+Function beside the existing one.
+
+## Franchise normalisation spec
+
+**A franchise is not a tag — it is a *set* of tags.** Dark Souls I/II/III; Witcher
+games vs TV vs books; SPY x FAMILY Anime vs Manga. Rules:
+
+1. **Prefer AO3's own umbrella** (`— All Media Types`) where it exists. AO3's tag
+   wranglers already performed the entity resolution; it is free and authoritative.
+2. **Where no umbrella exists, define an explicit tag set** and store it as data.
+   The franchise definition becomes a reviewable row, not a judgement buried in a
+   script.
+3. **NEVER sum children.** Anime 7,177 + Manga 8,051 = 15,228 against an umbrella
+   of 8,897. Works carry multiple tags, so **sum ≠ union**. Use the umbrella
+   (which *is* the union) or measure the union directly.
+4. **Numerator and denominator must use identical tag scope.** The ratio is
+   meaningless otherwise.
+5. **Record the level on every row** — `umbrella` / `union_of_set` /
+   `single_canonical` — together with the tag set used.
+
+Rule 5 is what makes this defensible. Across 142 franchises AO3's taxonomy is not
+uniform enough to yield one perfect comparable number, and pretending otherwise is
+how the Witcher-at-quarter-franchise problem happened. But every measurement can
+carry its scope, so comparisons can be made **within-level** and checked.
+
+> **Comparability is a property of the comparison, not of the datum.** An analyst
+> will accept "here is the level, here are the tags, here is the count." They will
+> not accept a single number whose scope varies invisibly.
+
+The listing scrape also **solves entity resolution**: a complete canonical-fandom
+list per category exposes every Dark Souls variant and every Witcher level, so
+franchise grouping is a data exercise over a full list rather than hand-curation
+against a partial one.
+
+## Make the tag config table-driven
+
+`TRACKED_TAGS` in the harvester is a hardcoded Python list — expansion currently
+means a code change and a redeploy. Move it to a BigQuery config table so adding
+an IP is a row insert. This is the prerequisite for scaling past the current 23
+tags to the full seed list.
+
+## Revised scope for a 142-IP pass
+
+- **Denominators + canonicality for all 142** — ~5 listing loads, automated
+- **Franchise grouping** — derived from the same scrape
+- **Crossover numerators** — human-wielded, so *triage rather than exhaust*: rank
+  by fandom size x fit and capture the top N by hand
+
+Item H stops being a side idea and becomes the front of the main workflow.
