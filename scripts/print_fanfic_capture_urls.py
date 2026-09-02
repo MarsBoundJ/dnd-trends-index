@@ -126,11 +126,19 @@ def main() -> None:
         print('<table><tr><th>IP</th><th>AO3</th><th>FFN</th></tr>')
 
     for m in MAPPINGS:
-        ao3 = ao3_url(m.ao3_tag, m.ip_name)
+        # An IP AO3 cannot filter on has no capturable URL. Emitting one anyway
+        # would return 0 and be indistinguishable from a real zero, so say so
+        # instead of handing over a link that quietly produces bad data.
+        ao3 = ao3_url(m.ao3_tag, m.ip_name) if m.ao3_filterable else None
         ffn = ffn_url(m.ffn_id, m.ip_name)
 
         if args.html:
-            ao3_cell = f'<a href="{ao3}" target="_blank">AO3</a>' if args.platform != 'ffn' else ''
+            if args.platform == 'ffn':
+                ao3_cell = ''
+            elif ao3:
+                ao3_cell = f'<a href="{ao3}" target="_blank">AO3</a>'
+            else:
+                ao3_cell = '<span class="todo">not filterable on AO3</span>'
             if args.platform != 'ao3':
                 ffn_cell = (
                     f'<a href="{ffn}" target="_blank">FFN</a>' if ffn
@@ -142,7 +150,12 @@ def main() -> None:
         else:
             print(f'\n=== {m.ip_name} ===')
             if args.platform != 'ffn':
-                print(f'  AO3: {ao3}')
+                if ao3:
+                    print(f'  AO3: {ao3}')
+                else:
+                    print(f'  AO3: (SKIP — AO3 cannot filter on '
+                          f'"{m.ao3_tag}"; it is not marked common. This IP is '
+                          f'UNMEASURABLE on AO3, not zero.)')
             if args.platform != 'ao3':
                 if ffn:
                     print(f'  FFN: {ffn}')
