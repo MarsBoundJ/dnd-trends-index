@@ -99,9 +99,13 @@ MAPPINGS: list[FanficCanonical] = [
     ),
     FanficCanonical(
         ip_name="Avatar: The Last Airbender",
-        ao3_tag="Avatar: The Last Airbender",
+        ao3_tag="Avatar: The Last Airbender & Related Fandoms",
         ffn_id=4514,
-        notes="Strong YA fantasy crossover potential.",
+        ao3_verified_on="2026-09-02",
+        notes="Strong YA fantasy crossover potential. Bare 'Avatar: The Last "
+              "Airbender' was NOT the canonical — corrected Sep 2 2026 from the "
+              "AO3 fandom listing (64,589 works). Broadest Avatar tag available; "
+              "no separate '- All Media Types' umbrella exists.",
     ),
     FanficCanonical(
         ip_name="The Mandalorian",
@@ -123,15 +127,17 @@ MAPPINGS: list[FanficCanonical] = [
     ),
     FanficCanonical(
         ip_name="Severance",
-        ao3_tag="Severance (TV 2022)",
+        ao3_tag="Severance (TV)",
         ffn_id=None,
-        ao3_filterable=False,
         ao3_verified_on="2026-09-02",
-        notes="UNMEASURABLE on AO3: the tag exists but AO3 reports it 'has not "
-              "been marked common and can't be filtered on (yet)', so "
-              "other_tag_names returns 0 regardless of how much fic exists. "
-              "That is absence of measurement, NOT a measured zero. Re-check "
-              "once AO3 wranglers mark it common.",
+        notes="MEASURABLE after all — ao3_filterable=False REVERTED Sep 2 2026. "
+              "The earlier 'not marked common, can't be filtered on' reading was "
+              "correct about the tag we were asking for ('Severance (TV 2022)') "
+              "but that was never AO3's canonical. The canonical is "
+              "'Severance (TV)' — listed, filterable, 2,361 works. The "
+              "unmeasurable verdict was itself a stale-tag casualty; a wrong tag "
+              "and an unfilterable tag produce the identical silent 0. "
+              "Distinguish them by checking the fandom listing, not the tag page.",
     ),
 
     # ─── Video games (CRPG / FromSoft / mainstream gaming) ────────────────
@@ -154,8 +160,12 @@ MAPPINGS: list[FanficCanonical] = [
         ao3_verified_on="2026-09-02",
         notes="Three umbrella tags exist (books, Netflix, video games). "
               "'The Witcher (Video Games)' is a SYNONYM of this canonical and "
-              "silently returned 0; corrected Sep 2 2026 -> 48 works. Note the "
-              "canonical is singular 'Video Game'.",
+              "silently returned 0; corrected Sep 2 2026 -> 24 works (NOT 48 — "
+              "that was April's value under the older, broader tag AO3 has since "
+              "re-wrangled). Note the canonical is singular 'Video Game'. "
+              "UMBRELLA AVAILABLE: 'Wiedźmin | The Witcher - All Media Types' "
+              "(42,481 vs this tag's 10,538) — left at medium level; switching "
+              "is the work item D decision, not a tag correction.",
     ),
     FanficCanonical(
         ip_name="Dark Souls",
@@ -189,9 +199,12 @@ MAPPINGS: list[FanficCanonical] = [
     ),
     FanficCanonical(
         ip_name="Hades",
-        ao3_tag="Hades (Video Game 2018)",
+        ao3_tag="Hades (Supergiant Games Video Games)",
         ffn_id=None,
-        notes="Disambiguates from Hades the Greek god.",
+        ao3_verified_on="2026-09-02",
+        notes="Disambiguates from Hades the Greek god. AO3 renamed this tag — "
+              "'Hades (Video Game 2018)' was NOT the canonical; corrected Sep 2 "
+              "2026 from the fandom listing (8,495 works).",
     ),
 
     # ─── Anime / manga (HUGE fanfic communities) ──────────────────────────
@@ -220,9 +233,14 @@ MAPPINGS: list[FanficCanonical] = [
     ),
     FanficCanonical(
         ip_name="One Piece",
-        ao3_tag="One Piece",
+        ao3_tag="One Piece (Anime & Manga)",
         ffn_id=None,
-        notes="",
+        ao3_verified_on="2026-09-02",
+        notes="Bare 'One Piece' was NOT the canonical; corrected Sep 2 2026 from "
+              "the fandom listing (99,964 works). UMBRELLA AVAILABLE: "
+              "'One Piece - All Media Types' (101,013) — left at medium level to "
+              "preserve the existing measurement scope. Switching to the umbrella "
+              "is the work item D level decision, not a tag correction.",
     ),
     FanficCanonical(
         ip_name="Spy x Family",
@@ -231,15 +249,21 @@ MAPPINGS: list[FanficCanonical] = [
         ao3_verified_on="2026-09-02",
         notes="AO3 uses the all-caps stylization. Bare 'SPY x FAMILY' is a "
               "SYNONYM of this canonical and silently returned 0; corrected "
-              "Sep 2 2026 -> 2 works.",
+              "Sep 2 2026 -> 2 works. UMBRELLA AVAILABLE: 'SPY x FAMILY - All Media Types' "
+              "(8,898 vs this tag's 8,052) — left at medium level; switching is "
+              "the item D decision.",
     ),
 
     # ─── Literature (smaller AO3 fandoms but signal-rich) ─────────────────
     FanficCanonical(
         ip_name="The Stormlight Archive",
-        ao3_tag="The Stormlight Archive - Brandon Sanderson",
+        ao3_tag="Stormlight Archive - Brandon Sanderson",
         ffn_id=None,
-        notes="Author name appended for disambiguation.",
+        ao3_verified_on="2026-09-02",
+        notes="Author name appended for disambiguation. AO3's canonical has NO "
+              "leading 'The' — corrected Sep 2 2026 from the fandom listing "
+              "(2,654 works). A one-word difference produced the same silent "
+              "failure class as a full rename.",
     ),
     FanficCanonical(
         ip_name="Mistborn",
