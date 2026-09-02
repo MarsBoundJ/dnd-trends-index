@@ -742,3 +742,90 @@ compared them.
 7. **NEW:** document `ao3_tag_counts` as a live stream, and add a guard view that
    flags any crossover count within ~1% of that IP's fandom total — the
    metatag-inflation detector, using data already collected
+
+---
+
+# PLAN REVISION (Sep 2, 2026) — most of this is automatable
+
+Investigating item I surfaced `cloud_functions/ao3_harvester/main.py`, which has
+been scraping AO3 **politely and automatically since April**: 5-second delay,
+identifying User-Agent with contact address, 429 backoff. That forces a useful
+distinction the project had made implicitly but never written down.
+
+## The endpoint distinction — browse vs search
+
+| Endpoint | Nature | Status |
+|---|---|---|
+| `/tags/<slug>/works` | reading a public aggregate | **automatable** (the harvester already does) |
+| `/media/<Category>/fandoms` | browse listing | **automatable** — same class |
+| `/works?tag_id=…&other_tag_names=…` | a **search query** | **human-wielded** — expensive server-side |
+
+*Browse* is cheap and cacheable; *search* is the thing archives guard. This is why
+the crossover bookmarklet must stay human-clicked while a tag-count harvester can
+run weekly — not an inconsistency, a correct line nobody had articulated.
+
+**Verify against AO3's live `robots.txt` before scaling up.** The harvester's
+docstring asserts ToS permission; that assertion should be re-checked, not
+inherited.
+
+## Consequence: A, C, D and H become one automated stream
+
+All four read from listing/tag pages, not search:
+
+- **A** canonicality audit — a tag absent from the listing is a synonym or
+  non-common
+- **C** denominators — fandom totals come straight off the listings
+- **D** taxonomic level — the listings expose every level per franchise
+- **H** discovery census — the listings *are* the census
+
+**Only the crossover numerators need a human.** That collapses the manual burden
+from ~142 IPs to just the numerators, and makes everything else a weekly Cloud
+Function beside the existing one.
+
+## Franchise normalisation spec
+
+**A franchise is not a tag — it is a *set* of tags.** Dark Souls I/II/III; Witcher
+games vs TV vs books; SPY x FAMILY Anime vs Manga. Rules:
+
+1. **Prefer AO3's own umbrella** (`— All Media Types`) where it exists. AO3's tag
+   wranglers already performed the entity resolution; it is free and authoritative.
+2. **Where no umbrella exists, define an explicit tag set** and store it as data.
+   The franchise definition becomes a reviewable row, not a judgement buried in a
+   script.
+3. **NEVER sum children.** Anime 7,177 + Manga 8,051 = 15,228 against an umbrella
+   of 8,897. Works carry multiple tags, so **sum ≠ union**. Use the umbrella
+   (which *is* the union) or measure the union directly.
+4. **Numerator and denominator must use identical tag scope.** The ratio is
+   meaningless otherwise.
+5. **Record the level on every row** — `umbrella` / `union_of_set` /
+   `single_canonical` — together with the tag set used.
+
+Rule 5 is what makes this defensible. Across 142 franchises AO3's taxonomy is not
+uniform enough to yield one perfect comparable number, and pretending otherwise is
+how the Witcher-at-quarter-franchise problem happened. But every measurement can
+carry its scope, so comparisons can be made **within-level** and checked.
+
+> **Comparability is a property of the comparison, not of the datum.** An analyst
+> will accept "here is the level, here are the tags, here is the count." They will
+> not accept a single number whose scope varies invisibly.
+
+The listing scrape also **solves entity resolution**: a complete canonical-fandom
+list per category exposes every Dark Souls variant and every Witcher level, so
+franchise grouping is a data exercise over a full list rather than hand-curation
+against a partial one.
+
+## Make the tag config table-driven
+
+`TRACKED_TAGS` in the harvester is a hardcoded Python list — expansion currently
+means a code change and a redeploy. Move it to a BigQuery config table so adding
+an IP is a row insert. This is the prerequisite for scaling past the current 23
+tags to the full seed list.
+
+## Revised scope for a 142-IP pass
+
+- **Denominators + canonicality for all 142** — ~5 listing loads, automated
+- **Franchise grouping** — derived from the same scrape
+- **Crossover numerators** — human-wielded, so *triage rather than exhaust*: rank
+  by fandom size x fit and capture the top N by hand
+
+Item H stops being a side idea and becomes the front of the main workflow.
