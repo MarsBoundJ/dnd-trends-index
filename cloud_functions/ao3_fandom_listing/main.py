@@ -60,7 +60,16 @@ TABLE = f"{PROJECT}.dnd_trends_raw.ao3_fandom_totals"
 
 AO3_BASE = "https://archiveofourown.org"
 REQUEST_DELAY = 5   # match ao3_harvester — be polite
-INSERT_CHUNK = 500  # BigQuery streaming insert batch size
+
+# Explicit schema: a load job against a partition decorator cannot autodetect.
+TABLE_SCHEMA = [
+    bigquery.SchemaField("fandom", "STRING", mode="REQUIRED"),
+    bigquery.SchemaField("category", "STRING"),
+    bigquery.SchemaField("work_count", "INT64"),
+    bigquery.SchemaField("ao3_slug", "STRING"),
+    bigquery.SchemaField("is_umbrella", "BOOL"),
+    bigquery.SchemaField("fetch_date", "DATE", mode="REQUIRED"),
+]
 
 HEADERS = {
     "User-Agent": "DnD-Trends-Index/1.0 (research; contact: dnd-trends@example.com)",
@@ -115,14 +124,30 @@ def parse_listing(html, category):
 
 
 def fetch_category(session, category):
+    # 120s was not enough — the Movies listing timed out at exactly that on
+    # Sep 2, 2026. These pages are genuinely large (Video Games alone carries
+    # ~8,300 entries), so allow 180s and retry once on any transport error,
+    # not just on 429.
     url = f"{AO3_BASE}/media/{urllib.parse.quote(category, safe='*')}/fandoms"
-    resp = session.get(url, timeout=120)
-    if resp.status_code == 429:
-        print(f"  RATE LIMITED on {category}. Backing off 30s...")
-        time.sleep(30)
-        resp = session.get(url, timeout=120)
-    resp.raise_for_status()
-    return resp.text
+
+    def _get():
+        r = session.get(url, timeout=180)
+        if r.status_code == 429:
+            print(f"  RATE LIMITED on {category}. Backing off 30s...")
+            time.sleep(30)
+            r = session.get(url, timeout=180)
+        r.raise_for_status()
+        return r
+
+    try:
+        return _get().text
+    except Exception as e:
+        # Single retry after a pause. Deliberately not a retry loop: repeated
+        # hammering of a slow endpoint is how a soft throttle becomes a hard
+        # block (see feedback_ddb_homebrew_cadence).
+        print(f"  {category}: {type(e).__name__} — one retry in 15s")
+        time.sleep(15)
+        return _get().text
 
 
 class FandomListingHarvester:
@@ -157,21 +182,57 @@ class FandomListingHarvester:
         if not rows:
             raise RuntimeError("No fandoms parsed from any category — aborting insert.")
 
+        # REFUSE TO WRITE A PARTIAL SNAPSHOT.
+        #
+        # Learned the hard way on Sep 2, 2026: the partition-replacing write
+        # below is correct for a COMPLETE run and destructive for a partial one.
+        # A transient AO3 read timeout on one category produced 45,123 rows, and
+        # WRITE_TRUNCATE cheerfully replaced a complete 59,143-row snapshot with
+        # it. The idempotency fix had turned a recoverable hiccup into data loss.
+        #
+        # A partial census is not merely incomplete, it is WRONG in a direction
+        # that matters: missing fandoms become missing denominators, which
+        # surface as NO_FANDOM_TOTAL or, worse, silently shrink the population
+        # rate. Better to keep last week's complete snapshot and fail loudly.
+        if failed:
+            raise RuntimeError(
+                f"Refusing to write a partial snapshot: {len(failed)} of "
+                f"{len(CATEGORIES)} categories failed ({', '.join(failed)}). "
+                f"Parsed {len(rows):,} rows but did not write — the existing "
+                f"partition is left intact. Retry on the next scheduled run."
+            )
+
         stamp = self.today.isoformat()
         for r in rows:
             r["fetch_date"] = stamp
 
-        inserted = 0
-        for i in range(0, len(rows), INSERT_CHUNK):
-            chunk = rows[i:i + INSERT_CHUNK]
-            errors = self.bq.insert_rows_json(TABLE, chunk)
-            if errors:
-                print(f"  BQ insert errors at offset {i}: {errors[:2]}")
-            else:
-                inserted += len(chunk)
+        # IDEMPOTENT WRITE — replace today's partition rather than appending.
+        #
+        # Cloud Scheduler retries on failure, and the previous streaming-append
+        # implementation double-counted the day on any re-run: a partial failure
+        # followed by a retry, or a manual invoke, left two snapshots in one
+        # partition. The views dedupe, so this never corrupted a result — but a
+        # write that is wrong-but-survivable is still wrong, and the raw table
+        # grows without bound on a retry loop.
+        #
+        # A load job against the partition decorator (table$YYYYMMDD) with
+        # WRITE_TRUNCATE makes re-running a no-op rather than a duplication.
+        # Load jobs are also free and skip the streaming buffer, which would
+        # otherwise block DML against the table for ~90 minutes after each run.
+        partition = f"{TABLE}${stamp.replace('-', '')}"
+        job = self.bq.load_table_from_json(
+            rows,
+            partition,
+            job_config=bigquery.LoadJobConfig(
+                write_disposition="WRITE_TRUNCATE",
+                schema=TABLE_SCHEMA,
+            ),
+        )
+        job.result()
+        inserted = len(rows)
 
         top = sorted(rows, key=lambda r: -r["work_count"])[:5]
-        print(f"\nInserted {inserted:,} of {len(rows):,} rows into ao3_fandom_totals.")
+        print(f"\nWrote {inserted:,} rows to ao3_fandom_totals partition {stamp} (replaced).")
         print("--- Largest fandoms ---")
         for r in top:
             print(f"  {r['work_count']:>8,}  {r['fandom']}")
