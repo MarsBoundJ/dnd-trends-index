@@ -55,6 +55,18 @@
 
   const log = (msg) => { status.textContent = msg; console.log('[amz-bk]', msg); };
 
+  // ── Sanity: must be on Amazon ─────────────────────────────────────────────
+  // Every fetch below targets https://www.amazon.com. Clicked from any other
+  // origin those are cross-origin, get blocked by CORS, and fetchPage() swallows
+  // the failure and returns null — so the run ends on "No products found. Amazon
+  // layout may have changed.", which points at the wrong culprit entirely.
+  // Fail loudly and accurately instead. (Sep 1, 2026)
+  if (!location.hostname.endsWith('amazon.com')) {
+    log('⚠️ Not on Amazon — open an Amazon page first, e.g. the D&D Books best-seller list, then click again.');
+    setTimeout(() => ui.remove(), 12000);
+    return;
+  }
+
   // ── DOM parsing ───────────────────────────────────────────────────────────
   function parseProducts(doc, label, listType) {
     const items = [];
