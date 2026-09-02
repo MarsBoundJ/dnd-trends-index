@@ -560,3 +560,82 @@ different category from ordinary crossover IPs.
 Live AO3 set after cleanup: **24 IPs scored, max 84 (LotR), zero rows with
 `work_count = 0`.** After this session there is no such thing as a zero in the AO3
 dataset — every 0 we had was a bug or an unmeasurable tag.
+
+---
+
+## Work item I — reconcile pitch deliverables against the corrected AO3 numbers
+
+Added Sep 2, 2026, after merging the corrections in #99.
+
+Correcting the repo does not correct what shipped. The AO3 numbers that moved feed
+conclusions in pitch material, and those conclusions have already gone out.
+
+### Exposure
+
+- The four false-zero IPs appear in **8 pitch files**, including
+  `build_ip_licensing_report.js`, `build_onepager_ip.js` and `build_docx.js` —
+  i.e. the builders that generate shipped deliverables
+- `arcane/public/reports/ip_deep_dive.html` references them **33 times**
+- Pitch markdown carries **127** AO3 / fanfic references
+- Six PDFs in `arcane/public/reports/` cannot be grepped and must be checked by hand
+
+Per project notes, outreach has launched — so some of this is already in front of
+people.
+
+### The concrete case
+
+`pitch/report/trusight_breakdowns_scratch.md` builds a licensing recommendation on
+a thin-AO3 premise:
+
+> broader-community-conversion is thin (**AO3 0.040% — second-lowest of any IP
+> measured**) … **Demon Slayer fanbase is heavily anime-watcher demographic, less
+> tabletop-converting. This is the structural finding from the harvest.**
+
+That is not a stat in a table; it drives a **negotiation-leverage recommendation**
+(lower upfront fee, narrower initial scope, performance-gated expansion).
+
+### The surprise: a second AO3 measurement path may exist
+
+**0.040% cannot have come from `fanfic_crossover_counts`** — Demon Slayer read `0`
+there, and 0/anything is 0%. Backing out the implied denominators against the
+Sep 2 corrected counts:
+
+| IP | Stated rate | Corrected count | Implied fandom total |
+|---|---:|---:|---:|
+| Demon Slayer | 0.040% | 21 | ~52,500 |
+| One Piece | 0.048% | 5 | ~10,400 |
+| FFXIV | 0.063% | 48 | ~76,200 |
+
+~52,500 is a plausible Demon Slayer AO3 fandom, so the rate is consistent with a
+count of **~21, not 0**. Something measured this correctly while the gold table
+carried a false zero.
+
+**This must be run down before work items A–C are built.** If a second measurement
+path exists and it dodged the synonym bug, it is more trustworthy than the one we
+just spent two days hardening, and we should understand why before designing
+around the wrong one.
+
+### Work item C is not new — align, do not fork
+
+The breakdowns already define an **"AO3 proportional crossover rate"**, with a
+documented caveat that it is unreliable for ship-fic-heavy fandoms (One Piece,
+FFXIV, Demon Slayer) where Reddit + DDB become load-bearing. Item C should adopt
+that definition and caveat rather than introduce a parallel metric with different
+semantics. See also the proportional-rate calibration band in the breakdowns notes.
+
+### Tasks
+
+1. Trace the provenance of the AO3 proportional rates in the breakdowns — which
+   query, which tags, when captured
+2. Determine whether any breakdown conclusion **flips** under the corrected counts
+   (JJK 0→54 is the most likely candidate — it is now the 3rd strongest AO3 signal)
+3. Check the six PDFs by hand for the 47,660 figure and the four "no crossover" IPs
+4. Reconcile item C with the existing proportional-rate definition
+5. Fix the internal inconsistency at lines 1717 vs 1838 — "second-lowest" vs
+   "Lowest of any IP measured"
+
+### Priority
+
+**Ahead of A–C.** Those build capture machinery; this decides which existing
+numbers are trustworthy and whether anything already sent to a counterparty needs
+correcting. Sequence it against D, which is the other blocking decision.
