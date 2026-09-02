@@ -986,3 +986,130 @@ are ancestor/descendant of each other — D&D is a metatag of Baldur's Gate, so
 `D&D + BG3` returned all of BG3. None of these four umbrellas has any ancestry
 relationship with the D&D tag, so intersecting them is a genuine intersection.
 `fanfic_capture_guard` will confirm this at capture time regardless.
+
+---
+
+## Work item I — audit of the PUBLISHED IP Deep Dive (Sep 2, 2026)
+
+Audited `https://trusightdata.ai/reports/ip_deep_dive.html` — the only report on
+the site with an HTML version. The other six are PDF-only and unaudited.
+
+**Findings recorded, deliberately NOT fixed.** The four umbrella re-captures
+(work item D) will move several of these numbers again, and correcting twice is
+wasted work. Outreach is paused, so nothing here is urgent.
+
+### First, what is NOT wrong
+
+The corrupted AO3 artifacts never reached this report. No `47,660`, no `49,020`,
+no BG3 row. The denominators are ordinary May snapshots and most have grown
+normally into today's values — Demon Slayer 49,611 → 53,061, Hades 8,260 →
+8,495, Elden Ring 6,242 → 6,503, Mistborn 682 → 746. Persona 5's rate (0.081%)
+matches today's view almost exactly.
+
+So the numbers are broadly sound. **The errors are in the prose**, which is a
+harder problem, because prose is the part that does not regenerate when data is
+corrected.
+
+### Finding 1 — a pun became a methodology (3 IPs + a general claim)
+
+One Piece's rate is explained as:
+
+> "AO3 channel is heavily ship-fic-dominated for One Piece … the AO3 proportional
+> rate is unreliable for **naval** ship-fic-dominated fandoms"
+
+"Ship fic" means *relationship* fic. The report reads it as *ships* — boats —
+and reasons from One Piece being about pirates. The rate (0.048%) was right; the
+explanation is a homophone collapse.
+
+It did not stay contained. The same explanation is applied to two IPs with no
+nautical content whatsoever:
+
+- **FFXIV** — "Same ship-fic-dominated pattern; AO3 proportional rate is
+  unreliable for FFXIV"
+- **Demon Slayer** — "Same ship-fic-dominated pattern as One Piece and FFXIV"
+
+and then generalised into a standing methodological rule in the summary:
+
+> "AO3 proportional rate is unreliable for ship-fic-heavy fandoms; Reddit + DDB
+> are load-bearing."
+
+So a reasoning error about one IP now licenses discounting the AO3 channel
+across the whole report. This is the most consequential finding here, and the
+one least amenable to a data fix.
+
+### Finding 2 — three IPs each claim to be the lowest
+
+| IP | Rate | Claim |
+|---|---|---|
+| One Piece | 0.048% | "Lowest of any IP measured" |
+| Demon Slayer | 0.040% | "Lowest of any IP measured" |
+| Sea of Thieves | 0% | "Lowest of any IP we've measured" |
+
+At most one can be true. FFXIV compounds it: "second-lowest of any IP measured
+(after One Piece's 0.048%)" at 0.063% — while Demon Slayer's 0.040% sits lower
+than both.
+
+These are superlatives typed as prose rather than computed. See the
+recommendation below.
+
+### Finding 3 — a published AO3 zero
+
+Sea of Thieves: `AO3 D&D-crossover works 0`, `rate 0%`, presented as a finding
+about the audience.
+
+Every AO3 zero this project has ever recorded — nine of them — was a stale or
+unfilterable tag, never a measured absence (`docs/fanfic_methodology.md`). The
+Sea of Thieves tag has not been verified against the canonical fandom listing.
+
+`gold_data.fanfic_capture_guard` flags zeros CRITICAL. It was not consulted,
+because it did not exist when this report was written.
+
+### Finding 4 — HotD's anchor number uses the other numerator method
+
+> AO3 D&D-crossover works **44** · rate **0.13%** — "The empirical anchor for the
+> engine-question argument"
+
+44 is the May keyword-match count. Today's canonical tag intersection gives
+**15**, and a rate of **0.042%** against a 35,364 denominator. Both methods are
+defensible and they measure different things
+(`docs/fanfic_methodology.md`, "The numerator method must be stated") — but the
+report states neither, and HotD's verdict is explicitly built on this number.
+
+Directionally the argument survives: 0.042% is *even lower* relative to fanbase
+size, which is what the engine-question argument claims. The magnitudes and
+every "~3-7× lower than the calibration cluster" comparison do not.
+
+### Finding 5 — FFXIV's numerator moved materially
+
+Deep dive 29 → today 48; rate 0.063% → 0.104%. FFXIV's "strongest honest-caveat
+case in the breakdowns" rests partly on a low AO3 rate that is now 65% higher.
+Whether this is method, a tag correction or real growth has not been
+established — it needs checking before FFXIV's verdict is restated.
+
+### Finding 6 — a factual slip
+
+Demon Slayer is described as "third-largest after One Piece and FFXIV". Demon
+Slayer (53,061) is larger than FFXIV (46,349).
+
+### The structural recommendation
+
+Findings 2 and 6 are **rank claims typed as sentences**. Finding 4 is a number
+typed as a sentence. None of them could have survived being computed.
+
+The fix is not proofreading. It is that a report should not be able to *state*
+an unsupported superlative — "lowest of any IP measured" should be rendered from
+the data, so three IPs claiming it simultaneously becomes impossible rather than
+merely unnoticed. Likewise a rendered report should refuse, or visibly flag, any
+IP whose `fanfic_capture_guard` row is CRITICAL — which is exactly how Sea of
+Thieves' zero would have been caught before publication.
+
+That points at the dynamic-report workflow tracked separately. Note the limit
+honestly: of the six findings here, computed rendering prevents 2, 4 and 6,
+catches 3 via the guard, and does **nothing** for 1 — the pun — which is the
+worst of them. Data binding fixes numbers. It does not fix reasoning.
+
+### Scope not yet audited
+
+The six PDF-only reports. They cannot be read as text from the repo and were not
+checked. Whether they repeat the ship-fic claim is unknown and worth knowing,
+since the shared phrasing suggests a common source.
