@@ -579,8 +579,22 @@ conclusions in pitch material, and those conclusions have already gone out.
 - Pitch markdown carries **127** AO3 / fanfic references
 - Six PDFs in `arcane/public/reports/` cannot be grepped and must be checked by hand
 
-Per project notes, outreach has launched — so some of this is already in front of
-people.
+**Timing (confirmed by Phil, Sep 2, 2026): effectively nobody from WotC has read
+these yet.** The reports are live on trusightdata.ai but have not been consumed by
+a counterparty. So this is *fix before first read*, not damage control — the bugs
+were caught in the window between publishing and being read.
+
+Two consequences:
+
+- **No retraction is needed.** Nothing has to be un-said to anyone.
+- **Regenerate ONCE, after item D.** Item D will change most crossover counts
+  (measuring The Witcher at `All Media Types` moves its denominator from 10,539 to
+  42,482, and the numerator with it). Correcting the reports now and again after D
+  means doing it twice, with the second pass contradicting the first.
+
+The deadline is real but conditional: the reports are **publicly reachable**, so
+"nobody has read them" describes the past, not next week. Correcting them is a
+**prerequisite for resuming outreach**, not a follow-up to it.
 
 ### The concrete case
 
