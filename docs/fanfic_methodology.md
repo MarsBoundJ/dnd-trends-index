@@ -67,23 +67,71 @@ games vs TV vs books, `SPY x FAMILY (Anime)` vs `(Manga)` vs `- All Media Types`
 
 Rules:
 
-1. Prefer AO3's own umbrella (`— All Media Types`) where it exists; their tag
-   wranglers already did the entity resolution.
-2. Otherwise use the single canonical tag.
-3. **Never sum children.** Works carry multiple tags, so sum ≠ union — observed:
+1. Use the **broadest AO3 umbrella for the same licensable entity**. AO3
+   publishes umbrellas under two suffixes and both count: `- All Media Types`
+   (257 tags) and `& Related Fandoms` (65). Their wranglers already did the
+   entity resolution.
+2. A parent *franchise* is not an umbrella for a property inside it.
+   `Star Wars - All Media Types` is not the denominator for The Mandalorian, and
+   A Song of Ice and Fire is not the denominator for House of the Dragon — those
+   measure a different entity.
+3. Otherwise use the single canonical tag.
+4. **Never sum children.** Works carry multiple tags, so sum ≠ union — observed:
    Anime 7,177 + Manga 8,051 = 15,228 against an umbrella of 8,897.
-4. Numerator and denominator use identical scope. Always.
-5. **Record which level was used** (`measured_at_umbrella_level`).
+5. Numerator and denominator use identical scope. Always.
+6. **Record which level was used** (`measured_at_umbrella_level`).
 
-Umbrellas exist for only 6 of 26 IPs, so a uniform level is not achievable.
-Rule 5 is what makes the numbers defensible anyway: comparability is a property
-of the comparison, not of the datum. Compare within level; the column tells you
-when you can't.
+Umbrellas exist for 8 of 25 IPs, so a uniform level is not achievable. Rule 6 is
+what makes the numbers defensible anyway: comparability is a property of the
+comparison, not of the datum. Compare within level; the column tells you when
+you can't.
 
-Known open item: three IPs (One Piece, The Witcher, Spy x Family) currently sit
-below an available umbrella. The Witcher is measured at 10,538 works against a
-42,481-work franchise. That is recorded, not yet changed — switching starts a
-new series.
+### The rule is applied even where the gap looks trivial
+
+One Piece moved 99,968 → 101,017 (+1.0%). Switching it changed almost nothing,
+and it was switched anyway. Applying the rule only where the gap looks large
+would make the level a post-hoc judgement, and *"we used whatever we already had
+unless it looked wrong"* is not a rule a reviewer can check.
+
+That turned out to matter empirically, not just aesthetically — see below.
+
+### A denominator gap does not predict a numerator gap
+
+The four Sep 2, 2026 umbrella re-captures:
+
+| IP | Denominator | Numerator |
+|---|---|---|
+| The Witcher | 10,538 → 42,482 (+303%) | 24 → 62 (+158%) |
+| Doctor Who | 61,401 → 109,819 (+79%) | 13 → 23 (+77%) |
+| One Piece | 99,968 → 101,017 (+1.0%) | 52 → 54 (+3.8%) |
+| **Spy x Family** | **8,053 → 8,899 (+10.5%)** | **2 → 8 (+300%)** |
+
+Spy x Family's fandom is almost entirely one medium, so its denominator barely
+moved — but six of its eight D&D crossovers were tagged against a *different*
+child. We had been measuring **25% of the crossover population** while the
+denominator gap said the level was nearly irrelevant.
+
+So the two gaps are independent: a fandom can concentrate in one medium while
+its crossovers concentrate in another. **Never use the denominator gap to decide
+whether the level matters.** Had the rule been applied selectively on apparent
+magnitude, Spy x Family would have kept a 4× understated numerator.
+
+### Consequences of the Sep 2 level switch
+
+- The Witcher moves 12th → **3rd** by absolute count and is promoted MEDIUM →
+  HIGH evidence tier. Its **rate falls** 0.228% → 0.146%, which is a scope
+  correction and **not a decline** — an umbrella pulls in media with lower D&D
+  affinity, so denominators grow faster than numerators.
+- Doctor Who's rate is essentially unchanged (0.0212% → 0.0209%) despite a 79%
+  larger denominator: numerator and denominator scaled together, so its D&D
+  affinity is uniform across the Whoniverse.
+- Spy x Family sits at 8 crossover works — one short of the MEDIUM tier
+  threshold. Its tier is marginal, not settled.
+
+### Series break
+
+Umbrella-level captures are not comparable with earlier medium-level ones for
+these four IPs. This compounds the pre-Sep-2 break recorded below.
 
 ---
 
