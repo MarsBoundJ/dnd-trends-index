@@ -60,12 +60,32 @@ def main() -> int:
         return 0
 
     from google.cloud import bigquery  # imported late so --dry-run needs no deps
+    from google.auth import exceptions as auth_exc
 
     project = view.split(".")[0]
-    client = bigquery.Client(project=project)
 
-    print("\ndeploying …")
-    client.query(sql).result()
+    # Expired ADC surfaces as a ~60-line traceback whose only useful content is
+    # the final line. Catch it and say the one thing that matters — including
+    # that ADC is refreshed by a DIFFERENT command than the gcloud/bq
+    # credential, which is an easy hour to lose.
+    try:
+        client = bigquery.Client(project=project)
+        print("\ndeploying …")
+        client.query(sql).result()
+    except (auth_exc.RefreshError, auth_exc.DefaultCredentialsError) as e:
+        print(f"\nAUTH FAILED: {type(e).__name__}: {e}\n", file=sys.stderr)
+        print("Your Application Default Credentials are missing or expired.\n"
+              "ADC is what Python client libraries use, and it is refreshed by a\n"
+              "DIFFERENT command than the gcloud CLI / bq credential:\n\n"
+              "    gcloud auth application-default login\n\n"
+              "  (`gcloud auth login` alone authenticates the CLI, NOT ADC.)\n\n"
+              "Alternative that needs no CLI auth: paste the .sql into the\n"
+              "BigQuery console and run it there.", file=sys.stderr)
+        return 2
+    except Exception as e:
+        print(f"\nDEPLOY FAILED: {type(e).__name__}: {e}", file=sys.stderr)
+        return 1
+
     print("view created.")
 
     # Row count is the meaningful check for a guard view: 0 == nothing flagged.
