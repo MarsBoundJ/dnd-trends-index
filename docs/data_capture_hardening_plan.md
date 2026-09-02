@@ -441,6 +441,66 @@ deliberately rather than folding into a documentation pass.
 
 ---
 
+## Work item H — AO3 census as an independent discovery frame ("sleepers")
+
+Phil's idea, Sep 2, 2026.
+
+The `/media/<Category>/fandoms` pages list **every canonical fandom with its work
+count** — effectively a census of AO3 fandom sizes. Read as a ranking rather than
+a lookup table, it becomes a discovery instrument.
+
+### Why this fills a structural gap
+
+The current pipeline can only **confirm or deny IPs someone already nominated**.
+`scripts/seed_ub_candidate_ips.py` is human-curated from licensing assumptions, so
+it encodes a theory of what is licensable *before any measurement happens*. Every
+result is downstream of that theory.
+
+AO3's census does not know about the seed list. It is an **independent sampling
+frame**, and the only thing in the pipeline capable of surfacing an IP nobody
+thought to nominate. "Sleepers no one is talking about" is precisely the class a
+curated seed list structurally cannot find.
+
+Fits the existing `gold_views/composite_blue_ocean.sql` frame rather than needing
+a new one.
+
+### Three requirements
+
+**1. "Sleeper" is a divergence, not a rank.** Fandom size alone yields *popular*,
+not *overlooked* — the top of any AO3 category is Marvel, Harry Potter, anime
+megafandoms. A sleeper is **high AO3 fandom size + low attention elsewhere**, and
+the second axis already exists (Google Trends, Reddit, YouTube). Same dual-axis
+shape as work items C and D.
+
+**2. A licensability filter — not optional.** AO3's largest fandoms are heavily
+**RPF** (real-person fic), which is not licensable IP in any form and will
+dominate raw rankings. Filter RPF, plus already-licensed properties and those with
+defunct or unreachable rightsholders, before the ranking means anything.
+
+**3. Triage.** Five pages x hundreds of canonical fandoms is 500+ candidates,
+while qualifying each still costs a page load and a bookmarklet click. Discovery
+outruns validation immediately, so the ranking must be good enough that the top
+~20 justify the manual pass.
+
+### Caveat — state this wherever the output lands
+
+AO3 fandom size measures **fanfic-writing propensity**, a specific and skewed
+behaviour: it favours character-driven, relationship-heavy, younger-skewing
+properties. A property can be commercially enormous with a thin AO3 presence —
+strategy games, sims, most sports, much hard SF.
+
+This is a **lens, not a census of IP value.** It will find one kind of sleeper and
+be structurally blind to others. Say so explicitly in any deliverable, or absence
+will be read as evidence of absence — the same mistake the "zero-count negatives"
+made in `community_reception_findings.md`.
+
+### Cost
+
+Effectively zero marginal cost: those five pages are already loaded for work items
+A and C. This is a different *read* of data being fetched anyway.
+
+---
+
 ## Constraints (non-negotiable)
 
 - **Human-wielded by design.** AO3's ToS forbids automated scraping. The
