@@ -829,3 +829,68 @@ tags to the full seed list.
   by fandom size x fit and capture the top N by hand
 
 Item H stops being a side idea and becomes the front of the main workflow.
+
+---
+
+## Work item E — RESOLVED (Sep 2, 2026)
+
+Re-captured FFN's D&D crossover index to test whether the thin overlap with the
+AO3 set was real or an artifact of a four-month-old capture.
+
+**It is real.** FFN's *entire* D&D crossover corpus is **206 works across 51
+fandoms**. For scale, LotR's AO3 crossover count alone is 84 — all of FFN is
+roughly 2.4x one AO3 IP.
+
+Overlap with the seed 26 is **3 IPs**: LotR (7), Baldur's Gate (4),
+Doctor Who (2). The stored May data was accurate, not stale.
+
+### The corroboration flag is not buildable
+
+The proposed reframe was to use FFN as a corroboration signal — "does D&D
+crossover fic exist here at all?" — rather than a scored magnitude. With 3 of 26
+IPs overlapping, there is nothing to corroborate. A column resolving for 11% of
+the set would look like a signal and carry none.
+
+**FFN stays excluded from scoring.** The original rationale cited a 6,800:1
+AO3:FFN ratio that was an artifact of the BG3 row (corrected in #99 — the real
+ratio is ~10:1), but the *other* argument always did the real work and still
+holds: sparsity, plus the normalisation pathology where a dataset max of 7 hands
+that IP a platform_score of 1.0.
+
+### FFN covers a different population — that belongs to item H
+
+FFN's D&D crossover fandoms are Harry Potter (55), My Little Pony (19),
+Buffy (11), Pokémon (9), Star Wars (6), Terminator (7), Yu-Gi-Oh (6) — classic
+and older fandoms with long crossover traditions. Almost none appear in the seed
+26, which was curated as Universes Beyond licensing candidates.
+
+So FFN is a **discovery frame for a population AO3's set misses**, not a
+corroboration source for the population we have. That folds into work item H
+alongside the AO3 census, with the same caveat: it is a lens, not a census of
+demand.
+
+### The non-obvious finding: FFN measures what AO3 structurally cannot
+
+**FFN gives Baldur's Gate = 4.** AO3 cannot produce a D&D x BG3 crossover count
+at all — AO3 wrangles Baldur's Gate *under* the D&D metatag, so the filter
+returns the whole fandom (the quarantined 49,020). FFN has no metatag hierarchy,
+so its 4 is a genuine intersection.
+
+That inverts the usual framing. FFN is not simply a smaller, weaker AO3; it has a
+flatter taxonomy, and flatness is an advantage precisely where AO3's hierarchy
+collapses the measurement. Worth remembering for any IP that trips
+METATAG_INFLATION in `gold_data.fanfic_capture_guard`: FFN may be able to answer
+the question AO3 refuses.
+
+### Caveats on the FFN numbers
+
+- Index counts carry a documented ±1 drift against pair-page counts
+- FFN fandom IDs can go stale exactly as AO3 tags did (9 of 26 were wrong)
+- Nothing has re-verified the FFN IDs since April
+
+### Open option, not taken
+
+The full 51-fandom index could be ingested rather than just seed-list matches,
+which would give a complete FFN picture for discovery. Not done: it would change
+`fanfic_crossover_counts` from seed-scoped to mixed-scope, and that is an item H
+decision about the sampling frame rather than an item E fix.
