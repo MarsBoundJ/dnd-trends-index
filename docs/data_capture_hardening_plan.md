@@ -68,14 +68,70 @@ Coverage under that approach:
 All four, with no DOM-reading engineering. That would demote work item A from
 "the plan" to belt-and-braces.
 
-**OPEN — verify before relying on this:** do the listings carry canonicals only?
-Test: the Video Games page should show `Wiedźmin | The Witcher (Video Game)` and
-**not** `The Witcher (Video Games)`; Anime & Manga should show
-`SPY x FAMILY (Manga)` and not bare `SPY x FAMILY`. If synonyms also appear, the
-listings are a denominator table only and read-back verification stays necessary.
+**CONFIRMED Sep 2, 2026 — canonicals only.** Neither `The Witcher (Video Games)`
+nor bare `SPY x FAMILY` appears; both canonicals do. The listings are a valid
+verification source, so work item A becomes a pre-flight audit.
 
 Secondary benefit: ~5 page loads instead of 25+ is materially less load on AO3,
 which matters given the human-wielded constraint below.
+
+---
+
+## Work item D — standardise the taxonomic level (NEW, and it affects data we
+## already have)
+
+The listing entries exposed a problem that is **already biasing the current
+crossover ranking**, not just the future ratio:
+
+```
+Wiedźmin | The Witcher - All Media Types   42,482
+Wiedźmin | The Witcher (Video Game)        10,539
+
+SPY x FAMILY - All Media Types              8,897
+SPY x FAMILY (Anime)                        7,177
+SPY x FAMILY (Manga)                        8,051
+```
+
+We measure The Witcher at `(Video Game)` — **a quarter of its 42,482-work
+franchise** — while measuring LotR at `All Media Types`, the whole franchise. The
+two numbers are not at the same level, so 84 vs 24 is not a like-for-like
+comparison.
+
+`seed_fanfic_canonical_tags.py` is genuinely mixed on this:
+
+| Level | IPs |
+|---|---|
+| Umbrella (`All Media Types`) | LotR, Dune, Percy Jackson |
+| Medium-specific | The Witcher, Spy x Family, Stranger Things, Doctor Who, The Mandalorian, House of the Dragon, Cyberpunk 2077, Dark Souls, Bloodborne, Elden Ring, Hades, Jujutsu Kaisen, Demon Slayer |
+| Bare / single-medium | Avatar, FFXIV, Persona 5, One Piece, Attack on Titan, Mistborn, Stormlight, Murderbot |
+
+For single-medium IPs (Elden Ring) the level is moot. For multi-medium franchises
+it changes the number substantially — and those are the big licensing targets.
+
+### Recommendation
+
+**Standardise on the `All Media Types` umbrella as the primary level.** The
+licensing question is franchise-level — "is this IP a good D&D target?" — not "is
+the video game specifically?" It is also the only level that exists consistently
+across franchises.
+
+Keep medium-specific as an **optional secondary** where the distinction is
+analytically real. That is the generalised form of the BG3 question: separating
+the video game from the TTRPG-native property.
+
+### Critical caveat: levels overlap, they do not partition
+
+Anime (7,177) + Manga (8,051) = 15,228 against an umbrella of 8,897. Works carry
+multiple tags, so **children cannot be summed to reach a parent**, and a
+medium-specific count is not a share of the umbrella. The umbrella is the only
+safe cross-IP denominator.
+
+### Consequence for existing data
+
+Re-capturing at umbrella level changes most crossover counts, so it starts a new
+series. Sep 2's counts stay valid *as medium-level measurements* but should not
+be mixed with umbrella-level ones. Decide the level **before** the next capture
+round, not after.
 
 ---
 
