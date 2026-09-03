@@ -153,9 +153,18 @@ def main() -> None:
                 if ao3:
                     print(f'  AO3: {ao3}')
                 else:
-                    print(f'  AO3: (SKIP — AO3 cannot filter on '
-                          f'"{m.ao3_tag}"; it is not marked common. This IP is '
-                          f'UNMEASURABLE on AO3, not zero.)')
+                    # Say WHY, from the seed's own notes. The old text asserted
+                    # one specific cause — "it is not marked common" — for every
+                    # unfilterable IP. That is only one of two reasons a tag can
+                    # be unmeasurable; the other is metatag inflation, where the
+                    # filter resolves fine and returns the whole fandom. Naming
+                    # the wrong cause sends the next reader to re-verify a tag
+                    # that was never the problem.
+                    why = (m.notes or '').strip().split('. ')[0]
+                    print(f'  AO3: (SKIP — not filterable, and a zero here would '
+                          f'be an artifact, not a measurement.)')
+                    if why:
+                        print(f'       reason: {why}.')
             if args.platform != 'ao3':
                 if ffn:
                     print(f'  FFN: {ffn}')
