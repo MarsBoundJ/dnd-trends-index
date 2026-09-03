@@ -151,7 +151,26 @@ MAPPINGS: list[FanficCanonical] = [
         ip_name="Baldur's Gate 3",
         ao3_tag="Baldur's Gate (Video Games)",
         ffn_id=None,
-        notes="AO3 tag covers the BG series broadly; BG3-specific tag may also exist.",
+        ao3_filterable=False,
+        ao3_verified_on="2026-09-03",
+        notes="NOT MEASURABLE ON AO3 — do not re-enable without reading this. "
+              "AO3 wrangles Baldur's Gate UNDER the Dungeons & Dragons metatag, so "
+              "every BG3 work inherits the D&D tag and the D&D x BG3 filter returns "
+              "the WHOLE FANDOM, not an intersection: 49,029 works against a "
+              "49,406-work fandom (99.2%). It is not a big number, it is the same "
+              "number twice. "
+              "The row was quarantined Sep 2 2026 — and came straight back on Sep 2 "
+              "at 23:30, because the quarantine deleted the DATA and left the SEED "
+              "alone, so print_fanfic_capture_urls.py kept emitting a capture URL "
+              "for it and the next regenerated capture page led right back here. "
+              "Deleting a bad row does not stop it being re-collected; only this "
+              "flag does. "
+              "Cost of getting this wrong: BG3 sets the AO3 log-normalisation "
+              "denominator in gold_data.fanfic_crossover_proxy, so one bad row "
+              "compresses every other AO3 score ~2.4x (LotR 1.000 -> 0.411). "
+              "If a BG3 x D&D count is ever needed, FFN can measure it — flat "
+              "taxonomy, no metatags, gives 4. See docs/fanfic_methodology.md and "
+              "work item E in docs/data_capture_hardening_plan.md.",
     ),
     FanficCanonical(
         ip_name="Cyberpunk 2077",
