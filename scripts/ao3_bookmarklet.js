@@ -146,6 +146,14 @@
     return f;
   }
 
+  // The review table shows the CANONICAL TAG under each IP, not just the count.
+  // A wrong tag captures a plausible number with no other symptom: the bare
+  // synonym "Avatar: The Last Airbender" read 15 works instead of the umbrella's
+  // 60, looked normal in a list of counts, and went out THREE times on Sep 2
+  // before anyone noticed — each time silently dropping Avatar from the
+  // ranking, because a non-canonical tag has no fandom total to join to. The
+  // count can't reveal that. The tag can, at the one moment someone is already
+  // looking: the review before Send.
   function render() {
     const rows = load();
     const flagged = rows.map((r) => ({ r, f: flagsFor(r, rows) }));
@@ -161,7 +169,8 @@
       ${rows.length ? `<table style="width:100%;border-collapse:collapse;font-size:12px">${
         flagged.sort((a, b) => b.r.work_count - a.r.work_count).map(({ r, f }) => `
           <tr style="border-bottom:1px solid #2a2a4a">
-            <td style="padding:3px 0">${esc(r.ip_name)}${f.map((x) =>
+            <td style="padding:3px 0">${esc(r.ip_name)}
+              <div style="color:#7c7c9a;font-size:11px;word-break:break-word">${esc(r.platform_canonical)}</div>${f.map((x) =>
               `<div style="color:${x[0]};font-size:11px">⚠ ${esc(x[1])}</div>`).join('')}</td>
             <td style="text-align:right;padding:3px 0 3px 8px;white-space:nowrap">
               ${r.work_count.toLocaleString()}
