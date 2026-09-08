@@ -61,12 +61,16 @@
 
   // ── Freshness window (added Sep 8, 2026) ──────────────────────────────────
   // A combo used to count as "already captured" if it had EVER been captured.
-  // That made a refresh impossible: by Sep 8 every row was from May 18 — four
-  // months old — and the plan screen still reported 179 of 200 "already done".
-  // The tool was built for first collection and could not be asked to re-run.
-  // Now a capture older than this window counts as pending again. 30 days is
-  // long enough that a normal round never re-hammers a ToS-fragile source, and
-  // short enough that stale data cannot hide behind "done".
+  // By Sep 8 every row was from May 18 — four months old — and the plan screen
+  // still reported 183 of 200 "already done". A refresh was always POSSIBLE via
+  // "Force re-do all" below; what was missing is that nothing TOLD you the data
+  // was stale. "183 done" on four-month-old rows reads as complete, and the
+  // force button only helps if you already know you need it.
+  // Now a capture older than this window counts as pending again, so staleness
+  // is automatic and visible. 30 days is long enough that a normal round never
+  // re-hammers a ToS-fragile source, and short enough that stale data cannot
+  // hide behind "done". (Correction to the #124 commit message, which called
+  // the refresh "impossible" — it was invisible, not impossible.)
   const FRESH_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
   // /magic-items has the largest pages and is the first section to time out
   // under throttle (18 of the 21 May failures). It runs LAST and gets a longer
