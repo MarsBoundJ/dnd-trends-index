@@ -58,6 +58,28 @@
   const IP_LIST_TTL_MS = 24 * 60 * 60 * 1000; // 24h
   const FETCH_DELAY_MS = 2000;                 // pacing between DDB fetches
   const FETCH_TIMEOUT_MS = 45000;              // some /magic-items queries take 30s+
+
+  // ── Freshness window (added Sep 8, 2026) ──────────────────────────────────
+  // A combo used to count as "already captured" if it had EVER been captured.
+  // That made a refresh impossible: by Sep 8 every row was from May 18 — four
+  // months old — and the plan screen still reported 179 of 200 "already done".
+  // The tool was built for first collection and could not be asked to re-run.
+  // Now a capture older than this window counts as pending again. 30 days is
+  // long enough that a normal round never re-hammers a ToS-fragile source, and
+  // short enough that stale data cannot hide behind "done".
+  const FRESH_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
+  // /magic-items has the largest pages and is the first section to time out
+  // under throttle (18 of the 21 May failures). It runs LAST and gets a longer
+  // pause after each request, so a throttle there cannot poison the sections
+  // that were going to succeed.
+  const MAGIC_ITEMS_DELAY_MS = 6000;
+  const SLOW_SECTION = 'magic-items';
+
+  function isFresh(ts) {
+    if (!ts) return false;
+    const t = Date.parse(ts);
+    return Number.isFinite(t) && (Date.now() - t) < FRESH_WINDOW_MS;
+  }
   const FETCH_RETRY_BACKOFF_MS = 5000;         // wait before single retry on timeout
 
   // Per-section filter-param map. DDB has two listing-component generations:
@@ -175,19 +197,24 @@
   // (returned by /system/homebrew/ip-list) AND the local sent log.
   function progressFor(ipName) {
     const log = loadSentLog();
-    const fromLog = new Set(log.filter((e) => e.ip_name === ipName).map((e) => e.section));
+    // Same freshness rule as isAlreadyCaptured, so the progress bars and the
+    // plan screen cannot disagree about what counts as done.
+    const fromLog = new Set(log.filter((e) => e.ip_name === ipName && isFresh(e.ts)).map((e) => e.section));
     const ipRow = PRIORITY_IPS.find((x) => x.ip_name === ipName);
-    const fromServer = ipRow ? Object.entries(ipRow.sections || {}).filter(([_, ts]) => !!ts).map(([s]) => s) : [];
+    const fromServer = ipRow ? Object.entries(ipRow.sections || {}).filter(([_, ts]) => isFresh(ts)).map(([s]) => s) : [];
     const all = new Set([...fromLog, ...fromServer]);
     const priorityDone = PRIORITY_SECTIONS.filter((s) => all.has(s));
     return { priorityDone: priorityDone.length, priorityTotal: PRIORITY_SECTIONS.length, allDone: Array.from(all) };
   }
 
+  // "Captured" now means captured WITHIN THE FRESHNESS WINDOW, from either the
+  // local sent log (entries carry `ts`) or the server's per-section last_sent
+  // timestamp. Anything older is pending again — that is the whole point.
   function isAlreadyCaptured(ipName, section) {
     const log = loadSentLog();
-    if (log.some((e) => e.ip_name === ipName && e.section === section)) return true;
+    if (log.some((e) => e.ip_name === ipName && e.section === section && isFresh(e.ts))) return true;
     const ipRow = PRIORITY_IPS.find((x) => x.ip_name === ipName);
-    return !!(ipRow && ipRow.sections && ipRow.sections[section]);
+    return !!(ipRow && ipRow.sections && isFresh(ipRow.sections[section]));
   }
 
   // ── HTML escape ───────────────────────────────────────────────────────────
@@ -254,7 +281,10 @@
     const total = tasks.length;
     const done = tasks.filter((t) => t.alreadyCaptured).length;
     const pending = total - done;
-    const estTimeSec = Math.ceil(pending * FETCH_DELAY_MS / 1000) + Math.ceil(pending * 0.5);
+    // Honest ETA: the slow section pays its own, longer per-request pause.
+    const pendingSlow = tasks.filter((t) => !t.alreadyCaptured && t.section === SLOW_SECTION).length;
+    const pauseMs = pendingSlow * MAGIC_ITEMS_DELAY_MS + (pending - pendingSlow) * FETCH_DELAY_MS;
+    const estTimeSec = Math.ceil(pauseMs / 1000) + Math.ceil(pending * 0.5);
     const estMin = Math.floor(estTimeSec / 60);
     const estS = estTimeSec % 60;
 
@@ -262,7 +292,7 @@
       <div style="background:#1a1a2e;padding:10px;border-radius:6px;">
         <div style="font-size:13px;font-weight:600;color:#e87722;margin-bottom:6px;">🚀 Bulk capture priority queue</div>
         <div style="font-size:12px;color:#aaa;line-height:1.5;">
-          <b style="color:#e0e0ff;">${total}</b> total captures · <b style="color:#5fdc7c;">${done}</b> already done · <b style="color:#e87722;">${pending}</b> pending<br/>
+          <b style="color:#e0e0ff;">${total}</b> total captures · <b style="color:#5fdc7c;">${done}</b> fresh (≤30d) · <b style="color:#e87722;">${pending}</b> pending <span style="color:#777;">(never captured, or older than 30 days)</span><br/>
           40 priority IPs × ${PRIORITY_SECTIONS.length} sections (<i>${PRIORITY_SECTIONS.join(', ')}</i>)<br/>
           Estimated time: ~${estMin}m ${estS}s
         </div>
@@ -328,6 +358,12 @@
   async function runBulk(tasks) {
     window.__ddb_bulk_running__ = true;
     delete window.__ddb_bulk_abort__;
+
+    // Run the slow section LAST. Stable sort, so IP priority order is kept
+    // within each group. Done here rather than at plan-build time so every
+    // caller — "capture pending" and the per-cohort buttons — gets it.
+    tasks = [...tasks].sort((a, b) =>
+      (a.section === SLOW_SECTION ? 1 : 0) - (b.section === SLOW_SECTION ? 1 : 0));
 
     const results = { saved: 0, empty: 0, failed: 0 };
     const startTs = Date.now();
@@ -403,7 +439,8 @@
       recent.push({ ip_name: task.ip_name, section: task.section, outcome, note });
       renderProgress();
       if (i < tasks.length - 1 && !window.__ddb_bulk_abort__) {
-        await new Promise((r) => setTimeout(r, FETCH_DELAY_MS));
+        const pause = task.section === SLOW_SECTION ? MAGIC_ITEMS_DELAY_MS : FETCH_DELAY_MS;
+        await new Promise((r) => setTimeout(r, pause));
       }
     }
 
