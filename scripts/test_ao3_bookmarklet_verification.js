@@ -37,6 +37,25 @@ function loadVerification() {
 
 const build = loadVerification();
 
+// flagsFor() decides what the review table warns about, and is sliced the same
+// way and for the same reason: a copy would drift.
+const F_START = '  function flagsFor(r, all) {';
+const F_END = '  // The review table shows the CANONICAL TAG';
+
+function loadFlagsFor() {
+  const src = fs.readFileSync(SRC, 'utf8');
+  const a = src.indexOf(F_START);
+  const b = src.indexOf(F_END);
+  if (a < 0 || b < 0 || b <= a) {
+    throw new Error('Could not find flagsFor() in ao3_bookmarklet.js.');
+  }
+  // eslint-disable-next-line no-new-func
+  return new Function(src.slice(a, b) + ';return flagsFor;')();
+}
+
+const flagsFor = loadFlagsFor();
+const flagText = (row) => flagsFor(row, [row]).map((x) => x[1]).join(' | ');
+
 function makeDoc({ boxValue, works }) {
   const blurbs = (works || []).map((fandoms) => ({
     querySelectorAll: (sel) =>
@@ -164,6 +183,19 @@ check('  ...and it still raises a warning', mixed.warn, true);
 check('a zero-result page still verifies from the filter box',
   verdict(makeDoc({ boxValue: 'Mistborn - All Media Types', works: [] }),
     'Mistborn - All Media Types').verdict, 'verified');
+
+// ── Review-table flags ───────────────────────────────────────────────────
+// What a CURRENT build writes.
+check('a verified row raises no verification flag',
+  /UNVERIFIED/.test(flagText({ work_count: 60, verification_verdict: 'verified' })), false);
+check('an unverified row is flagged',
+  /UNVERIFIED/.test(flagText({ work_count: 60, verification_verdict: 'unverified' })), true);
+
+// What an OLDER build left in localStorage: no verdict field at all. Testing
+// for the ABSENCE of 'verified' rather than the presence of 'unverified' is
+// what stops the one never-checked row from being the one that looks clean.
+check('a row from an older build, carrying no verdict, is flagged',
+  /UNVERIFIED/.test(flagText({ work_count: 60 })), true);
 
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed ? 1 : 0);

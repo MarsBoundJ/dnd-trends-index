@@ -279,12 +279,20 @@
     if (r.work_count === 0) {
       f.push(['#ff8888', 'ZERO — every AO3 zero so far was a stale or unfilterable tag, never a real absence']);
     }
-    // Not a failure — we simply could not read AO3's own filter state on that
-    // page. It stays sendable, but it must not look like a checked capture.
+    // One signal confirmed the filter while the other disagreed. Sendable, but
+    // the disagreement belongs on screen next to the number it produced.
     if (r.verification_warn) {
       f.push(['#d9a64a', `Filter confirmed, but the works disagree — ${r.verification_detail}`]);
     }
-    if (r.verification_verdict === 'unverified') {
+    // Not a failure — AO3's own filter state simply could not be read on that
+    // page. It stays sendable, but it must not look like a checked capture.
+    //
+    // Tested for the ABSENCE of 'verified' rather than the presence of
+    // 'unverified', so a row left in localStorage by an older build — which
+    // carries no verdict field at all — is flagged too. Anything else would let
+    // the one kind of row that was never checked be the one kind that looks
+    // clean. ('failed' never reaches the stash; those captures are refused.)
+    if (r.verification_verdict !== 'verified') {
       f.push(['#d9a64a', 'UNVERIFIED — AO3’s filter state was unreadable; the tag above is only what we asked for']);
     }
     const others = all.filter((x) => x !== r).map((x) => x.work_count).sort((a, b) => a - b);
