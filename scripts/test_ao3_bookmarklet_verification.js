@@ -32,7 +32,7 @@ function loadVerification() {
   // eslint-disable-next-line no-new-func
   return new Function(
     'document',
-    src.slice(a, b) + '\nreturn { normTag, tagAlts, tagsOverlap, verifyFilter };');
+    src.slice(a, b) + '\nreturn { normTag, tagAlts, tagsOverlap, verifyFilter, isUmbrella };');
 }
 
 const build = loadVerification();
@@ -183,6 +183,51 @@ check('  ...and it still raises a warning', mixed.warn, true);
 check('a zero-result page still verifies from the filter box',
   verdict(makeDoc({ boxValue: 'Mistborn - All Media Types', works: [] }),
     'Mistborn - All Media Types').verdict, 'verified');
+
+// ── Umbrella threshold ───────────────────────────────────────────────────
+// From the first live run, Sep 14. The Avatar umbrella capture was CORRECT —
+// AO3 confirmed the filter and the count was the expected 60 — but the works
+// read 15/20, because the other five are Legend of Korra: genuinely inside the
+// "& Related Fandoms" umbrella, and sharing no words with its name. At a flat
+// 0.8 threshold a correct capture warned, which trains the warning to be
+// ignored. Under an umbrella a partial match is the normal reading.
+check('umbrella tags are recognised',
+  M.isUmbrella('Avatar: The Last Airbender & Related Fandoms'), true);
+check('  ...and so is the other suffix',
+  M.isUmbrella('One Piece - All Media Types'), true);
+check('  ...while a plain tag is not',
+  M.isUmbrella('Stranger Things (TV 2016)'), false);
+
+const korra = verdict(makeDoc({
+  boxValue: 'Avatar: The Last Airbender & Related Fandoms',
+  works: Array(15).fill([DND, 'Avatar: The Last Airbender (TV 2005)'])
+    .concat(Array(5).fill([DND, 'The Legend of Korra'])),
+}), 'Avatar: The Last Airbender & Related Fandoms');
+check('the real 15/20 umbrella capture verifies', korra.verdict, 'verified');
+check('  ...and does NOT warn', korra.warn, false);
+
+// The same ratio on a NON-umbrella tag still warns: there is no sibling-naming
+// explanation available, so 75% is genuinely odd.
+const flat = verdict(makeDoc({
+  boxValue: 'Stranger Things (TV 2016)',
+  works: Array(15).fill([DND, 'Stranger Things (TV 2016)'])
+    .concat(Array(5).fill([DND, 'Elden Ring (Video Game)'])),
+}), 'Stranger Things (TV 2016)');
+check('the same ratio on a flat tag still warns', flat.warn, true);
+
+// ── Pass detail and warn detail stay apart ───────────────────────────────
+// Joining them put the warning inside the GREEN line and printed it again in
+// the amber one: the panel said the same thing twice and rendered a caveat as
+// a tick. Seen in the first live screenshot.
+const split = verdict(makeDoc({
+  boxValue: 'The Lord of the Rings - All Media Types',
+  works: [['The Hobbit - All Media Types']],
+}), 'The Lord of the Rings - All Media Types');
+check('the confirmation line carries only what confirmed',
+  /confirms the filter/.test(split.detail) && !/none of the/.test(split.detail), true);
+check('the warning line carries only what disagreed',
+  /none of the/.test(split.warnDetail) && !/confirms the filter/.test(split.warnDetail), true);
+
 
 // ── Review-table flags ───────────────────────────────────────────────────
 // What a CURRENT build writes.

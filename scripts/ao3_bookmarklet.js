@@ -121,6 +121,14 @@
 
   // "Wiedzmin | The Witcher" — AO3 joins localised titles with a pipe and a
   // work may be listed under either side. Both identify the same fandom.
+  // An umbrella's children are frequently named nothing like it: the Avatar
+  // umbrella covers The Legend of Korra, the LotR umbrella covers The Hobbit.
+  // That changes what a partial match MEANS, so the works signal has to know.
+  function isUmbrella(s) {
+    return /(\s*-\s*all media types|\s*&\s*related fandoms)\s*$/i
+      .test(String(s == null ? '' : s).replace(/&amp;/g, '&'));
+  }
+
   function tagAlts(s) {
     return normTag(s).split('|')
       .map((x) => x.trim())
@@ -170,12 +178,21 @@
       if (links.some((a) => tagsOverlap(wantedTag, a.textContent))) carrying++;
     }
     if (checked) {
+      // Under an umbrella, a partial match is the NORMAL reading of a correct
+      // capture rather than a symptom, so only a near-total absence is worth
+      // raising. Live proof: the Avatar umbrella capture read 15/20 — the other
+      // five are Legend of Korra, which is genuinely in the umbrella and shares
+      // no words with it. At a flat 0.8 that correct capture warned.
+      const floor = isUmbrella(wantedTag) ? 0.25 : 0.8;
       if (carrying === 0) {
         signals.push(['fail', `none of the ${checked} works listed carry that fandom`, 'works']);
-      } else if (carrying / checked >= 0.8) {
+      } else if (carrying / checked >= floor) {
         signals.push(['pass', `${carrying}/${checked} listed works carry the fandom`, 'works']);
       } else {
-        signals.push(['warn', `only ${carrying}/${checked} listed works carry the fandom`, 'works']);
+        signals.push(['warn',
+          `only ${carrying}/${checked} listed works carry the fandom`
+            + (isUmbrella(wantedTag) ? ', low even for an umbrella' : ''),
+          'works']);
       }
     }
 
@@ -206,10 +223,16 @@
     const verdict = graded.some((x) => x[0] === 'fail') ? 'failed'
                   : graded.some((x) => x[0] === 'pass') ? 'verified'
                   : 'unverified';
+    // Kept apart deliberately. Joining every message into one string put the
+    // warning text inside the GREEN confirmation line and then printed it a
+    // second time in the amber one — the panel said the same thing twice and
+    // rendered a caveat as a tick. What confirmed and what disagreed are two
+    // different statements and each belongs on its own line.
     return {
       verdict,
       warn: graded.some((x) => x[0] === 'warn'),
-      detail: graded.map((x) => x[1]).join('; '),
+      detail: graded.filter((x) => x[0] === 'pass').map((x) => x[1]).join('; '),
+      warnDetail: graded.filter((x) => x[0] === 'warn').map((x) => x[1]).join('; '),
     };
   }
 
@@ -262,6 +285,7 @@
         verification_verdict: ver ? ver.verdict : 'unverified',
         verification_warn: !!(ver && ver.warn),
         verification_detail: ver ? ver.detail : '',
+        verification_warn_detail: ver ? ver.warnDetail : '',
       };
       if (prev >= 0) { rows[prev] = row; notice = `Updated <b>${esc(ip)}</b> → ${count.toLocaleString()}`; }
       else { rows.push(row); notice = `Captured <b>${esc(ip)}</b> → ${count.toLocaleString()}`; }
@@ -282,7 +306,7 @@
     // One signal confirmed the filter while the other disagreed. Sendable, but
     // the disagreement belongs on screen next to the number it produced.
     if (r.verification_warn) {
-      f.push(['#d9a64a', `Filter confirmed, but the works disagree — ${r.verification_detail}`]);
+      f.push(['#d9a64a', `Filter confirmed, but ${r.verification_warn_detail}`]);
     }
     // Not a failure — AO3's own filter state simply could not be read on that
     // page. It stays sendable, but it must not look like a checked capture.
