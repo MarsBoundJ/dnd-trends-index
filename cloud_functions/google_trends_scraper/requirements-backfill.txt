@@ -1,0 +1,20 @@
+# Dependencies for run_backfill.py ONLY — a manual, run-it-yourself backfill
+# tool. Deliberately kept out of requirements.txt so they never reach the
+# container image, which does not use them.
+#
+# urllib3<2 is REQUIRED, not cautionary. pytrends 4.9.2 (the latest, and
+# effectively unmaintained) calls Retry(method_whitelist=...), which urllib3
+# removed in 2.0 in favour of allowed_methods. It only bites when retries or
+# backoff_factor are set, and run_backfill.py sets both, so it bites every call:
+#     TypeError: Retry.__init__() got an unexpected keyword argument
+#                'method_whitelist'
+# Verified Sep 14, 2026: urllib3 1.26.20 + pytrends 4.9.2 + requests 2.34 builds
+# the payload and returns a real DataFrame.
+#
+# pandas<3 holds the major version this code was written against. pytrends'
+# own request.py calls df.fillna(False) on an object-dtype column, which pandas
+# 2 warns "will change in a future version" — i.e. exactly what pandas 3 changes.
+urllib3<2
+pandas>=2.0,<3.0
+pytrends>=4.9.0,<5
+google-cloud-bigquery>=3.0.0

@@ -1,27 +1,14 @@
-functions-framework>=3.0.0
-google-cloud-bigquery>=3.0.0
-google-cloud-storage>=2.0.0
-
-# PINNED Sep 14, 2026 — these two floors were open-ended, so every redeploy
-# resolved whatever was newest that day. The python312 bump proved that is not
-# theoretical: it silently pulled urllib3 2.x and broke the live stream.
+# Dependencies for the CONTAINER IMAGE only — the Cloud Run job that actually
+# collects. browser_trends.py is the only code this file needs to serve.
 #
-# urllib3 <2 is REQUIRED, not cautionary. pytrends 4.9.2 (the latest, and
-# effectively unmaintained) calls Retry(method_whitelist=...), which urllib3
-# removed in 2.0 in favour of allowed_methods. It only bites when retries or
-# backoff_factor are set — main.py uses retries=5, backoff_factor=2 for the
-# rotating proxy, so it bites every single call:
-#     TypeError: Retry.__init__() got an unexpected keyword argument
-#                'method_whitelist'
-# Verified: urllib3 1.26.20 + pytrends 4.9.2 + requests 2.34 builds the payload
-# and reaches the network. Drop this pin only when pytrends itself is fixed.
-urllib3<2
-
-# pandas <3 holds the major version the code was actually running under. An
-# unpinned floor resolved to pandas 3.0.5 during the same deploy. The code's
-# use is read-only (boolean mask, iterrows, Series reads) so copy-on-write
-# should not bite, but that is reasoning, not evidence — and bundling an
-# untested major bump with a runtime change leaves two suspects when something
-# breaks. Lift this deliberately, on its own, with a smoke test.
-pandas>=2.0,<3.0
-pytrends>=4.9.0,<5
+# The Dockerfile also pip-installs playwright, playwright-stealth and
+# google-cloud-bigquery inline on the same command; they are listed here so the
+# dependency set is readable without reverse-engineering the Dockerfile.
+#
+# Removed Sep 14, 2026: pandas, pytrends, urllib3, functions-framework,
+# google-cloud-storage. Those served main.py and job.py, both deleted in the
+# same change, and browser_trends.py imports none of them. For the manual
+# pytrends backfill script see requirements-backfill.txt.
+playwright
+playwright-stealth
+google-cloud-bigquery>=3.0.0
