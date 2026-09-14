@@ -1579,8 +1579,24 @@ def bouncer_api(request):
         # the 25th would hide exactly the event that most needs noticing.
         ao3_rows = [r for r in cleaned if r['platform'] == 'ao3']
         if ao3_rows:
-            totals = _ao3_fandom_totals(
-                client, {r['platform_canonical'] for r in ao3_rows if r['platform_canonical']})
+            # FAIL OPEN on the lookup, and only on the lookup. This query sits in
+            # the hot path of the only ingest endpoint; if ao3_fandom_totals is
+            # renamed, empty, or BigQuery is briefly unavailable, an exception
+            # here would take down every capture rather than block one bad row.
+            # An ingest outage is the worse failure: it stops a curator mid-round
+            # with no way through, while a missed artifact is still caught by the
+            # URL check below, the panel's red-flag block, and the capture guard.
+            # Empty totals simply mean no row can be judged on inflation, which
+            # is the same "decline to judge rather than guess" rule applied to
+            # unknown tags.
+            try:
+                totals = _ao3_fandom_totals(
+                    client,
+                    {r['platform_canonical'] for r in ao3_rows if r['platform_canonical']})
+            except Exception as e:  # noqa: BLE001 - deliberately broad
+                print(f"AO3 guard: fandom-total lookup failed, "
+                      f"inflation check skipped this batch: {type(e).__name__}: {e}")
+                totals = {}
             rejections = _ao3_rejections(ao3_rows, totals)
             if rejections:
                 return (json.dumps({
