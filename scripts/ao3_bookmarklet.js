@@ -340,7 +340,8 @@
   function render() {
     const rows = load();
     const flagged = rows.map((r) => ({ r, f: flagsFor(r, rows) }));
-    const anyCritical = flagged.some((x) => x.f.some((y) => y[0] === '#ff8888'));
+    const criticals = flagged.filter((x) => x.f.some((y) => y[0] === '#ff8888'));
+    const anyCritical = criticals.length > 0;
 
     ui.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
@@ -362,9 +363,10 @@
               <button data-del="${esc(r.ip_name)}" style="background:none;border:none;color:#666;cursor:pointer">✕</button>
             </td>
           </tr>`).join('')}</table>` : '<i style="color:#666">Nothing captured yet.</i>'}
-      ${anyCritical ? '<div style="color:#ff8888;margin-top:8px;font-size:12px">⚠ Resolve or remove flagged rows before sending.</div>' : ''}
+      ${anyCritical ? `<div style="color:#ff8888;margin-top:8px;font-size:12px">⚠ Sending is blocked. Remove the flagged row${criticals.length > 1 ? 's' : ''} with ✕, or re-capture from a freshly generated URL.</div>` : ''}
       <div style="display:flex;gap:6px;margin-top:11px">
-        <button id="__send" ${rows.length ? '' : 'disabled'} style="flex:1;background:${rows.length ? '#3b82f6' : '#333'};color:#fff;border:none;padding:9px;border-radius:5px;cursor:pointer;font-weight:600">Send all ${rows.length || ''}</button>
+        <button id="__send" ${rows.length && !anyCritical ? '' : 'disabled'} style="flex:1;background:${rows.length && !anyCritical ? '#3b82f6' : '#333'};color:#fff;border:none;padding:9px;border-radius:5px;cursor:pointer;font-weight:600">${
+          anyCritical ? `Blocked — ${criticals.length} flagged row${criticals.length > 1 ? 's' : ''}` : `Send all ${rows.length || ''}`}</button>
         <button id="__clr" style="background:#1a1a2e;color:#d9a64a;border:1px solid #2a2a4a;padding:9px 11px;border-radius:5px;cursor:pointer">Clear</button>
       </div>
       <div id="__status" style="margin-top:8px;color:#aaa"></div>`;
@@ -386,6 +388,16 @@
       // click sent nine rows and cleared the stash, the panel did not redraw,
       // so the second click landed on an empty batch and did nothing visible.
       st.innerHTML = '<b style="color:#d9a64a">Nothing to send — the batch is empty.</b>';
+      return;
+    }
+    // Belt and braces. The button is disabled while a critical flag stands, but a
+    // panel in another tab can be a render behind, and the whole reason this
+    // exists is that one bad row is worth more than a whole good round.
+    const blocked = rows.filter((r) => flagsFor(r, rows).some((y) => y[0] === '#ff8888'));
+    if (blocked.length) {
+      st.innerHTML = `<b style="color:#ff8888">Blocked — ${blocked.length} flagged row(s).</b><br>`
+                   + `Remove ${esc(blocked.map((r) => r.ip_name).join(', '))} before sending.`;
+      render();
       return;
     }
     st.textContent = `Sending ${rows.length}…`;
