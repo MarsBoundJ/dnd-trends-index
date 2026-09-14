@@ -242,5 +242,27 @@ check('an unverified row is flagged',
 check('a row from an older build, carrying no verdict, is flagged',
   /UNVERIFIED/.test(flagText({ work_count: 60 })), true);
 
+// ── Critical flags must block the send ───────────────────────────────────
+// Sep 14, the fourth time this row has landed. A stale saved bookmark captured
+// Baldur's Gate at 49,245 — the whole fandom, not an intersection — inside an
+// otherwise clean 23-IP round. Every layer behaved: the URL generator refused to
+// emit the link, read-back verification correctly PASSED (AO3 did apply the tag
+// we asked for; we asked the wrong thing), the panel raised a red flag, and the
+// guard raised two CRITICALs. The row landed anyway, because the red flag was
+// advice and Send stayed enabled. One bad row sets the log-normalisation
+// denominator and compresses every other AO3 score ~2.4x.
+const batch = [
+  { ip_name: "Baldur's Gate 3", work_count: 49245, verification_verdict: 'verified' },
+  { ip_name: 'The Lord of the Rings', work_count: 84, verification_verdict: 'verified' },
+  { ip_name: 'Avatar', work_count: 60, verification_verdict: 'verified' },
+  { ip_name: 'Jujutsu Kaisen', work_count: 54, verification_verdict: 'verified' },
+];
+const isCritical = (r) => flagsFor(r, batch).some((y) => y[0] === '#ff8888');
+check('metatag inflation is flagged critical', isCritical(batch[0]), true);
+check('an ordinary row in the same batch is not', isCritical(batch[1]), false);
+check('a zero is flagged critical',
+  isCritical({ ip_name: 'X', work_count: 0, verification_verdict: 'verified' }), true);
+
+
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed ? 1 : 0);
