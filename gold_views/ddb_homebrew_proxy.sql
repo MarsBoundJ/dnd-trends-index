@@ -36,6 +36,31 @@
 --
 --   ddb_homebrew_score = LOG10(confirmed_total + 1) / LOG10(MAX_total + 1)
 --
+-- ─── STALENESS (added Sep 14, 2026) ────────────────────────────────────
+--
+-- This view had no idea how old its data was. Status read 'sufficient' and
+-- confidence 'HIGH' from item counts alone, and snapshot_date stamped
+-- CURRENT_DATE() onto the row — so a May 18 capture read as fully current on
+-- Sep 14, four months later, and flowed into homebrew_combined_proxy and
+-- ub_matrix_composite at full weight. The composite was not saying "DDB
+-- unmeasured since May"; it was certifying May as fresh.
+--
+-- Same shape as platforms_present, is_umbrella and NO_FANDOM_TOTAL this
+-- month: a quality column that certifies instead of warns.
+--
+-- Why the data went stale: DDB's homebrew SEARCH has returned 500s
+-- intermittently since Feb 2026 (two Bugs & Support threads, no staff fix),
+-- and the bookmarklet's filtered fetches ARE searches. Not throttling, not us.
+--
+-- The rule: a capture older than STALE_AFTER_DAYS NULLs the score. That is
+-- deliberate — homebrew_combined_proxy averages with renormalization
+-- (COALESCE on top, IS NOT NULL count underneath), so a NULL DDB score drops
+-- DDB out of the average rather than pulling it toward zero, and
+-- ub_matrix_composite's measured_sources_count follows. "Unmeasured" is
+-- exactly the semantics wanted, and no downstream view needs to change.
+-- ddb_data_as_of and ddb_capture_age_days say how old the data is;
+-- snapshot_date keeps its meaning (when the view was read).
+--
 -- Same heavy-tailed pattern as Stage 6b external_homebrew_proxy v1.
 -- Conservative: scores from CONFIRMED items only, never inflated by
 -- fuzzy-match coincidences.
@@ -133,7 +158,14 @@ WITH
 
   -- Capture timestamp for the data trail
   last_capture AS (
-    SELECT ip_name, MAX(scraped_at) AS last_captured_at
+    -- sections_with_rows counts captured ROWS, not items. per_ip's
+    -- sections_captured is built from flattened items, so an IP that was
+    -- captured and found nothing has 0 there — and the original view called
+    -- that "Not yet captured", reporting a measured zero as never measured.
+    -- Rows are the record of a capture having happened; items are not.
+    SELECT ip_name,
+           MAX(scraped_at)             AS last_captured_at,
+           COUNT(DISTINCT ddb_section) AS sections_with_rows
     FROM latest_per_ip_section
     GROUP BY ip_name
   ),
@@ -163,6 +195,15 @@ WITH
       COALESCE(p.confirmed_species,     0) AS confirmed_species,
       COALESCE(p.sections_captured,     0) AS sections_captured,
       lc.last_captured_at,
+      COALESCE(lc.sections_with_rows, 0) AS sections_with_rows,
+      -- Computed ONCE here so the three CASEs below share one definition.
+      -- STALE_AFTER_DAYS = 60. Homebrew adds accumulate slowly, so a month-old
+      -- score is still a fair estimate and 30 would flap between monthly
+      -- captures; 90 lets a whole quarter pass as fresh. Today's gap: 119 days.
+      -- A NULL last_captured_at (no rows at all) reads not-stale here and is
+      -- caught by sections_with_rows = 0 in the status CASE.
+      DATE_DIFF(CURRENT_DATE(), DATE(lc.last_captured_at), DAY) AS capture_age_days,
+      COALESCE(DATE_DIFF(CURRENT_DATE(), DATE(lc.last_captured_at), DAY) > 60, FALSE) AS is_stale,
       tci.top_item
     FROM `dnd-trends-index.dnd_trends_raw.ub_candidate_seeds` s
     LEFT JOIN per_ip p USING (ip_name)
@@ -177,6 +218,9 @@ SELECT
 
   -- ─── THE SCORE ────────────────────────────────────────────────────────
   CASE
+    -- Stale => NULL, so homebrew_combined_proxy renormalizes without DDB.
+    -- The load-bearing branch; see the STALENESS header.
+    WHEN j.is_stale THEN NULL
     WHEN j.confirmed_total = 0 THEN NULL
     ELSE ROUND(
       SAFE_DIVIDE(
@@ -188,13 +232,17 @@ SELECT
   END AS ddb_homebrew_score,
 
   -- ─── STATUS + CONFIDENCE ──────────────────────────────────────────────
+  -- Order matters and matches the confidence CASE: never-captured first
+  -- (no rows at all), then stale, then captured-but-nothing-confirmed.
   CASE
-    WHEN j.sections_captured = 0 THEN 'no_ddb_data'
+    WHEN j.sections_with_rows = 0 THEN 'no_ddb_data'
+    WHEN j.is_stale THEN 'stale'
     WHEN j.confirmed_total = 0 THEN 'no_confirmed_ddb_signal'
     ELSE 'sufficient'
   END AS ddb_homebrew_status,
 
   CASE
+    WHEN j.is_stale THEN 'STALE'
     WHEN j.confirmed_total = 0 THEN 'NONE'
     WHEN j.confirmed_total <= 3 THEN 'LOW'
     WHEN j.confirmed_total <= 15 THEN 'MEDIUM'
@@ -230,11 +278,24 @@ SELECT
   j.top_item.adds                AS ddb_top_item_adds,
 
   j.last_captured_at AS ddb_last_captured_at,
+  j.capture_age_days AS ddb_capture_age_days,
 
   -- ─── HUMAN-READABLE REASONING ─────────────────────────────────────────
   CASE
-    WHEN j.sections_captured = 0 THEN
+    WHEN j.sections_with_rows = 0 THEN
       'Not yet captured on D&D Beyond.'
+    -- Prose must agree with the columns beside it. Without this branch a
+    -- stale IP would read "N confirmed items..." in the present tense next to
+    -- status='stale' and a NULL score.
+    WHEN j.is_stale THEN
+      CONCAT(
+        'DDB capture is ', CAST(j.capture_age_days AS STRING),
+        ' days old (last captured ', CAST(DATE(j.last_captured_at) AS STRING),
+        '). Score withheld — treated as UNMEASURED, not zero. ',
+        'D&D Beyond homebrew search has returned server errors since Feb 2026; ',
+        'the last capture found ', CAST(j.confirmed_total AS STRING),
+        ' confirmed item(s), which may no longer reflect the site.'
+      )
     WHEN j.confirmed_total = 0 AND j.visible_total = 0 THEN
       'No DDB homebrew exists for this IP across the 5 priority sections.'
     WHEN j.confirmed_total = 0 THEN
@@ -266,6 +327,10 @@ SELECT
   -- Standardized output contract
   'community_reception'              AS signal_type,
   'ddb_homebrew_disambiguated'       AS stream_name,
+  -- Two dates, deliberately: what the data is as-of, and when the view was
+  -- read. Before this the row carried only the second, which made a May
+  -- capture look like today's.
+  DATE(j.last_captured_at)           AS ddb_data_as_of,
   CURRENT_DATE()                     AS snapshot_date
 
 FROM joined j
