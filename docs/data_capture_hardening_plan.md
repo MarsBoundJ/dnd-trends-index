@@ -135,9 +135,68 @@ round, not after.
 
 ---
 
-## Work item A — read-back filter verification
+## Work item A — read-back filter verification — **BUILT Sep 14, 2026 (PR #127)**
 
-### The gap
+**Status: shipped, with one caveat that only a live capture can close — see
+"What is still unconfirmed" at the end of this item.**
+
+`verifyFilter()` in `scripts/ao3_bookmarklet.js` reads two independent signals
+from the page the human already loaded:
+
+- **form** — AO3 repopulates its own filter box with the tags it applied. An
+  empty box beside a non-empty URL parameter is a dropped filter.
+- **works** — the works AO3 listed should actually carry the fandom asked for.
+  The stronger signal: a form field can echo a string the server never used, but
+  a page of works cannot fake being tagged.
+
+| Verdict | Behaviour |
+|---|---|
+| `failed` | capture is **refused**, as a missing filter already is, with AO3's contradicting text quoted in the panel |
+| `unverified` | captured, amber flag in the review table, still sendable |
+| `verified` | captured, green confirmation line under the canonical tag |
+
+**A signal that cannot be read contributes nothing rather than passing, and
+silence resolves to `unverified`, never `verified`.** That rule is the whole
+point — a checker that certifies when it cannot see is the same defect as
+`platforms_present`, `is_umbrella`, `NO_FANDOM_TOTAL` and the DDB staleness NULL.
+
+Two judgement calls, both found while testing:
+
+1. **Containment is one-directional.** What AO3 lists may be *more* specific than
+   what was asked (umbrella `the witcher` → child `the witcher 3 wild hunt`),
+   never less. Matching both ways let any shorter prefix satisfy the filter:
+   `Avatar (2009)` would have satisfied a filter for `Avatar: The Last
+   Airbender` — the exact wrong-but-plausible match this exists to reject.
+2. **A works-mismatch downgrades to a warning when the form box agrees.** A real
+   umbrella lists works tagged only with a sibling: the LotR umbrella covers The
+   Hobbit. With AO3 confirming the filter, zero matches is more likely
+   name-matching missing an odd child than a dropped filter. An empty box stays
+   decisive.
+
+Tests: `node scripts/test_ao3_bookmarklet_verification.js`, 17 cases, reading the
+functions out of the bookmarklet rather than copying them.
+
+**Not persisted.** The ingest route whitelists columns, so the verdict rides in
+the payload and is dropped server-side. Persisting needs a `bouncer/main.py`
+change plus a `fanfic_crossover_counts` schema change, both gated. The
+client-side half is where the value is: it stops bad data *at the source*
+instead of reporting it after it lands.
+
+### What is still unconfirmed
+
+**The selectors have never been run against live AO3 markup.** The constraint
+below is why: navigating to AO3 on Phil's behalf is out of bounds, so the DOM
+was not inspected first as this item originally planned. The design is built to
+fail safe — wrong selectors produce `unverified`, never a false `verified` — but
+that safety is the *only* reason shipping without a live check was acceptable.
+
+**How to close it:** on the first capture of the next round, look at the review
+table. A green "AO3 confirms the filter" line means the selectors match real
+markup. If every row comes back amber/`UNVERIFIED`, the selectors are wrong and
+need one look at a real results page. Verification silently reading nothing on
+every capture is indistinguishable from not having built it.
+
+### The gap (original, for the record)
 
 We never verify the filter was actually *applied*. `platform_canonical` is echoed
 from our own URL parameter, not read back from AO3's page:
@@ -162,11 +221,13 @@ Concretely, on the results page:
 - if the count is implausibly close to the primary tag's own total → warn about
   possible metatag inflation
 
-### Open question
+### Open question (resolved by shipping, not by inspection)
 
-The exact DOM to read has not been determined — it needs a look at a live AO3
-results page (filter sidebar vs. results header). **Do that first**; the rest of
-the design depends on what is actually available.
+The exact DOM was never determined from a live page — see "What is still
+unconfirmed" above. Rather than block on an AO3 visit that the constraints do
+not permit, the implementation targets both plausible locations and treats a
+miss as `unverified`. The open question moved rather than closed: it is now
+"do these selectors match?", answerable from one real capture.
 
 ---
 
@@ -530,7 +591,49 @@ A and C. This is a different *read* of data being fetched anyway.
 
 ---
 
-## Open decision — BG3 "track both"
+## Open decision — BG3 "track both" — **RESOLVED Sep 14, 2026**
+
+### Answer: no crossover number is obtainable, and the reason is definitional
+
+The narrower question left open below — *whether a genuine D&D × BG3 crossover
+number is obtainable through some other tag combination* — is **no**, at any tag
+level. Every Baldur's Gate tag sits under the same D&D parent, so every
+combination returns the fandom itself. This is not a capture defect that a better
+URL fixes; the intersection **is** the set. Measured Sep 2: **49,029 of BG3's
+49,406 works, 99.2%.** Do not retry it.
+
+### What is measurable, and it is more interesting than the crossover would have been
+
+All of it from `ao3_fandom_totals`, already captured weekly. No new capture
+needed. Figures as of Sep 14, 2026:
+
+| | |
+|---|---|
+| `Dungeons & Dragons (Roleplaying Game)` | 70,802 |
+| `Baldur's Gate (Video Games)` | 49,615 |
+| **BG3 share of the D&D tag** | **69.2%** |
+| D&D tag excluding BG3 | 21,773 |
+| `Forgotten Realms (Roleplaying Game)` | 51,724 |
+
+**Roughly seven in ten D&D fanworks on AO3 are Baldur's Gate.** That is a real
+licensing-relevant finding, it needs no new capture, and it reframes what "D&D
+crossover" even measures on this platform. For scale, BG3's own 49,615 would rank
+about tenth by fandom size among the 25 measured IPs — large, but not dominant.
+It dominates *D&D specifically*.
+
+Untested inference worth one manual read: Forgotten Realms sits only ~2,100 above
+BG3, so FR is probably ~96% BG3 as well. Checkable with
+`work_search[excluded_tag_names]`, which the bookmarklet cannot drive because it
+requires `other_tag_names`.
+
+### And the category question
+
+BG3 is a **licensed D&D product, not a third-party candidate.** "Would D&D fans
+accept this IP" is a question it answers by existing. Its honest role is a
+control or ceiling, never a ranked row alongside IPs whose D&D affinity is the
+thing being tested. Record fandom size and share-of-D&D as labelled metrics.
+
+### Original framing, for the record
 
 The D&D × BG3 intersection appears **unmeasurable**: AO3 wrangles
 `Baldur's Gate (Video Games)` under the `Dungeons & Dragons (Roleplaying Game)`
