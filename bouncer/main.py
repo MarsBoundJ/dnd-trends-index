@@ -98,6 +98,89 @@ def safe_float(val, default=0.0):
     except (ValueError, TypeError):
         return default
 
+# ── AO3 ingest guard rails ──────────────────────────────────────────────────
+# Sep 14, 2026. The Baldur's Gate metatag artifact landed for the FOURTH time:
+# 49,245 works, 99.3% of the 49,615-work fandom, inside an otherwise clean
+# 25-IP round. Every client-side layer behaved — the URL generator refused to
+# emit the link, read-back verification correctly passed (AO3 *did* apply the
+# tag we asked for), the panel raised a red flag and the guard view raised two
+# CRITICALs — and it still landed, from a capture bookmark saved before the
+# quarantine.
+#
+# The client-side block added afterwards only helps while the INSTALLED
+# bookmarklet is current, and a stale client artifact is precisely what caused
+# this. The server cannot be stale. So the last line of defence belongs here.
+#
+# Deliberately DATA-DRIVEN, not a list of banned IPs: a hardcoded list has to be
+# maintained in lockstep with the seed and silently rots. These two conditions
+# describe the *symptom*, so they catch any IP AO3 wrangles this way, including
+# ones nobody has noticed yet.
+
+# Fraction of a fandom above which an "intersection" is really the whole fandom.
+# Real D&D crossover rates top out near 0.4% (Cyberpunk 2077, highest of 25
+# measured IPs). 50% is ~100x beyond anything legitimate, so this can only fire
+# on an artifact — never on a good capture. A rejection that could plausibly hit
+# real data would be worse than no rejection at all.
+AO3_INFLATION_FRACTION = 0.5
+
+
+def _ao3_rejections(rows, fandom_totals):
+    """Reasons these AO3 rows must not be written. Pure, so it is testable
+    without BigQuery. `fandom_totals` maps canonical tag -> fandom work count."""
+    out = []
+    for r in rows:
+        if r.get('platform') != 'ao3':
+            continue
+
+        # The filter IS the measurement. AO3 silently ignores a missing one and
+        # returns the site-wide set, so an unfiltered page looks identical to a
+        # filtered one. On Sep 1 this stored 10,886 — every D&D crossover on
+        # AO3 — as a single IP's count.
+        url = r.get('source_url') or ''
+        if ('work_search%5Bother_tag_names%5D' not in url
+                and 'work_search[other_tag_names]' not in url):
+            out.append(
+                f"{r.get('ip_name')}: the capture URL carries no "
+                f"work_search[other_tag_names] filter, so this count is every "
+                f"D&D crossover on AO3, not a D&D x IP intersection"
+            )
+            continue
+
+        total = fandom_totals.get(r.get('platform_canonical'))
+        if total and r.get('work_count', 0) > total * AO3_INFLATION_FRACTION:
+            pct = 100.0 * r['work_count'] / total
+            out.append(
+                f"{r.get('ip_name')}: {r['work_count']:,} works is {pct:.1f}% of "
+                f"the {total:,}-work \"{r.get('platform_canonical')}\" fandom. "
+                f"AO3 wrangles this tag under the D&D metatag, so the filter is "
+                f"returning the whole fandom rather than an intersection"
+            )
+    return out
+
+
+def _ao3_fandom_totals(client, tags):
+    """Latest known AO3 fandom total for each tag. Missing tags are simply
+    absent: a tag we have no total for cannot be checked for inflation, and
+    guessing would be worse than declining to judge."""
+    if not tags:
+        return {}
+    job = client.query(
+        """
+        SELECT fandom, work_count
+        FROM `dnd-trends-index.dnd_trends_raw.ao3_fandom_totals`
+        WHERE fandom IN UNNEST(@tags)
+        QUALIFY ROW_NUMBER() OVER (
+          PARTITION BY fandom ORDER BY fetch_date DESC, work_count DESC
+        ) = 1
+        """,
+        job_config=bigquery.QueryJobConfig(query_parameters=[
+            bigquery.ArrayQueryParameter("tags", "STRING", sorted(tags)),
+        ]),
+    )
+    return {row['fandom']: row['work_count'] for row in job.result()}
+
+
+
 @functions_framework.http
 def bouncer_api(request):
     # 1. Handle CORS
@@ -1489,6 +1572,21 @@ def bouncer_api(request):
                 'scraped_at': now_ts,
                 'scraped_by': r.get('scraped_by', 'bookmarklet'),
             })
+        # Reject the WHOLE batch rather than silently dropping the bad row.
+        # The bookmarklet only clears its stash on success, so a 400 keeps the
+        # batch intact on screen with the reason shown — the curator removes the
+        # offending row and re-sends. Writing 24 of 25 and staying quiet about
+        # the 25th would hide exactly the event that most needs noticing.
+        ao3_rows = [r for r in cleaned if r['platform'] == 'ao3']
+        if ao3_rows:
+            totals = _ao3_fandom_totals(
+                client, {r['platform_canonical'] for r in ao3_rows if r['platform_canonical']})
+            rejections = _ao3_rejections(ao3_rows, totals)
+            if rejections:
+                return (json.dumps({
+                    "error": "Rejected, nothing written. " + " | ".join(rejections),
+                }), 400, headers)
+
         errors = client.insert_rows_json(
             'dnd-trends-index.dnd_trends_raw.fanfic_crossover_counts',
             cleaned,
