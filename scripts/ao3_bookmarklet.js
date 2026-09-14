@@ -179,15 +179,29 @@
       }
     }
 
-    // The form box is AO3 stating what it applied; the works corroborate it.
-    // So an empty box is decisive, but works that fail to match while the box
-    // agrees is more likely my name-matching missing an oddly-named child than
-    // proof the filter was dropped — the LotR umbrella lists works tagged only
-    // "The Hobbit". Downgrade that combination to a warning rather than
-    // refusing a real capture on it.
-    const formOk = signals.some((x) => x[0] === 'pass' && x[2] === 'form');
-    const graded = signals.map((x) =>
-      (x[0] === 'fail' && x[2] === 'works' && formOk) ? ['warn', x[1], x[2]] : x);
+    // A failure is decisive only if the OTHER signal did not affirmatively pass.
+    // Symmetric, and both directions are load-bearing:
+    //
+    //   works fails, form passed — a real umbrella lists works tagged only with
+    //     a sibling (the LotR umbrella covers The Hobbit), so this is more
+    //     likely name-matching missing an odd child than a dropped filter.
+    //
+    //   form fails, works passed — this selector has never been run against
+    //     live AO3 markup. If AO3 does not repopulate its filter box on results
+    //     pages, an unconditional refusal here would block EVERY capture, which
+    //     is a worse failure than the one being fixed. Works uniformly carrying
+    //     the requested fandom cannot happen without the filter: an unfiltered
+    //     page is the site-wide D&D set, which is a mix.
+    //
+    // Nothing is lost. A genuinely dropped filter fails BOTH — the box is empty
+    // and the works do not carry the fandom — and is still refused.
+    const passed = new Set(
+      signals.filter((x) => x[0] === 'pass').map((x) => x[2]));
+    const graded = signals.map((x) => {
+      if (x[0] !== 'fail') return x;
+      const other = x[2] === 'form' ? 'works' : 'form';
+      return passed.has(other) ? ['warn', x[1], x[2]] : x;
+    });
 
     const verdict = graded.some((x) => x[0] === 'fail') ? 'failed'
                   : graded.some((x) => x[0] === 'pass') ? 'verified'
@@ -265,12 +279,20 @@
     if (r.work_count === 0) {
       f.push(['#ff8888', 'ZERO — every AO3 zero so far was a stale or unfilterable tag, never a real absence']);
     }
-    // Not a failure — we simply could not read AO3's own filter state on that
-    // page. It stays sendable, but it must not look like a checked capture.
+    // One signal confirmed the filter while the other disagreed. Sendable, but
+    // the disagreement belongs on screen next to the number it produced.
     if (r.verification_warn) {
       f.push(['#d9a64a', `Filter confirmed, but the works disagree — ${r.verification_detail}`]);
     }
-    if (r.verification_verdict === 'unverified') {
+    // Not a failure — AO3's own filter state simply could not be read on that
+    // page. It stays sendable, but it must not look like a checked capture.
+    //
+    // Tested for the ABSENCE of 'verified' rather than the presence of
+    // 'unverified', so a row left in localStorage by an older build — which
+    // carries no verdict field at all — is flagged too. Anything else would let
+    // the one kind of row that was never checked be the one kind that looks
+    // clean. ('failed' never reaches the stash; those captures are refused.)
+    if (r.verification_verdict !== 'verified') {
       f.push(['#d9a64a', 'UNVERIFIED — AO3’s filter state was unreadable; the tag above is only what we asked for']);
     }
     const others = all.filter((x) => x !== r).map((x) => x.work_count).sort((a, b) => a - b);

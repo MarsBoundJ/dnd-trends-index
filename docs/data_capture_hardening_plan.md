@@ -167,11 +167,14 @@ Two judgement calls, both found while testing:
    never less. Matching both ways let any shorter prefix satisfy the filter:
    `Avatar (2009)` would have satisfied a filter for `Avatar: The Last
    Airbender` — the exact wrong-but-plausible match this exists to reject.
-2. **A works-mismatch downgrades to a warning when the form box agrees.** A real
-   umbrella lists works tagged only with a sibling: the LotR umbrella covers The
-   Hobbit. With AO3 confirming the filter, zero matches is more likely
-   name-matching missing an odd child than a dropped filter. An empty box stays
-   decisive.
+2. **A failure is decisive only if the other signal did not affirmatively pass**
+   (symmetric, tightened Sep 14). Both directions matter. *works fails, form
+   passed*: a real umbrella lists works tagged only with a sibling, since the
+   LotR umbrella covers The Hobbit. *form fails, works passed*: the selectors
+   have never been run against live AO3 markup, so if AO3 does not repopulate
+   its filter box on results pages, an unconditional refusal would block **every
+   capture** — a worse failure than the one being fixed. Nothing is lost,
+   because a genuinely dropped filter fails **both** and is still refused.
 
 Tests: `node scripts/test_ao3_bookmarklet_verification.js`, 17 cases, reading the
 functions out of the bookmarklet rather than copying them.
