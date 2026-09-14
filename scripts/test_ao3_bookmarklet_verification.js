@@ -132,6 +132,25 @@ check('works alone can refuse when the filter box is absent',
 // covers The Hobbit. With AO3 itself confirming the filter, that is far more
 // likely to be name-matching missing an odd child than a dropped filter, so it
 // warns instead of throwing away a real capture.
+// The mirror case, and the reason the grading is symmetric. These selectors have
+// never been run against live AO3 markup. If AO3 does not repopulate its filter
+// box on results pages, refusing on an empty box would block EVERY capture — a
+// worse failure than the one being fixed. Works uniformly carrying the requested
+// fandom cannot happen without the filter, since an unfiltered page is the
+// site-wide D&D set, which is a mix.
+const boxEmpty = verdict(makeDoc({
+  boxValue: '',
+  works: Array(8).fill([DND, 'Hollow Knight (Video Game)']),
+}), 'Hollow Knight');
+check('empty box but the works carry it: verified, not refused', boxEmpty.verdict, 'verified');
+check('  ...and it still raises a warning', boxEmpty.warn, true);
+
+// Both signals failing is still decisive. This is the Sep 1 unfiltered page:
+// no filter applied, and the works are the site-wide D&D mix.
+check('both signals failing is still refused',
+  verdict(makeDoc({ boxValue: '', works: Array(8).fill([DND]) }), 'Hollow Knight').verdict,
+  'failed');
+
 const mixed = verdict(makeDoc({
   boxValue: 'The Lord of the Rings - All Media Types',
   works: [['The Hobbit - All Media Types'], ['The Hobbit - All Media Types'],
