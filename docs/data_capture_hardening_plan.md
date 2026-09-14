@@ -185,9 +185,31 @@ change plus a `fanfic_crossover_counts` schema change, both gated. The
 client-side half is where the value is: it stops bad data *at the source*
 instead of reporting it after it lands.
 
-### What is still unconfirmed
+### Confirmed against live AO3 markup — Sep 14, 2026
 
-**The selectors have never been run against live AO3 markup.** The constraint
+**The selectors work.** First live click, on the Avatar umbrella page, returned:
+
+> ✓ AO3 confirms the filter: "Avatar: The Last Airbender & Related Fandoms"
+
+That is AO3's own filter box being read back, which is the thing that could not
+be verified before shipping. The `input[name="work_search[other_tag_names]"]`
+selector matches, and the form signal is live.
+
+The same run exposed two defects, both fixed in #132:
+
+1. **A correct capture warned.** The works read **15/20**. The other five are
+   *The Legend of Korra* — genuinely inside the `& Related Fandoms` umbrella and
+   sharing no words with its name. The flat 0.8 threshold was wrong for umbrella
+   tags, where a partial match is the *normal* reading of a correct capture.
+   Umbrellas now use a 0.25 floor; flat tags keep 0.8. A warning that fires on
+   correct captures trains itself to be ignored.
+2. **The panel said the same thing twice** and rendered a caveat as a green
+   tick, because one joined string held every signal's message. Pass detail and
+   warn detail are now separate fields on separate lines.
+
+### What was unconfirmed before that run (kept for the record)
+
+**The selectors had never been run against live AO3 markup.** The constraint
 below is why: navigating to AO3 on Phil's behalf is out of bounds, so the DOM
 was not inspected first as this item originally planned. The design is built to
 fail safe — wrong selectors produce `unverified`, never a false `verified` — but
