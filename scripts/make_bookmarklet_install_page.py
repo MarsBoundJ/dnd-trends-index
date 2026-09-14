@@ -142,6 +142,25 @@ if CHECK:
               f"scripts/ao3_bookmarklet.txt ({len(BM)} chars).")
         print("Regenerate: python scripts/make_bookmarklet_install_page.py")
         sys.exit(1)
+    # The content check above cannot see a dead SHA. A squash merge replaces the
+    # branch commits, so a page generated before the merge cites a commit that no
+    # longer exists in main: the embedded bookmarklet still matches byte for byte
+    # while the one field that makes the page traceable points at nothing. That is
+    # the convention's own failure mode — provenance that is confidently wrong is
+    # worse than none, because it gets believed. Caught #127 after the fact.
+    stamped = re.search(r"ao3_bookmarklet\.txt @ ([0-9a-f]{7,40})", existing)
+    if stamped:
+        ref = stamped.group(1)
+        reachable = subprocess.call(
+            ["git", "merge-base", "--is-ancestor", ref, "HEAD"],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        ) == 0
+        if not reachable:
+            print(f"STALE: the footer cites {ref}, which is not in this branch's "
+                  f"history. A squash merge rewrites branch SHAs, so regenerate "
+                  f"AFTER merging. Current source commit is {sha}.")
+            print("Regenerate: python scripts/make_bookmarklet_install_page.py")
+            sys.exit(1)
     print(f"OK: {out} embeds the current bookmarklet ({len(BM)} chars, source @ {sha}).")
     sys.exit(0)
 
