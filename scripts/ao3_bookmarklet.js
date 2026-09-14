@@ -87,6 +87,118 @@
     return null;
   }
 
+  // ── Read-back filter verification ───────────────────────────────────────
+  // Until now `platform_canonical` was ECHOED from our own URL and never read
+  // back from AO3, so the stored tag looked identical whether the filter was
+  // applied, ignored, or matched nothing. Every Sep 1-2 failure sailed through
+  // on that: the unfiltered 10,886, the bare-synonym Avatar 15, the BG3 49,029.
+  //
+  // This asks AO3 what it thinks it did, using only the page the human already
+  // loaded. No fetch(), no navigation — the ToS constraint is why this tool is
+  // human-wielded, and verification must not quietly turn it into a crawler.
+  //
+  // Two independent signals, because either can be absent on a given layout:
+  //   form  — AO3 repopulates its own filter box with the tags it applied
+  //   works — the works it listed should actually carry the fandom we asked for
+  // A signal that cannot be read returns nothing rather than passing. Silence
+  // is reported as UNVERIFIED, never as verified; that distinction is the whole
+  // point of the exercise.
+
+  // AO3 names a fandom at several levels and blurbs show the CHILD, not the
+  // umbrella we filtered on: ask for "Avatar: The Last Airbender & Related
+  // Fandoms" and the works say "Avatar: The Last Airbender (TV 2005)". So
+  // compare on a normalised base — umbrella suffix off, trailing qualifier off.
+  function normTag(s) {
+    return String(s == null ? '' : s)
+      .replace(/&amp;/g, '&')
+      .toLowerCase()
+      .replace(/\s*-\s*all media types\s*$/, '')
+      .replace(/\s*&\s*related fandoms\s*$/, '')
+      .replace(/\s*\([^)]*\)\s*$/, '')
+      .replace(/[^\p{L}\p{N}|]+/gu, ' ')
+      .trim();
+  }
+
+  // "Wiedzmin | The Witcher" — AO3 joins localised titles with a pipe and a
+  // work may be listed under either side. Both identify the same fandom.
+  function tagAlts(s) {
+    return normTag(s).split('|')
+      .map((x) => x.trim())
+      .filter((x) => x.length >= 3);
+  }
+
+  // Containment in ONE direction only: what AO3 lists may be MORE specific than
+  // what we asked for (umbrella "the witcher" -> child "the witcher 3 wild
+  // hunt"), never less. Allowing the other direction matched any shorter name
+  // that happened to be a prefix — "Avatar" the 2009 film would have satisfied
+  // a filter for "Avatar: The Last Airbender", which is the exact class of
+  // wrong-but-plausible match this whole function exists to catch.
+  function tagsOverlap(wanted, seen) {
+    const A = tagAlts(wanted);
+    const B = tagAlts(seen);
+    return A.some((a) => B.some((b) => b === a || b.includes(a)));
+  }
+
+  function verifyFilter(wantedTag) {
+    const signals = [];
+
+    // Signal 1 — AO3's own filter box, which it refills with what it applied.
+    const box = document.querySelector(
+      'input[name="work_search[other_tag_names]"], #work_search_other_tag_names'
+    );
+    if (box) {
+      const echoed = (box.value || '').trim();
+      if (!echoed) {
+        signals.push(['fail', 'AO3’s filter box is empty — it applied no "other tags" filter', 'form']);
+      } else if (tagsOverlap(wantedTag, echoed)) {
+        signals.push(['pass', `AO3 confirms the filter: "${echoed}"`, 'form']);
+      } else {
+        signals.push(['fail', `AO3 applied "${echoed}", we asked for "${wantedTag}"`, 'form']);
+      }
+    }
+
+    // Signal 2 — semantic, and the stronger of the two: do the works AO3 listed
+    // actually carry this fandom? A form field can echo a string the server
+    // never used; a page of works cannot fake being tagged.
+    const blurbs = Array.from(document.querySelectorAll('li.blurb, .work.blurb')).slice(0, 20);
+    let checked = 0;
+    let carrying = 0;
+    for (const b of blurbs) {
+      const links = Array.from(b.querySelectorAll('h5.fandoms a.tag, .fandoms a.tag'));
+      if (!links.length) continue;
+      checked++;
+      if (links.some((a) => tagsOverlap(wantedTag, a.textContent))) carrying++;
+    }
+    if (checked) {
+      if (carrying === 0) {
+        signals.push(['fail', `none of the ${checked} works listed carry that fandom`, 'works']);
+      } else if (carrying / checked >= 0.8) {
+        signals.push(['pass', `${carrying}/${checked} listed works carry the fandom`, 'works']);
+      } else {
+        signals.push(['warn', `only ${carrying}/${checked} listed works carry the fandom`, 'works']);
+      }
+    }
+
+    // The form box is AO3 stating what it applied; the works corroborate it.
+    // So an empty box is decisive, but works that fail to match while the box
+    // agrees is more likely my name-matching missing an oddly-named child than
+    // proof the filter was dropped — the LotR umbrella lists works tagged only
+    // "The Hobbit". Downgrade that combination to a warning rather than
+    // refusing a real capture on it.
+    const formOk = signals.some((x) => x[0] === 'pass' && x[2] === 'form');
+    const graded = signals.map((x) =>
+      (x[0] === 'fail' && x[2] === 'works' && formOk) ? ['warn', x[1], x[2]] : x);
+
+    const verdict = graded.some((x) => x[0] === 'fail') ? 'failed'
+                  : graded.some((x) => x[0] === 'pass') ? 'verified'
+                  : 'unverified';
+    return {
+      verdict,
+      warn: graded.some((x) => x[0] === 'warn'),
+      detail: graded.map((x) => x[1]).join('; '),
+    };
+  }
+
   const params = new URLSearchParams(location.search);
   const ipFilter = (params.get('work_search[other_tag_names]') || '').trim();
 
@@ -95,6 +207,11 @@
   if (location.hostname.endsWith('archiveofourown.org')) {
     const ip = (params.get('_arcane_ip') || '').trim();
     const count = extractWorkCount();
+    // params.get() has already decoded; a second pass is a no-op on every tag
+    // we generate but throws on a literal '%'. Keep the old value on failure.
+    let wantedTag = ipFilter;
+    try { wantedTag = decodeURIComponent(ipFilter); } catch (e) { /* keep raw */ }
+    const ver = ipFilter ? verifyFilter(wantedTag) : null;
 
     if (!ipFilter) {
       // The filter IS the measurement. AO3 silently ignores a missing one and
@@ -106,6 +223,12 @@
     } else if (!ip) {
       notice = '<b style="color:#ff8888">Not captured — no <code>_arcane_ip</code> marker.</b><br>'
              + 'Use a generated deep link so attribution cannot be mistyped.';
+    } else if (ver && ver.verdict === 'failed') {
+      // Refuse, the same way a missing filter is refused. A capture AO3 itself
+      // contradicts is not a weaker number, it is a different measurement.
+      notice = '<b style="color:#ff8888">Not captured — AO3 did not apply the tag we asked for.</b><br>'
+             + esc(ver.detail) + '<br>'
+             + 'Regenerate the link with <code>print_fanfic_capture_urls.py</code>; a saved bookmark goes stale whenever the seed tags change.';
     } else if (count === null) {
       notice = '<b style="color:#ff8888">Not captured — could not read a work count.</b><br>'
              + 'Make sure the results header is visible.';
@@ -119,6 +242,12 @@
         work_count: count,
         source_url: location.href,
         scraped_by: 'ao3_bookmarklet_batch',
+        // Ignored by the ingest route today (it whitelists columns), kept on
+        // the row so the review table can show it and so persisting it later
+        // is a server change only.
+        verification_verdict: ver ? ver.verdict : 'unverified',
+        verification_warn: !!(ver && ver.warn),
+        verification_detail: ver ? ver.detail : '',
       };
       if (prev >= 0) { rows[prev] = row; notice = `Updated <b>${esc(ip)}</b> → ${count.toLocaleString()}`; }
       else { rows.push(row); notice = `Captured <b>${esc(ip)}</b> → ${count.toLocaleString()}`; }
@@ -135,6 +264,14 @@
     const f = [];
     if (r.work_count === 0) {
       f.push(['#ff8888', 'ZERO — every AO3 zero so far was a stale or unfilterable tag, never a real absence']);
+    }
+    // Not a failure — we simply could not read AO3's own filter state on that
+    // page. It stays sendable, but it must not look like a checked capture.
+    if (r.verification_warn) {
+      f.push(['#d9a64a', `Filter confirmed, but the works disagree — ${r.verification_detail}`]);
+    }
+    if (r.verification_verdict === 'unverified') {
+      f.push(['#d9a64a', 'UNVERIFIED — AO3’s filter state was unreadable; the tag above is only what we asked for']);
     }
     const others = all.filter((x) => x !== r).map((x) => x.work_count).sort((a, b) => a - b);
     const med = others.length ? others[Math.floor(others.length / 2)] : null;
@@ -170,7 +307,9 @@
         flagged.sort((a, b) => b.r.work_count - a.r.work_count).map(({ r, f }) => `
           <tr style="border-bottom:1px solid #2a2a4a">
             <td style="padding:3px 0">${esc(r.ip_name)}
-              <div style="color:#7c7c9a;font-size:11px;word-break:break-word">${esc(r.platform_canonical)}</div>${f.map((x) =>
+              <div style="color:#7c7c9a;font-size:11px;word-break:break-word">${esc(r.platform_canonical)}</div>${
+              r.verification_verdict === 'verified'
+                ? `<div style="color:#5fdc7c;font-size:11px">✓ ${esc(r.verification_detail)}</div>` : ''}${f.map((x) =>
               `<div style="color:${x[0]};font-size:11px">⚠ ${esc(x[1])}</div>`).join('')}</td>
             <td style="text-align:right;padding:3px 0 3px 8px;white-space:nowrap">
               ${r.work_count.toLocaleString()}
