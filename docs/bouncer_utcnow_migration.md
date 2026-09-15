@@ -1,7 +1,16 @@
 # Handover — replacing `datetime.utcnow()` in `bouncer/main.py`
 
-**Written Sep 14, 2026, to be picked up Sep 15.** Everything needed to start is
-here; nothing below needs re-deriving.
+**DONE Sep 15, 2026.** Kept as the record of what was changed and why — the
+per-site table below is still the reference if a timestamp here ever needs
+revisiting.
+
+Implemented as written: a single `_utc_now_iso()` helper, the five `+ 'Z'` sites
+losing their append, the three date/strftime sites keeping their own tail.
+`scripts/test_bouncer_timestamps.py` pins the contract and adds two source-level
+guards — one fails if a naive call reappears, the other if anything re-appends
+`'Z'`. Both were mutation-tested to confirm they actually fail when they should.
+
+Original handover follows.
 
 ## Why
 

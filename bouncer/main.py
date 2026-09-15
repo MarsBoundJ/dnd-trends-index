@@ -98,6 +98,25 @@ def safe_float(val, default=0.0):
     except (ValueError, TypeError):
         return default
 
+def _utc_now_iso() -> str:
+    """UTC now as an RFC3339 string, for BigQuery TIMESTAMP columns.
+
+    DO NOT append 'Z' to this. The datetime is timezone-AWARE, so isoformat()
+    already ends in '+00:00'; adding 'Z' yields '+00:00Z', which BigQuery
+    rejects — and it would land on the ingest routes every bookmarklet posts to.
+
+    That trap is the whole reason this is a helper rather than ten inline call
+    sites: the aware/naive decision lives here once, so the next timestamp added
+    to this file cannot reintroduce it. It replaced the deprecated naive-datetime
+    call removed from this module on Sep 15, 2026.
+
+    Every column this feeds was checked and is TIMESTAMP, which parses the
+    offset. A DATETIME column would reject it and need .replace(tzinfo=None)
+    instead — see docs/bouncer_utcnow_migration.md.
+    """
+    return datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+
 # ── AO3 ingest guard rails ──────────────────────────────────────────────────
 # Sep 14, 2026. The Baldur's Gate metatag artifact landed for the FOURTH time:
 # 49,245 works, 99.3% of the 49,615-work fandom, inside an otherwise clean
@@ -1245,7 +1264,7 @@ def bouncer_api(request):
             # Save to BQ
             import uuid
             session_id = str(uuid.uuid4())
-            curr_time = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+            curr_time = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
             hist_str = json.dumps(chat_history).replace("'", "''")
             brief_str = briefing_text.replace("'", "''")
             
@@ -1446,8 +1465,8 @@ def bouncer_api(request):
         if not rows:
             return (json.dumps({"error": "No data"}), 400, headers)
         # Stamp discovered_at on every row (bookmarklet doesn't send it)
-        today = datetime.datetime.utcnow().date().isoformat()
-        now_ts = datetime.datetime.utcnow().isoformat() + 'Z'
+        today = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+        now_ts = _utc_now_iso()
         for row in rows:
             row['discovered_at'] = now_ts
         # Dedup guard: skip if we already have data from today
@@ -1486,8 +1505,8 @@ def bouncer_api(request):
             return (json.dumps({"error": "No data"}), 400, headers)
         if isinstance(rows, dict):
             rows = [rows]
-        today = datetime.datetime.utcnow().date().isoformat()
-        now_ts = datetime.datetime.utcnow().isoformat() + 'Z'
+        today = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+        now_ts = _utc_now_iso()
         # backerkit_projects.scraped_at is REQUIRED TIMESTAMP — stamp it
         # (the Cloud Function set it; the bookmarklet does not send it).
         cleaned = []
@@ -1553,7 +1572,7 @@ def bouncer_api(request):
         if isinstance(rows, dict):
             rows = [rows]
         valid_platforms = {'ao3', 'ffn', 'wattpad'}
-        now_ts = datetime.datetime.utcnow().isoformat() + 'Z'
+        now_ts = _utc_now_iso()
         cleaned = []
         for r in rows:
             platform = (r.get('platform') or '').lower()
@@ -1753,7 +1772,7 @@ def bouncer_api(request):
             "subclasses", "spells", "monsters", "magic-items",
             "species", "feats", "backgrounds",
         }
-        now_ts = datetime.datetime.utcnow().isoformat() + 'Z'
+        now_ts = _utc_now_iso()
         cleaned = []
         for r in rows:
             section = (r.get('ddb_section') or '').lower()
@@ -1911,7 +1930,7 @@ def bouncer_api(request):
             'success', 'cloudflare_blocked', 'not_found',
             'rate_limited', 'other_error',
         }
-        now_ts = datetime.datetime.utcnow().isoformat() + 'Z'
+        now_ts = _utc_now_iso()
         cleaned = []
         for r in rows:
             forum = (r.get('forum_domain') or '').strip()
@@ -2058,7 +2077,7 @@ def bouncer_api(request):
                 return (json.dumps({"error": "review_id not found"}), 404, headers)
 
             item = dict(rows[0])
-            now = datetime.datetime.utcnow().isoformat()
+            now = _utc_now_iso()
 
             if action == 'reject':
                 client.query(f"""
@@ -2226,7 +2245,7 @@ def bouncer_api(request):
             if row["cnt"] > 0:
                 return (json.dumps({"status": "exists", "term": term}), 200, headers)
 
-            now = datetime.datetime.utcnow().isoformat()
+            now = _utc_now_iso()
             seed_row = {
                 "term": term, "added_by": "manual", "source_concept": None,
                 "is_active": True, "added_at": now, "last_used_at": None,
