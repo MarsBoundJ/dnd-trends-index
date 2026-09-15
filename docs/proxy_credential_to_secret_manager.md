@@ -2,21 +2,54 @@
 
 **Written Sep 15, 2026.** All findings below were measured, not assumed.
 
-## What is exposed
+## What is exposed, and where
 
-`PROXY_URL` holds a Webshare proxy URL with an embedded **username and password
-in plaintext**, readable by anyone who can run `describe` on the resource. It
-sits in **two live Cloud Run jobs**:
+The Webshare proxy credentials sit in **four live resources**, in **two
+different shapes**. All four were found by parsing config directly; a first
+sweep using a `--format` path returned "none" everywhere including two
+known-positive jobs, so it was discarded. **Any sweep here needs a control: run
+it against a resource you already know holds the value, and distrust the result
+if that comes back clean.**
 
-| Job | Runs | Service account |
-|---|---|---|
-| `google-trends-job` | daily ~02:2x UTC | `187467566422-compute@developer.gserviceaccount.com` (default) |
-| `itchio-rss-harvester` | daily ~04:01 UTC | `antigravity-turbo-agent@dnd-trends-index.iam.gserviceaccount.com` |
+| Resource | Kind | Shape | Service account |
+|---|---|---|---|
+| `google-trends-job` | Cloud Run job, daily ~02:2x | `PROXY_URL` | default compute |
+| `itchio-rss-harvester` | Cloud Run job, daily ~04:01 | `PROXY_URL` | `antigravity-turbo-agent@` |
+| `bgg-harvester` | Cloud Function, request-driven | `PROXY_URL` | default compute |
+| `discover-related-queries` | Cloud Function, request-driven | **4 separate vars** | `antigravity-turbo-agent@` |
 
-**Note the service accounts differ** — the grant has to be made twice.
+The three `PROXY_URL` holders carry **byte-identical values** (compared by
+SHA-256 digest, never printing them). Both functions are live — each served
+requests within the last 30 days.
 
-A third holder, the `google-trends-scraper` Cloud Function, was deleted Sep 14,
-so it is no longer a concern.
+The `google-trends-scraper` Cloud Function, a fifth holder, was deleted Sep 14.
+
+### The fourth one is shaped differently and needs its own decision
+
+`discover-related-queries` does not store a URL. It stores
+`WEBSHARE_PROXY_HOST`, `WEBSHARE_PROXY_PORT`, `WEBSHARE_PROXY_USER` and
+`WEBSHARE_PROXY_PASS` as four separate variables. A single `PROXY_URL` secret
+cannot be swapped in without a code change.
+
+Two workable options, and this should be a deliberate choice rather than a
+default:
+
+1. **Four secrets**, mirroring the four variables. No code change; more objects
+   to rotate in step.
+2. **One secret plus a small code change** to parse the URL into its parts. One
+   thing to rotate; touches a live function.
+
+Only `WEBSHARE_PROXY_PASS` is truly sensitive. Host, port and user are low-risk
+on their own but identify the account, so they are worth moving together.
+
+### Rotation now has a blast radius
+
+Rotating at webshare.io **invalidates the credential for all four at once.**
+Update all four in the same sitting, or the stragglers break.
+
+Timing matters because two are scheduled: Trends at ~02:2x UTC and itch.io at
+~04:01 UTC. **Do this well clear of that window** — ideally just after both have
+run — so a half-finished migration cannot collide with a scheduled execution.
 
 ## There is already a secret, and it is stale
 
@@ -40,10 +73,14 @@ goes straight into Secret Manager and never exists as a plaintext env var at any
 point. Migrating first and rotating later would mean handling the exposed value
 twice for no benefit.
 
-## No code change is required
+## No code change for three of the four
 
-Cloud Run injects a secret as an ordinary environment variable, so
-`os.environ.get("PROXY_URL")` in `browser_trends.py` keeps working untouched.
+Cloud Run and Cloud Functions both inject a secret as an ordinary environment
+variable, so `os.environ.get("PROXY_URL")` keeps working untouched in
+`browser_trends.py`, the itch.io harvester and `bgg-harvester`.
+
+`discover-related-queries` is the exception — it reads four separate variables,
+so whether it needs a code change depends on which option above is chosen.
 
 **Safety property worth knowing:** `browser_trends.py` refuses to start when
 `PROXY_URL` is unset — "Refusing to run unproxied". So a misconfigured secret
@@ -79,7 +116,9 @@ gcloud secrets add-iam-policy-binding webshare-proxy-url --project=dnd-trends-in
 gcloud secrets add-iam-policy-binding webshare-proxy-url --project=dnd-trends-index --member="serviceAccount:antigravity-turbo-agent@dnd-trends-index.iam.gserviceaccount.com" --role="roles/secretmanager.secretAccessor"
 ```
 
-**4. Point each job at the secret and drop the plaintext variable:**
+**4. Point each resource at the secret and drop the plaintext variable.**
+
+The two Cloud Run jobs:
 
 ```
 gcloud run jobs update google-trends-job --region=us-central1 --project=dnd-trends-index --remove-env-vars=PROXY_URL --update-secrets=PROXY_URL=webshare-proxy-url:latest
@@ -88,6 +127,17 @@ gcloud run jobs update google-trends-job --region=us-central1 --project=dnd-tren
 ```
 gcloud run jobs update itchio-rss-harvester --region=us-central1 --project=dnd-trends-index --remove-env-vars=PROXY_URL --update-secrets=PROXY_URL=webshare-proxy-url:latest
 ```
+
+The Cloud Function. Note this **redeploys** it, unlike the job updates, so it
+takes a couple of minutes and the usual deploy cautions apply:
+
+```
+gcloud functions deploy bgg-harvester --gen2 --region=us-central1 --project=dnd-trends-index --remove-env-vars=PROXY_URL --update-secrets=PROXY_URL=webshare-proxy-url:latest
+```
+
+`discover-related-queries` is **not** covered by these commands — see the
+four-variable decision above. Settle that first, then handle it in the same
+sitting so rotation does not leave it stranded.
 
 If gcloud objects to removing and setting the same key in one call, split it:
 run with `--remove-env-vars=PROXY_URL` first, then again with
