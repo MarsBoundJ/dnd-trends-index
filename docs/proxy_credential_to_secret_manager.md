@@ -31,13 +31,14 @@ The `google-trends-scraper` Cloud Function, a fifth holder, was deleted Sep 14.
 `WEBSHARE_PROXY_PASS` as four separate variables. A single `PROXY_URL` secret
 cannot be swapped in without a code change.
 
-Two workable options, and this should be a deliberate choice rather than a
-default:
+**DECIDED Sep 16, 2026 by Phil: four secrets.** No code change, so the migration
+stays purely about *where* the credential lives. Five secret objects in total:
+one `webshare-proxy-url` for the three URL holders, plus four components for
+this function.
 
-1. **Four secrets**, mirroring the four variables. No code change; more objects
-   to rotate in step.
-2. **One secret plus a small code change** to parse the URL into its parts. One
-   thing to rotate; touches a live function.
+(The rejected alternative was one secret plus a code change to parse the URL.
+Fewer objects to rotate, but it mixes a behaviour change into a live function
+during a credential migration.)
 
 Only `WEBSHARE_PROXY_PASS` is truly sensitive. Host, port and user are low-risk
 on their own but identify the account, so they are worth moving together.
@@ -82,11 +83,21 @@ variable, so `os.environ.get("PROXY_URL")` keeps working untouched in
 `discover-related-queries` is the exception — it reads four separate variables,
 so whether it needs a code change depends on which option above is chosen.
 
-**Safety property worth knowing:** `browser_trends.py` refuses to start when
-`PROXY_URL` is unset — "Refusing to run unproxied". So a misconfigured secret
-fails **loudly** on the next scheduled run rather than silently scraping from the
-raw GCP IP. That is the failure mode you want, and it means a mistake here is
-noisy rather than quiet.
+**The two failure modes are OPPOSITE, and an earlier version of this document
+got one of them wrong.**
+
+`browser_trends.py` refuses to start when `PROXY_URL` is unset — "Refusing to
+run unproxied". A misconfigured secret there fails **loudly** on the next
+scheduled run. That is the failure mode you want.
+
+`discover-related-queries` does the reverse. `main.py:49-52` gives every proxy
+variable a **default** (`p.webshare.io`, port `80`, empty user and pass), and
+line 79 builds a proxy URL only `if PROXY_USER and PROXY_PASS`. With those
+empty, `proxies_list` is `[]`, no proxy is attached, and the function **scrapes
+Google Trends directly from the raw GCP IP without raising anything.**
+
+So a botched secret mount on this one is **silent**. Do not read the absence of
+errors as success — verify the config explicitly (step 5).
 
 ## Steps
 
@@ -96,17 +107,33 @@ run these** — `gcloud` mutations are blocked by the auto-mode classifier.
 **1. Rotate at webshare.io.** Generate new proxy credentials and keep the new
 URL on the clipboard. Do not paste it into a shell as an argument.
 
-**2. Create the secret, reading the value from stdin** so it never enters shell
-history:
+**2. Create the five secrets:** `webshare-proxy-url` (the full
+`http://USER:PASS@HOST:PORT`), plus `webshare-proxy-host`, `-port`, `-user` and
+`-pass`.
+
+**Preferred: the Cloud Console**, Secret Manager -> Create Secret. The value is
+typed into a form field, so it never reaches shell history, scrollback or a temp
+file — cleaner than any terminal route.
+
+By CLI instead, read from stdin so the value is never an argument:
 
 ```
 gcloud secrets create webshare-proxy-url --project=dnd-trends-index --replication-policy=automatic --data-file=-
 ```
 
-Paste the URL, press **Enter**, then **Ctrl+Z** and **Enter** again to close
+Paste the value, press **Enter**, then **Ctrl+Z** and **Enter** again to close
 stdin on Windows. (A trailing newline is fine; the readers strip it.)
 
-**3. Grant read access to both service accounts** — two separate grants:
+**3. Grant read access.** `webshare-proxy-url` is read by BOTH service accounts
+(compute runs google-trends-job and bgg-harvester; antigravity-turbo-agent runs
+itchio-rss-harvester). The four component secrets are read ONLY by
+antigravity-turbo-agent, so scope them narrowly — PowerShell:
+
+```
+foreach ($s in "host","port","user","pass") { gcloud secrets add-iam-policy-binding "webshare-proxy-$s" --project=dnd-trends-index --member="serviceAccount:antigravity-turbo-agent@dnd-trends-index.iam.gserviceaccount.com" --role="roles/secretmanager.secretAccessor" }
+```
+
+And for the URL secret, two separate grants:
 
 ```
 gcloud secrets add-iam-policy-binding webshare-proxy-url --project=dnd-trends-index --member="serviceAccount:187467566422-compute@developer.gserviceaccount.com" --role="roles/secretmanager.secretAccessor"
@@ -128,16 +155,32 @@ gcloud run jobs update google-trends-job --region=us-central1 --project=dnd-tren
 gcloud run jobs update itchio-rss-harvester --region=us-central1 --project=dnd-trends-index --remove-env-vars=PROXY_URL --update-secrets=PROXY_URL=webshare-proxy-url:latest
 ```
 
-The Cloud Function. Note this **redeploys** it, unlike the job updates, so it
-takes a couple of minutes and the usual deploy cautions apply:
+The two Cloud Functions. **Do not use `gcloud functions deploy` here.**
+
+Both are GEN_2, so each is backed by a Cloud Run service of the same name, and
+`gcloud run services update` rewires the environment **without a rebuild** —
+instant, and rollback is a revision swap.
+
+`gcloud functions deploy` would rebuild from source, and its `--source` default
+is a trap. From gcloud's own help: *"If you do not specify the --source flag ...
+if the function was previously deployed using a local filesystem path, then the
+function's source code will be updated using the current directory."* Run from
+the repo root, that replaces the function's code with the repo root. Same family
+as the worktree trap in [[feedback_gcloud_deploy_cwd]]. Avoiding the rebuild
+matters independently: re-resolving dependencies is exactly how #138 broke the
+live Trends stream.
 
 ```
-gcloud functions deploy bgg-harvester --gen2 --region=us-central1 --project=dnd-trends-index --remove-env-vars=PROXY_URL --update-secrets=PROXY_URL=webshare-proxy-url:latest
+gcloud run services update bgg-harvester --region=us-central1 --project=dnd-trends-index --remove-env-vars=PROXY_URL --update-secrets=PROXY_URL=webshare-proxy-url:latest
 ```
 
-`discover-related-queries` is **not** covered by these commands — see the
-four-variable decision above. Settle that first, then handle it in the same
-sitting so rotation does not leave it stranded.
+```
+gcloud run services update discover-related-queries --region=us-central1 --project=dnd-trends-index --remove-env-vars=WEBSHARE_PROXY_HOST,WEBSHARE_PROXY_PORT,WEBSHARE_PROXY_USER,WEBSHARE_PROXY_PASS --update-secrets=WEBSHARE_PROXY_HOST=webshare-proxy-host:latest,WEBSHARE_PROXY_PORT=webshare-proxy-port:latest,WEBSHARE_PROXY_USER=webshare-proxy-user:latest,WEBSHARE_PROXY_PASS=webshare-proxy-pass:latest
+```
+
+**Rollback targets, captured Sep 16 18:35 UTC before any change:**
+`bgg-harvester-00005-897` and `discover-related-queries-00054-gam`. Roll back with
+`gcloud run services update-traffic <service> --region=us-central1 --to-revisions=<revision>=100`.
 
 If gcloud objects to removing and setting the same key in one call, split it:
 run with `--remove-env-vars=PROXY_URL` first, then again with
