@@ -1,5 +1,61 @@
 # Moving the Webshare proxy credential into Secret Manager
 
+## DONE — executed and verified Sep 16, 2026
+
+All four resources now read the credential from Secret Manager. Verified by
+`describe` on both the Cloud Run and the Cloud Functions views; no proxy value
+remains as a literal anywhere:
+
+| Resource | Reads |
+|---|---|
+| `google-trends-job` | `PROXY_URL` <- `webshare-proxy-url:latest` |
+| `itchio-rss-harvester` | `PROXY_URL` <- `webshare-proxy-url:latest` |
+| `bgg-harvester` | `PROXY_URL` <- `webshare-proxy-url:latest` |
+| `discover-related-queries` | four vars <- `webshare-proxy-{host,port,user,pass}:latest` |
+
+**The `gcloud run services update` route was the right call and is durable.**
+The open question was whether a change made on the backing Cloud Run service
+would be visible to Cloud Functions. It is: `gcloud functions describe` reports
+both functions' proxy variables under `secretEnvironmentVariables` with no
+plaintext left, so the function resource is not sitting on stale literals that a
+later deploy could restore.
+
+`discover-related-queries` kept its other eight variables (`GCP_PROJECT`,
+`SEEDS_PER_RUN`, the `TRENDS_*` knobs) — the targeted `--remove-env-vars`
+clobbered nothing.
+
+### One thing that nearly shipped a broken credential
+
+`webshare-proxy-url` was first created holding the literal placeholder text
+`http://USER:PASS@HOST:PORT`, copied verbatim out of a "value to paste" table.
+Every individual secret looked fine — right name, no whitespace, plausible
+length — and the mistake was only caught by checking the URL **against the four
+component secrets** rather than checking it in isolation.
+
+It would not have failed loudly. The three `PROXY_URL` consumers would have
+tried to authenticate as user `USER`, and `discover-related-queries` would have
+gone on scraping unproxied in silence.
+
+**So: after creating these secrets, always assert
+`url == http://{user}:{pass}@{host}:{port}`.** Reading the values to compare
+them is fine; printing them is not. The fix was to compose the URL from the four
+components programmatically and add it as version 2, which also removes the
+chance of a typo in a 32-character password. Version 1 is disabled, not
+destroyed.
+
+### Remaining
+
+- Confirm functionally from the scheduled runs (all write to BigQuery):
+  `google-trends-job` 02:00 UTC Sun-Fri, `itchio-rss-harvester` 04:00 UTC
+  Sun-Fri, `discover-related-queries` 06:00 UTC Sun-Fri, `bgg-harvester` 03:00
+  UTC Mon/Wed/Fri (plus RPGGeek at 03:15 the same days).
+- Then delete the stale `pytrends-proxy-creds` — see the end of this document.
+
+The rest of this document is the runbook as executed, kept for the next rotation.
+
+---
+
+
 **Written Sep 15, 2026.** All findings below were measured, not assumed.
 
 ## What is exposed, and where
