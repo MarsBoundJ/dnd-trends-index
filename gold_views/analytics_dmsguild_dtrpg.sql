@@ -11,14 +11,26 @@
 CREATE OR REPLACE VIEW `dnd-trends-index.gold_data.analytics_dmsguild_dtrpg` AS
 
 WITH -- Tier hierarchy (lower = more prestigious)
+-- Adamantine is the TOP medal, not Platinum — DriveThruRPG's Metal Legend lists
+-- the levels ascending, Copper through Adamantine. These ranks were inverted
+-- from April 2026 until Sep 16 2026. See the fuller note in
+-- dmsguild_dtrpg_ip_proxy.sql; keep the two aligned.
+--
+-- Gold/Silver/Copper/Electrum are omitted deliberately: metal.php has only the
+-- three shelves below, so any other tier is an artefact of the V9 bug fixed in
+-- #144, which read a product's tier off a neighbouring product's title. This CTE
+-- is INNER JOINed, so omitting them drops the artefacts rather than ranking
+-- them, and no stored row is altered.
+--
+-- 'Normal' is kept — it means "captured off a tiered shelf entirely", which is a
+-- real state rather than an artefact. 'Unknown' is deliberately NOT here: V11
+-- emits it when a product sits under no heading, and an unknown tier should fall
+-- out of a ranking rather than be given a place in it.
 tier_order AS (
-  SELECT 'Platinum' as tier, 1 as tier_rank UNION ALL
+  SELECT 'Adamantine' as tier, 1 as tier_rank UNION ALL
   SELECT 'Mithral',  2 UNION ALL
-  SELECT 'Adamantine', 3 UNION ALL
-  SELECT 'Gold', 4 UNION ALL
-  SELECT 'Silver', 5 UNION ALL
-  SELECT 'General', 6 UNION ALL
-  SELECT 'Normal', 7
+  SELECT 'Platinum', 3 UNION ALL
+  SELECT 'Normal', 4
 ),
 
 -- Anchor: latest collection date per source
@@ -132,8 +144,15 @@ SELECT
 
   -- Standardized output contract
   'creator_marketplace' as signal_type,
-  -- Primary metric: inverse tier rank normalized 0-1 (Platinum=1.0, Normal=0.14)
-  ROUND(1.0 - SAFE_DIVIDE(CAST(t.tier_rank - 1 AS FLOAT64), 6.0), 3) as primary_metric,
+  -- Primary metric: inverse tier rank normalized 0-1
+  -- (Adamantine=1.0, Mithral=0.667, Platinum=0.333, Normal=0.0)
+  --
+  -- The divisor tracks the number of ranks in tier_order. It was 6.0 for the old
+  -- seven-rank table; leaving it at 6.0 against four ranks would floor Normal at
+  -- 0.5 rather than 0 — i.e. a product on NO bestseller shelf would score half of
+  -- the rarest medal in the catalogue. These weights now match tier_weights in
+  -- dmsguild_dtrpg_ip_proxy.sql exactly; change the two together.
+  ROUND(1.0 - SAFE_DIVIDE(CAST(t.tier_rank - 1 AS FLOAT64), 3.0), 3) as primary_metric,
   -- Momentum from tier movement
   CASE
     WHEN p.prev_tier IS NULL THEN CAST(NULL AS FLOAT64)
@@ -141,10 +160,13 @@ SELECT
     WHEN pt.tier_rank > t.tier_rank THEN 0.5   -- promoted
     ELSE 0.0
   END as momentum,
+  -- Bands also track tier_order. Under the old seven-rank table "<= 4" meant
+  -- Adamantine/Gold; against four ranks it would sweep in 'Normal' — a product on
+  -- no shelf at all — and call it MEDIUM confidence.
   CASE
-    WHEN t.tier_rank <= 2 THEN 'HIGH'    -- Platinum/Mithral = proven bestsellers
-    WHEN t.tier_rank <= 4 THEN 'MEDIUM'  -- Adamantine/Gold = solid sellers
-    ELSE 'LOW'                           -- Silver and below
+    WHEN t.tier_rank <= 2 THEN 'HIGH'    -- Adamantine/Mithral: the top 0.6% of the catalogue
+    WHEN t.tier_rank = 3 THEN 'MEDIUM'   -- Platinum: 1.78%
+    ELSE 'LOW'                           -- Normal: no bestseller shelf
   END as confidence,
   CASE
     WHEN l.source = 'DMs Guild' THEN 'dmsguild'

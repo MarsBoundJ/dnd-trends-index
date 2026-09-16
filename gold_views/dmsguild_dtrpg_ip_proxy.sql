@@ -44,8 +44,9 @@
 -- The DMs Guild zero-state is itself a meaningful Hasbro-pitch finding:
 -- *"Hasbro's own creator marketplace structurally cannot host the
 -- IP-crossover content their players want. Compare to DriveThruRPG,
--- where Cyberpunk RED is a Platinum-tier bestseller and Fallout RPG
--- has 5 Platinum SKUs. Buyers will pay for licensed TTRPGs; the
+-- where Cyberpunk RED holds 6 ADAMANTINE SKUs - the rarest medal on the
+-- site, 0.2% of its catalogue - and Fallout RPG has 5 Platinum SKUs plus
+-- an Adamantine one. Buyers will pay for licensed TTRPGs; the
 -- platform that allows them captures the revenue."*
 --
 -- ─── SCORE FORMULA ───────────────────────────────────────────────────
@@ -55,13 +56,19 @@
 --                                    among confirmed products?
 --   (b) breadth                    — how many confirmed products?
 --
--- Tier weights (Platinum is the most prestigious bestseller medal):
---   Platinum   = 1.00
---   Mithral    = 0.83
---   Adamantine = 0.67
---   Gold       = 0.50
---   Silver     = 0.33
---   (other / missing = 0)
+-- Tier weights. ADAMANTINE is the most prestigious medal, not Platinum -
+-- DriveThruRPG's Metal Legend lists the levels ascending, and Adamantine is
+-- held by 0.2% of the catalogue against Platinum's 1.78%:
+--   Adamantine = 1.00   (0.2% of the catalogue)
+--   Mithral    = 0.67   (0.38%)
+--   Platinum   = 0.33   (1.78%)
+--   (any other tier = NULL, i.e. ABSTAINS from the average - see below)
+--
+-- Only these three exist: metal.php has exactly three shelves, so a row
+-- carrying Gold/Silver/Copper/Electrum is an artefact of the V9 capture bug
+-- fixed in #144, which read a product's tier off a neighbouring product's
+-- title. Such a row is UNMEASURED, not a zero, and is excluded from the
+-- average rather than scored 0.
 --
 -- Final score = AVG(tier_weight) across confirmed products, with a
 -- small +0.10 boost when ANY confirmed product is licensed_ttrpg=TRUE
@@ -85,12 +92,28 @@ CREATE OR REPLACE VIEW `dnd-trends-index.gold_data.dmsguild_dtrpg_ip_proxy` AS
 WITH
 
   -- Tier weights — keep aligned with analytics_dmsguild_dtrpg.sql.
+  --
+  -- ADAMANTINE IS THE TOP MEDAL, NOT PLATINUM. DriveThruRPG's own Metal Legend
+  -- lists the levels in ASCENDING order — Copper, Silver, Electrum, Gold,
+  -- Platinum, Mithral, Adamantine — with Adamantine held by 0.2% of the
+  -- catalogue and Copper by 12.34%. This table previously ranked Platinum 1.00
+  -- and Adamantine 0.67, i.e. inverted, from April 2026 until Sep 16 2026: every
+  -- tier-weighted IP score penalised the rarest sellers.
+  --
+  -- GOLD/SILVER/COPPER ARE ABSENT ON PURPOSE, not merely re-ranked. metal.php
+  -- has exactly three shelves, so no capture can legitimately produce any other
+  -- tier. Rows that carry one are artefacts of the V9 bug fixed in #144, which
+  -- read a product's tier off a NEIGHBOURING PRODUCT'S TITLE — "Trophy Gold"
+  -- made the next product Gold. That is 6,760 rows, 35% of this stream's entire
+  -- history.
+  --
+  -- This CTE is LEFT JOINed, so omitting those tiers gives them a NULL weight
+  -- and drops them from scoring WITHOUT mutating a single row. The rows stay
+  -- intact and recoverable if their true shelf is ever established.
   tier_weights AS (
-    SELECT 'Platinum'   AS tier, 1.00 AS w UNION ALL
-    SELECT 'Mithral',   0.83 UNION ALL
-    SELECT 'Adamantine', 0.67 UNION ALL
-    SELECT 'Gold',      0.50 UNION ALL
-    SELECT 'Silver',    0.33
+    SELECT 'Adamantine' AS tier, 1.00 AS w UNION ALL
+    SELECT 'Mithral',    0.67 UNION ALL
+    SELECT 'Platinum',   0.33
   ),
 
   -- Latest classification per (ip_name, source, title). The classifier
@@ -114,7 +137,17 @@ WITH
       c.price,
       c.is_licensed_ttrpg,
       c.confidence AS classifier_confidence,
-      COALESCE(tw.w, 0.0) AS tier_weight
+      -- NULL, not 0.0, when the tier is not a real shelf.
+      --
+      -- COALESCE(...,0.0) made an unplaceable product a ZERO-WEIGHT one, so it
+      -- dragged down an average it should never have entered. With the artefact
+      -- tiers removed from tier_weights that became severe: Cyberpunk 2077 has 6
+      -- genuine Adamantine products and 19 artefact 'Silver' rows, which would
+      -- score 6/25 = 0.24 instead of 1.00 — punishing the IP for a bug in our own
+      -- capture. AVG() and MAX() both skip NULL, so an unknown shelf now abstains
+      -- instead of voting zero. Same rule the DDB stream already follows: a
+      -- failure is UNMEASURED, never a measured zero.
+      tw.w AS tier_weight
     FROM classifications c
     LEFT JOIN tier_weights tw ON c.seller_tier = tw.tier
     WHERE c.is_about_ip = TRUE
@@ -133,6 +166,9 @@ WITH
       COUNTIF(f.source = 'DriveThruRPG' AND f.is_licensed_ttrpg)  AS dtrpg_licensed_count,
       MAX(f.tier_weight)                                          AS top_tier_weight,
       AVG(f.tier_weight)                                          AS avg_tier_weight,
+      -- How many of the confirmed products actually sat on a shelf. The score is
+      -- an average over THESE, so this says how much of it is evidenced.
+      COUNTIF(f.tier_weight IS NOT NULL)                          AS tiered_count,
       LOGICAL_OR(f.is_licensed_ttrpg)                             AS any_licensed
     FROM confirmed f
     GROUP BY f.ip_name
@@ -169,6 +205,7 @@ WITH
       COALESCE(p.dtrpg_licensed_count,     0) AS dtrpg_licensed_count,
       p.top_tier_weight,
       p.avg_tier_weight,
+      COALESCE(p.tiered_count,             0) AS tiered_count,
       COALESCE(p.any_licensed, FALSE)         AS any_licensed,
       st.top_product
     FROM `dnd-trends-index.dnd_trends_raw.ub_candidate_seeds` s
@@ -186,6 +223,9 @@ SELECT
   -- capped at 1.0. NULL when no confirmed signal.
   CASE
     WHEN j.confirmed_total = 0 THEN NULL
+    -- Confirmed products exist but none sat on a real shelf, so there is nothing
+    -- to average. Abstain rather than emit a score built on no tier evidence.
+    WHEN j.avg_tier_weight IS NULL THEN NULL
     ELSE LEAST(1.0, ROUND(
       j.avg_tier_weight + IF(j.any_licensed, 0.10, 0.0),
       4
@@ -195,6 +235,10 @@ SELECT
   -- ─── STATUS + CONFIDENCE ──────────────────────────────────────────────
   CASE
     WHEN j.confirmed_total = 0 THEN 'no_confirmed_signal'
+    -- Distinct from the above: the products are there, but not one of them could
+    -- be placed on a shelf. Calling that 'sufficient' next to a NULL score would
+    -- be the same lie as reading an unmeasured DDB combo as a zero.
+    WHEN j.avg_tier_weight IS NULL THEN 'no_tier_signal'
     ELSE 'sufficient'
   END AS catalog_status,
 
@@ -214,6 +258,7 @@ SELECT
   j.dtrpg_licensed_count,
   ROUND(COALESCE(j.top_tier_weight, 0), 4) AS top_tier_weight,
   ROUND(COALESCE(j.avg_tier_weight, 0), 4) AS avg_tier_weight,
+  j.tiered_count,
   j.any_licensed,
 
   -- ─── SAMPLE PRODUCT (data trail) ──────────────────────────────────────
