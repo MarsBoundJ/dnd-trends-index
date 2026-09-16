@@ -11,14 +11,26 @@
 CREATE OR REPLACE VIEW `dnd-trends-index.gold_data.analytics_dmsguild_dtrpg` AS
 
 WITH -- Tier hierarchy (lower = more prestigious)
+-- Adamantine is the TOP medal, not Platinum — DriveThruRPG's Metal Legend lists
+-- the levels ascending, Copper through Adamantine. These ranks were inverted
+-- from April 2026 until Sep 16 2026. See the fuller note in
+-- dmsguild_dtrpg_ip_proxy.sql; keep the two aligned.
+--
+-- Gold/Silver/Copper/Electrum are omitted deliberately: metal.php has only the
+-- three shelves below, so any other tier is an artefact of the V9 bug fixed in
+-- #144, which read a product's tier off a neighbouring product's title. This CTE
+-- is INNER JOINed, so omitting them drops the artefacts rather than ranking
+-- them, and no stored row is altered.
+--
+-- 'Normal' is kept — it means "captured off a tiered shelf entirely", which is a
+-- real state rather than an artefact. 'Unknown' is deliberately NOT here: V11
+-- emits it when a product sits under no heading, and an unknown tier should fall
+-- out of a ranking rather than be given a place in it.
 tier_order AS (
-  SELECT 'Platinum' as tier, 1 as tier_rank UNION ALL
+  SELECT 'Adamantine' as tier, 1 as tier_rank UNION ALL
   SELECT 'Mithral',  2 UNION ALL
-  SELECT 'Adamantine', 3 UNION ALL
-  SELECT 'Gold', 4 UNION ALL
-  SELECT 'Silver', 5 UNION ALL
-  SELECT 'General', 6 UNION ALL
-  SELECT 'Normal', 7
+  SELECT 'Platinum', 3 UNION ALL
+  SELECT 'Normal', 4
 ),
 
 -- Anchor: latest collection date per source

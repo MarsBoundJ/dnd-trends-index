@@ -85,12 +85,28 @@ CREATE OR REPLACE VIEW `dnd-trends-index.gold_data.dmsguild_dtrpg_ip_proxy` AS
 WITH
 
   -- Tier weights — keep aligned with analytics_dmsguild_dtrpg.sql.
+  --
+  -- ADAMANTINE IS THE TOP MEDAL, NOT PLATINUM. DriveThruRPG's own Metal Legend
+  -- lists the levels in ASCENDING order — Copper, Silver, Electrum, Gold,
+  -- Platinum, Mithral, Adamantine — with Adamantine held by 0.2% of the
+  -- catalogue and Copper by 12.34%. This table previously ranked Platinum 1.00
+  -- and Adamantine 0.67, i.e. inverted, from April 2026 until Sep 16 2026: every
+  -- tier-weighted IP score penalised the rarest sellers.
+  --
+  -- GOLD/SILVER/COPPER ARE ABSENT ON PURPOSE, not merely re-ranked. metal.php
+  -- has exactly three shelves, so no capture can legitimately produce any other
+  -- tier. Rows that carry one are artefacts of the V9 bug fixed in #144, which
+  -- read a product's tier off a NEIGHBOURING PRODUCT'S TITLE — "Trophy Gold"
+  -- made the next product Gold. That is 6,760 rows, 35% of this stream's entire
+  -- history.
+  --
+  -- This CTE is LEFT JOINed, so omitting those tiers gives them a NULL weight
+  -- and drops them from scoring WITHOUT mutating a single row. The rows stay
+  -- intact and recoverable if their true shelf is ever established.
   tier_weights AS (
-    SELECT 'Platinum'   AS tier, 1.00 AS w UNION ALL
-    SELECT 'Mithral',   0.83 UNION ALL
-    SELECT 'Adamantine', 0.67 UNION ALL
-    SELECT 'Gold',      0.50 UNION ALL
-    SELECT 'Silver',    0.33
+    SELECT 'Adamantine' AS tier, 1.00 AS w UNION ALL
+    SELECT 'Mithral',    0.67 UNION ALL
+    SELECT 'Platinum',   0.33
   ),
 
   -- Latest classification per (ip_name, source, title). The classifier
