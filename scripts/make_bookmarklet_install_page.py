@@ -363,6 +363,22 @@ def check(slug, t, bm, sha):
                   f"branch's history. A squash merge rewrites branch SHAs, so "
                   f"regenerate AFTER merging. Current source commit is {sha}.")
             return False
+        # Reachable is NOT enough. Found Sep 16 2026, minutes after #144 merged:
+        # the page's footer cited b692821 — a real, reachable, and four-commits-old
+        # SHA — while the .txt it embeds had moved on to a905ef7. --check printed
+        # OK, because the bytes matched and the stamp was an ancestor. So the one
+        # field that makes the page traceable pointed at a commit that predates
+        # the content, and the checker blessed it.
+        #
+        # #128 closed the dead-SHA hole. This closes the stale-but-live one, which
+        # is the more likely of the two: every ordinary edit creates it.
+        current = sha.split()[0]
+        if ref != current:
+            print(f"STALE [{slug}]: the footer cites {ref}, but {t['txt']} was last "
+                  f"changed in {current}. The embedded bookmarklet matches, so the "
+                  f"page ships correct content with wrong provenance - the exact "
+                  f"failure this file exists to prevent. Regenerate.")
+            return False
     print(f"OK [{slug}]: {out} embeds the current bookmarklet "
           f"({len(bm)} chars, source @ {sha}).")
     return True
