@@ -165,6 +165,92 @@ DDB_BODY = """<h1>DDB Homebrew Capture — install</h1>
 </table>
 """
 
+DMSG_BODY = """<h1>DMs Guild / DriveThruRPG Incursion — install</h1>
+<p class="sub">There is exactly <strong>one</strong> catalog-supply bookmarklet in the repo. This is it.</p>
+
+<div class="box">
+  <strong>Drag the button below onto your bookmarks bar.</strong><br>
+  Clicking it here will not work — browsers block <code>javascript:</code> links
+  from being followed. Dragging is the install.
+</div>
+
+<p><a class="drag" href="{href}">&#9876; DMsGuild / DTRPG Incursion</a></p>
+
+<div class="box bad">
+  <strong>The panel header is the version test.</strong> Click the bookmarklet on
+  <code>metal.php</code> and read the top of the panel.
+  <br><br>
+  <strong>Current build</strong> says <code>&#9876; INCURSION V11</code> and lists
+  <em>Shelves on page: Adamantine, Mithral, Platinum</em> followed by a count per
+  tier.
+  <br><br>
+  <strong>Old build</strong> says <code>&#9876; INCURSION V9</code> and shows only
+  a total. If you see V9, the install did not take.
+  <br><br>
+  That breakdown cannot be produced by the old build, which is what makes it a
+  test rather than a reassurance.
+</div>
+
+<div class="box good">
+  <strong>Why this version: the tier field was wrong from day one.</strong>
+  V9 decided a product's metal tier by walking backwards and asking
+  <em>&ldquo;does any preceding element mention a metal?&rdquo;</em> — and product
+  titles mention metals. Measured on the live page Sep&nbsp;16, 2026:
+  <em>&ldquo;Trophy Gold&rdquo;</em> made the next product Gold,
+  <em>&ldquo;A Copper For A Song Battlemaps&rdquo;</em> made it Copper,
+  <em>&ldquo;B3 Palace of the Silver Princess&rdquo;</em> made it Silver.
+  <br><br>
+  <code>metal.php</code> has <strong>three</strong> shelves — Adamantine, Mithral,
+  Platinum — yet about <strong>40%</strong> of every capture came back Gold,
+  Silver or Copper: tiers with no section on the page at all. V11 matches the
+  section heading exactly and anchored, which a product title cannot satisfy, and
+  reports <strong>Unknown</strong> rather than guessing when a product sits under
+  no heading.
+  <br><br>
+  It also sends <code>product_url</code>, which was <strong>NULL on every row
+  ever shipped</strong>, leaving these products joinable only by title string.
+</div>
+
+<h2>Where to run it</h2>
+<p>These two pages, and no others. They are the only place either site exposes
+the sales medals:</p>
+<ul>
+  <li><code>https://www.dmsguild.com/metal.php</code> — expect roughly
+      <strong>1,100</strong> products</li>
+  <li><code>https://www.drivethrurpg.com/metal.php</code> — expect roughly
+      <strong>1,360</strong></li>
+</ul>
+<p>The bookmarklet cannot read the modern <code>/en/browse</code> pages at all —
+measured Sep&nbsp;16: <strong>0 of 60</strong> products captured, because the new
+Angular site uses different markup. Only the legacy <code>metal.php</code> layout
+works.</p>
+
+<h2>Before you transmit</h2>
+<ol>
+  <li><strong>Wait out Cloudflare.</strong> Both sites show a
+      &ldquo;Just a moment&hellip;&rdquo; interstitial first.</li>
+  <li><strong>Scroll to the bottom</strong> so every shelf renders. A short run on
+      May&nbsp;19 caught Gold at 42 against a usual ~437 because the lower shelves
+      had not loaded.</li>
+  <li><strong>Check the total</strong> against the figures above before pressing
+      Transmit.</li>
+  <li><strong>Transmit once per page, per day.</strong> The ingest route has
+      <em>no</em> same-day dedup — unlike the Amazon ranks route, which refuses a
+      second batch. On Apr&nbsp;19 a second transmit doubled that day's rows in
+      every tier.</li>
+</ol>
+
+<div class="box">
+  <strong>What the tiers mean.</strong> Adamantine is the <em>highest</em> medal,
+  not Platinum — DriveThruRPG's own legend lists the levels in ascending order
+  Copper &rarr; Silver &rarr; Electrum &rarr; Gold &rarr; Platinum &rarr; Mithral
+  &rarr; Adamantine, with Adamantine at 0.2% of the catalogue and Copper at
+  12.34%. The rarest tiers are the ones worth having, and they are the two this
+  page captures most completely.
+</div>
+"""
+
+
 TARGETS = {
     "ao3": {
         "txt": "scripts/ao3_bookmarklet.txt",
@@ -181,6 +267,14 @@ TARGETS = {
         "title": "Install: DDB Homebrew Capture bookmarklet",
         "body": DDB_BODY,
         "verified": "node --check passed; contains the 30-day freshness window and magic-items-last pacing",
+    },
+    "dmsguild": {
+        "txt": "scripts/dmsguild_dtrpg_bookmarklet.txt",
+        "js": "scripts/dmsguild_dtrpg_bookmarklet.js",
+        "out": "scripts/dmsguild_dtrpg_bookmarklet_install.html",
+        "title": "Install: DMs Guild / DriveThruRPG Incursion bookmarklet",
+        "body": DMSG_BODY,
+        "verified": "node --check passed; 32 tier tests green; anchored heading match, no loose metal scan",
     },
 }
 

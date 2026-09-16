@@ -1,0 +1,116 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Install: DMs Guild / DriveThruRPG Incursion bookmarklet</title>
+<style>
+  body { font: 15px/1.6 "Segoe UI", system-ui, sans-serif; max-width: 760px;
+         margin: 40px auto; padding: 0 20px; color: #1a1a2e; }
+  h1 { font-size: 22px; margin-bottom: 4px; }
+  .sub { color: #606070; margin-top: 0; }
+  .drag { display:inline-block; background:#0d0d1a; color:#e0e0ff !important;
+           padding:12px 22px; border-radius:8px; text-decoration:none;
+           font-weight:600; font-family:ui-monospace,Consolas,monospace;
+           box-shadow:0 3px 10px rgba(0,0,0,.25); cursor:grab; }
+  .box { background:#f6f3ee; border-left:4px solid #C46419; padding:12px 16px;
+          border-radius:0 6px 6px 0; margin:18px 0; }
+  .bad { border-left-color:#C44949; background:#fbf0f0; }
+  .good { border-left-color:#2A8B4D; background:#f0f8f2; }
+  code { background:#eee9e1; padding:1px 5px; border-radius:3px;
+          font-family:ui-monospace,Consolas,monospace; font-size:13px; }
+  table { border-collapse:collapse; width:100%; margin:14px 0; font-size:14px; }
+  th,td { text-align:left; padding:7px 10px; border-bottom:1px solid #ddd6cc; }
+  th { background:#efe4d2; }
+  .prov { font-family:ui-monospace,Consolas,monospace; font-size:11px;
+           color:#606070; border-top:1px solid #ddd6cc; margin-top:36px;
+           padding-top:12px; white-space:pre-wrap; }
+</style>
+
+<h1>DMs Guild / DriveThruRPG Incursion — install</h1>
+<p class="sub">There is exactly <strong>one</strong> catalog-supply bookmarklet in the repo. This is it.</p>
+
+<div class="box">
+  <strong>Drag the button below onto your bookmarks bar.</strong><br>
+  Clicking it here will not work — browsers block <code>javascript:</code> links
+  from being followed. Dragging is the install.
+</div>
+
+<p><a class="drag" href="javascript:(function()%7Bconst%20existing%3Ddocument.getElementById(&#x27;arcane-incursion-panel&#x27;)%3Bif(existing)%7Bexisting.remove()%3Breturn%3B%7Dconsole.log(%22%E2%9A%94%20Arcane%20Incursion%20Initiated%20(V9%20-%20Harvester-Max)...%22)%3Bconst%20today%3Dnew%20Date().toISOString().split(&#x27;T&#x27;)%5B0%5D%3Bconst%20productMap%3Dnew%20Map()%3Bconst%20isMetalPage%3Dwindow.location.pathname.includes(&#x27;metal.php&#x27;)%3Bconst%20source%3Dwindow.location.hostname.includes(&#x27;dmsguild&#x27;)%3F%22DMs%20Guild%22%3A%22DriveThruRPG%22%3Bconst%20tiers%3D%5B&#x27;Adamantine&#x27;%2C&#x27;Mithral&#x27;%2C&#x27;Platinum&#x27;%2C&#x27;Gold&#x27;%2C&#x27;Silver&#x27;%2C&#x27;Electrum&#x27;%2C&#x27;Copper&#x27;%5D%3Bconst%20TIER_HEADING%3Dnew%20RegExp(&#x27;%5E(&#x27;%2Btiers.join(&#x27;%7C&#x27;)%2B&#x27;)%5C%5Cs%2BMetal%5C%5Cs%2BProducts%24&#x27;%2C&#x27;i&#x27;)%3Bconst%20shelves%3D%5B%5D%3Bdocument.querySelectorAll(&#x27;.infoBoxHeading%2C%20h1%2C%20h2%2C%20h3%2C%20h4%2C%20h5&#x27;).forEach(function(el)%7Bconst%20m%3DTIER_HEADING.exec((el.innerText%7C%7Cel.textContent%7C%7C&#x27;&#x27;).trim())%3Bif(m)%7Bconst%20t%3Dm%5B1%5D%3Bshelves.push(%7Bel%3Ael%2Ctier%3At.charAt(0).toUpperCase()%2Bt.slice(1).toLowerCase()%7D)%3B%7D%7D)%3Bfunction%20findTierForElement(el)%7Blet%20tier%3Dnull%3Bfor(const%20s%20of%20shelves)%7Bif(s.el.compareDocumentPosition(el)%26Node.DOCUMENT_POSITION_FOLLOWING)%7Btier%3Ds.tier%3B%7Delse%7Bbreak%3B%7D%7Dreturn%20tier%3B%7Dconst%20allLinks%3Ddocument.querySelectorAll(&#x27;a%5Bhref*%3D%22%2Fproduct%2F%22%5D&#x27;)%3Bconsole.log(%22%E2%9A%94%20Scanned%20%22%2BallLinks.length%20%2B%22%20links.%20Filtering...%22)%3BallLinks.forEach(link%3D%3E%7Bconst%20url%3Dlink.href.split(&#x27;%3F&#x27;)%5B0%5D%3Bif(productMap.has(url))return%3Bconst%20container%3Dlink.closest(&#x27;td%2C%20th%2C%20div.obs-title-card%2C%20div.title-strip-title-card&#x27;)%3Bif(!container)return%3Bconst%20titleText%3D(link.innerText%7C%7Clink.textContent%7C%7C&#x27;&#x27;).trim()%3Bif(titleText.length%3C2%7C%7C%2F%5E%5Cd%2B%24%2F.test(titleText))return%3Blet%20price%3D0.0%3Bconst%20specialPrice%3Dcontainer.querySelector(&#x27;.productSpecialPrice%2C%20.cy-prc&#x27;)%3Bif(specialPrice)%7Bprice%3DparseFloat(specialPrice.innerText.replace(%2F%5B%5E%5Cd.%5D%2Fg%2C&#x27;&#x27;))%7C%7C0.0%3B%7Delse%7Bconst%20m%3Dcontainer.innerText.match(%2F%5C%24%3F(%5B%5Cd.%5D%2B)%2F)%3Bif(m)price%3DparseFloat(m%5B1%5D)%7C%7C0.0%3B%7Dconst%20tier%3DfindTierForElement(container)%7C%7C(isMetalPage%3F%22Unknown%22%3A%22Normal%22)%3BproductMap.set(url%2C%7Bcollected_date%3Atoday%2Csource%3Asource%2Ctitle%3AtitleText.replace(%2F%5E%5Cd%2B%5C.%5Cs*%2F%2C&#x27;&#x27;)%2Cpublisher%3Asource%20%2B%22%20(Universal)%22%2Cseller_tier%3Atier%2Cprice%3Aprice%2Crating%3A0%2Cproduct_url%3Aurl%2Ctags%3A%5BisMetalPage%3F%22Metal%20List%22%3A%22Browse%22%2Ctier%2C%22V11%22%5D%7D)%3B%7D)%3Bconst%20products%3DArray.from(productMap.values())%3Bif(products.length%3D%3D%3D0)%7Balert(&#x27;%E2%9A%94%20Incursion%20Failed%3A%20No%20products%20detected.&#x27;)%3Breturn%3B%7Dconst%20tierCounts%3D%7B%7D%3Bproducts.forEach(function(p)%7BtierCounts%5Bp.seller_tier%5D%3D(tierCounts%5Bp.seller_tier%5D%7C%7C0)%2B1%3B%7D)%3Bconst%20shelfNames%3Dshelves.map(function(s)%7Breturn%20s.tier%3B%7D)%3Bconst%20unknownCount%3DtierCounts%5B&#x27;Unknown&#x27;%5D%7C%7C0%3Bconst%20breakdown%3DObject.keys(tierCounts).sort(function(a%2Cb)%7Breturn%20tierCounts%5Bb%5D-tierCounts%5Ba%5D%3B%7D).map(function(t)%7Bconst%20bad%3D(t%3D%3D%3D&#x27;Unknown&#x27;)%7C%7C(isMetalPage%26%26shelfNames.indexOf(t)%3D%3D%3D-1)%3Bconst%20colour%3Dbad%3F&#x27;rgb(255%2C136%2C136)&#x27;%3A&#x27;rgb(201%2C%20145%2C%2058)&#x27;%3Breturn&#x27;%3Cp%20style%3D%22margin%3A2px%200%3Bfont-size%3A13px%3B%22%3E&#x27;%2Bt%20%2B&#x27;%3Cspan%20style%3D%22float%3Aright%3Bcolor%3A&#x27;%2Bcolour%20%2B&#x27;%3B%22%3E&#x27;%2BtierCounts%5Bt%5D%2B&#x27;%3C%2Fspan%3E%3C%2Fp%3E&#x27;%3B%7D).join(&#x27;&#x27;)%3Bconst%20panel%3Ddocument.createElement(&#x27;div&#x27;)%3Bpanel.id%3D&#x27;arcane-incursion-panel&#x27;%3BObject.assign(panel.style%2C%7Bposition%3A&#x27;fixed&#x27;%2Ctop%3A&#x27;20px&#x27;%2Cright%3A&#x27;20px&#x27;%2Cwidth%3A&#x27;340px&#x27;%2Cpadding%3A&#x27;24px&#x27;%2Cbackground%3A&#x27;rgba(10%2C%2015%2C%2025%2C%200.95)&#x27;%2Cborder%3A&#x27;2px%20solid%20rgb(201%2C%20145%2C%2058)&#x27;%2CborderRadius%3A&#x27;12px&#x27;%2Ccolor%3A&#x27;rgb(248%2C%20250%2C%20252)&#x27;%2CzIndex%3A&#x27;2147483647&#x27;%2CfontFamily%3A&#x27;Inter%2C%20sans-serif&#x27;%2CboxShadow%3A&#x27;0%2015px%2040px%20rgba(0%2C0%2C0%2C0.8)&#x27;%2CbackdropFilter%3A&#x27;blur(10px)&#x27;%2CtextAlign%3A&#x27;left&#x27;%7D)%3Bpanel.innerHTML%3D%60%0A%20%20%20%20%20%20%20%20%3Ch2%20style%3D%22color%3Argb(201%2C%20145%2C%2058)%3Bmargin%3A0%3Bfont-weight%3Abold%3Btext-align%3Acenter%3Btext-transform%3Auppercase%3B%22%3E%E2%9A%94%20Incursion%20V11%3C%2Fh2%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20style%3D%22background%3Argba(255%2C255%2C255%2C0.05)%3Bpadding%3A15px%3Bborder-radius%3A8px%3Bmargin%3A20px%200%3Bfont-size%3A15px%3Bborder-left%3A4px%20solid%20rgb(201%2C%20145%2C%2058)%3B%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%3ESource%3A%20%3Cspan%20style%3D%22float%3Aright%3Bcolor%3Argb(201%2C%20145%2C%2058)%3B%22%3E%24%7Bsource%7D%3C%2Fspan%3E%3C%2Fp%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%20style%3D%22font-weight%3Abold%3Bfont-size%3A18px%3B%22%3ETotal%3A%20%3Cspan%20style%3D%22float%3Aright%3Bcolor%3Argb(34%2C%20197%2C%2094)%3B%22%3E%24%7Bproducts.length%7D%3C%2Fspan%3E%3C%2Fp%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%20style%3D%22font-size%3A12px%3Bcolor%3A%23999%3Bmargin%3A10px%200%204px%200%3B%22%3EShelves%20on%20page%3A%20%24%7BshelfNames.length%20%3F%20shelfNames.join(&#x27;%2C%20&#x27;)%20%3A%20&#x27;none&#x27;%7D%3C%2Fp%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%24%7Bbreakdown%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%24%7BunknownCount%20%3F%20&#x27;%3Cp%20style%3D%22color%3Argb(255%2C136%2C136)%3Bfont-size%3A12px%3Bmargin%3A8px%200%200%200%3B%22%3E&#x27;%20%2B%20unknownCount%20%2B%20&#x27;%20product(s)%20sat%20under%20no%20shelf%20heading%20%E2%80%94%20reported%20as%20Unknown%2C%20never%20guessed.%3C%2Fp%3E&#x27;%20%3A%20&#x27;&#x27;%7D%0A%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%20%20%20%20%3Cbutton%20id%3D%22beam-btn%22%20style%3D%22width%3A100%25%3Bpadding%3A16px%3Bbackground%3Argb(201%2C%20145%2C%2058)%3Bborder%3Anone%3Bborder-radius%3A8px%3Bfont-weight%3A900%3Bcursor%3Apointer%3Bcolor%3Ablack%3B%22%3E%F0%9F%9A%80%20Transmit%20Batch%3C%2Fbutton%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20id%3D%22progress-container%22%20style%3D%22display%3Anone%3Bmargin-top%3A15px%3B%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20style%3D%22width%3A100%25%3Bheight%3A8px%3Bbackground%3A%23333%3Bborder-radius%3A4px%3Boverflow%3Ahidden%3B%22%3E%3Cdiv%20id%3D%22progress-bar%22%20style%3D%22width%3A0%25%3Bheight%3A100%25%3Bbackground%3Argb(34%2C%20197%2C%2094)%3B%22%3E%3C%2Fdiv%3E%3C%2Fdiv%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%20id%3D%22progress-text%22%20style%3D%22font-size%3A12px%3Bmargin-top%3A5px%3Btext-align%3Acenter%3Bcolor%3A%23999%3B%22%3EPreparing...%3C%2Fp%3E%0A%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0A%20%20%20%20%20%20%20%20%3Cbutton%20id%3D%22close-incursion%22%20style%3D%22width%3A100%25%3Bmargin-top%3A12px%3Bbackground%3Atransparent%3Bborder%3A1px%20solid%20%23333%3Bcolor%3A%23666%3Bpadding%3A10px%3Bborder-radius%3A8px%3Bcursor%3Apointer%3B%22%3EDismiss%3C%2Fbutton%3E%0A%20%20%20%20%60%3Bdocument.body.appendChild(panel)%3Bdocument.getElementById(&#x27;close-incursion&#x27;).onclick%3D()%3D%3Epanel.remove()%3Bconst%20KEY%3D&#x27;ArcaneLibrarian2026&#x27;%3Bdocument.getElementById(&#x27;beam-btn&#x27;).onclick%3Dasync()%3D%3E%7Bconst%20btn%3Ddocument.getElementById(&#x27;beam-btn&#x27;)%3Bconst%20prog%3Ddocument.getElementById(&#x27;progress-container&#x27;)%3Bconst%20bar%3Ddocument.getElementById(&#x27;progress-bar&#x27;)%3Bconst%20progText%3Ddocument.getElementById(&#x27;progress-text&#x27;)%3Bbtn.style.display%3D&#x27;none&#x27;%3Bprog.style.display%3D&#x27;block&#x27;%3Bconst%20chunkSize%3D500%3Blet%20successCount%3D0%3Bfor(let%20i%3D0%3Bi%3Cproducts.length%3Bi%20%2B%3DchunkSize)%7Bconst%20chunk%3Dproducts.slice(i%2Ci%20%2BchunkSize)%3Bconst%20percent%3DMath.round(((i%20%2Bchunk.length)%2Fproducts.length)*100)%3Bbar.style.width%3Dpercent%20%2B&#x27;%25&#x27;%3BprogText.innerText%3D%60Transmitting%20Chunk%20%24%7BMath.floor(i%20%2F%20chunkSize)%20%2B%201%7D%20(%24%7Bpercent%7D%25)%60%3Btry%7Bconst%20res%3Dawait%20fetch(&#x27;https%3A%2F%2Fus-central1-dnd-trends-index.cloudfunctions.net%2Fbouncer-api%2Fsystem%2Flibrary%2Fingest-catalog&#x27;%2C%7Bmethod%3A&#x27;POST&#x27;%2Cheaders%3A%7B&#x27;Content-Type&#x27;%3A&#x27;application%2Fjson&#x27;%2C&#x27;X-Ritual-Key&#x27;%3AKEY%7D%2Cbody%3AJSON.stringify(chunk)%7D)%3Bif(res.ok)successCount%20%2B%3Dchunk.length%3Belse%20throw%20new%20Error(await%20res.text())%3B%7Dcatch(e)%7Balert(%60%F0%9F%9A%A8%20ERROR%3A%20%60%2Be.message)%3Bbtn.style.display%3D&#x27;block&#x27;%3Bprog.style.display%3D&#x27;none&#x27;%3Breturn%3B%7D%7Dalert(%60%F0%9F%93%9C%20SUCCESS%3A%20%24%7BsuccessCount%7D%20items%20archived.%60)%3Bpanel.remove()%3B%7D%3B%7D())%3B">&#9876; DMsGuild / DTRPG Incursion</a></p>
+
+<div class="box bad">
+  <strong>The panel header is the version test.</strong> Click the bookmarklet on
+  <code>metal.php</code> and read the top of the panel.
+  <br><br>
+  <strong>Current build</strong> says <code>&#9876; INCURSION V11</code> and lists
+  <em>Shelves on page: Adamantine, Mithral, Platinum</em> followed by a count per
+  tier.
+  <br><br>
+  <strong>Old build</strong> says <code>&#9876; INCURSION V9</code> and shows only
+  a total. If you see V9, the install did not take.
+  <br><br>
+  That breakdown cannot be produced by the old build, which is what makes it a
+  test rather than a reassurance.
+</div>
+
+<div class="box good">
+  <strong>Why this version: the tier field was wrong from day one.</strong>
+  V9 decided a product's metal tier by walking backwards and asking
+  <em>&ldquo;does any preceding element mention a metal?&rdquo;</em> — and product
+  titles mention metals. Measured on the live page Sep&nbsp;16, 2026:
+  <em>&ldquo;Trophy Gold&rdquo;</em> made the next product Gold,
+  <em>&ldquo;A Copper For A Song Battlemaps&rdquo;</em> made it Copper,
+  <em>&ldquo;B3 Palace of the Silver Princess&rdquo;</em> made it Silver.
+  <br><br>
+  <code>metal.php</code> has <strong>three</strong> shelves — Adamantine, Mithral,
+  Platinum — yet about <strong>40%</strong> of every capture came back Gold,
+  Silver or Copper: tiers with no section on the page at all. V11 matches the
+  section heading exactly and anchored, which a product title cannot satisfy, and
+  reports <strong>Unknown</strong> rather than guessing when a product sits under
+  no heading.
+  <br><br>
+  It also sends <code>product_url</code>, which was <strong>NULL on every row
+  ever shipped</strong>, leaving these products joinable only by title string.
+</div>
+
+<h2>Where to run it</h2>
+<p>These two pages, and no others. They are the only place either site exposes
+the sales medals:</p>
+<ul>
+  <li><code>https://www.dmsguild.com/metal.php</code> — expect roughly
+      <strong>1,100</strong> products</li>
+  <li><code>https://www.drivethrurpg.com/metal.php</code> — expect roughly
+      <strong>1,360</strong></li>
+</ul>
+<p>The bookmarklet cannot read the modern <code>/en/browse</code> pages at all —
+measured Sep&nbsp;16: <strong>0 of 60</strong> products captured, because the new
+Angular site uses different markup. Only the legacy <code>metal.php</code> layout
+works.</p>
+
+<h2>Before you transmit</h2>
+<ol>
+  <li><strong>Wait out Cloudflare.</strong> Both sites show a
+      &ldquo;Just a moment&hellip;&rdquo; interstitial first.</li>
+  <li><strong>Scroll to the bottom</strong> so every shelf renders. A short run on
+      May&nbsp;19 caught Gold at 42 against a usual ~437 because the lower shelves
+      had not loaded.</li>
+  <li><strong>Check the total</strong> against the figures above before pressing
+      Transmit.</li>
+  <li><strong>Transmit once per page, per day.</strong> The ingest route has
+      <em>no</em> same-day dedup — unlike the Amazon ranks route, which refuses a
+      second batch. On Apr&nbsp;19 a second transmit doubled that day's rows in
+      every tier.</li>
+</ol>
+
+<div class="box">
+  <strong>What the tiers mean.</strong> Adamantine is the <em>highest</em> medal,
+  not Platinum — DriveThruRPG's own legend lists the levels in ascending order
+  Copper &rarr; Silver &rarr; Electrum &rarr; Gold &rarr; Platinum &rarr; Mithral
+  &rarr; Adamantine, with Adamantine at 0.2% of the catalogue and Copper at
+  12.34%. The rarest tiers are the ones worth having, and they are the two this
+  page captures most completely.
+</div>
+
+<div class="prov"><strong>Provenance</strong>
+Source    : scripts/dmsguild_dtrpg_bookmarklet.txt @ b692821 + UNCOMMITTED CHANGES (2026-09-01)
+Readable  : scripts/dmsguild_dtrpg_bookmarklet.js
+Page built: 2026-09-16
+Rebuild   : python scripts/make_bookmarklet_install_page.py dmsguild
+Verified  : node --check passed; 32 tier tests green; anchored heading match, no loose metal scan</div>
