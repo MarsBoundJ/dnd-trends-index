@@ -2,7 +2,7 @@
     const existing = document.getElementById('arcane-incursion-panel');
     if (existing) { existing.remove(); return; }
 
-    console.log("⚔ Arcane Incursion Initiated (V9 - Harvester-Max)...");
+    console.log("⚔ Arcane Incursion Initiated (V11 - Harvester-Max)...");
 
     const today = new Date().toISOString().split('T')[0];
     const productMap = new Map(); // Use Map to dedup by URL
@@ -11,25 +11,44 @@
 
     const tiers = ['Adamantine', 'Mithral', 'Platinum', 'Gold', 'Silver', 'Electrum', 'Copper'];
 
-    // Helper to find the current shelf tier
+    // A shelf tier comes from a section heading -- "Adamantine Metal Products" in
+    // a div.infoBoxHeading -- and from nothing else.
+    //
+    // The original V9 walked backwards asking "does any preceding element MENTION
+    // a metal?", which read the tier off a NEIGHBOURING PRODUCT'S TITLE. Real
+    // examples measured on the live page Sep 16 2026: "Trophy Gold" made the next
+    // product Gold; "A Copper For A Song Battlemaps" made it Copper; "B3 Palace of
+    // the Silver Princess" made it Silver. metal.php has only THREE shelves
+    // (Adamantine, Mithral, Platinum), yet 40% of every capture came back Gold,
+    // Silver or Copper -- tiers with no section on the page at all. The bug was
+    // present from the stream's first run.
+    //
+    // So: match the heading exactly and anchored, which a product title cannot
+    // satisfy, and treat "no heading above me" as UNKNOWN rather than guessing.
+    const TIER_HEADING = new RegExp('^(' + tiers.join('|') + ')\\s+Metal\\s+Products$', 'i');
+
+    // Headings in document order. querySelectorAll guarantees that ordering, which
+    // is what makes the "last heading above me" lookup below correct.
+    const shelves = [];
+    document.querySelectorAll('.infoBoxHeading, h1, h2, h3, h4, h5').forEach(function (el) {
+        const m = TIER_HEADING.exec((el.innerText || el.textContent || '').trim());
+        if (m) {
+            const t = m[1];
+            shelves.push({ el: el, tier: t.charAt(0).toUpperCase() + t.slice(1).toLowerCase() });
+        }
+    });
+
+    // The product's tier is the last shelf heading preceding it in document order.
     function findTierForElement(el) {
-        let prev = el.previousElementSibling;
-        while (prev) {
-            const text = (prev.innerText || prev.textContent || '').trim();
-            for (const t of tiers) { if (text.includes(t)) return t; }
-            // Check children of prev if it's a container
-            const childHeading = prev.querySelector('.infoBoxHeading');
-            if (childHeading) {
-                const hText = childHeading.innerText || childHeading.textContent || '';
-                for (const t of tiers) { if (hText.includes(t)) return t; }
+        let tier = null;
+        for (const s of shelves) {
+            if (s.el.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) {
+                tier = s.tier;
+            } else {
+                break; // headings are in order, so nothing later can precede el
             }
-            prev = prev.previousElementSibling;
         }
-        // If not found in siblings, go up one level and check predecessors
-        if (el.parentElement && el.parentElement !== document.body) {
-            return findTierForElement(el.parentElement);
-        }
-        return "Normal";
+        return tier;
     }
 
     // --- UNIFIED HARVEST ---
@@ -55,7 +74,10 @@
             if (m) price = parseFloat(m[1]) || 0.0;
         }
 
-        const tier = findTierForElement(container);
+        // On a metal page every product sits under a shelf heading, so a miss is a
+        // real defect and is reported as such. Off a metal page there are no
+        // shelves at all, and "Normal" is the honest answer rather than a failure.
+        const tier = findTierForElement(container) || (isMetalPage ? "Unknown" : "Normal");
 
         productMap.set(url, {
             collected_date: today,
@@ -65,7 +87,8 @@
             seller_tier: tier,
             price: price,
             rating: 0,
-            tags: [isMetalPage ? "Metal List" : "Browse", tier, "V9"]
+            product_url: url,
+            tags: [isMetalPage ? "Metal List" : "Browse", tier, "V11"]
         });
     });
 
@@ -74,6 +97,25 @@
         alert('⚔ Incursion Failed: No products detected.');
         return;
     }
+
+    // The breakdown below is the check that would have caught the V9 bug on sight:
+    // a page whose only shelves are Adamantine/Mithral/Platinum cannot legitimately
+    // yield Gold, Silver or Copper rows. Show both lists and the contradiction is
+    // unmissable before anything is transmitted.
+    const tierCounts = {};
+    products.forEach(function (p) {
+        tierCounts[p.seller_tier] = (tierCounts[p.seller_tier] || 0) + 1;
+    });
+    const shelfNames = shelves.map(function (s) { return s.tier; });
+    const unknownCount = tierCounts['Unknown'] || 0;
+    const breakdown = Object.keys(tierCounts)
+        .sort(function (a, b) { return tierCounts[b] - tierCounts[a]; })
+        .map(function (t) {
+            const bad = (t === 'Unknown') || (isMetalPage && shelfNames.indexOf(t) === -1);
+            const colour = bad ? 'rgb(255,136,136)' : 'rgb(201, 145, 58)';
+            return '<p style="margin:2px 0;font-size:13px;">' + t +
+                '<span style="float:right;color:' + colour + ';">' + tierCounts[t] + '</span></p>';
+        }).join('');
 
     const panel = document.createElement('div');
     panel.id = 'arcane-incursion-panel';
@@ -85,10 +127,13 @@
     });
 
     panel.innerHTML = `
-        <h2 style="color:rgb(201, 145, 58);margin:0;font-weight:bold;text-align:center;text-transform:uppercase;">⚔ Incursion V9</h2>
+        <h2 style="color:rgb(201, 145, 58);margin:0;font-weight:bold;text-align:center;text-transform:uppercase;">⚔ Incursion V11</h2>
         <div style="background:rgba(255,255,255,0.05);padding:15px;border-radius:8px;margin:20px 0;font-size:15px;border-left:4px solid rgb(201, 145, 58);">
             <p>Source: <span style="float:right;color:rgb(201, 145, 58);">${source}</span></p>
             <p style="font-weight:bold;font-size:18px;">Total: <span style="float:right;color:rgb(34, 197, 94);">${products.length}</span></p>
+            <p style="font-size:12px;color:#999;margin:10px 0 4px 0;">Shelves on page: ${shelfNames.length ? shelfNames.join(', ') : 'none'}</p>
+            ${breakdown}
+            ${unknownCount ? '<p style="color:rgb(255,136,136);font-size:12px;margin:8px 0 0 0;">' + unknownCount + ' product(s) sat under no shelf heading — reported as Unknown, never guessed.</p>' : ''}
         </div>
         <button id="beam-btn" style="width:100%;padding:16px;background:rgb(201, 145, 58);border:none;border-radius:8px;font-weight:900;cursor:pointer;color:black;">🚀 Transmit Batch</button>
         <div id="progress-container" style="display:none;margin-top:15px;">

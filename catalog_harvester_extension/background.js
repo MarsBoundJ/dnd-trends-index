@@ -174,28 +174,52 @@ function injectViaScripting(tabId, site, ritualKey, resolve) {
 async function runExtractionInPage(siteName, ritualKey, endpoint, chunkSize) {
     try {
         const today = new Date().toISOString().split("T")[0];
-        const tiers = ["Adamantine", "Mithral", "Platinum", "Gold", "Silver", "Electrum", "Copper"];
         const productMap = new Map();
+        const isMetalPage = window.location.pathname.includes("metal.php");
 
+        const tiers = ['Adamantine', 'Mithral', 'Platinum', 'Gold', 'Silver', 'Electrum', 'Copper'];
+
+        // A shelf tier comes from a section heading -- "Adamantine Metal Products" in
+        // a div.infoBoxHeading -- and from nothing else.
+        //
+        // The original V9 walked backwards asking "does any preceding element MENTION
+        // a metal?", which read the tier off a NEIGHBOURING PRODUCT'S TITLE. Real
+        // examples measured on the live page Sep 16 2026: "Trophy Gold" made the next
+        // product Gold; "A Copper For A Song Battlemaps" made it Copper; "B3 Palace of
+        // the Silver Princess" made it Silver. metal.php has only THREE shelves
+        // (Adamantine, Mithral, Platinum), yet 40% of every capture came back Gold,
+        // Silver or Copper -- tiers with no section on the page at all. The bug was
+        // present from the stream's first run.
+        //
+        // So: match the heading exactly and anchored, which a product title cannot
+        // satisfy, and treat "no heading above me" as UNKNOWN rather than guessing.
+        const TIER_HEADING = new RegExp('^(' + tiers.join('|') + ')\\s+Metal\\s+Products$', 'i');
+
+        // Headings in document order. querySelectorAll guarantees that ordering, which
+        // is what makes the "last heading above me" lookup below correct.
+        const shelves = [];
+        document.querySelectorAll('.infoBoxHeading, h1, h2, h3, h4, h5').forEach(function (el) {
+            const m = TIER_HEADING.exec((el.innerText || el.textContent || '').trim());
+            if (m) {
+                const t = m[1];
+                shelves.push({ el: el, tier: t.charAt(0).toUpperCase() + t.slice(1).toLowerCase() });
+            }
+        });
+
+        // The product's tier is the last shelf heading preceding it in document order.
         function findTierForElement(el) {
-            let prev = el.previousElementSibling;
-            while (prev) {
-                const text = (prev.innerText || prev.textContent || "").trim();
-                for (const t of tiers) { if (text.includes(t)) return t; }
-                const childHeading = prev.querySelector(".infoBoxHeading");
-                if (childHeading) {
-                    const hText = childHeading.innerText || childHeading.textContent || "";
-                    for (const t of tiers) { if (hText.includes(t)) return t; }
+            let tier = null;
+            for (const s of shelves) {
+                if (s.el.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) {
+                    tier = s.tier;
+                } else {
+                    break; // headings are in order, so nothing later can precede el
                 }
-                prev = prev.previousElementSibling;
             }
-            if (el.parentElement && el.parentElement !== document.body) {
-                return findTierForElement(el.parentElement);
-            }
-            return "Normal";
+            return tier;
         }
 
-        const isMetalPage = window.location.pathname.includes("metal.php");
+        // --- UNIFIED HARVEST ---
         const allLinks = document.querySelectorAll('a[href*="/product/"]');
 
         allLinks.forEach(link => {
@@ -217,7 +241,10 @@ async function runExtractionInPage(siteName, ritualKey, endpoint, chunkSize) {
                 if (m) price = parseFloat(m[1]) || 0.0;
             }
 
-            const tier = findTierForElement(container);
+            // On a metal page every product sits under a shelf heading, so a miss is a
+            // real defect and is reported as such. Off a metal page there are no
+            // shelves at all, and "Normal" is the honest answer rather than a failure.
+            const tier = findTierForElement(container) || (isMetalPage ? "Unknown" : "Normal");
 
             let snippet = "";
             const descEl = container.querySelector(".product-description, .smallText");
@@ -234,15 +261,54 @@ async function runExtractionInPage(siteName, ritualKey, endpoint, chunkSize) {
                 seller_tier: tier,
                 price,
                 rating: 0,
-                tags: [isMetalPage ? "Metal List" : "Browse", tier, "V10-auto"],
-                snippet,
-                product_url: url
+                product_url: url,
+                tags: [isMetalPage ? "Metal List" : "Browse", tier, "V11-auto"],
+                snippet
             });
         });
 
         const products = Array.from(productMap.values());
         if (products.length === 0) {
             return { site: siteName, success: false, error: "No products found on page" };
+        }
+
+        // THE SAME CHECK AS THE BOOKMARKLET, ENFORCED RATHER THAN DISPLAYED.
+        //
+        // The bookmarklet prints a tier breakdown next to the shelves it found and
+        // lets a human see the contradiction before clicking Transmit. Nobody is
+        // watching this one -- it fires at 6am into a background tab -- so the
+        // equivalent protection is to refuse the send instead of drawing it. A
+        // tier with no shelf on the page is exactly the V9 signature, and V9 shipped
+        // 6,760 such rows (35% of the stream) precisely because nothing ever
+        // blocked them.
+        //
+        // Deliberately a hard failure, not a filter: a page that produces impossible
+        // tiers is a page we have misread, so the honest move is to send nothing and
+        // surface it in the popup, not to quietly transmit the subset that looks fine.
+        const tierCounts = {};
+        products.forEach(p => { tierCounts[p.seller_tier] = (tierCounts[p.seller_tier] || 0) + 1; });
+        const shelfNames = shelves.map(s => s.tier);
+        const tierSummary = Object.keys(tierCounts)
+            .sort((a, b) => tierCounts[b] - tierCounts[a])
+            .map(t => t + " " + tierCounts[t]).join(", ");
+
+        if (isMetalPage) {
+            if (shelfNames.length === 0) {
+                return {
+                    site: siteName, success: false, tierSummary,
+                    error: "Refused to transmit: no metal shelf headings found on metal.php — " +
+                           "the page layout has changed and every tier would be a guess."
+                };
+            }
+            const impossible = Object.keys(tierCounts)
+                .filter(t => t !== "Unknown" && shelfNames.indexOf(t) === -1);
+            if (impossible.length) {
+                return {
+                    site: siteName, success: false, tierSummary,
+                    error: "Refused to transmit: " + impossible.join(", ") +
+                           " has no shelf on this page (shelves: " + shelfNames.join(", ") + ")."
+                };
+            }
         }
 
         let successCount = 0;
@@ -260,7 +326,7 @@ async function runExtractionInPage(siteName, ritualKey, endpoint, chunkSize) {
             successCount += chunk.length;
         }
 
-        return { site: siteName, success: true, count: successCount };
+        return { site: siteName, success: true, count: successCount, tierSummary, shelves: shelfNames };
     } catch (e) {
         return { site: siteName, success: false, error: e.message };
     }
