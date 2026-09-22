@@ -217,7 +217,39 @@ authoritative taxonomy, and `dmsguild_facets_v1.json` / `drivethrurpg_facets_v1.
 stop being hand-captured approximations and become generated artefacts with our
 annotations layered on. Every "not enumerable" axis would close at once.
 
-Worth one probe before writing the harvester.
+### Confirmed — and it is the authoritative taxonomy
+
+```
+GET https://api.dmsguild.com/api/vBeta/filters?groupId=29&siteId=76   -> 200
+```
+
+`groupIds present: 29`, and the roots come back exactly as reconstructed from
+one product's ancestors: `45341` Product Type, `45342` Edition, `45343` Setting.
+Children chain correctly (`45344 <- 45342` Original Edition, and so on). This is
+the facet tree, from the source.
+
+**THE PARAMS DECIDE THE VOCABULARY, NOT THE HOST.** Calling
+`api.dmsguild.com/api/vBeta/filters` with no query string returns 200 and
+`groupId: 1` data — DriveThruRPG's tree, including an axis named *Genre*, which
+DMs Guild does not have. A harvester that omits `groupId`/`siteId` gets a
+plausible, well-formed, completely wrong taxonomy with no error to warn it.
+Always send both.
+
+**Two limits on the endpoint:**
+
+- **`pageSize` is capped at 50.** Asking for 1000 returns
+  `meta: {"itemsPerPage":50,"currentPage":1}`. Not an error — silently clamped.
+- **There is no total.** `meta` carries only `itemsPerPage` and `currentPage`,
+  so the only way to know you have the whole tree is to walk pages until one
+  comes back short.
+
+Ordering appears to be by `filterId` ascending, which is why the first page
+holds only the three lowest roots — theme (`45423`), content (`45468`),
+languages (`45477`) and format (`45544`) sit on later pages.
+
+Once walked, `*_facets_v1.json` should be **generated** from this endpoint with
+our annotations layered on, rather than hand-captured. Every "not enumerable"
+axis closes.
 
 **Still unverified:** whether any of these endpoints work unauthenticated. Every
 call so far ran from a signed-in browser. If they need a session, the
