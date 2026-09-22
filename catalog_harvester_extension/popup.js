@@ -56,6 +56,10 @@ async function refreshStatus() {
         const section = document.getElementById("results-section");
         const list = document.getElementById("results-list");
         section.style.display = "block";
+        // The tier breakdown is shown on success as well as failure. The V9 bug
+        // survived for six months because a capture that "worked" was never looked
+        // at — a run reporting 4,000 items and a Gold count on a three-shelf page
+        // should be readable here without opening BigQuery.
         list.innerHTML = status.lastRunResults.map(r => `
             <div class="site-result">
                 <span>${r.site}</span>
@@ -63,6 +67,7 @@ async function refreshStatus() {
                     ? `<span class="count">${r.count.toLocaleString()} items</span>`
                     : `<span class="error">${r.error || "failed"}</span>`}
             </div>
+            ${r.tierSummary ? `<div class="tier-summary">${r.tierSummary}</div>` : ""}
         `).join("");
     }
 }
