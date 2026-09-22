@@ -80,10 +80,28 @@ for name, doc in docs.items():
         check(f"{axis}: every value has id/slug/label", not missing,
               f"{len(missing)} incomplete")
 
-        non_numeric = [v["id"] for v in vals if not str(v.get("id", "")).isdigit()]
+        # A value may be known without its id — seen on a page that carried no
+        # href. That is recorded as pending, never guessed: a wrong id filters
+        # the wrong products and nothing complains.
+        pending = [v for v in vals if v.get("id_pending")]
+        for v in pending:
+            check(f"{axis}.{v['slug']}: pending id is null, not invented",
+                  v.get("id") is None)
+            check(f"{axis}.{v['slug']}: pending id explains itself", "note" in v)
+
+        concrete = [v for v in vals if not v.get("id_pending")]
+        non_numeric = [v.get("id") for v in concrete if not str(v.get("id", "")).isdigit()]
         check(f"{axis}: ids are numeric strings", not non_numeric, str(non_numeric))
 
-        ids += [v["id"] for v in vals]
+        # An axis claiming completeness while carrying a pending id is lying:
+        # we do not even have an id for one of its values.
+        if spec.get("complete") is True:
+            check(f"{axis}: claims complete and has no pending ids", not pending,
+                  f"{len(pending)} pending")
+            check(f"{axis}: claims complete, so must not be searchable",
+                  spec.get("searchable") is not True)
+
+        ids += [v["id"] for v in concrete]
         slugs_by_axis[axis] = [v["slug"] for v in vals]
 
     dupe_ids = [i for i, n in Counter(ids).items() if n > 1]
@@ -133,6 +151,18 @@ if collisions and not real:
 
 check("every store declares a distinct taxonomy_version",
       len({d["taxonomy_version"] for d in docs.values()}) == len(docs))
+
+# Per-axis completeness is the honest unit: one searchable axis should not make
+# a whole file's worth of solid captures read as provisional.
+print()
+for name, doc in docs.items():
+    for axis, spec in doc.get("axes", {}).items():
+        if "complete" in spec:
+            n_pending = sum(1 for v in spec.get("values", []) if v.get("id_pending"))
+            state = "complete" if spec["complete"] else "PARTIAL"
+            extra = f", {n_pending} id(s) pending" if n_pending else ""
+            print(f"  {name}.{axis}: {state} "
+                  f"({len(spec.get('values', []))} values{extra})")
 
 incomplete = [n for n, d in docs.items() if not d.get("capture_complete")]
 if incomplete:
