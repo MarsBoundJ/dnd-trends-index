@@ -129,7 +129,45 @@ document.getElementById("cancel-btn").addEventListener("click", () => {
     });
 });
 
+// ---------- Detail pass ----------
+
+async function refreshDetail() {
+    const s = await chrome.runtime.sendMessage({ type: "DETAIL_STATUS" });
+    const box = document.getElementById("detail-status");
+    const btn = document.getElementById("detail-btn");
+    if (!s) return;
+    if (s.running) {
+        box.textContent = `Detail pass: ${s.cursor}/${s.total} · ${s.done} stored` +
+                          (s.errors ? ` · ${s.errors} errors` : "");
+        btn.textContent = "Stop Detail Pass";
+        btn.dataset.mode = "stop";
+    } else {
+        const { harvestedProducts = [] } = await chrome.storage.local.get("harvestedProducts");
+        box.textContent = harvestedProducts.length
+            ? `${harvestedProducts.length} products from the last harvest ready`
+            : "Run a harvest first — it collects the product list";
+        btn.textContent = "Start Detail Pass";
+        btn.dataset.mode = "start";
+        btn.disabled = harvestedProducts.length === 0;
+    }
+}
+
+document.getElementById("detail-btn").addEventListener("click", async () => {
+    const btn = document.getElementById("detail-btn");
+    if (btn.dataset.mode === "stop") {
+        await chrome.runtime.sendMessage({ type: "DETAIL_STOP" });
+    } else {
+        const { harvestedProducts = [] } = await chrome.storage.local.get("harvestedProducts");
+        const r = await chrome.runtime.sendMessage({ type: "DETAIL_START", queue: harvestedProducts });
+        if (!r || !r.ok) {
+            document.getElementById("detail-status").textContent = (r && r.error) || "Could not start";
+            return;
+        }
+    }
+    refreshDetail();
+});
+
 // Poll for status updates while popup is open
-refreshStatus();
-const interval = setInterval(refreshStatus, 3000);
+refreshStatus(); refreshDetail();
+const interval = setInterval(() => { refreshStatus(); refreshDetail(); }, 3000);
 window.addEventListener("unload", () => clearInterval(interval));

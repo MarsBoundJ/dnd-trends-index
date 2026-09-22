@@ -32,6 +32,11 @@ const ALARM_NAME = "catalog-daily";
 const WATCHDOG_ALARM = "harvest-watchdog";
 const SITE_TIMEOUT_MS = 3 * 60 * 1000;
 
+// The detail pass lives in its own file: a resumable cursor over the product
+// API, unrelated to the shelf harvest's tab lifecycle. Loaded after ENDPOINT,
+// which it derives its own ingest URL from.
+importScripts("detail.js");
+
 // ---------- Harvest lease ----------
 // Pure, and sliced out by scripts/test_harvester_lease.js. Keep it that way:
 // the staleness rule is the thing that stops a dead run disabling the harvester,
@@ -182,6 +187,20 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
         return;
     }
 
+    // The detail pass runs on its own schedule and must not be confused with
+    // the weekly shelf harvest: it holds no lease, opens no tabs, and a tick
+    // that finds an empty queue simply does nothing.
+    if (alarm.name === DETAIL_ALARM) {
+        const { ritualKey } = await chrome.storage.local.get("ritualKey");
+        if (!ritualKey) {
+            console.warn("[Incursion] Detail pass needs a ritual key — stopping.");
+            await detailStop("no ritual key");
+            return;
+        }
+        await detailTick(ritualKey);
+        return;
+    }
+
     if (alarm.name !== ALARM_NAME) return;
 
     const today = new Date();
@@ -234,6 +253,16 @@ async function runHarvest(ritualKey, weekKey) {
     }
 
     const allOk = results.every(r => r.success);
+
+    // Deduped across sites and stored as {store, productId} — the exact shape
+    // detailStart expects, so queueing is a read rather than a transformation.
+    const seen = new Set();
+    const harvestedProducts = [];
+    results.forEach(r => (r.productIds || []).forEach(id => {
+        const key = r.site + ":" + id;
+        if (!seen.has(key)) { seen.add(key); harvestedProducts.push({ store: r.site, productId: id }); }
+    }));
+    await chrome.storage.local.set({ harvestedProducts });
 
     await releaseLease({
         lastRunResults: results,
@@ -474,7 +503,15 @@ async function runExtractionInPage(siteName, ritualKey, endpoint, chunkSize) {
             successCount += chunk.length;
         }
 
-        return { site: siteName, success: true, count: successCount, tierSummary, shelves: shelfNames };
+        // The product id is in every URL we just harvested. Keeping it turns the
+        // shelf pass into the detail pass's queue at zero extra cost — nothing
+        // needs re-visiting to find out which products exist.
+        const productIds = products
+            .map(p => (String(p.product_url).match(/\/product\/(\d+)/) || [])[1])
+            .filter(Boolean);
+
+        return { site: siteName, success: true, count: successCount, tierSummary,
+                 shelves: shelfNames, productIds };
     } catch (e) {
         return { site: siteName, success: false, error: e.message };
     }
@@ -516,6 +553,41 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
         (async () => {
             await abandonHarvest("Cancelled.");
             sendResponse({ ok: true });
+        })();
+        return true;
+    }
+
+    if (msg.type === "DETAIL_START") {
+        (async () => {
+            const { ritualKey } = await chrome.storage.local.get("ritualKey");
+            if (!ritualKey) { sendResponse({ ok: false, error: "No ritual key configured" }); return; }
+            const queue = Array.isArray(msg.queue) ? msg.queue : [];
+            if (!queue.length) { sendResponse({ ok: false, error: "Empty queue" }); return; }
+            await detailStart(queue);
+            sendResponse({ ok: true, queued: queue.length });
+        })();
+        return true;
+    }
+
+    if (msg.type === "DETAIL_STOP") {
+        (async () => { await detailStop("stopped from the popup"); sendResponse({ ok: true }); })();
+        return true;
+    }
+
+    if (msg.type === "DETAIL_STATUS") {
+        (async () => {
+            const s = await chrome.storage.local.get(
+                ["detailQueue", "detailCursor", "detailDone", "detailErrors", "detailStartedAt"]);
+            const total = (s.detailQueue || []).length;
+            sendResponse({
+                total,
+                cursor: s.detailCursor || 0,
+                done: s.detailDone || 0,
+                errors: (s.detailErrors || []).length,
+                lastErrors: (s.detailErrors || []).slice(-3),
+                running: total > 0 && (s.detailCursor || 0) < total,
+                startedAt: s.detailStartedAt || null
+            });
         })();
         return true;
     }
