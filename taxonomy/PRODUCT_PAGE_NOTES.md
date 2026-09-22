@@ -129,18 +129,65 @@ Two consequences:
    returning 404. So `api.<store>.com/api/vBeta/...` exists and the SPA is
    already talking to it.
 
-If a product endpoint on that API returns the facets, page count and offer data
-directly, the detail harvest becomes a paced sequence of JSON calls with no DOM
-parsing and no tab-opening — far faster, far less brittle, and much gentler on
-the storefront than rendering 2,453 pages. **Confirming that endpoint is the
-next step, and it should happen before any harvester is written.**
+## The API — confirmed 22 Sep 2026
 
-If no such endpoint is usable, the fallback is rendering each product route in a
-tab and extracting from the live DOM — correct but slow, and 2,453 of them needs
-real pacing. Slow is fine; the weekly cadence means a first pass can take hours.
+The SPA is a client for a plain REST API, and the product endpoint is exactly
+what the harvest needs:
+
+```
+GET https://api.drivethrurpg.com/api/vBeta/products/535790?groupId=1&siteId=10
+```
+
+Captured from `performance.getEntriesByType("resource")` on the product page.
+Sibling endpoints seen on the same load:
+
+| Endpoint | Carries |
+|---|---|
+| `/api/vBeta/products/{id}` | the product itself |
+| `/api/vBeta/products/{id}/related/also_purchased` | "customers also bought" — a demand-adjacency signal |
+| `/api/vBeta/products/{id}/bundle_memberships` | which bundles include it |
+| `/api/vBeta/reviews?productId={id}` | reviews, with rating and date ordering |
+| `/api/vBeta/comments?productId={id}` | comments |
+
+Auth-only endpoints (`/reviews/me`, `/is_purchased`, `/my_flagged_comments`)
+exist too and are irrelevant here.
+
+### The store is a parameter, not a codebase
+
+Both storefronts run the same API on the same paths, distinguished only by two
+query parameters:
+
+| Store | host | `siteId` | `groupId` |
+|---|---|---|---|
+| DriveThruRPG | `api.drivethrurpg.com` | 10 | 1 |
+| DMs Guild | `api.dmsguild.com` | 76 | 29 |
+
+(DMs Guild's pair came from `daily_deal/current?siteId=76&groupId=29` in its own
+console.) So one harvester with a two-row config covers both — the same
+conclusion the DOM probe reached, now true at the API layer as well.
+
+### Why this matters beyond speed
+
+Rendering 2,453 Angular routes means 2,453 full page loads with their analytics,
+ad pixels, maps SDK and A/B testing bundles — roughly 36 requests each, most of
+them nothing to do with us. A single JSON call per product is a fraction of that
+load on someone else's infrastructure, and it is the difference between a
+harvest that is a rounding error in their logs and one that is not. Paced JSON
+calls are both the faster option and the more considerate one, which is a rare
+alignment worth taking.
+
+It is also far less brittle: no class names, no DOM structure, no waiting for a
+route to render.
+
+### Still to confirm
+
+**What `/products/{id}` actually returns.** If it carries the facets, page count
+and publisher, the harvester needs nothing else. If it is thin, the DOM remains
+the fallback for whatever it omits. Nothing should be written until this is
+answered.
 
 ## Still unknown
 
+- The response shape of `/api/vBeta/products/{id}` — the one open question.
 - Whether file size, format and publish date sit in the same label/value block.
-- How to scope the facet extractor to the product's own tag container.
-- Whether the API exposes a product endpoint, and what it returns.
+- How to scope the DOM facet extractor, if the DOM is still needed at all.
