@@ -229,6 +229,8 @@ def bouncer_api(request):
             path = 'system/suggestions/update'
         elif full_path.endswith('suggestions/pending'):
             path = 'system/suggestions/pending'
+        elif full_path.endswith('ingest-catalog-detail'):
+            path = 'system/library/ingest-catalog-detail'
         elif full_path.endswith('ingest-catalog'):
             path = 'system/library/ingest-catalog'
         elif full_path.endswith('enrich'):
@@ -1428,6 +1430,41 @@ def bouncer_api(request):
         if errors:
             return (json.dumps({"error": str(errors)}), 500, headers)
         return (json.dumps({"inserted": len(rows)}), 200, headers)
+
+    elif path == 'system/library/ingest-catalog-detail':
+        # Per-product detail from the storefront API: page count, publisher,
+        # the store's own facet tags, the full star distribution, release dates.
+        #
+        # Deliberately NOT enriched by Gemini. Everything here is observed from
+        # the seller's own record, and the ingest-catalog path above exists to
+        # infer what could not be observed. Running the classifier over facts
+        # would replace measurements with guesses that look identical downstream.
+        if request.method != 'POST':
+            return (json.dumps({"error": "POST required"}), 405, headers)
+        ritual_key = request.headers.get('X-Ritual-Key', '')
+        if ritual_key != 'ArcaneLibrarian2026':
+            return (json.dumps({"error": "Unauthorized"}), 403, headers)
+        rows = request.get_json()
+        if not rows:
+            return (json.dumps({"error": "No data"}), 400, headers)
+
+        # product_id is the join key and the one field nothing else can supply.
+        # A row without it is unattributable, so it is rejected rather than
+        # written as an orphan nobody will ever notice.
+        keyed = [r for r in rows if r.get('product_id')]
+        dropped = len(rows) - len(keyed)
+        if not keyed:
+            return (json.dumps({"error": "No rows carried a product_id", "dropped": dropped}), 400, headers)
+
+        errors = client.insert_rows_json(
+            'dnd-trends-index.dnd_trends_raw.catalog_detail',
+            keyed,
+            skip_invalid_rows=True,
+            ignore_unknown_values=True,
+        )
+        if errors:
+            return (json.dumps({"error": str(errors)}), 500, headers)
+        return (json.dumps({"inserted": len(keyed), "dropped_no_product_id": dropped}), 200, headers)
 
     elif path == 'system/amazon/ingest-ranks':
         if request.method != 'POST':
