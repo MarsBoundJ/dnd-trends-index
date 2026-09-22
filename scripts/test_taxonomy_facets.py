@@ -164,10 +164,11 @@ for name, doc in docs.items():
             print(f"  {name}.{axis}: {state} "
                   f"({len(spec.get('values', []))} values{extra})")
 
-incomplete = [n for n, d in docs.items() if not d.get("capture_complete")]
-if incomplete:
-    print(f"\n  note: {len(incomplete)} capture(s) flagged incomplete "
-          f"({', '.join(incomplete)}) — absence of a value proves nothing there")
+partial = [f"{n}.{a}" for n, d in docs.items()
+           for a, s in d.get("axes", {}).items() if s.get("complete") is False]
+if partial:
+    print(f"\n  note: {len(partial)} axis/axes not enumerable "
+          f"({', '.join(partial)}) — there, absence of a value proves nothing")
 
 print(f"\n{passed} passed, {failed} failed\n")
 sys.exit(1 if failed else 0)

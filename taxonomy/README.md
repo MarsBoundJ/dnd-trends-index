@@ -71,11 +71,35 @@ about what it contains.
 setting-agnostic or may be untagged. Those are different facts. Record absence
 as unknown; never as "Nonspecific/Any Setting".
 
-**Capture the tree unfiltered.** `dmsguild_facets_v1.json` was taken from a
-sidebar already filtered to one product type, so each list shows only the facets
-available *within* that type. Values in it are real; absence proves nothing. Its
-`capture_complete` flag is `false` until it is retaken from a bare
-`/en/browse`.
+**A browse list is a curated surface, not an enumeration.** This is the one that
+cost the most to learn, and it holds on both storefronts:
+
+- DMs Guild's *unfiltered* browse popup lists ten product types and omits
+  **Monsters & NPCs** — yet `45395-monsters-npcs` is real, with a working browse
+  URL, because the first capture was taken while browsing inside it.
+- DriveThruRPG's browse popup carries a `ruleSystem` value, **Other systems**,
+  that its metal.php sidebar does not.
+
+So no single surface enumerates a facet, and two surfaces disagreeing is normal
+rather than a capture error. Two rules follow:
+
+1. **A value proven by a working URL outranks its absence from any list.** Keep
+   it, and record how it was observed.
+2. **Never read absence as a negative.** "Not in the list" means the list did
+   not show it — nothing more.
+
+Completeness is therefore tracked **per axis**, not per file. An axis is
+`complete: true` only when it matched across two independent surfaces and shows
+no search affordance. A searchable axis (DriveThruRPG's `ruleSystem` and
+publishers) is never complete: the visible list is a shortcut.
+
+**A value may be known without its id.** If a surface shows a value but carries
+no href — as the DriveThruRPG popup did for *Other systems* — record it with
+`"id": null` and `"id_pending": true`, plus a note. Never invent an id: a wrong
+one filters the wrong products and nothing complains. Never drop the value
+either; that loses the knowledge that it exists. `scripts/test_taxonomy_facets.py`
+enforces both, and fails any axis claiming completeness while holding a pending
+id.
 
 ## Versioning
 
@@ -88,9 +112,27 @@ change, the data must say which rules it was written under.
 
 ## Adding a storefront
 
-1. Capture the facet sidebar from an unfiltered browse page.
-2. Save as `taxonomy/<store>_facets_v1.json`, same shape, `capture_complete`
-   set honestly.
-3. Record ids, slugs and labels — ids are the join key; labels change.
-4. Note catch-all buckets ("More Settings", "Previous Storylines", "Other") so
-   analysis never treats them as peers of real values.
+1. Capture the facets from **two** independent surfaces — the browse popup and a
+   category sidebar, say. One is not enough; on both stores so far they
+   disagreed.
+2. Save as `taxonomy/<store>_facets_v1.json`, same shape.
+3. Record ids, slugs and labels — ids are the join key, labels change. Mark any
+   value seen without an href as `id_pending`.
+4. Set `complete` per axis, `true` only where the two surfaces agreed and no
+   search box is offered.
+5. Note catch-all buckets ("More Settings", "Previous Storylines",
+   "Miscellaneous", "Other") so analysis never treats them as peers of real
+   values.
+6. Run `python scripts/test_taxonomy_facets.py`.
+
+## Also captured, deliberately not taxonomy
+
+Price is a **range** filter on both stores, so it stays a numeric column.
+`free` and `pay_what_you_want` are booleans worth keeping: a PWYW title lists at
+$0.00 without being free, and price alone cannot separate the two — untracked,
+every PWYW product joins the free pile and drags down any average-price or
+price-per-page figure.
+
+Named sales ("September Planescape Sale", "Roll20Con Sale") are weekly
+merchandising, recorded under `promos_seen` only to be explicit that they are
+not product attributes. A title is not "a Roll20Con product".
