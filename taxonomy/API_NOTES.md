@@ -133,6 +133,92 @@ costs us nothing and spares their infrastructure. `also_purchased` and
 nothing changes, and if it does not, the bookmarklet pattern already runs in the
 user's signed-in session.
 
-**Still unverified:** the DMs Guild response shape. Same platform and the same
-`siteId`/`groupId` convention, so expect a match — but confirm before assuming,
-which is the lesson this whole exercise has been teaching.
+## DMs Guild confirmed — product 339645
+
+*Claus for Concern*, B.J. Keeton, a community-created one-shot. `STATUS 200`,
+same shape, same endpoints, `siteId=76&groupId=29`. **One harvester, two rows of
+config**, now verified rather than assumed.
+
+Choosing a *community* product mattered: both earlier samples were publisher
+titles (WotC/Guild Adept, R. Talsorian) and had these fields null. Here they
+populate, and they are the fields that separate indie creators from back
+catalogue:
+
+```
+isCommunityContent          true
+communityContentAuthorId    433429
+communityContentAuthorAlias "B.J. Keeton"
+creatorLevelId              3          <- DMs Guild only, not on DriveThruRPG
+worldId                     2          <- null on the DriveThruRPG sample
+```
+
+`creatorLevelId` is new and DMs-Guild-specific. The platform grades its
+creators, and that grade is queryable — publisher tiering on a storefront with
+no publishers, which is exactly the analysis DMs Guild otherwise makes hard.
+
+### The axis roots — how to classify a filter without our files
+
+Every filter chains up to an axis root via `parentId`. From this one product:
+
+| Root | Axis |
+|---|---|
+| `45341` | productType |
+| `45342` | edition |
+| `45343` | setting |
+| `45423` | theme |
+| `45468` | content |
+| `45477` | languages |
+| `45544` | format |
+
+So the harvester determines a filter's axis by walking `parentId` to the root —
+no lookup table, no dependence on our hand-captured JSON. Those files become
+what they should be: an annotated cross-check carrying hazards and catch-alls.
+
+It also resolves the `45462-5e` puzzle. It is not a duplicate handle for
+`1000261-5th-edition`, as recorded earlier; it is its **child**. Co-occurrence is
+a product tagged at two depths, which is ordinary in a tree.
+
+### Depth reaches further than expected
+
+```
+45418  parent=45393   1st Tier (Levels 1-4)      <- under Adventures
+45438  parent=45396   Magic Items                <- under Gear/Magic Items
+1000142 parent=1000140 Human-Created Without AI  <- under Creation Method
+```
+
+`45418` is a **character-level band**, a market attribute nobody asked for and no
+browse surface shows: what level range do bestselling adventures target? And
+`Creation Method` turns out to be the AI-disclosure axis in facet form, matching
+the `ai` / `handmade` booleans.
+
+### Two data hazards
+
+**`reviewCount` is not the rating denominator.** On this product `reviewCount`
+is 28 while `reviewRatings` counts sum to **94** (0+0+2+18+74). On the
+DriveThruRPG sample, 6 against 12. Consistent across both, so the reading is
+that `reviewCount` counts *written reviews* and the star buckets count
+*ratings*. Using `reviewCount` as the denominator of an average would be wrong
+by a factor of three here. Sum the buckets.
+
+**`pagecount` type is inconsistent.** `"104"` (string) on DriveThruRPG, `27` on
+DMs Guild. Coerce on read; never compare raw.
+
+Also varying: `sku` was `"XMAS-2020"` here and empty on DriveThruRPG;
+`storefrontPrimaryFilterValues` populated there and `[]` here. Treat both as
+optional.
+
+## The last unexplored door
+
+The DMs Guild page called **`api.dmsguild.com/api/vBeta/filters`** — an endpoint
+for the facet tree itself, alongside `filters/promos`.
+
+If it returns every filter with `parentId` and `ancestors`, it is the
+authoritative taxonomy, and `dmsguild_facets_v1.json` / `drivethrurpg_facets_v1.json`
+stop being hand-captured approximations and become generated artefacts with our
+annotations layered on. Every "not enumerable" axis would close at once.
+
+Worth one probe before writing the harvester.
+
+**Still unverified:** whether any of these endpoints work unauthenticated. Every
+call so far ran from a signed-in browser. If they need a session, the
+bookmarklet pattern already provides one.

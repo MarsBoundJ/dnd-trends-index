@@ -148,10 +148,19 @@ change, the data must say which rules it was written under.
 ## Also captured, deliberately not taxonomy
 
 Price is a **range** filter on both stores, so it stays a numeric column.
-`free` and `pay_what_you_want` are booleans worth keeping: a PWYW title lists at
-$0.00 without being free, and price alone cannot separate the two — untracked,
-every PWYW product joins the free pile and drags down any average-price or
-price-per-page figure.
+`free` and `pay_what_you_want` are booleans worth keeping — but not for the
+reason first written here.
+
+**Correction (22 Sep 2026).** This said a PWYW title "lists at $0.00 without
+being free", so price alone could not separate it from a free product. Measured
+on DMs Guild 339645: `isPwyw: true` with `price: 3.95`. PWYW products carry a
+real, non-zero **suggested** price.
+
+The flag matters more than the original claim implied, not less. A PWYW price is
+what the creator asks for, not what buyers paid — so any revenue proxy of
+price × units is wrong for those products in an unknown direction, and an
+average price silently mixes committed prices with suggestions. Segment on the
+flag; never assume PWYW means cheap or free.
 
 Named sales ("September Planescape Sale", "Roll20Con Sale") are weekly
 merchandising, recorded under `promos_seen` only to be explicit that they are
