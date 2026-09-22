@@ -1,8 +1,13 @@
 # What a product page actually gives us
 
-Probed 22 Sep 2026 against DMs Guild product 457996 (*Chains of Asmodeus*), live
-DOM via the DevTools console. DriveThruRPG not yet probed; it is the same
-OneBookShelf platform, so expect the same shape and confirm rather than assume.
+Probed 22 Sep 2026 against DMs Guild product 457996 (*Chains of Asmodeus*) and
+DriveThruRPG product 535790 (*Single Player Mode*), live DOM via the DevTools
+console.
+
+**Both stores are the same application.** Same `phoenix-frontend` Angular build,
+same JSON-LD shape, same `Page Count` markup, same `/en/product/{id}/{slug}`
+URLs, same CDN image path, and product pages on both use the modern named-param
+facet links. One extractor serves both; only the axis names differ.
 
 ## The headline: facets are per-product
 
@@ -23,14 +28,44 @@ So **one visit per product yields every facet plus page count plus the
 structured data below.** No facet-walk over 169 browse URLs, no set-membership
 reconstruction. This is the single most useful thing the probe settled.
 
-It also immediately corrected two assumptions, both recorded in
-`dmsguild_facets_v1.json`:
+### The probe over-collects — scope the extractor
+
+The probe above scans **every anchor on the page**, so its output mixes this
+product's tags with site navigation. On the DriveThruRPG product it reported
+`productType=2810 :: Gift Certificates` for a Cyberpunk solo supplement, which
+is plainly a nav link, not a tag. Note also that href carried a bare id with no
+slug, so a URL parser must tolerate both `2810` and `2810-gift-certificates`.
+
+For taxonomy work this does not matter: a real id with a real label is a real
+facet value wherever it was linked from. For the **harvester** it matters a
+great deal — a real extractor must scope to the product's own tag container,
+not `document`. Treat per-product facet sets from this probe as an upper bound.
+
+### It corrected assumptions on both stores
+
+Recorded in `dmsguild_facets_v1.json` and `drivethrurpg_facets_v1.json`:
 
 - **productType and edition are multi-valued.** This one product is
   simultaneously Core Rules, Adventures and Character Options. A one-per-product
   model would have discarded two thirds of that.
 - **Two more values exist that no browse surface lists**: `45832-descent-into-avernus`
   and `45462-5e`. Three axes lost their `complete` flag as a result.
+
+On DriveThruRPG the same probe found **three product types and one genre that
+neither browse surface lists**: `2110-campaigns-adventures-modules`,
+`1000756-solo`, `44823-gm-less`, and `510-cyberpunk`.
+
+`2110` is the important one. This file previously stated, and built a cross-store
+mapping hazard on, the claim that *DriveThruRPG has no Adventures product type*.
+That was false — it exists, and is simply absent from both browse lists. The
+lesson is the curated-surface rule again, but sharper: absence from a list is
+not merely weak evidence, it actively produced a wrong conclusion that was
+written down as a finding. Map value to value from observed product tags only.
+
+`1000756-solo` is a nice illustration of how differently the two stores cut
+things: DriveThruRPG files solo play under `productType`, DMs Guild under
+`theme` (`45752-solo-single-player`). Same concept, different axis — the third
+instance of that pattern after Bundles.
 
 `45462-5e` deserves its own warning: it co-occurs with `1000261-5th-edition` on
 the same product, so the two are duplicate handles for one concept, not
@@ -106,6 +141,6 @@ real pacing. Slow is fine; the weekly cadence means a first pass can take hours.
 
 ## Still unknown
 
-- DriveThruRPG's product page — assumed similar, unverified.
 - Whether file size, format and publish date sit in the same label/value block.
+- How to scope the facet extractor to the product's own tag container.
 - Whether the API exposes a product endpoint, and what it returns.
