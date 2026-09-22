@@ -72,6 +72,8 @@
         }
         .site-result .count { color: #22c55e; font-weight: 600; }
         .site-result .error { color: #ef4444; font-size: 11px; max-width: 160px; text-align: right; }
+        .detail-block { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .detail-status { font-size: 11px; color: #94a3b8; line-height: 1.5; }
         .tier-summary { color: #999; font-size: 11px; padding: 0 10px 6px 10px; margin-top: -4px; margin-bottom: 6px; }
         input[type="password"], input[type="text"] {
             width: 100%;
@@ -184,6 +186,10 @@
         <p class="schedule-note">Runs Mon 6am automatically, retries daily (skips Sat) until success.</p>
         <button class="btn btn-primary" id="run-now-btn">Run Now</button>
         <button class="btn btn-ghost" id="cancel-btn" style="margin-top:6px">Cancel Harvest</button>
+        <div class="detail-block">
+            <div id="detail-status" class="detail-status">&nbsp;</div>
+            <button class="btn btn-ghost" id="detail-btn" style="margin-top:6px">Start Detail Pass</button>
+        </div>
         <div class="save-msg" id="run-msg"></div>
     </div>
 
