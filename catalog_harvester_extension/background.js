@@ -1,5 +1,25 @@
 // Arcane Incursion - Background Service Worker
 // Handles scheduling (Mon 6am, daily retry, skip Sat) and tab lifecycle.
+//
+// WHY THIS FILE IS SHAPED AROUND THE WORKER DYING.
+//
+// Manifest V3 terminates an idle service worker after ~30 seconds. When that
+// happens mid-harvest, everything held in memory goes with it: the promise
+// tracking the run, the tabs.onUpdated listener, and the setTimeout meant to
+// fail a stuck site. Nothing resumes and nothing cleans up.
+//
+// Measured on Sep 22 2026, first real run: DMs Guild harvested and logged
+// (1090 products, tiers clean), the DriveThruRPG tab opened and rendered, then
+// the worker was evicted. harvestInProgress was left true in storage with no
+// code path alive to clear it, which disabled Run Now permanently -- the popup
+// read "Harvest in progress" forever and offered no way out. The only escape
+// was writing to chrome.storage by hand from the service-worker console.
+// Reloading the extension does not help: storage survives it.
+//
+// So the in-progress flag is now a LEASE with a timestamp, and a stale lease is
+// not a running harvest. A killed worker costs one run instead of bricking the
+// extension. chrome.alarms, which Chrome persists and which wakes a fresh
+// worker, is the backstop that setTimeout cannot be.
 
 const SITES = [
     { name: "DMs Guild",    url: "https://www.dmsguild.com/metal.php" },
@@ -9,6 +29,37 @@ const SITES = [
 const ENDPOINT = "https://us-central1-dnd-trends-index.cloudfunctions.net/bouncer-api/system/library/ingest-catalog";
 const CHUNK_SIZE = 1000;
 const ALARM_NAME = "catalog-daily";
+const WATCHDOG_ALARM = "harvest-watchdog";
+const SITE_TIMEOUT_MS = 3 * 60 * 1000;
+
+// ---------- Harvest lease ----------
+// Pure, and sliced out by scripts/test_harvester_lease.js. Keep it that way:
+// the staleness rule is the thing that stops a dead run disabling the harvester,
+// and it is worth testing without a browser.
+
+const HARVEST_STALE_MS = 10 * 60 * 1000;
+
+function evaluateLease(stored, now) {
+    const held = !!(stored && stored.harvestInProgress);
+    if (!held) return { held: false, running: false, stale: false, ageMs: 0 };
+
+    const startedAt = (stored && typeof stored.harvestStartedAt === "number") ? stored.harvestStartedAt : 0;
+
+    // No timestamp at all means the lease was written by a build older than this
+    // one, or by a worker that died before stamping it. Either way there is no
+    // live run behind it, so it must not hold the harvester shut.
+    if (!startedAt) return { held: true, running: false, stale: true, ageMs: Infinity };
+
+    const ageMs = now - startedAt;
+
+    // A negative age means the clock moved backwards (system time change, a DST
+    // step). Treat that as stale too, rather than letting a dead lease look
+    // fresh until the clock catches up.
+    const stale = ageMs < 0 || ageMs > HARVEST_STALE_MS;
+    return { held: true, running: !stale, stale: stale, ageMs: ageMs };
+}
+
+// ---------- end harvest lease ----------
 
 // ---------- Scheduling helpers ----------
 
@@ -42,6 +93,74 @@ function ensureAlarm() {
     });
 }
 
+// ---------- Lease storage ----------
+
+async function readLease() {
+    const stored = await chrome.storage.local.get(["harvestInProgress", "harvestStartedAt"]);
+    return evaluateLease(stored, Date.now());
+}
+
+async function takeLease() {
+    await chrome.storage.local.set({
+        harvestInProgress: true,
+        harvestStartedAt: Date.now(),
+        harvestTabIds: [],
+        harvestLog: []
+    });
+    // Persisted by Chrome, so it survives the worker being evicted. This is the
+    // whole point: it is the one thing that can still run after the harvest's
+    // own in-memory machinery is gone.
+    chrome.alarms.create(WATCHDOG_ALARM, { when: Date.now() + HARVEST_STALE_MS });
+}
+
+async function releaseLease(extra) {
+    await chrome.alarms.clear(WATCHDOG_ALARM);
+    await chrome.storage.local.set(Object.assign({
+        harvestInProgress: false,
+        harvestStartedAt: 0,
+        harvestTabIds: []
+    }, extra || {}));
+}
+
+// Tab ids are kept in storage, not in a variable, so a fresh worker can still
+// close the tabs a dead one left open.
+async function trackTab(tabId) {
+    const { harvestTabIds = [] } = await chrome.storage.local.get("harvestTabIds");
+    if (harvestTabIds.indexOf(tabId) === -1) harvestTabIds.push(tabId);
+    await chrome.storage.local.set({ harvestTabIds });
+}
+
+async function untrackTab(tabId) {
+    const { harvestTabIds = [] } = await chrome.storage.local.get("harvestTabIds");
+    await chrome.storage.local.set({ harvestTabIds: harvestTabIds.filter((id) => id !== tabId) });
+}
+
+// Give up on a run: close whatever tabs are still open, keep the results of the
+// sites that DID finish, mark the rest failed, and free the lease.
+async function abandonHarvest(reason) {
+    const { harvestTabIds = [], harvestLog = [] } = await chrome.storage.local.get(["harvestTabIds", "harvestLog"]);
+
+    for (const id of harvestTabIds) {
+        try { await chrome.tabs.remove(id); } catch (e) { /* already closed */ }
+    }
+
+    // A site that completed before the interruption keeps its real result --
+    // on Sep 22 that was a clean 1090-product DMs Guild capture, and throwing
+    // it away would have hidden the fact that the harvest itself worked.
+    const finished = harvestLog.map((e) => e.site);
+    const results = harvestLog.slice();
+    SITES.forEach((s) => {
+        if (finished.indexOf(s.name) === -1) {
+            results.push({ site: s.name, success: false, error: reason });
+        }
+    });
+
+    await releaseLease({ lastRunResults: results, lastRunDate: new Date().toISOString() });
+    console.warn("[Incursion] Harvest abandoned: " + reason);
+}
+
+const INTERRUPTED = "Interrupted — Chrome shut the harvester down mid-run.";
+
 // ---------- Lifecycle ----------
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -55,6 +174,14 @@ chrome.runtime.onStartup.addListener(() => {
 // ---------- Alarm handler ----------
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
+    // The backstop. If this fires and a lease is still held, the run that took
+    // it never finished -- clean up instead of leaving the extension stuck.
+    if (alarm.name === WATCHDOG_ALARM) {
+        const lease = await readLease();
+        if (lease.held) await abandonHarvest(INTERRUPTED);
+        return;
+    }
+
     if (alarm.name !== ALARM_NAME) return;
 
     const today = new Date();
@@ -79,6 +206,16 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
         return;
     }
 
+    // Overlap guard. The scheduled path used to ignore the in-progress flag
+    // entirely, so a daily retry could open a second pair of tabs on top of a
+    // run already going and post both to ingest.
+    const lease = await readLease();
+    if (lease.running) {
+        console.warn("[Incursion] A harvest is already running — skipping this fire.");
+        return;
+    }
+    if (lease.stale) await abandonHarvest(INTERRUPTED);
+
     console.log("[Incursion] Starting harvest for week of " + thisWeek);
     await runHarvest(ritualKey, thisWeek);
 });
@@ -86,7 +223,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 // ---------- Harvest orchestration ----------
 
 async function runHarvest(ritualKey, weekKey) {
-    await chrome.storage.local.set({ harvestInProgress: true, harvestLog: [] });
+    await takeLease();
 
     const results = [];
 
@@ -98,8 +235,7 @@ async function runHarvest(ritualKey, weekKey) {
 
     const allOk = results.every(r => r.success);
 
-    await chrome.storage.local.set({
-        harvestInProgress: false,
+    await releaseLease({
         lastRunResults: results,
         lastRunDate: new Date().toISOString()
     });
@@ -118,6 +254,22 @@ function harvestSite(site, ritualKey) {
     return new Promise((resolve) => {
         chrome.tabs.create({ url: site.url, active: false }, (tab) => {
             const tabId = tab.id;
+            let settled = false;
+            let timer = null;
+
+            trackTab(tabId);
+
+            // Every exit goes through here, so a site cannot resolve twice and
+            // cannot leave its tab or its listener behind.
+            function finish(result) {
+                if (settled) return;
+                settled = true;
+                if (timer !== null) clearTimeout(timer);
+                chrome.tabs.onUpdated.removeListener(onUpdated);
+                chrome.tabs.remove(tabId).catch(() => {});
+                untrackTab(tabId);
+                resolve(result);
+            }
 
             function onUpdated(updatedId, info, updatedTab) {
                 if (updatedId !== tabId || info.status !== "complete") return;
@@ -129,23 +281,24 @@ function harvestSite(site, ritualKey) {
                 chrome.tabs.onUpdated.removeListener(onUpdated);
 
                 // Inject the harvest runner directly via scripting
-                injectViaScripting(tabId, site, ritualKey, resolve);
+                injectViaScripting(tabId, site, ritualKey, finish);
             }
 
             chrome.tabs.onUpdated.addListener(onUpdated);
 
-            // Timeout: give up after 3 minutes
-            setTimeout(() => {
-                chrome.tabs.onUpdated.removeListener(onUpdated);
-                chrome.tabs.remove(tabId).catch(() => {});
-                resolve({ site: site.name, success: false, error: "Timeout (3min)" });
-            }, 3 * 60 * 1000);
+            // Fast path only: this fails a stuck site promptly WHILE THE WORKER
+            // IS ALIVE. It cannot be the real timeout, because setTimeout dies
+            // with the worker along with this promise and the listener above.
+            // WATCHDOG_ALARM covers that case.
+            timer = setTimeout(() => {
+                finish({ site: site.name, success: false, error: "Timeout (3min)" });
+            }, SITE_TIMEOUT_MS);
         });
     });
 }
 
 // Uses chrome.scripting.executeScript (preferred in MV3) to run extraction in-page.
-function injectViaScripting(tabId, site, ritualKey, resolve) {
+function injectViaScripting(tabId, site, ritualKey, finish) {
     chrome.scripting.executeScript(
         {
             target: { tabId },
@@ -153,17 +306,12 @@ function injectViaScripting(tabId, site, ritualKey, resolve) {
             args: [site.name, ritualKey, ENDPOINT, CHUNK_SIZE]
         },
         (injectionResults) => {
-            chrome.tabs.remove(tabId).catch(() => {});
             if (chrome.runtime.lastError) {
-                resolve({ site: site.name, success: false, error: chrome.runtime.lastError.message });
+                finish({ site: site.name, success: false, error: chrome.runtime.lastError.message });
                 return;
             }
             const result = injectionResults?.[0]?.result;
-            if (result) {
-                resolve(result);
-            } else {
-                resolve({ site: site.name, success: false, error: "No result from injected script" });
-            }
+            finish(result || { site: site.name, success: false, error: "No result from injected script" });
         }
     );
 }
@@ -340,31 +488,51 @@ async function appendLog(entry) {
     await chrome.storage.local.set({ harvestLog: harvestLog.slice(-50) }); // keep last 50 entries
 }
 
-// ---------- Message listener (for popup "Run Now") ----------
+// ---------- Message listener (popup) ----------
 
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     if (msg.type === "RUN_NOW") {
-        chrome.storage.local.get(["ritualKey", "harvestInProgress"], async ({ ritualKey, harvestInProgress }) => {
-            if (harvestInProgress) {
-                sendResponse({ ok: false, error: "Harvest already in progress" });
-                return;
-            }
+        (async () => {
+            const { ritualKey } = await chrome.storage.local.get("ritualKey");
             if (!ritualKey) {
                 sendResponse({ ok: false, error: "No ritual key configured" });
                 return;
             }
-            const weekKey = getMondayOfWeek(new Date());
+            const lease = await readLease();
+            if (lease.running) {
+                sendResponse({ ok: false, error: "Harvest already in progress" });
+                return;
+            }
+            // A stale lease is a dead run, not a live one. Clear it and go.
+            if (lease.stale) await abandonHarvest(INTERRUPTED);
+
             sendResponse({ ok: true });
-            await runHarvest(ritualKey, weekKey);
-        });
+            await runHarvest(ritualKey, getMondayOfWeek(new Date()));
+        })();
         return true; // async sendResponse
     }
 
+    if (msg.type === "CANCEL") {
+        (async () => {
+            await abandonHarvest("Cancelled.");
+            sendResponse({ ok: true });
+        })();
+        return true;
+    }
+
     if (msg.type === "GET_STATUS") {
-        chrome.storage.local.get(
-            ["lastSuccessWeek", "lastRunDate", "lastRunResults", "harvestInProgress", "ritualKey"],
-            (data) => sendResponse(data)
-        );
+        (async () => {
+            const data = await chrome.storage.local.get([
+                "lastSuccessWeek", "lastRunDate", "lastRunResults",
+                "harvestInProgress", "harvestStartedAt", "ritualKey"
+            ]);
+            // The popup asks "is a harvest running?", which is not the same
+            // question as "is the flag set?" -- that gap is what stranded it.
+            const lease = evaluateLease(data, Date.now());
+            data.harvestActive = lease.running;
+            data.harvestStuck = lease.held && lease.stale;
+            sendResponse(data);
+        })();
         return true;
     }
 });

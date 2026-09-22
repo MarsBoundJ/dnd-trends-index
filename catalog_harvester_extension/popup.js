@@ -42,13 +42,25 @@ async function refreshStatus() {
 
     lastRunEl.textContent = formatDate(status.lastRunDate);
 
-    // In progress?
-    if (status.harvestInProgress) {
+    // "Is a harvest running?" is NOT the same question as "is the flag set?".
+    // A run killed mid-flight leaves the flag set with nothing behind it, which
+    // is what disabled Run Now indefinitely on Sep 22. The background script
+    // answers the real question via the lease's age; trust that, not the flag.
+    const stuckEl = document.getElementById("stuck-indicator");
+    const cancelBtn = document.getElementById("cancel-btn");
+
+    if (status.harvestActive) {
         progressEl.style.display = "block";
+        stuckEl.style.display = "none";
         runBtn.disabled = true;
+        cancelBtn.style.display = "block";
     } else {
         progressEl.style.display = "none";
+        stuckEl.style.display = status.harvestStuck ? "block" : "none";
         runBtn.disabled = false;
+        // Offer the escape hatch while anything is still held, so a stuck run
+        // is always one click from cleared rather than a console command.
+        cancelBtn.style.display = status.harvestStuck ? "block" : "none";
     }
 
     // Show last results
@@ -103,6 +115,17 @@ document.getElementById("run-now-btn").addEventListener("click", () => {
         } else {
             runMsg.textContent = resp.error || "Error";
         }
+    });
+});
+
+// Cancel / clear a stuck harvest
+document.getElementById("cancel-btn").addEventListener("click", () => {
+    const runMsg = document.getElementById("run-msg");
+    runMsg.textContent = "Cancelling…";
+    chrome.runtime.sendMessage({ type: "CANCEL" }, () => {
+        runMsg.textContent = "Harvest cancelled.";
+        setTimeout(() => { runMsg.textContent = ""; }, 3000);
+        refreshStatus();
     });
 });
 
