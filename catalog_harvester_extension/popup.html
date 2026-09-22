@@ -122,6 +122,16 @@
             line-height: 1.5;
             margin-top: 4px;
         }
+        #stuck-indicator {
+            display: none;
+            margin-top: 10px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            background: rgba(239, 68, 68, 0.12);
+            color: #ef4444;
+            font-size: 11px;
+            line-height: 1.45;
+        }
         #in-progress-indicator {
             display: none;
             font-size: 11px;
@@ -154,6 +164,7 @@
             <span id="last-run">—</span>
         </div>
         <div id="in-progress-indicator">⚙ Harvest in progress…</div>
+        <div id="stuck-indicator">⚠ The last harvest was interrupted and never finished.</div>
     </div>
 
     <div class="section" id="results-section" style="display:none">
@@ -172,6 +183,7 @@
         <div class="section-title">Manual Trigger</div>
         <p class="schedule-note">Runs Mon 6am automatically, retries daily (skips Sat) until success.</p>
         <button class="btn btn-primary" id="run-now-btn">Run Now</button>
+        <button class="btn btn-ghost" id="cancel-btn" style="margin-top:6px">Cancel Harvest</button>
         <div class="save-msg" id="run-msg"></div>
     </div>
 
