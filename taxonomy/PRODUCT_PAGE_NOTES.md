@@ -1,5 +1,10 @@
 # What a product page actually gives us
 
+> **Superseded for harvesting by `API_NOTES.md`.** The product API returns
+> everything below and more in one call, so the DOM is now the fallback, not
+> the plan. Kept because the selectors and the SPA constraint are still true,
+> and because the probe here is what led to the API.
+
 Probed 22 Sep 2026 against DMs Guild product 457996 (*Chains of Asmodeus*) and
 DriveThruRPG product 535790 (*Single Player Mode*), live DOM via the DevTools
 console.

@@ -80,8 +80,15 @@ cost the most to learn, and it holds on both storefronts:
 - DriveThruRPG's browse popup carries a `ruleSystem` value, **Other systems**,
   that its metal.php sidebar does not.
 
-So no single surface enumerates a facet, and two surfaces disagreeing is normal
-rather than a capture error. Two rules follow:
+**Why**, discovered later via the API (see `API_NOTES.md`): the facets are a
+**tree**. Every value we found "missing" turned out to be a child — Cyberpunk
+under Science Fiction, Campaigns/Adventures/Modules under Supplements &
+Expansions. Browse lists show top-level nodes only. The rule below was the right
+conclusion from the evidence; the reason is depth, not curation, and these flat
+JSON files are a snapshot of a hierarchy. Record `parentId`/`ancestors` when
+harvesting.
+
+Two rules still follow:
 
 1. **A value proven by a working URL outranks its absence from any list.** Keep
    it, and record how it was observed.
