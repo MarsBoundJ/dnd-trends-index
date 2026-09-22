@@ -93,6 +93,19 @@ Completeness is therefore tracked **per axis**, not per file. An axis is
 no search affordance. A searchable axis (DriveThruRPG's `ruleSystem` and
 publishers) is never complete: the visible list is a shortcut.
 
+**A UI control is not a facet value.** DriveThruRPG's `ruleSystem` list ends in
+*Other systems*, which reads exactly like a catch-all bucket. It is not — it is a
+disclosure control. Clicking **Refine** expands it to 30 further systems
+(Shadowrun, Deadlands, GUMSHOE, Cortex, Palladium…), and that expanded list
+*still* ends in "…and More!". Recorded as a value, it would have collapsed a
+whole tier of the market into one bucket labelled "other", and every one of
+those systems would have counted as unclassified. Expand anything that looks
+like a catch-all before recording it; `scripts/test_taxonomy_facets.py` now
+fails on labels of that shape.
+
+The same axis is why counts here are floors, never totals: 48 values are known
+and the storefront itself declines to say how many exist.
+
 **A value may be known without its id.** If a surface shows a value but carries
 no href — as the DriveThruRPG popup did for *Other systems* — record it with
 `"id": null` and `"id_pending": true`, plus a note. Never invent an id: a wrong

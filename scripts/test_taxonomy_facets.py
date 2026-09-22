@@ -119,6 +119,21 @@ for name, doc in docs.items():
             if v["slug"] in CATCH_ALLS and "note" not in v:
                 unflagged.append(f"{axis}.{v['slug']}")
     check("catch-all buckets carry a warning note", not unflagged, str(unflagged))
+
+    # A UI control is not a facet value. "Other systems" on DriveThruRPG looked
+    # like a catch-all and was recorded as one; clicking Refine revealed it to be
+    # a disclosure control hiding 30 real systems. Recording it as a value would
+    # have meant a whole tier of the market sitting inside a single bucket
+    # labelled "other" — every one of those 30 counted as unclassified.
+    DISCLOSURE = ("and more", "more systems", "other systems", "show more", "see all")
+    controls = []
+    for axis, spec in doc.get("axes", {}).items():
+        for v in spec.get("values", []):
+            label = str(v.get("label", "")).strip().lower().strip(".!… ")
+            if any(label == d or label.endswith(d) for d in DISCLOSURE):
+                controls.append(f"{axis}.{v.get('slug')}={v.get('label')!r}")
+    check("no UI disclosure control recorded as a value", not controls,
+          "; ".join(controls) + " — expand it and record what it hides")
     print()
 
 # ── Cross-store ─────────────────────────────────────────────────────────────
