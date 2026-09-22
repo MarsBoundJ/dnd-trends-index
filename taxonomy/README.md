@@ -49,9 +49,12 @@ The storefront's own facets avoid all three:
 
 Use the LLM here, and only here:
 
-- **5e 2014 vs 2024.** DMs Guild has one `5th Edition` value covering both.
-  The edition transition is a live market question, so this needs another
-  signal — description text, or the product's own edition wording.
+- ~~**5e 2014 vs 2024.**~~ **Wrong — it is a facet.** This claimed both
+  editions sat under one `5th Edition` value and needed inference from
+  description text. The API shows `5.5e` as a child of `5th Edition` on both
+  stores (DMs Guild `1000263`, DriveThruRPG `1000260`). The edition transition
+  is directly measurable. The claim came from browse sidebars, which show
+  top-level nodes only — the same mistake, four times over.
 - **Audience (player-facing vs GM-facing).** Partly implied — `Character
   Options` is player, `Resources for DMG Creators` is GM — but not stated for
   most product types.

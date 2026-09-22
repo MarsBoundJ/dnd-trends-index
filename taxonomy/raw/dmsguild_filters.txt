@@ -1,0 +1,200 @@
+# Source: GET https://api.dmsguild.com/api/vBeta/filters?groupId=29&siteId=76
+# Captured: 2026-09-22 · walked page=1..N at pageSize=50 until short page
+# Format: filterId|parentId|name
+45341|0|Product Type
+45342|0|Edition
+45343|0|Setting
+45344|45342|Original Edition (OD&D)
+45345|45342|Basic/Expert
+45346|45342|1st Edition
+45347|45342|2nd Edition
+45348|45342|3rd Edition (d20 System)
+45349|45342|4th Edition
+45350|45348|3.0 Edition
+45351|45348|3.5 Edition
+45352|45348|d20 Modern/d20 Future
+45353|45343|Dark Sun
+45354|45343|Dragonlance
+45355|45343|Eberron
+45356|45343|Forgotten Realms
+45357|45343|Greyhawk
+45358|45343|Planescape
+45359|45343|Ravenloft
+45360|45343|More Settings
+45361|45360|Al-Qadim
+45362|45360|Birthright
+45363|45360|Blackmoor
+45364|45360|Council of Wyrms
+45365|45360|Ghostwalk
+45366|45360|Jakandor
+45367|45360|Kara-Tur
+45368|45360|Kingdoms of Kalamar
+45369|45360|Lankhmar
+45370|45360|Mahasarpa
+45371|45360|Maztica
+45372|45360|Mystara
+45373|45360|Nentir Vale
+45374|45360|Pelinore
+45375|45360|Rokugan
+45376|45360|Savage Coast
+45377|45343|Spelljammer
+45378|45360|Thunder Rift
+45379|45360|Underdark
+45380|45360|Wilderlands of High Fantasy
+45381|45341|Core Rules
+45383|45341|Tabletop Essentials
+45384|45341|RPG Media
+45385|45341|Board/Miniature Games
+45386|45341|Gift Certificates
+45388|45381|All-in-One Rulebooks
+45389|45381|Player Guides
+45390|45381|Game Master Guides
+45391|45381|Quickstart
+45393|45341|Adventures
+45395|45381|Monsters/NPCs
+45396|45341|Gear/Magic Items
+45397|45341|Character Options
+45399|45383|Maps/2D Terrain
+45401|45383|Cardstock Counters/Miniatures
+45402|45383|3-D Buildings/Terrain
+45405|45383|Props/Visual Aids
+45406|45384|RPG Fiction
+45407|45384|Books About Games
+45408|45384|RPG Software
+45409|45384|RPG Magazines
+45410|45384|Audio
+45411|45384|RPG Comics
+45412|45476|RPG Artwork
+45413|45385|Miniature Games
+45414|45385|Board Games
+45416|45387|How-To Guides
+45418|45393|1st Tier (Levels 1-4)
+45419|45393|2nd Tier (Levels 5-10)
+45420|45393|3rd Tier (Levels 11-16)
+45422|45423|Urban
+45423|0|Theme
+45425|45383|Itemized Lists/Tables
+45426|45397|Class/Archetype
+45428|45397|Race
+45429|45397|Skills/Feats
+45431|45397|Spells/Psionics
+45438|45396|Magic Items
+45439|45396|Guns/Tech/Vehicles
+45440|45396|Poison/Traps
+45442|45383|GM Screens
+45443|45408|Character Management
+45444|45408|GM Tools
+45445|45408|Mapping
+45446|45408|Online Tabletop
+45447|45410|Music
+45448|45410|Podcasts
+45449|45413|Miniature Rulebooks
+45450|45413|Miniature Scenarios
+45451|45413|Miniature Tools/Aids
+45452|45414|Family
+45453|45414|Historical
+45454|45414|Humor
+45455|45414|War Games
+45462|1000261|5e
+45463|45341|Bundles
+45468|0|Content
+45469|45468|DMsGuild
+45470|45468|D&D Adventurers League
+45471|45468|D&D Classics
+45472|0|Campaign Expansions
+45473|1000055|Rage of Demons
+45474|1000055|Elemental Evil
+45475|1000055|Tyranny of Dragons
+45476|45341|Resources for DMG Creators
+45477|0|Languages
+45478|45477|Español
+45479|45477|Français
+45480|45477|Italiano
+45481|45477|Deutsch
+45482|45477|Português
+45483|45477|English
+45484|45477|Svenska
+45485|45477|Polski
+45507|45472|Curse of Strahd / Van Richten
+45526|45397|Backgrounds
+45527|45381|Variant Rules
+45528|45381|Supplemental Rules
+45529|45476|Design Template
+45531|45423|Aquatic
+45532|45423|Planar
+45534|45423|Underdark/Subterranean
+45535|45423|Wilderness
+45536|45343|Nonspecific/Any Setting
+45537|45393|4th Tier (Levels 17+)
+45538|45393|Old Module Conversion
+45544|0|Format
+45545|45544|Virtual Tabletop
+45546|45544|PDF
+45547|45544|Print
+45548|45544|ePub
+45549|1000055|Storm King's Thunder
+45557|45383|Character Sheets
+45572|1000055|Tales from the Yawning Portal
+45680|45468|Guild Adept
+45682|1000055|Tomb of Annihilation
+45690|45360|Plane Shift
+45699|45477|Other
+45700|45397|Pregenerated Characters
+45701|45383|Cheat Sheets/Quick Reference
+45728|45472|Waterdeep
+45744|45423|Horror
+45745|45423|Intrigue
+45746|45423|Mystery
+45747|45423|Dungeon
+45748|45423|Family Oriented
+45749|45423|Comedy
+45750|45423|Pulp Action
+45751|45423|Festive
+45752|45423|Solo/Single-Player
+45759|45343|Ravnica
+45783|45381|Campaign Settings
+45796|1000055|Ghosts of Saltmarsh
+45832|1000055|Descent into Avernus
+45835|45544|Phone PDF
+45864|999999|Staff Picks
+45882|45393|Salvage Missions (AL)
+45936|1000055|Mythic Odysseys of Theros
+45937|45343|Theros
+100018|45423|Arctic
+100023|45472|Rime of the Frostmaiden
+100057|45393|Dungeoncraft (AL)
+100063|1000055|Candlekeep Mysteries
+100084|45507|Van Richten's Guide to Ravenloft
+100191|1000055|Wild Beyond the Witchlight
+100219|45544|Screenreader PDF
+100221|1000055|Arcavios (Strixhaven)
+100222|45343|Arcavios(Strixhaven)
+1000020|1000055|Radiant Citadel
+1000027|1000055|Spelljammer
+1000030|45545|Fantasy Grounds
+1000042|45470|Forgotten Realms Campaign World
+1000043|45470|Eberron Campaign World
+1000044|45470|Ravenloft Campaign World
+1000055|45472|Previous Storylines
+1000063|45545|Roll20
+1000068|45472|Dragonlance
+1000089|1000055|Keys from the Golden Vault
+1000100|999999|Support Extra Life!
+1000109|45477|Ukrainian / Українська
+1000140|45544|Creation Method
+1000141|1000140|Contains AI-Generated Content
+1000142|1000140|Human-Created Without AI
+1000156|45477|Japanese 日本語
+1000159|45472|Phandelver & Below
+1000161|1000055|Planescape
+1000198|45472|Vecna: Eve of Ruin
+1000227|999999|The Next Adventure
+1000261|45342|5th Edition
+1000263|1000261|5.5e
+1000267|45423|Feywild
+1000565|45472|Dragon Delves
+1000608|999999|Roll20Con Sale
+1000680|45356|Baldurs Gate
+1000783|999999|September Planescape Sale
+1000785|45356|Thay
+1000786|45472|Arcana Unleashed

@@ -108,7 +108,9 @@ Unreliable on this sample: `sku` and `isbn` were empty strings, `edition` null,
 
 The list is now very short:
 
-- **5e 2014 vs 2024** — still not a facet.
+- ~~5e 2014 vs 2024~~ — **it is a facet.** `5.5e` sits under `5th Edition`
+  on both stores. Stated as needing inference in four separate commits; each
+  rested on a browse list rather than the tree.
 - **Audience (player vs GM)** — partly implied by product type.
 - **Cross-store mapping** — and even this is easier now that hierarchy is visible.
 

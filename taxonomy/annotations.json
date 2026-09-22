@@ -1,0 +1,32 @@
+{
+  "_comment": [
+    "Hand-written judgement, merged into the generated facet files by (store, id).",
+    "Kept separate so regenerating from a fresh API dump never destroys it.",
+    "Facts belong in taxonomy/raw/; only interpretation belongs here."
+  ],
+  "dmsguild": {
+    "45360": "NOT a catch-all, despite the name. Parent of twenty real settings — Al-Qadim, Birthright, Kara-Tur, Maztica, Mystara, Rokugan and more. An earlier hand-captured file flagged this as an other-bucket and said to treat it as such; that would have erased a tier of the market. Roll its children up to it; never file a product under it as 'other'.",
+    "1000055": "NOT a catch-all. Parent of sixteen named WotC storylines — Tyranny of Dragons through Keys from the Golden Vault. Same misreading as More Settings.",
+    "1000261": "5th Edition. Parent of BOTH 45462 (5e) and 1000263 (5.5e), so a product tagged only here is edition-ambiguous between the 2014 and 2024 rules.",
+    "45462": "5e — the 2014 rules, as a child of 5th Edition. Co-occurs with its parent on products tagged at both depths, which is ordinary in a tree and NOT the duplicate-handle relationship an earlier file recorded.",
+    "1000263": "5.5e — the 2024 rules. This repo repeatedly stated the 2014-vs-2024 split was not a facet and needed LLM inference from description text. It is a facet, and the edition transition is measurable directly.",
+    "1000140": "Creation Method — the AI-disclosure axis, matching the product-level `ai` and `handmade` booleans.",
+    "1000141": "Contains AI-Generated Content. Sellers self-declare, so this measures disclosure, not incidence.",
+    "45545": "Virtual Tabletop. Its children name the platforms (Fantasy Grounds, Roll20), so VTT adoption is measurable per-platform.",
+    "45393": "Adventures. Its children include the character-level bands (1st through 4th Tier), so the level range a bestselling adventure targets is directly queryable.",
+    "45699": "Other — a genuine catch-all, and a leaf. A product here has SOME language, just not one DMs Guild lists.",
+    "45470": "D&D Adventurers League — organised play. Its children split by campaign world.",
+    "45471": "D&D Classics — WotC/TSR back-catalogue reprints, NOT community creations. Segment on this before drawing any conclusion about what indie creators are selling."
+  },
+  "drivethrurpg": {
+    "9999": "Other systems — a REAL node (id 9999, parent 30) and the parent of roughly eighty systems, not a UI control. An earlier commit recorded it as a 'disclosure control, not a value' after the Refine button revealed its children. Half right: the Refine button is a control, but 9999 is a genuine container node in the tree, exactly like More Settings on DMs Guild. Roll its children up to it; never treat a product under it as unclassified.",
+    "1000259": "5e — the 2014 rules, under Official D&D. Note the id differs from DMs Guild's 45462 for the same concept: per-store ids, never joinable.",
+    "1000260": "5.5e — the 2024 rules. This repo stated four times that the 2014-vs-2024 split was not a facet and required LLM inference. It is a facet on BOTH stores.",
+    "2110": "Campaigns, Adventures & Modules. A commit once claimed DriveThruRPG had no adventures category and built a cross-store hazard on it; this is that category. Closest counterpart to DMs Guild 45393-adventures, though cut differently — this one carries the level bands as children.",
+    "1000032": "Creation Method — the AI-disclosure axis, mirroring DMs Guild 1000140. Children declare AI vs human authorship.",
+    "45317": "Virtual Tabletops. Children name the platforms — Foundry, Fantasy Grounds, Roll20, Demiplane — so VTT platform share is directly measurable.",
+    "44823": "GM-less, with Solo / 2+ Players / Gamebooks beneath it. DMs Guild files solo play under theme instead (45752); same concept, different axis.",
+    "45582": "Old-School Revival (OSR) — parent of the individual OSR games (Mork Borg, Shadowdark, Old-School Essentials, Cairn…). Counting 'OSR' by this id alone misses every product tagged only to a specific game.",
+    "900": "Miscellaneous — a container, not a catch-all leaf: Superhero, Comedy, LGBTQ+ and Romance hang off it. Do not read it as 'other'."
+  }
+}

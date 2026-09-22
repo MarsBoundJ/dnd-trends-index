@@ -1,0 +1,1786 @@
+{
+  "taxonomy_version": "dmsguild-v2",
+  "store": "dmsguild",
+  "captured_at": "2026-09-22",
+  "source": "GET https://api.dmsguild.com/api/vBeta/filters (paged, groupId+siteId set)",
+  "generated_by": "scripts/build_facet_tree.py",
+  "capture_complete": true,
+  "_comment": [
+    "GENERATED — do not hand-edit. Re-capture into taxonomy/raw/ and rerun the script.",
+    "Judgement belongs in taxonomy/annotations.json, which is merged in by id.",
+    "",
+    "cardinality is 'many' on every axis: a single product carries three product",
+    "types and two editions (DMs Guild 457996), so none of these is one-per-product.",
+    "",
+    "ALWAYS send groupId and siteId. The host does not decide the vocabulary — a",
+    "bare call to api.dmsguild.com returns DriveThruRPG's tree with HTTP 200 and no",
+    "warning."
+  ],
+  "total_values": 191,
+  "orphans": [
+    {
+      "id": "45416",
+      "reason": "parent 45387 absent from the dump",
+      "label": "How-To Guides"
+    },
+    {
+      "id": "45864",
+      "reason": "promotional rail, parent not a real facet",
+      "label": "Staff Picks"
+    },
+    {
+      "id": "1000100",
+      "reason": "promotional rail, parent not a real facet",
+      "label": "Support Extra Life!"
+    },
+    {
+      "id": "1000227",
+      "reason": "promotional rail, parent not a real facet",
+      "label": "The Next Adventure"
+    },
+    {
+      "id": "1000608",
+      "reason": "promotional rail, parent not a real facet",
+      "label": "Roll20Con Sale"
+    },
+    {
+      "id": "1000783",
+      "reason": "promotional rail, parent not a real facet",
+      "label": "September Planescape Sale"
+    }
+  ],
+  "axes": {
+    "product-type": {
+      "root_id": "45341",
+      "label": "Product Type",
+      "cardinality": "many",
+      "max_depth": 3,
+      "value_count": 65,
+      "values": [
+        {
+          "id": "45381",
+          "slug": "core-rules",
+          "label": "Core Rules",
+          "parent": "45341",
+          "depth": 1,
+          "is_leaf": false,
+          "child_count": 8
+        },
+        {
+          "id": "45383",
+          "slug": "tabletop-essentials",
+          "label": "Tabletop Essentials",
+          "parent": "45341",
+          "depth": 1,
+          "is_leaf": false,
+          "child_count": 8
+        },
+        {
+          "id": "45384",
+          "slug": "rpg-media",
+          "label": "RPG Media",
+          "parent": "45341",
+          "depth": 1,
+          "is_leaf": false,
+          "child_count": 6
+        },
+        {
+          "id": "45385",
+          "slug": "board-miniature-games",
+          "label": "Board/Miniature Games",
+          "parent": "45341",
+          "depth": 1,
+          "is_leaf": false,
+          "child_count": 2
+        },
+        {
+          "id": "45386",
+          "slug": "gift-certificates",
+          "label": "Gift Certificates",
+          "parent": "45341",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45393",
+          "slug": "adventures",
+          "label": "Adventures",
+          "parent": "45341",
+          "depth": 1,
+          "is_leaf": false,
+          "child_count": 7,
+          "note": "Adventures. Its children include the character-level bands (1st through 4th Tier), so the level range a bestselling adventure targets is directly queryable."
+        },
+        {
+          "id": "45396",
+          "slug": "gear-magic-items",
+          "label": "Gear/Magic Items",
+          "parent": "45341",
+          "depth": 1,
+          "is_leaf": false,
+          "child_count": 3
+        },
+        {
+          "id": "45397",
+          "slug": "character-options",
+          "label": "Character Options",
+          "parent": "45341",
+          "depth": 1,
+          "is_leaf": false,
+          "child_count": 6
+        },
+        {
+          "id": "45463",
+          "slug": "bundles",
+          "label": "Bundles",
+          "parent": "45341",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45476",
+          "slug": "resources-for-dmg-creators",
+          "label": "Resources for DMG Creators",
+          "parent": "45341",
+          "depth": 1,
+          "is_leaf": false,
+          "child_count": 2
+        },
+        {
+          "id": "45388",
+          "slug": "all-in-one-rulebooks",
+          "label": "All-in-One Rulebooks",
+          "parent": "45381",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45389",
+          "slug": "player-guides",
+          "label": "Player Guides",
+          "parent": "45381",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45390",
+          "slug": "game-master-guides",
+          "label": "Game Master Guides",
+          "parent": "45381",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45391",
+          "slug": "quickstart",
+          "label": "Quickstart",
+          "parent": "45381",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45395",
+          "slug": "monsters-npcs",
+          "label": "Monsters/NPCs",
+          "parent": "45381",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45399",
+          "slug": "maps-2d-terrain",
+          "label": "Maps/2D Terrain",
+          "parent": "45383",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45401",
+          "slug": "cardstock-counters-miniatures",
+          "label": "Cardstock Counters/Miniatures",
+          "parent": "45383",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45402",
+          "slug": "3-d-buildings-terrain",
+          "label": "3-D Buildings/Terrain",
+          "parent": "45383",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45405",
+          "slug": "props-visual-aids",
+          "label": "Props/Visual Aids",
+          "parent": "45383",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45406",
+          "slug": "rpg-fiction",
+          "label": "RPG Fiction",
+          "parent": "45384",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45407",
+          "slug": "books-about-games",
+          "label": "Books About Games",
+          "parent": "45384",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45408",
+          "slug": "rpg-software",
+          "label": "RPG Software",
+          "parent": "45384",
+          "depth": 2,
+          "is_leaf": false,
+          "child_count": 4
+        },
+        {
+          "id": "45409",
+          "slug": "rpg-magazines",
+          "label": "RPG Magazines",
+          "parent": "45384",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45410",
+          "slug": "audio",
+          "label": "Audio",
+          "parent": "45384",
+          "depth": 2,
+          "is_leaf": false,
+          "child_count": 2
+        },
+        {
+          "id": "45411",
+          "slug": "rpg-comics",
+          "label": "RPG Comics",
+          "parent": "45384",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45412",
+          "slug": "rpg-artwork",
+          "label": "RPG Artwork",
+          "parent": "45476",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45413",
+          "slug": "miniature-games",
+          "label": "Miniature Games",
+          "parent": "45385",
+          "depth": 2,
+          "is_leaf": false,
+          "child_count": 3
+        },
+        {
+          "id": "45414",
+          "slug": "board-games",
+          "label": "Board Games",
+          "parent": "45385",
+          "depth": 2,
+          "is_leaf": false,
+          "child_count": 4
+        },
+        {
+          "id": "45418",
+          "slug": "1st-tier-levels-1-4",
+          "label": "1st Tier (Levels 1-4)",
+          "parent": "45393",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45419",
+          "slug": "2nd-tier-levels-5-10",
+          "label": "2nd Tier (Levels 5-10)",
+          "parent": "45393",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45420",
+          "slug": "3rd-tier-levels-11-16",
+          "label": "3rd Tier (Levels 11-16)",
+          "parent": "45393",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45425",
+          "slug": "itemized-lists-tables",
+          "label": "Itemized Lists/Tables",
+          "parent": "45383",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45426",
+          "slug": "class-archetype",
+          "label": "Class/Archetype",
+          "parent": "45397",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45428",
+          "slug": "race",
+          "label": "Race",
+          "parent": "45397",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45429",
+          "slug": "skills-feats",
+          "label": "Skills/Feats",
+          "parent": "45397",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45431",
+          "slug": "spells-psionics",
+          "label": "Spells/Psionics",
+          "parent": "45397",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45438",
+          "slug": "magic-items",
+          "label": "Magic Items",
+          "parent": "45396",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45439",
+          "slug": "guns-tech-vehicles",
+          "label": "Guns/Tech/Vehicles",
+          "parent": "45396",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45440",
+          "slug": "poison-traps",
+          "label": "Poison/Traps",
+          "parent": "45396",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45442",
+          "slug": "gm-screens",
+          "label": "GM Screens",
+          "parent": "45383",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45526",
+          "slug": "backgrounds",
+          "label": "Backgrounds",
+          "parent": "45397",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45527",
+          "slug": "variant-rules",
+          "label": "Variant Rules",
+          "parent": "45381",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45528",
+          "slug": "supplemental-rules",
+          "label": "Supplemental Rules",
+          "parent": "45381",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45529",
+          "slug": "design-template",
+          "label": "Design Template",
+          "parent": "45476",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45537",
+          "slug": "4th-tier-levels-17",
+          "label": "4th Tier (Levels 17+)",
+          "parent": "45393",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45538",
+          "slug": "old-module-conversion",
+          "label": "Old Module Conversion",
+          "parent": "45393",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45557",
+          "slug": "character-sheets",
+          "label": "Character Sheets",
+          "parent": "45383",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45700",
+          "slug": "pregenerated-characters",
+          "label": "Pregenerated Characters",
+          "parent": "45397",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45701",
+          "slug": "cheat-sheets-quick-reference",
+          "label": "Cheat Sheets/Quick Reference",
+          "parent": "45383",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45783",
+          "slug": "campaign-settings",
+          "label": "Campaign Settings",
+          "parent": "45381",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45882",
+          "slug": "salvage-missions-al",
+          "label": "Salvage Missions (AL)",
+          "parent": "45393",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "100057",
+          "slug": "dungeoncraft-al",
+          "label": "Dungeoncraft (AL)",
+          "parent": "45393",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45443",
+          "slug": "character-management",
+          "label": "Character Management",
+          "parent": "45408",
+          "depth": 3,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45444",
+          "slug": "gm-tools",
+          "label": "GM Tools",
+          "parent": "45408",
+          "depth": 3,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45445",
+          "slug": "mapping",
+          "label": "Mapping",
+          "parent": "45408",
+          "depth": 3,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45446",
+          "slug": "online-tabletop",
+          "label": "Online Tabletop",
+          "parent": "45408",
+          "depth": 3,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45447",
+          "slug": "music",
+          "label": "Music",
+          "parent": "45410",
+          "depth": 3,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45448",
+          "slug": "podcasts",
+          "label": "Podcasts",
+          "parent": "45410",
+          "depth": 3,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45449",
+          "slug": "miniature-rulebooks",
+          "label": "Miniature Rulebooks",
+          "parent": "45413",
+          "depth": 3,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45450",
+          "slug": "miniature-scenarios",
+          "label": "Miniature Scenarios",
+          "parent": "45413",
+          "depth": 3,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45451",
+          "slug": "miniature-tools-aids",
+          "label": "Miniature Tools/Aids",
+          "parent": "45413",
+          "depth": 3,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45452",
+          "slug": "family",
+          "label": "Family",
+          "parent": "45414",
+          "depth": 3,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45453",
+          "slug": "historical",
+          "label": "Historical",
+          "parent": "45414",
+          "depth": 3,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45454",
+          "slug": "humor",
+          "label": "Humor",
+          "parent": "45414",
+          "depth": 3,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45455",
+          "slug": "war-games",
+          "label": "War Games",
+          "parent": "45414",
+          "depth": 3,
+          "is_leaf": true,
+          "child_count": 0
+        }
+      ]
+    },
+    "edition": {
+      "root_id": "45342",
+      "label": "Edition",
+      "cardinality": "many",
+      "max_depth": 2,
+      "value_count": 12,
+      "values": [
+        {
+          "id": "45344",
+          "slug": "original-edition-od-d",
+          "label": "Original Edition (OD&D)",
+          "parent": "45342",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45345",
+          "slug": "basic-expert",
+          "label": "Basic/Expert",
+          "parent": "45342",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45346",
+          "slug": "1st-edition",
+          "label": "1st Edition",
+          "parent": "45342",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45347",
+          "slug": "2nd-edition",
+          "label": "2nd Edition",
+          "parent": "45342",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45348",
+          "slug": "3rd-edition-d20-system",
+          "label": "3rd Edition (d20 System)",
+          "parent": "45342",
+          "depth": 1,
+          "is_leaf": false,
+          "child_count": 3
+        },
+        {
+          "id": "45349",
+          "slug": "4th-edition",
+          "label": "4th Edition",
+          "parent": "45342",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000261",
+          "slug": "5th-edition",
+          "label": "5th Edition",
+          "parent": "45342",
+          "depth": 1,
+          "is_leaf": false,
+          "child_count": 2,
+          "note": "5th Edition. Parent of BOTH 45462 (5e) and 1000263 (5.5e), so a product tagged only here is edition-ambiguous between the 2014 and 2024 rules."
+        },
+        {
+          "id": "45350",
+          "slug": "3-0-edition",
+          "label": "3.0 Edition",
+          "parent": "45348",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45351",
+          "slug": "3-5-edition",
+          "label": "3.5 Edition",
+          "parent": "45348",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45352",
+          "slug": "d20-modern-d20-future",
+          "label": "d20 Modern/d20 Future",
+          "parent": "45348",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45462",
+          "slug": "5e",
+          "label": "5e",
+          "parent": "1000261",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0,
+          "note": "5e — the 2014 rules, as a child of 5th Edition. Co-occurs with its parent on products tagged at both depths, which is ordinary in a tree and NOT the duplicate-handle relationship an earlier file recorded."
+        },
+        {
+          "id": "1000263",
+          "slug": "5-5e",
+          "label": "5.5e",
+          "parent": "1000261",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0,
+          "note": "5.5e — the 2024 rules. This repo repeatedly stated the 2014-vs-2024 split was not a facet and needed LLM inference from description text. It is a facet, and the edition transition is measurable directly."
+        }
+      ]
+    },
+    "setting": {
+      "root_id": "45343",
+      "label": "Setting",
+      "cardinality": "many",
+      "max_depth": 2,
+      "value_count": 35,
+      "values": [
+        {
+          "id": "45353",
+          "slug": "dark-sun",
+          "label": "Dark Sun",
+          "parent": "45343",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45354",
+          "slug": "dragonlance",
+          "label": "Dragonlance",
+          "parent": "45343",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45355",
+          "slug": "eberron",
+          "label": "Eberron",
+          "parent": "45343",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45356",
+          "slug": "forgotten-realms",
+          "label": "Forgotten Realms",
+          "parent": "45343",
+          "depth": 1,
+          "is_leaf": false,
+          "child_count": 2
+        },
+        {
+          "id": "45357",
+          "slug": "greyhawk",
+          "label": "Greyhawk",
+          "parent": "45343",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45358",
+          "slug": "planescape",
+          "label": "Planescape",
+          "parent": "45343",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45359",
+          "slug": "ravenloft",
+          "label": "Ravenloft",
+          "parent": "45343",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45360",
+          "slug": "more-settings",
+          "label": "More Settings",
+          "parent": "45343",
+          "depth": 1,
+          "is_leaf": false,
+          "child_count": 20,
+          "note": "NOT a catch-all, despite the name. Parent of twenty real settings — Al-Qadim, Birthright, Kara-Tur, Maztica, Mystara, Rokugan and more. An earlier hand-captured file flagged this as an other-bucket and said to treat it as such; that would have erased a tier of the market. Roll its children up to it; never file a product under it as 'other'."
+        },
+        {
+          "id": "45377",
+          "slug": "spelljammer",
+          "label": "Spelljammer",
+          "parent": "45343",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45536",
+          "slug": "nonspecific-any-setting",
+          "label": "Nonspecific/Any Setting",
+          "parent": "45343",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45759",
+          "slug": "ravnica",
+          "label": "Ravnica",
+          "parent": "45343",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45937",
+          "slug": "theros",
+          "label": "Theros",
+          "parent": "45343",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "100222",
+          "slug": "arcavios-strixhaven",
+          "label": "Arcavios(Strixhaven)",
+          "parent": "45343",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45361",
+          "slug": "al-qadim",
+          "label": "Al-Qadim",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45362",
+          "slug": "birthright",
+          "label": "Birthright",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45363",
+          "slug": "blackmoor",
+          "label": "Blackmoor",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45364",
+          "slug": "council-of-wyrms",
+          "label": "Council of Wyrms",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45365",
+          "slug": "ghostwalk",
+          "label": "Ghostwalk",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45366",
+          "slug": "jakandor",
+          "label": "Jakandor",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45367",
+          "slug": "kara-tur",
+          "label": "Kara-Tur",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45368",
+          "slug": "kingdoms-of-kalamar",
+          "label": "Kingdoms of Kalamar",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45369",
+          "slug": "lankhmar",
+          "label": "Lankhmar",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45370",
+          "slug": "mahasarpa",
+          "label": "Mahasarpa",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45371",
+          "slug": "maztica",
+          "label": "Maztica",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45372",
+          "slug": "mystara",
+          "label": "Mystara",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45373",
+          "slug": "nentir-vale",
+          "label": "Nentir Vale",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45374",
+          "slug": "pelinore",
+          "label": "Pelinore",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45375",
+          "slug": "rokugan",
+          "label": "Rokugan",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45376",
+          "slug": "savage-coast",
+          "label": "Savage Coast",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45378",
+          "slug": "thunder-rift",
+          "label": "Thunder Rift",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45379",
+          "slug": "underdark",
+          "label": "Underdark",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45380",
+          "slug": "wilderlands-of-high-fantasy",
+          "label": "Wilderlands of High Fantasy",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45690",
+          "slug": "plane-shift",
+          "label": "Plane Shift",
+          "parent": "45360",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000680",
+          "slug": "baldurs-gate",
+          "label": "Baldurs Gate",
+          "parent": "45356",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000785",
+          "slug": "thay",
+          "label": "Thay",
+          "parent": "45356",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        }
+      ]
+    },
+    "theme": {
+      "root_id": "45423",
+      "label": "Theme",
+      "cardinality": "many",
+      "max_depth": 1,
+      "value_count": 16,
+      "values": [
+        {
+          "id": "45422",
+          "slug": "urban",
+          "label": "Urban",
+          "parent": "45423",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45531",
+          "slug": "aquatic",
+          "label": "Aquatic",
+          "parent": "45423",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45532",
+          "slug": "planar",
+          "label": "Planar",
+          "parent": "45423",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45534",
+          "slug": "underdark-subterranean",
+          "label": "Underdark/Subterranean",
+          "parent": "45423",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45535",
+          "slug": "wilderness",
+          "label": "Wilderness",
+          "parent": "45423",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45744",
+          "slug": "horror",
+          "label": "Horror",
+          "parent": "45423",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45745",
+          "slug": "intrigue",
+          "label": "Intrigue",
+          "parent": "45423",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45746",
+          "slug": "mystery",
+          "label": "Mystery",
+          "parent": "45423",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45747",
+          "slug": "dungeon",
+          "label": "Dungeon",
+          "parent": "45423",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45748",
+          "slug": "family-oriented",
+          "label": "Family Oriented",
+          "parent": "45423",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45749",
+          "slug": "comedy",
+          "label": "Comedy",
+          "parent": "45423",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45750",
+          "slug": "pulp-action",
+          "label": "Pulp Action",
+          "parent": "45423",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45751",
+          "slug": "festive",
+          "label": "Festive",
+          "parent": "45423",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45752",
+          "slug": "solo-single-player",
+          "label": "Solo/Single-Player",
+          "parent": "45423",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "100018",
+          "slug": "arctic",
+          "label": "Arctic",
+          "parent": "45423",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000267",
+          "slug": "feywild",
+          "label": "Feywild",
+          "parent": "45423",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        }
+      ]
+    },
+    "content": {
+      "root_id": "45468",
+      "label": "Content",
+      "cardinality": "many",
+      "max_depth": 2,
+      "value_count": 7,
+      "values": [
+        {
+          "id": "45469",
+          "slug": "dmsguild",
+          "label": "DMsGuild",
+          "parent": "45468",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45470",
+          "slug": "d-d-adventurers-league",
+          "label": "D&D Adventurers League",
+          "parent": "45468",
+          "depth": 1,
+          "is_leaf": false,
+          "child_count": 3,
+          "note": "D&D Adventurers League — organised play. Its children split by campaign world."
+        },
+        {
+          "id": "45471",
+          "slug": "d-d-classics",
+          "label": "D&D Classics",
+          "parent": "45468",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0,
+          "note": "D&D Classics — WotC/TSR back-catalogue reprints, NOT community creations. Segment on this before drawing any conclusion about what indie creators are selling."
+        },
+        {
+          "id": "45680",
+          "slug": "guild-adept",
+          "label": "Guild Adept",
+          "parent": "45468",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000042",
+          "slug": "forgotten-realms-campaign-world",
+          "label": "Forgotten Realms Campaign World",
+          "parent": "45470",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000043",
+          "slug": "eberron-campaign-world",
+          "label": "Eberron Campaign World",
+          "parent": "45470",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000044",
+          "slug": "ravenloft-campaign-world",
+          "label": "Ravenloft Campaign World",
+          "parent": "45470",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        }
+      ]
+    },
+    "campaign-expansions": {
+      "root_id": "45472",
+      "label": "Campaign Expansions",
+      "cardinality": "many",
+      "max_depth": 2,
+      "value_count": 26,
+      "values": [
+        {
+          "id": "45507",
+          "slug": "curse-of-strahd-van-richten",
+          "label": "Curse of Strahd / Van Richten",
+          "parent": "45472",
+          "depth": 1,
+          "is_leaf": false,
+          "child_count": 1
+        },
+        {
+          "id": "45728",
+          "slug": "waterdeep",
+          "label": "Waterdeep",
+          "parent": "45472",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "100023",
+          "slug": "rime-of-the-frostmaiden",
+          "label": "Rime of the Frostmaiden",
+          "parent": "45472",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000055",
+          "slug": "previous-storylines",
+          "label": "Previous Storylines",
+          "parent": "45472",
+          "depth": 1,
+          "is_leaf": false,
+          "child_count": 16,
+          "note": "NOT a catch-all. Parent of sixteen named WotC storylines — Tyranny of Dragons through Keys from the Golden Vault. Same misreading as More Settings."
+        },
+        {
+          "id": "1000068",
+          "slug": "dragonlance",
+          "label": "Dragonlance",
+          "parent": "45472",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000159",
+          "slug": "phandelver-below",
+          "label": "Phandelver & Below",
+          "parent": "45472",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000198",
+          "slug": "vecna-eve-of-ruin",
+          "label": "Vecna: Eve of Ruin",
+          "parent": "45472",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000565",
+          "slug": "dragon-delves",
+          "label": "Dragon Delves",
+          "parent": "45472",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000786",
+          "slug": "arcana-unleashed",
+          "label": "Arcana Unleashed",
+          "parent": "45472",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45473",
+          "slug": "rage-of-demons",
+          "label": "Rage of Demons",
+          "parent": "1000055",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45474",
+          "slug": "elemental-evil",
+          "label": "Elemental Evil",
+          "parent": "1000055",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45475",
+          "slug": "tyranny-of-dragons",
+          "label": "Tyranny of Dragons",
+          "parent": "1000055",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45549",
+          "slug": "storm-king-s-thunder",
+          "label": "Storm King's Thunder",
+          "parent": "1000055",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45572",
+          "slug": "tales-from-the-yawning-portal",
+          "label": "Tales from the Yawning Portal",
+          "parent": "1000055",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45682",
+          "slug": "tomb-of-annihilation",
+          "label": "Tomb of Annihilation",
+          "parent": "1000055",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45796",
+          "slug": "ghosts-of-saltmarsh",
+          "label": "Ghosts of Saltmarsh",
+          "parent": "1000055",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45832",
+          "slug": "descent-into-avernus",
+          "label": "Descent into Avernus",
+          "parent": "1000055",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45936",
+          "slug": "mythic-odysseys-of-theros",
+          "label": "Mythic Odysseys of Theros",
+          "parent": "1000055",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "100063",
+          "slug": "candlekeep-mysteries",
+          "label": "Candlekeep Mysteries",
+          "parent": "1000055",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "100084",
+          "slug": "van-richten-s-guide-to-ravenloft",
+          "label": "Van Richten's Guide to Ravenloft",
+          "parent": "45507",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "100191",
+          "slug": "wild-beyond-the-witchlight",
+          "label": "Wild Beyond the Witchlight",
+          "parent": "1000055",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "100221",
+          "slug": "arcavios-strixhaven",
+          "label": "Arcavios (Strixhaven)",
+          "parent": "1000055",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000020",
+          "slug": "radiant-citadel",
+          "label": "Radiant Citadel",
+          "parent": "1000055",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000027",
+          "slug": "spelljammer",
+          "label": "Spelljammer",
+          "parent": "1000055",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000089",
+          "slug": "keys-from-the-golden-vault",
+          "label": "Keys from the Golden Vault",
+          "parent": "1000055",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000161",
+          "slug": "planescape",
+          "label": "Planescape",
+          "parent": "1000055",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        }
+      ]
+    },
+    "languages": {
+      "root_id": "45477",
+      "label": "Languages",
+      "cardinality": "many",
+      "max_depth": 1,
+      "value_count": 11,
+      "values": [
+        {
+          "id": "45478",
+          "slug": "espa-ol",
+          "label": "Español",
+          "parent": "45477",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45479",
+          "slug": "fran-ais",
+          "label": "Français",
+          "parent": "45477",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45480",
+          "slug": "italiano",
+          "label": "Italiano",
+          "parent": "45477",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45481",
+          "slug": "deutsch",
+          "label": "Deutsch",
+          "parent": "45477",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45482",
+          "slug": "portugu-s",
+          "label": "Português",
+          "parent": "45477",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45483",
+          "slug": "english",
+          "label": "English",
+          "parent": "45477",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45484",
+          "slug": "svenska",
+          "label": "Svenska",
+          "parent": "45477",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45485",
+          "slug": "polski",
+          "label": "Polski",
+          "parent": "45477",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45699",
+          "slug": "other",
+          "label": "Other",
+          "parent": "45477",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0,
+          "catch_all": true,
+          "note": "Other — a genuine catch-all, and a leaf. A product here has SOME language, just not one DMs Guild lists."
+        },
+        {
+          "id": "1000109",
+          "slug": "ukrainian",
+          "label": "Ukrainian / Українська",
+          "parent": "45477",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000156",
+          "slug": "japanese",
+          "label": "Japanese 日本語",
+          "parent": "45477",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        }
+      ]
+    },
+    "format": {
+      "root_id": "45544",
+      "label": "Format",
+      "cardinality": "many",
+      "max_depth": 2,
+      "value_count": 11,
+      "values": [
+        {
+          "id": "45545",
+          "slug": "virtual-tabletop",
+          "label": "Virtual Tabletop",
+          "parent": "45544",
+          "depth": 1,
+          "is_leaf": false,
+          "child_count": 2,
+          "note": "Virtual Tabletop. Its children name the platforms (Fantasy Grounds, Roll20), so VTT adoption is measurable per-platform."
+        },
+        {
+          "id": "45546",
+          "slug": "pdf",
+          "label": "PDF",
+          "parent": "45544",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45547",
+          "slug": "print",
+          "label": "Print",
+          "parent": "45544",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45548",
+          "slug": "epub",
+          "label": "ePub",
+          "parent": "45544",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "45835",
+          "slug": "phone-pdf",
+          "label": "Phone PDF",
+          "parent": "45544",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "100219",
+          "slug": "screenreader-pdf",
+          "label": "Screenreader PDF",
+          "parent": "45544",
+          "depth": 1,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000140",
+          "slug": "creation-method",
+          "label": "Creation Method",
+          "parent": "45544",
+          "depth": 1,
+          "is_leaf": false,
+          "child_count": 2,
+          "note": "Creation Method — the AI-disclosure axis, matching the product-level `ai` and `handmade` booleans."
+        },
+        {
+          "id": "1000030",
+          "slug": "fantasy-grounds",
+          "label": "Fantasy Grounds",
+          "parent": "45545",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000063",
+          "slug": "roll20",
+          "label": "Roll20",
+          "parent": "45545",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        },
+        {
+          "id": "1000141",
+          "slug": "contains-ai-generated-content",
+          "label": "Contains AI-Generated Content",
+          "parent": "1000140",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0,
+          "note": "Contains AI-Generated Content. Sellers self-declare, so this measures disclosure, not incidence."
+        },
+        {
+          "id": "1000142",
+          "slug": "human-created-without-ai",
+          "label": "Human-Created Without AI",
+          "parent": "1000140",
+          "depth": 2,
+          "is_leaf": true,
+          "child_count": 0
+        }
+      ]
+    }
+  }
+}

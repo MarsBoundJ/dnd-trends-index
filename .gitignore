@@ -17,6 +17,11 @@ antigravity-browser-profile/
 !latest_news.json
 !master_collision_index.json
 !sage_sample.json
+
+# Taxonomy reference data. The blanket *.json above silently swallowed every
+# facet file for eight commits: git add reported success, the commits landed,
+# and the repo held documentation describing data that was never in it.
+!taxonomy/*.json
 !tavern_sample.json
 !treantmonk_videos.json
 # Pitch report datasets — point-in-time snapshots tracked for reproducibility

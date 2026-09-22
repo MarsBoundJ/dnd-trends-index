@@ -1,0 +1,430 @@
+# Source: GET https://api.drivethrurpg.com/api/vBeta/filters?groupId=1&siteId=10
+# Captured: 2026-09-22 · walked page=1..N at pageSize=50 until short page
+# Format: filterId|parentId|name
+10|0|Genre
+20|0|Product Type
+30|0|Rule System
+40|0|Languages
+100|10|Fantasy
+110|100|Asian/Wuxia Fantasy
+120|100|Dark Fantasy
+130|100|High Fantasy
+140|940|Historical Fantasy
+150|100|Classic Sword & Sorcery
+160|45880|Romantic Fantasy
+170|100|Steampunk
+200|10|Horror
+210|200|Contemporary
+220|200|Cthulhu Mythos
+230|200|Gothic
+240|200|Splatterpunk/Zombies!
+300|10|Modern
+310|300|Crime/Detective
+320|300|Military
+330|300|Urban Fantasy
+340|300|Spies/Espionage
+400|940|Pulp
+500|10|Science Fiction
+510|500|Cyberpunk
+520|500|Hard Sci-Fi
+530|500|Mecha
+540|500|Post-Apocalypse
+550|500|Space Opera
+600|900|Superhero
+700|940|Western
+900|10|Miscellaneous
+910|900|Anime/Cartoon
+930|900|Cross-genre/Multi-genre
+940|10|Historical
+950|900|Alternate History
+1120|45322|3.x/d20/OGL
+1130|45325|d20 Modern (official)
+1300|45322|Classic D&D/AD&D
+1310|1300|1e (AD&D)
+1320|1300|2e (AD&D)
+1330|1300|Basic/BECMI or OD&D
+1400|9999|Mutants & Masterminds
+1500|9999|RuneQuest
+1600|30|Savage Worlds
+1700|9999|Shadowrun
+1710|1700|Shadowrun, 3rd Ed.
+1720|1700|Shadowrun, 4th Ed.
+1800|30|Storyteller / Storytelling
+1810|1000184|1st Edition
+1820|1000184|2nd Edition
+1830|1800|World of Darkness
+1840|1800|Chronicles of Darkness
+2110|2150|Campaigns, Adventures & Modules
+2111|2110|Campaigns & Megamodules
+2112|2110|Low Level
+2113|2110|Medium Level
+2114|2110|High Level
+2120|2150|Setting Guides
+2121|2120|Campaign World Books
+2122|2120|Cities & Settlements
+2123|2120|Other Locations
+2124|2120|Player's Guides & Gazetteers
+2130|2150|Player Characters
+2131|2130|Clans, Classes & Archetypes
+2133|2130|Races & Cultures
+2140|20|Core Rulebooks
+2141|2140|All-in-One Rulebooks
+2142|2140|Game Master Guides
+2143|2140|Player Guides
+2144|2140|Quickstarts & Starter Sets
+2150|20|Supplements & Expansions
+2160|2150|Gear & Equipment
+2161|2160|Guns & Tech
+2162|2160|Equipment & Magic Items
+2164|2160|Traps & Cursed Items
+2165|2160|Pets & Vehicles
+2170|2140|Live Action (LARP) Core
+2180|2150|Enemies & Monsters
+2181|2180|NPC Collections
+2182|2180|Beasts & Creatures
+2183|2180|Villains & Big Bad Guys
+2191|2130|Skills & Feats
+2193|2130|Spells & Powers
+2200|20|Maps & Miniatures
+2210|2200|2D Maps & Tokens
+2220|1000600|Cut-n-Fold Buildings and Terrain
+2230|1000591|Cards, Props, & Visual Aids
+2240|2210|Battlemaps
+2250|2400|Audio
+2260|2150|Itemized Charts & Lists
+2270|1000600|Paper Minis & Standups
+2280|2150|GM Screens
+2300|2400|RPG Software
+2310|2300|Character Management
+2320|2300|GM Tools
+2330|2300|Mapping
+2340|2300|Online Tabletop
+2400|20|Media & Software
+2410|2400|RPG Fiction
+2420|2400|RPG Comics & Graphic Novels
+2440|20|Magazines & Zines
+2500|44489|Board/Card Games
+2510|2500|Family
+2520|2500|Historical
+2530|2500|Humor
+2540|2500|War
+2700|44489|Miniature Games
+2710|2700|Miniature Rulebooks
+2720|2700|Miniature Scenarios & Campaigns
+2730|2700|Miniature Tools & Accessories
+2810|20|Gift Certificates
+2890|20|Publisher Resources
+2892|2890|How-To Guides
+2893|2890|Stock Art
+9999|30|Other systems
+10010|9999|Champions/HERO Systems
+10020|9999|d6 systems
+10040|9999|Fudge
+10050|9999|HARP/Rolemaster
+10094|45582|OSRIC
+10097|9999|Unisystem
+10100|9999|Deadlands
+10101|9999|7th Sea
+10103|44826|Call of Cthulhu
+10105|9999|Darwin's World
+10106|9999|Earthdawn
+10108|9999|Heavy Gear
+10109|9999|Legend of the Five Rings
+10110|9999|Trinity Universe
+10115|9999|Twilight: 2000
+10116|10134|Mega Traveller
+10117|10134|Traveller 4 (T4)
+10118|10134|Traveller: The New Era
+10122|9999|Paranoia
+10126|45582|Castles & Crusades
+10130|9999|Action!
+10132|9999|Battletech
+10134|30|Traveller
+10136|9999|2d10 System
+10137|9999|2d6 (Xd6)
+10146|9999|GUMSHOE
+10151|9999|One-Roll Engine (ORE)
+10152|9999|Palladium System
+31801|9999|HarnMaster
+31807|45582|Labyrinth Lord
+31808|9999|4C (4 Color)
+31810|9999|6-6 System
+40021|40|Español
+40031|40|Français
+40041|40|Italiano
+40051|40|Deutsch
+44114|44100|Games
+44228|30|Any system / system-agnostic
+44232|44835|Warhammer Fantasy Roleplay
+44233|44838|d100
+44235|100193|Pathfinder OGL / ORC
+44236|9999|Mastercraft
+44242|44835|Warhammer 40k Roleplay
+44281|45322|4e/GSL
+44283|9999|Cortex
+44284|30|Fate
+44285|900|Comedy
+44287|2400|RPG Artwork & Artbooks
+44290|44826|Basic Roleplaying
+44291|9999|Ubiquity
+44292|9999|ICONS
+44293|2400|Books About Games
+44294|44498|Physical Products
+44297|9999|Tunnels & Trolls
+44304|40|Português
+44362|999999|ENnie Awards 2023 Nominees
+44364|9999|AGE System
+44486|2150|Live-Action (LARP) Supplements
+44488|2400|Video
+44489|20|Other Tabletop Games
+44490|2250|Music
+44491|2250|Podcasts
+44494|45927|Black and White
+44495|45927|Color
+44496|45928|Items
+44498|0|Format
+44499|1000031|PDF
+44501|1000031|EPUB/MOBI
+44502|44501|MOBI
+44503|1000031|Audio
+44504|1000031|Video
+44505|1000031|HTML
+44506|1400|M&M 1st Edition
+44507|1400|M&M 2nd Edition
+44508|1400|M&M 3rd Edition
+44530|10|Family Gaming
+44535|9999|BASH
+44536|9999|Pendragon
+44544|45582|Dungeon Crawl Classics
+44593|1000031|STL (3D Print Files)
+44694|999999|Charities
+44818|44825|Apocalypse World
+44819|44825|Dungeon World
+44820|44838|d00 Lite
+44822|9999|SUPERS!
+44823|2140|GM-less
+44825|9999|Powered by the Apocalypse (PbtA)
+44826|30|BRP (Basic Roleplaying)
+44827|30|Dungeons & Dragons
+44828|45323|Basic/BECMI or OD&D
+44829|45323|1e (AD&D)
+44830|45323|2e (AD&D)
+44832|45325|3.0 D&D (official)
+44833|45325|3.5 D&D (official)
+44834|45323|4e
+44835|30|Warhammer
+44836|9999|Other unique systems
+44838|9999|d100 / d100 Lite
+45189|1000259|5e
+45193|9999|Cypher System
+45208|40|English
+45209|9999|Legend
+45210|9999|Das Schwarze Auge
+45211|9999|13th Age
+45231|9999|DramaSystem
+45279|2210|Character & Creature Tokens
+45305|44498|Bundles
+45316|2130|Character Sheets
+45317|44498|Virtual Tabletops (VTT)
+45322|44827|D&D-OGL
+45323|44827|Official D&D
+45325|45323|3.x/d20 System
+45326|45322|5e-compatible
+45332|1120|3.0
+45333|1120|3.5
+45334|1120|d20 System
+45335|1120|d20 Modern/d20 Future
+45337|40|Svenska
+45338|40|Polski
+45486|1700|Shadowrun, 5th Ed.
+45487|9999|Hero Kids
+45521|44283|Cortex Classic
+45522|44283|Cortex Plus
+45550|9999|Cepheus Engine
+45568|30|Modiphius 2d20
+45571|40|Russian / Русский
+45576|40|Suomi
+45582|30|Old-School Revival (OSR)
+45583|45582|Swords & Wizardry
+45584|45582|Other OSR Games
+45587|30|Demon Lord Engine
+45589|2110|Epic Level
+45590|2210|Map Tiles
+45594|2140|Core Monster Guides
+45600|9999|Unknown Armies
+45609|9999|Eclipse Phase
+45610|45609|Eclipse Phase, First Edition
+45611|45609|Eclipse Phase, Second Edition
+45614|10146|GUMSHOE One-2-One
+45615|2200|3D Printing
+45669|100193|Starfinder OGL / ORC
+45687|9999|GURPS
+45688|9999|WOIN
+45689|9999|Torg Eternity
+45709|9999|Diceless
+45719|40|Nederlands
+45755|30|Cyberpunk
+45756|9999|Card
+45757|40|Zhongwen 中文
+45787|44235|Pathfinder OGL 1E
+45788|44235|Pathfinder OGL / ORC 2E
+45792|9999|TinyD6
+45794|9999|Genesys
+45797|1000184|3rd Edition
+45798|1800|StoryPath
+45802|10020|Open d6
+45831|1000031|Phone PDF
+45834|999999|Staff Picks
+45870|30|Year Zero Engine
+45872|40|Magyar
+45873|44530|Heartwarming/honobono
+45875|999999|AU Brushfire Relief Charity Bundles
+45878|900|LGBTQ+
+45880|900|Romance
+45886|9999|Prowlers & Paragons
+45908|40|Japanese 日本語
+45927|2893|Type
+45928|2893|Subject
+45929|2893|License
+45931|45929|Commercial
+45932|45929|Personal
+45933|45928|Humanoids
+45934|45928|Creatures
+45935|45928|Locations
+100003|30|Mothership
+100005|44232|First Edition
+100006|44232|Second Edition
+100007|44232|Fourth Edition
+100010|9999|Pip System
+100013|9999|Chronicle System
+100033|9999|Symbaroum
+100040|9999|Monsters! Monsters!
+100042|9999|Entromancy
+100050|44825|Monster of the Week
+100051|1700|Shadowrun, 1st Ed.
+100052|1700|Shadowrun, 2nd Ed.
+100053|1700|Shadowrun, 6th Ed.
+100054|1700|Shadowrun: Anarchy
+100073|45317|Foundry
+100076|45317|Fantasy Grounds
+100092|40|Korean 한국어
+100093|40|Ukrainian / Українська
+100099|45582|Old-School Essentials
+100108|9999|Mist Engine
+100192|100193|Pathfinder Official
+100193|30|Pathfinder / Starfinder
+100194|100192|Pathfinder 1E
+100195|100192|Pathfinder 2E
+100202|9999|CORE
+100214|9999|Chivalry & Sorcery
+100215|45582|Mork Borg
+100218|9999|Polymorph
+100220|100|Weird West
+100226|30|Forged in the Dark
+100227|100073|Foundry VTT Premium Content
+100228|9999|Zweihänder
+100232|999999|Indie Gallery
+1000018|9999|Fading Suns
+1000028|1000574|Troika!
+1000031|44498|Digital
+1000032|44498|Creation Method
+1000033|1000032|Human-Created Without AI
+1000035|1000032|Contains AI-Generated Content
+1000036|45317|Roll20
+1000046|40|Català
+1000049|9999|Coyote and Crow
+1000053|9999|Everyday Heroes
+1000057|45582|Into the Odd
+1000065|9999|Esper Genesis
+1000067|9999|Forbidden Lands
+1000074|9999|2d20
+1000093|100215|CY_BORG
+1000104|9999|Level Up: Advanced 5th Edition
+1000107|9999|Essence20
+1000110|9999|Burning Wheel System
+1000112|45582|Shadowdark RPG
+1000114|100215|Pirate Borg
+1000160|940|Pirates
+1000162|100193|Starfinder Official
+1000164|9999|Black Flag Roleplaying
+1000169|2140|Micro-RPGs
+1000173|9999|Dragonbane
+1000174|100192|Pathfinder Second Edition Core
+1000179|45582|Dragonslayer
+1000180|999999|PocketQuest 2024
+1000182|9999|Illuminated Worlds System
+1000184|1800|Exalted
+1000185|1840|1st Edition/nWoD
+1000186|1840|2nd Edition/Chronicles
+1000187|1830|1st Edition
+1000188|1830|2nd Edition
+1000189|1830|3rd Edition/Revised
+1000190|1830|4th Edition/20th Anniversary
+1000191|1830|5th Edition
+1000207|999999|ENnie Awards 2024 Nominees
+1000209|999999|Next Adventure Spotlight
+1000214|9999|Fabula Ultima
+1000215|30|Marvel d616
+1000226|999999|The Next Adventure
+1000228|9999|Ars Magica
+1000229|45582|Adventurer Conqueror King System (ACKS)
+1000231|9999|EZD6
+1000233|40|Hebrew / עברית
+1000238|9999|Delta Green
+1000239|999999|PAX Unplugged Spotlight
+1000247|9999|Trophy
+1000259|45323|5e
+1000260|1000259|5.5e
+1000264|9999|Tricube Tales
+1000280|9999|Ironsworn
+1000562|30|Daggerheart
+1000564|1000169|PocketQuest
+1000566|40|Greek / Ελληνικά
+1000567|9999|Cosmere® RPG
+1000574|9999|Advanced Fighting Fantasy
+1000579|1400|M&M 4th Edition
+1000587|1000162|Starfinder 1E
+1000588|1000162|Starfinder 2E
+1000589|45669|Starfinder OGL 1E
+1000590|45669|Starfinder OGL / ORC 2E
+1000591|20|RPG Accessories & Merch
+1000592|1000591|Apparel
+1000593|1000591|Dice
+1000594|1000591|Toys & Plush
+1000595|1000591|Miscellaneous Merchandise
+1000598|1000591|Posters & Prints
+1000599|2210|Objects & Overlays
+1000600|2200|3D Papercraft
+1000601|45615|3D Print Miniatures
+1000602|45615|3D Print Objects & Terrain
+1000603|2200|Physical Miniatures
+1000604|1000603|Character Miniatures
+1000605|1000603|Monster Miniatures
+1000606|1000603|Objects and Terrain Miniatures
+1000607|999999|Roll20Con Sale
+1000609|45582|Dolmenwood
+1000610|9999|Phantasy Star™ Tabletop Roleplaying
+1000625|44294|Print-on-Demand
+1000626|44294|Retail Edition
+1000688|45582|Cairn
+1000689|45582|Vagabond
+1000690|100108|Cauldron of MIst - City of Mist
+1000691|100108|Cauldron of Mist - :Otherscape
+1000692|100108|Cauldron of Mist - Legend in the Mist
+1000725|40|Norsk
+1000730|44826|Age of Vikings
+1000738|45317|Demiplane
+1000753|9999|Draw Steel
+1000756|44823|Solo
+1000757|44823|2+ Players
+1000758|44823|Gamebooks
+1000765|9999|Land of Eem RPG
+1000768|999999|Kiwi RPG Week
+1000770|9999|Liminal Horror
+1000771|9999|Panic Engine
+1000772|40|Scottish Gaelic (Gàidhlig)
+1000775|1000112|DarkSpace RPG
+1000776|40|Bahasa Indonesia
+1000777|100226|Echoes of the Veil
+1000781|999999|September Superhero Sale
+1000784|44233|Cthulhu Eternal
