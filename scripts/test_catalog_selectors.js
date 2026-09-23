@@ -98,6 +98,21 @@ check('production hard-codes a "(Universal)" publisher',
 check('the probe says rating is never read', /never reads a rating/.test(PROBE), true);
 check('the probe says publisher is a placeholder', /not a publisher/.test(PROBE), true);
 
+console.log('\nthe probe mirrors production\'s LOOP, not just its selectors:');
+// Pinning the selectors is not enough. The first version of this probe recorded
+// the url before the title check, which consumed each product's image link and
+// skipped the real title link as a duplicate: 2,185 links became 2 parsed rows
+// while the live harvest captured 1,090 from the same page.
+const seenAt = PROBE.indexOf('seen.add(url)');
+const titleRejectAt = PROBE.indexOf('rejectedTitle++');
+check('the probe records a url only AFTER the title check',
+    seenAt > titleRejectAt && titleRejectAt > 0, true);
+// Production's equivalent: productMap.set is the LAST statement in the body.
+const bgSetAt = BG.indexOf('productMap.set(url');
+const bgRejectAt = BG.indexOf('/^\\d+$/.test(titleText)');
+check('production likewise commits the row after its title check',
+    bgSetAt > bgRejectAt && bgRejectAt > 0, true);
+
 console.log('\nthe probe is read-only:');
 check('it never fetches', /fetch\(/.test(PROBE), false);
 check('it never posts anywhere', /ritualKey|X-Ritual-Key/.test(PROBE), false);

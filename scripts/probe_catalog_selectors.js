@@ -104,10 +104,18 @@
 
         const container = link.closest(CAT_SEL.container);
         if (!container) { noContainer++; return; }
-        seen.add(url);
 
         const title = (link.innerText || link.textContent || "").trim();
         if (title.length < 2 || /^\d+$/.test(title)) { rejectedTitle++; return; }
+
+        // Record the url only AFTER the title check, exactly as production does
+        // (it calls productMap.set at the end of the body). Marking it earlier
+        // consumes the url on a product's IMAGE link — which has no text — so
+        // the real title link that follows is then skipped as a duplicate.
+        // Measured 2026-09-23: that mistake turned 2,185 links into 2 parsed
+        // products and 1,088 "rejected titles", while the live harvest captured
+        // 1,090. Pinning the selectors is not enough; the loop has to match too.
+        seen.add(url);
 
         // Mirror production's two price paths, but record WHICH one fired.
         const priceEl = container.querySelector(CAT_SEL.price);
