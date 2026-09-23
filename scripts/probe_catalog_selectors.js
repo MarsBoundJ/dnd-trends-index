@@ -17,12 +17,14 @@
 // So this checks the values, not the counts. Three things it is looking for
 // specifically, each a hazard already present in the extraction code:
 //
-//   1. PRICE FALLBACK. When .productSpecialPrice/.cy-prc miss, the code falls
-//      back to container.innerText.match(/\$?([\d.]+)/) — optional dollar sign,
-//      first number wins. On a card titled "B3 Palace of the Silver Princess"
-//      that matches "3" and records $3.00. This reports how often the fallback
-//      fires and what it produces, because a wrong price looks exactly like a
-//      right one.
+//   1. PRICE FALLBACK. .productSpecialPrice/.cy-prc matched only 60 of 1,090
+//      products on 2026-09-23, so 90% of prices come from the text fallback.
+//      That fallback was unanchored — optional dollar sign, first number wins —
+//      and the card text starts with the title, so 420 of 1,090 products were priced
+//      from a digit in their own name ($5 for "…(5e)", $80 for "80 Maps…").
+//      It is now anchored to a currency symbol. This still reports how often
+//      the fallback fires, because a selector matching 5% of products is worth
+//      knowing about even when the fallback is sound.
 //
 //   2. TIER ATTRIBUTION. Any product whose tier resolves to a metal with no
 //      shelf on the page is the V9 bug returning.
@@ -124,8 +126,8 @@
             price = parseFloat(priceEl.innerText.replace(/[^\d.]/g, ""));
             priceVia = "selector";
         } else {
-            const m = container.innerText.match(/\$?([\d.]+)/);
-            if (m) { price = parseFloat(m[1]); priceVia = "regex-fallback"; }
+            const m = container.innerText.match(/\$\s*([\d,]+\.?\d*)/);
+            if (m) { price = parseFloat(m[1].replace(/,/g, "")); priceVia = "regex-fallback"; }
         }
 
         rows.push({
@@ -177,7 +179,7 @@
     console.log("\n%cPrice path", "color:#a78bfa;font-weight:bold");
     console.table([
         { path: ".productSpecialPrice/.cy-prc", count: viaSel.length },
-        { path: "regex fallback (HAZARD)", count: viaRe.length },
+        { path: "regex fallback ($-anchored)", count: viaRe.length },
         { path: "no price at all", count: noPrice.length }
     ]);
     console.log("  selector samples:", viaSel.slice(0, 3).map(r => r.price));

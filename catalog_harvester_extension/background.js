@@ -453,8 +453,18 @@ async function runExtractionInPage(siteName, ritualKey, endpoint, chunkSize) {
             if (specialPrice) {
                 price = parseFloat(specialPrice.innerText.replace(/[^\d.]/g, "")) || 0.0;
             } else {
-                const m = container.innerText.match(/\$?([\d.]+)/);
-                if (m) price = parseFloat(m[1]) || 0.0;
+                // A price must be anchored to a currency symbol. Unanchored, this took
+                // the FIRST number in the card text -- and the card text starts with the
+                // TITLE. Measured on dmsguild.com/metal.php 2026-09-23: 420 of 1,090
+                // products (38.5%) were priced from a digit in their own title.
+                //   $5  <- "Minsc and Boo's Journal of Villainy (5e)"   real price $14.99
+                //   $80 <- "Tessa Presents 80 Maps for..."                real price $8.99
+                //   $3  <- "Hamund's Harvesting Handbook: Volume 3"      real price $10.00
+                //   $.  <- "Monster Loot Vol. 3 ..."  -> parseFloat(".") is NaN -> $0.00
+                // Anchoring recovers 399 of the 420; the rest have no currency symbol in
+                // the card at all and now yield nothing rather than a number from a title.
+                const m = container.innerText.match(/\$\s*([\d,]+\.?\d*)/);
+                if (m) price = parseFloat(m[1].replace(/,/g, "")) || 0.0;
             }
 
             // On a metal page every product sits under a shelf heading, so a miss is a

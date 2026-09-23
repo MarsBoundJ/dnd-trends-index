@@ -83,11 +83,23 @@ check('both anchor the heading pattern at both ends',
 console.log('\nthe probe mirrors production\'s two price paths:');
 check('production has a selector path and a regex fallback',
     /querySelector\(".productSpecialPrice, .cy-prc"\)/.test(BG) &&
-    /innerText\.match\(\/\\\$\?\(\[\\d\.\]\+\)\//.test(BG), true);
+    BG.indexOf('match(/\\$\\s*([\\d,]+\\.?\\d*)/)') !== -1, true);
+// The fallback must stay anchored to a currency symbol in BOTH, or the probe
+// measures a different price than the harvester records.
+check('the probe uses the same anchored pattern production does',
+    PROBE.indexOf('match(/\\$\\s*([\\d,]+\\.?\\d*)/)') !== -1, true);
+check('neither carries the unanchored pattern any more',
+    BG.indexOf('match(/\\$?([\\d.]+)/)') === -1 &&
+    PROBE.indexOf('match(/\\$?([\\d.]+)/)') === -1, true);
 check('the probe records WHICH path fired',
     /priceVia = "selector"/.test(PROBE) && /priceVia = "regex-fallback"/.test(PROBE), true);
-check('...and calls the fallback out as a hazard',
-    /HAZARD/.test(PROBE), true);
+// The word "HAZARD" was dropped when the fallback was anchored. What must NOT
+// be dropped is the measurement that justified anchoring it — otherwise a later
+// reader sees a harmless-looking regex and un-anchors it for being "too strict".
+check('the probe records the measured failure that justified anchoring',
+    /420 of 1,090/.test(PROBE) && /digit in their own name/.test(PROBE), true);
+check('...including how rarely the price selector matches',
+    /60 of 1,090/.test(PROBE), true);
 
 console.log('\nthe probe reports the placeholder fields as placeholders:');
 // These are hard-coded in the extractor, not read from the page. A probe that
