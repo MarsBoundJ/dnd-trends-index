@@ -32,6 +32,8 @@ const SITE_TIMEOUT_MS = 3 * 60 * 1000;
 // which it derives its own ingest URL from. amazon.js likewise.
 importScripts("detail.js");
 importScripts("amazon.js");
+importScripts("kickstarter.js");
+importScripts("backerkit.js");
 
 // SITES is declared after the imports because the Amazon entry's landing URL and
 // source list belong to amazon.js, not here.
@@ -48,7 +50,12 @@ importScripts("amazon.js");
 const SITES = [
     { name: "DMs Guild",    url: "https://www.dmsguild.com/metal.php",    ready: "metal.php",  extractor: "catalog" },
     { name: "DriveThruRPG", url: "https://www.drivethrurpg.com/metal.php", ready: "metal.php",  extractor: "catalog" },
-    { name: "Amazon",       url: AMAZON_LANDING,                           ready: "amazon.com", extractor: "amazon"  }
+    { name: "Amazon",       url: AMAZON_LANDING,                           ready: "amazon.com", extractor: "amazon"  },
+    // Crowdfunding. Both need a signed-in session, so both need a tab in a real
+    // browser — and BackerKit additionally 403s any GCP IP, which is why its
+    // Cloud Function died and why this is the only place it can run at all.
+    { name: "Kickstarter",  url: KS_LANDING,                               ready: "kickstarter.com", extractor: "kickstarter" },
+    { name: "BackerKit",    url: BK_LANDING,                               ready: "backerkit.com",   extractor: "backerkit"   }
 ];
 
 // ---------- Harvest lease ----------
@@ -347,12 +354,18 @@ function harvestSite(site, ritualKey) {
 function injectViaScripting(tabId, site, ritualKey, finish) {
     // Each extractor is serialized by chrome.scripting, so it gets everything it
     // needs as arguments — it cannot see this file's scope once injected.
-    const job = site.extractor === "amazon"
-        ? { func: runAmazonExtractionInPage,
+    const JOBS = {
+        amazon: () => ({ func: runAmazonExtractionInPage,
             args: [site.name, ritualKey, ENDPOINT, AMAZON_RANKS_ENDPOINT,
-                   AMAZON_SOURCES, AMAZON_MAX_PAGES, CHUNK_SIZE] }
-        : { func: runExtractionInPage,
-            args: [site.name, ritualKey, ENDPOINT, CHUNK_SIZE] };
+                   AMAZON_SOURCES, AMAZON_MAX_PAGES, CHUNK_SIZE] }),
+        kickstarter: () => ({ func: runKickstarterExtractionInPage,
+            args: [site.name, ritualKey, KS_ENDPOINT, KS_CATEGORY_ID, KS_PER_PAGE, KS_MAX_PAGES] }),
+        backerkit: () => ({ func: runBackerkitExtractionInPage,
+            args: [site.name, ritualKey, BK_ENDPOINT, BK_LANDING] }),
+        catalog: () => ({ func: runExtractionInPage,
+            args: [site.name, ritualKey, ENDPOINT, CHUNK_SIZE] })
+    };
+    const job = (JOBS[site.extractor] || JOBS.catalog)();
 
     chrome.scripting.executeScript(
         {
