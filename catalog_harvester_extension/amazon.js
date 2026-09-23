@@ -176,29 +176,44 @@ async function runAmazonExtractionInPage(siteName, ritualKey, catalogEndpoint, r
 
         // ---------- end Amazon normalisation ----------
 
+        // ---------- Selectors (mirrored by scripts/probe_amazon_selectors.js) ----------
+        //
+        // Amazon's markup moves, and these were last confirmed against a live
+        // page in April 2026. They are named here rather than inlined so the
+        // DevTools probe can test the SAME strings production uses — a probe
+        // that checks different selectors is worse than no probe, because it
+        // reports health for markup nobody reads.
+        //
+        // scripts/test_amazon_harvest.js asserts this block is byte-identical
+        // to the probe's copy. If you change one, change both or the suite
+        // fails.
+        const AMZ_SEL = {
+            card:   "[data-asin]",
+            title:  ".p13n-sc-truncated, [class*=\"p13n-sc-truncated\"], [class*=\"p13n-sc-css-line-clamp\"], a[title], a.a-link-normal span.a-text-normal",
+            rank:   ".zg-bdg-text, .zg-badge-text, [class*=\"zg-bdg\"], [class*=\"zg-badge\"]",
+            price:  ".p13n-sc-price, [class*=\"p13n-sc-price\"], .a-color-price",
+            author: "span.a-color-secondary, .a-row .a-color-base.a-size-small",
+            rating: "span[aria-label*=\"out of 5\"]",
+            review: "span[aria-label*=\"rating\"], span[aria-label*=\"review\"]"
+        };
+        // ---------- end selectors ----------
+
         // Returns raw TEXT per card. No parsing here on purpose — see above.
         function parseAmazonCards(doc, label, listType) {
             const out = [];
-            const cards = Array.from(doc.querySelectorAll("[data-asin]"))
+            const cards = Array.from(doc.querySelectorAll(AMZ_SEL.card))
                 .filter(el => /^[A-Z0-9]{10}$/.test(el.dataset.asin || ""));
 
             for (const el of cards) {
-                const titleEl = el.querySelector(
-                    ".p13n-sc-truncated, [class*=\"p13n-sc-truncated\"], " +
-                    "[class*=\"p13n-sc-css-line-clamp\"], " +
-                    "a[title], a.a-link-normal span.a-text-normal");
+                const titleEl = el.querySelector(AMZ_SEL.title);
                 const title = (titleEl && (titleEl.getAttribute("title") || titleEl.textContent) || "").trim();
                 if (!title) continue;
 
-                const rankEl = el.querySelector(
-                    ".zg-bdg-text, .zg-badge-text, [class*=\"zg-bdg\"], [class*=\"zg-badge\"]");
-                const priceEl = el.querySelector(
-                    ".p13n-sc-price, [class*=\"p13n-sc-price\"], .a-color-price");
-                const authorEl = el.querySelector(
-                    "span.a-color-secondary, .a-row .a-color-base.a-size-small");
-                const ratingEl = el.querySelector("span[aria-label*=\"out of 5\"]");
-                const reviewEl = el.querySelector(
-                    "span[aria-label*=\"rating\"], span[aria-label*=\"review\"]");
+                const rankEl = el.querySelector(AMZ_SEL.rank);
+                const priceEl = el.querySelector(AMZ_SEL.price);
+                const authorEl = el.querySelector(AMZ_SEL.author);
+                const ratingEl = el.querySelector(AMZ_SEL.rating);
+                const reviewEl = el.querySelector(AMZ_SEL.review);
 
                 out.push({
                     asin: el.dataset.asin,

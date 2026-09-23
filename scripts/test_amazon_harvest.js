@@ -169,6 +169,28 @@ check('asin appears on both rows',
 
 // ── Source guards ───────────────────────────────────────────────────────────
 
+// ── The probe must test what production reads ───────────────────────────────
+// A probe that checks different selectors than the harvester reports health for
+// markup nobody parses. Rather than trust a comment saying "keep these in sync",
+// assert it.
+
+console.log('\nthe DevTools probe and the harvester share one selector block:');
+const PROBE = fs.readFileSync(path.join(__dirname, 'probe_amazon_selectors.js'), 'utf8');
+
+function selectorBlock(src, label) {
+    const a = src.indexOf('const AMZ_SEL = {');
+    const b = src.indexOf('};', a);
+    if (a < 0 || b < 0) throw new Error('AMZ_SEL block not found in ' + label);
+    // Normalise indentation only — the selector strings themselves must match.
+    return src.slice(a, b + 2).split('\n').map(l => l.trim()).join('\n');
+}
+
+check('amazon.js and the probe carry byte-identical selectors',
+    selectorBlock(SRC, 'amazon.js') === selectorBlock(PROBE, 'probe'), true);
+check('the block is not empty', selectorBlock(SRC, 'amazon.js').length > 100, true);
+check('the probe reads the page rather than fetching it',
+    /fetch\(/.test(PROBE), false);
+
 console.log('\nSource guards — amazon.js:');
 check('the extractor refuses to run off amazon.com',
     /hostname\.endsWith\("amazon\.com"\)/.test(SRC), true);
