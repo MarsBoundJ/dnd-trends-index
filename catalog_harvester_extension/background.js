@@ -21,11 +21,6 @@
 // extension. chrome.alarms, which Chrome persists and which wakes a fresh
 // worker, is the backstop that setTimeout cannot be.
 
-const SITES = [
-    { name: "DMs Guild",    url: "https://www.dmsguild.com/metal.php" },
-    { name: "DriveThruRPG", url: "https://www.drivethrurpg.com/metal.php" }
-];
-
 const ENDPOINT = "https://us-central1-dnd-trends-index.cloudfunctions.net/bouncer-api/system/library/ingest-catalog";
 const CHUNK_SIZE = 1000;
 const ALARM_NAME = "catalog-daily";
@@ -34,8 +29,27 @@ const SITE_TIMEOUT_MS = 3 * 60 * 1000;
 
 // The detail pass lives in its own file: a resumable cursor over the product
 // API, unrelated to the shelf harvest's tab lifecycle. Loaded after ENDPOINT,
-// which it derives its own ingest URL from.
+// which it derives its own ingest URL from. amazon.js likewise.
 importScripts("detail.js");
+importScripts("amazon.js");
+
+// SITES is declared after the imports because the Amazon entry's landing URL and
+// source list belong to amazon.js, not here.
+//
+// `ready` is the substring a tab's URL must contain before injection. It used to
+// be a hard-coded "metal.php" check, which was correct for exactly two sites and
+// silently wrong for any third: an Amazon tab never contains "metal.php", so the
+// harvest would have waited out the full three-minute timeout and reported a
+// stuck site rather than a mis-configured one.
+//
+// `extractor` picks which injected function runs. OneBookShelf's two storefronts
+// share one; Amazon needs its own because it is a different page shape with two
+// destination tables.
+const SITES = [
+    { name: "DMs Guild",    url: "https://www.dmsguild.com/metal.php",    ready: "metal.php",  extractor: "catalog" },
+    { name: "DriveThruRPG", url: "https://www.drivethrurpg.com/metal.php", ready: "metal.php",  extractor: "catalog" },
+    { name: "Amazon",       url: AMAZON_LANDING,                           ready: "amazon.com", extractor: "amazon"  }
+];
 
 // ---------- Harvest lease ----------
 // Pure, and sliced out by scripts/test_harvester_lease.js. Keep it that way:
@@ -271,7 +285,7 @@ async function runHarvest(ritualKey, weekKey) {
 
     if (allOk) {
         await chrome.storage.local.set({ lastSuccessWeek: weekKey });
-        console.log("[Incursion] Harvest complete — both sites succeeded.");
+        console.log("[Incursion] Harvest complete — all " + SITES.length + " sites succeeded.");
     } else {
         const failed = results.filter(r => !r.success).map(r => r.site).join(", ");
         console.warn("[Incursion] Harvest partial failure — failed: " + failed);
@@ -302,9 +316,12 @@ function harvestSite(site, ritualKey) {
 
             function onUpdated(updatedId, info, updatedTab) {
                 if (updatedId !== tabId || info.status !== "complete") return;
-                // Wait until we're actually on the target page (not a Cloudflare challenge)
-                if (!updatedTab.url || !updatedTab.url.includes("metal.php")) {
-                    console.log("[Incursion] Tab not yet on metal.php (url=" + updatedTab.url + "), waiting...");
+                // Wait until we're actually on the target page (not a Cloudflare
+                // challenge, not an interstitial). Per-site, because "metal.php"
+                // is meaningless on any site but OneBookShelf's two.
+                if (!updatedTab.url || !updatedTab.url.includes(site.ready)) {
+                    console.log("[Incursion] " + site.name + " tab not yet on " + site.ready +
+                                " (url=" + updatedTab.url + "), waiting...");
                     return;
                 }
                 chrome.tabs.onUpdated.removeListener(onUpdated);
@@ -328,11 +345,20 @@ function harvestSite(site, ritualKey) {
 
 // Uses chrome.scripting.executeScript (preferred in MV3) to run extraction in-page.
 function injectViaScripting(tabId, site, ritualKey, finish) {
+    // Each extractor is serialized by chrome.scripting, so it gets everything it
+    // needs as arguments — it cannot see this file's scope once injected.
+    const job = site.extractor === "amazon"
+        ? { func: runAmazonExtractionInPage,
+            args: [site.name, ritualKey, ENDPOINT, AMAZON_RANKS_ENDPOINT,
+                   AMAZON_SOURCES, AMAZON_MAX_PAGES, CHUNK_SIZE] }
+        : { func: runExtractionInPage,
+            args: [site.name, ritualKey, ENDPOINT, CHUNK_SIZE] };
+
     chrome.scripting.executeScript(
         {
             target: { tabId },
-            func: runExtractionInPage,
-            args: [site.name, ritualKey, ENDPOINT, CHUNK_SIZE]
+            func: job.func,
+            args: job.args
         },
         (injectionResults) => {
             if (chrome.runtime.lastError) {
