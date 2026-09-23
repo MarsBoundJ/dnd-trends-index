@@ -43,6 +43,24 @@
 // Rows carry tag "V12-ext" where the bookmarklet wrote "V10-auto", so pre-fix
 // and post-fix Amazon rows stay distinguishable in BigQuery without a date
 // lookup.
+//
+// SELECTOR STATE, VERIFIED 2026-09-23 against the live D&D Books best-seller
+// list (30 cards) with scripts/probe_amazon_selectors.js:
+//
+//   field     before    after     samples after the fix
+//   title     30/30     30/30     unchanged
+//   rank      30/30     30/30     "#1", "#2", "#3"
+//   price     30/30     30/30     "$39.99", "$5.99", "$39.95"
+//   byline    24/30     24/30     "Erich Sanchack", "Jim Zub", "Spenser Starke"
+//   rating     0/30     28/30     4.8, 5.0, 2.0
+//   reviews    0/30     28/30     3762, 3, 24
+//
+// The byline count did not move. Its VALUES did: before the fix those same 24
+// cards returned "Kindle Edition", "Paperback" and "Hardcover". A probe that
+// reported only match rates would have called that field healthy both times and
+// shown no change across the fix. The six cards without a byline, and the two
+// without ratings, are abstentions rather than misses — the 2024 Player's
+// Handbook card genuinely carries no byline element.
 
 // Verified live in-browser April 2026; unchanged in the port.
 const AMAZON_SOURCES = [
