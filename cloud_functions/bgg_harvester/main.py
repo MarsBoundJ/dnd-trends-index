@@ -79,12 +79,28 @@ def bgg_harvester_http(request):
     logger.info(f"🚀 Starting BGG Harvester (RPG: {is_rpg})")
     
     client = bigquery.Client()
-    if is_rpg:
-        stats_table = f"{PROJECT_ID}.dnd_trends_raw.rpggeek_product_stats"
-        base_url = "https://rpggeek.com/xmlapi2/thing"
-    else:
-        stats_table = f"{PROJECT_ID}.dnd_trends_raw.bgg_product_stats"
-        base_url = "https://boardgamegeek.com/xmlapi2/thing"
+    # BOTH platforms are fetched from boardgamegeek.com. RPG items are selected by
+    # the `&type=rpgitem` parameter in fetch_bgg_stats(), NOT by the hostname.
+    #
+    # This used to call rpggeek.com for RPG items, and that silently killed the
+    # stream: rpggeek_product_stats wrote 21 rows on Sep 2, 17 on Sep 4, then
+    # nothing at all from Sep 7 to Sep 17 2026, while the BGG half kept working
+    # perfectly from the same function, same proxy, same token.
+    #
+    # Cause: our Bearer token is only honoured on boardgamegeek.com. BGG's own
+    # docs say so -- "please ensure that you are making your requests to the
+    # correct domain (boardgamegeek.com, WITHOUT a leading www)". rpggeek.com sits
+    # behind a Cloudflare bot challenge that answers 403 with a "Just a moment..."
+    # interstitial BEFORE the API layer ever sees the Authorization header, so
+    # every one of the 21 IDs 403'd while the run itself reported HTTP 200.
+    #
+    # Measured Sep 17 2026 through the production proxy with the real token:
+    #   boardgamegeek.com + bgg id                 -> 200, data   (control)
+    #   rpggeek.com       + rpg id &type=rpgitem   -> 403, Cloudflare
+    #   boardgamegeek.com + rpg id &type=rpgitem   -> 200, owned=518
+    stats_table = (f"{PROJECT_ID}.dnd_trends_raw.rpggeek_product_stats" if is_rpg
+                   else f"{PROJECT_ID}.dnd_trends_raw.bgg_product_stats")
+    base_url = "https://boardgamegeek.com/xmlapi2/thing"
 
     # Dedup guard — skip if today's data already exists
     run_date = str(date.today())
