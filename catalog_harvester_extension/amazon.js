@@ -224,6 +224,29 @@ async function runAmazonExtractionInPage(siteName, ritualKey, catalogEndpoint, r
             };
         }
 
+        // The popup renders tierSummary straight into HTML, so it must be a
+        // STRING — the catalog extractor builds one and this must match. Handing
+        // it an object rendered as "[object Object]" in the first three-site
+        // run (2026-09-23).
+        //
+        // Unranked is reported alongside the tiers rather than left out, because
+        // it is the number that reveals a rotted rank badge. A summary showing
+        // only the tiers we did read would look healthy while half the
+        // catalogue abstained.
+        function summariseTiers(rows) {
+            const counts = {};
+            let unranked = 0;
+            for (const r of rows) {
+                const tier = r && r.catalog ? r.catalog.seller_tier : null;
+                if (tier === null || tier === undefined) unranked++;
+                else counts[tier] = (counts[tier] || 0) + 1;
+            }
+            const ORDER = ["Top 10", "Top 50", "Top 100", "Top 200"];
+            const parts = ORDER.filter(t => counts[t]).map(t => t + " " + counts[t]);
+            if (unranked) parts.push("unranked " + unranked);
+            return parts.join(", ");
+        }
+
         // Keep the best (lowest) rank per ASIN. A null rank never displaces a
         // real one, and never wins a comparison by being treated as zero.
         function dedupeByAsin(rows) {
@@ -390,7 +413,7 @@ async function runAmazonExtractionInPage(siteName, ritualKey, catalogEndpoint, r
             pagesFetched: pagesFetched,
             pagesFailed: pagesFailed,
             shelves: Object.keys(sourceCounts),
-            tierSummary: sourceCounts
+            tierSummary: summariseTiers(finalRows)
         };
     } catch (e) {
         return { site: siteName, success: false, error: e.message };

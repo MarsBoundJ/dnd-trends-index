@@ -38,11 +38,11 @@ function buildNormaliser() {
     // eslint-disable-next-line no-new-func
     return new Function(SRC.slice(a, b) +
         '\nreturn { amzInt, amzFloat, amzText, amazonRankTier, amzStars, amzPrice,' +
-        ' pickByline, amzIsNotAByline, buildAmazonRows, dedupeByAsin };')();
+        ' pickByline, amzIsNotAByline, summariseTiers, buildAmazonRows, dedupeByAsin };')();
 }
 
 const { amzInt, amzFloat, amzText, amazonRankTier, amzStars, amzPrice,
-        pickByline, amzIsNotAByline, buildAmazonRows, dedupeByAsin } = buildNormaliser();
+        pickByline, amzIsNotAByline, summariseTiers, buildAmazonRows, dedupeByAsin } = buildNormaliser();
 
 let pass = 0, fail = 0;
 function check(name, actual, expected) {
@@ -237,6 +237,28 @@ check('the block is not empty', selectorBlock(SRC, 'amazon.js').length > 100, tr
 check('the probe reads the page rather than fetching it',
     /fetch\(/.test(PROBE), false);
 
+// ── tierSummary is a STRING by contract ─────────────────────────────────────
+// The popup interpolates it straight into HTML. Amazon handed it an object on
+// the first three-site run and it rendered as "[object Object]".
+
+console.log('\ntierSummary must be a string the popup can render:');
+const rows3 = [
+    buildAmazonRows(card({ asin: 'A1', rankText: '#2' }), DAY),
+    buildAmazonRows(card({ asin: 'A2', rankText: '#30' }), DAY),
+    buildAmazonRows(card({ asin: 'A3', rankText: null }), DAY)
+];
+check('it is a string, not an object', typeof summariseTiers(rows3), 'string');
+check('it never stringifies to [object Object]',
+    summariseTiers(rows3).indexOf('[object Object]'), -1);
+check('tiers are counted and ordered best-first',
+    summariseTiers(rows3).indexOf('Top 10') < summariseTiers(rows3).indexOf('Top 50'), true);
+check('unranked products are reported, not omitted',
+    /unranked 1/.test(summariseTiers(rows3)), true);
+check('unranked is last', summariseTiers(rows3).trim().endsWith('unranked 1'), true);
+check('no unranked means no unranked clause',
+    /unranked/.test(summariseTiers([buildAmazonRows(card(), DAY)])), false);
+check('an empty run yields an empty string, not "undefined"', summariseTiers([]), '');
+
 console.log('\nSource guards — amazon.js:');
 check('the extractor refuses to run off amazon.com',
     /hostname\.endsWith\("amazon\.com"\)/.test(SRC), true);
@@ -254,6 +276,8 @@ check('the price selector excludes .a-color-price (it carries "18 pts")',
     /price:\s*"\[class\*=\\"p13n-sc-price/.test(SRC) && !/price:.*a-color-price/.test(SRC), true);
 check('the stars selector is not restricted to <span>',
     /stars:\s*"\[aria-label\*=\\"out of 5/.test(SRC), true);
+check('the result hands the popup a string, not the raw counts object',
+    /tierSummary: summariseTiers\(/.test(SRC), true);
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);

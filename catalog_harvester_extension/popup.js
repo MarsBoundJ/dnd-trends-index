@@ -47,7 +47,21 @@ async function refreshStatus() {
     // is what disabled Run Now indefinitely on Sep 22. The background script
     // answers the real question via the lease's age; trust that, not the flag.
     const stuckEl = document.getElementById("stuck-indicator");
-    const cancelBtn = document.getElementById("cancel-btn");
+    const cancelBtn = // tierSummary is a STRING by contract — every extractor builds one. An object
+// slipped through once and the popup rendered it as "[object Object]" (Amazon,
+// first three-site run, 2026-09-23). Rather than trust the contract, render
+// something legible whatever arrives.
+function tierLine(r) {
+    const t = r && r.tierSummary;
+    if (!t) return "";
+    if (typeof t === "string") return t;
+    if (typeof t === "object") {
+        return Object.keys(t).map(k => k + " " + t[k]).join(", ");
+    }
+    return String(t);
+}
+
+document.getElementById("cancel-btn");
 
     if (status.harvestActive) {
         progressEl.style.display = "block";
@@ -79,7 +93,7 @@ async function refreshStatus() {
                     ? `<span class="count">${r.count.toLocaleString()} items</span>`
                     : `<span class="error">${r.error || "failed"}</span>`}
             </div>
-            ${r.tierSummary ? `<div class="tier-summary">${r.tierSummary}</div>` : ""}
+            ${tierLine(r) ? `<div class="tier-summary">${tierLine(r)}</div>` : ""}
         `).join("");
     }
 }
