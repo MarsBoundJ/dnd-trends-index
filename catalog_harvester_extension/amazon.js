@@ -104,6 +104,59 @@ async function runAmazonExtractionInPage(siteName, ritualKey, catalogEndpoint, r
             return s === "" ? null : s;
         }
 
+        // A binding, a format note, or a Kindle points line — none of which is a
+        // person. Measured 2026-09-23: the previous byline selector returned
+        // "Kindle Edition", "Hardcover" and "Paperback" for most cards.
+        function amzIsNotAByline(s) {
+            const t = String(s || "").trim();
+            if (!t) return true;
+            if (/^(kindle edition|hardcover|paperback|audible audiobook|audiobook|spiral-bound|board book|mass market paperback|library binding|card book|game|toy|calendar|comic|digital)$/i.test(t)) return true;
+            if (/^\d+\s*formats?\s+available$/i.test(t)) return true;
+            if (/^\d+\s*pts\.?$/i.test(t)) return true;
+            if (/^\$/.test(t)) return true;
+            if (/^#\d+$/.test(t)) return true;
+            if (/out of 5/i.test(t)) return true;
+            return false;
+        }
+
+        // Amazon renders the title and the byline as the SAME clamp element,
+        // separated only by order, and a card may have no byline at all (the
+        // 2024 Player's Handbook does not). So: the first line is the title,
+        // and the byline is the next line that is neither a repeat of the title
+        // nor a format label. No byline found means null — never the format.
+        function pickByline(lines, title) {
+            if (!Array.isArray(lines)) return null;
+            for (let i = 0; i < lines.length; i++) {
+                const t = String(lines[i] || "").trim();
+                if (!t || t === title) continue;
+                if (amzIsNotAByline(t)) continue;
+                return t;
+            }
+            return null;
+        }
+
+        // A price must look like money. `.a-color-price` on a Kindle card
+        // carries "18 pts" — reward points — which any bare number parse turns
+        // into a confident $18.00.
+        function amzPrice(v) {
+            if (v === null || v === undefined) return null;
+            const s = String(v);
+            if (!/[$£€¥]/.test(s)) return null;
+            return amzFloat(s);
+        }
+
+        // Both numbers live in ONE aria-label: "4.8 out of 5 stars, 3,762 ratings".
+        // Splitting them apart here keeps the two-number hazard in one place.
+        function amzStars(label) {
+            const s = String(label || "");
+            const r = s.match(/([\d.]+)\s*out of\s*5/i);
+            const n = s.match(/([\d,]+)\s*(?:ratings?|reviews?)/i);
+            return {
+                rating: r ? amzFloat(r[1]) : null,
+                reviews: n ? amzInt(n[1]) : null
+            };
+        }
+
         // A rank we could not read has no tier. The bookmarklet's version of
         // this returned "Top 10" for rank 0, which is the whole bug.
         function amazonRankTier(rank) {
@@ -115,20 +168,12 @@ async function runAmazonExtractionInPage(siteName, ritualKey, catalogEndpoint, r
             return "Top 200";
         }
 
-        // Extracts the leading number from an aria-label like "4.8 out of 5 stars".
-        // Not amzFloat: that strips every non-digit, so "4.8 out of 5" would
-        // become 4.85 — a plausible-looking rating assembled from two numbers.
-        function amzRatingFromLabel(label) {
-            if (!label) return null;
-            const m = String(label).match(/([\d.]+)\s*out of/i);
-            return m ? amzFloat(m[1]) : null;
-        }
-
         function buildAmazonRows(raw, collectedDate) {
             const rank = amzInt(raw.rankText);
-            const price = amzFloat(raw.priceText);
-            const rating = amzRatingFromLabel(raw.ratingLabel);
-            const reviews = amzInt(raw.reviewLabel);
+            const price = amzPrice(raw.priceText);
+            const stars = amzStars(raw.starsLabel);
+            const rating = stars.rating;
+            const reviews = stars.reviews;
             const tier = amazonRankTier(rank);
 
             return {
@@ -138,7 +183,7 @@ async function runAmazonExtractionInPage(siteName, ritualKey, catalogEndpoint, r
                     collected_date: collectedDate,
                     source: "Amazon",
                     title: raw.title,
-                    publisher: amzText(raw.author),
+                    publisher: amzText(pickByline(raw.lines, raw.title)),
                     seller_tier: tier,
                     price: price,
                     rating: rating,
@@ -154,7 +199,7 @@ async function runAmazonExtractionInPage(siteName, ritualKey, catalogEndpoint, r
                     date: collectedDate,
                     title: raw.title,
                     category: raw.listType + ": " + raw.label,
-                    author: amzText(raw.author),
+                    author: amzText(pickByline(raw.lines, raw.title)),
                     rating: rating,
                     review_count: reviews
                 }
@@ -189,12 +234,25 @@ async function runAmazonExtractionInPage(siteName, ritualKey, catalogEndpoint, r
         // fails.
         const AMZ_SEL = {
             card:   "[data-asin]",
-            title:  ".p13n-sc-truncated, [class*=\"p13n-sc-truncated\"], [class*=\"p13n-sc-css-line-clamp\"], a[title], a.a-link-normal span.a-text-normal",
+            // Title AND byline are both clamp divs, separated only by order,
+            // and the class carries a build hash (_g3dy1, _1Fn1y) that changes
+            // between deploys — so match the stable substring, never the hash.
+            // Measured 2026-09-23: the Player's Handbook card has one such line
+            // (no byline at all); "The Dread from the Drows" has two.
+            line:   "[class*=\"p13n-sc-css-line-clamp\"], .p13n-sc-truncated, [class*=\"p13n-sc-truncated\"]",
+            // Fallback for layouts predating the clamp divs.
+            titleAlt: "a[title], a.a-link-normal span.a-text-normal",
             rank:   ".zg-bdg-text, .zg-badge-text, [class*=\"zg-bdg\"], [class*=\"zg-badge\"]",
-            price:  ".p13n-sc-price, [class*=\"p13n-sc-price\"], .a-color-price",
-            author: "span.a-color-secondary, .a-row .a-color-base.a-size-small",
-            rating: "span[aria-label*=\"out of 5\"]",
-            review: "span[aria-label*=\"rating\"], span[aria-label*=\"review\"]"
+            // Deliberately NOT .a-color-price: on a Kindle card that class
+            // carries "18 pts" (reward points), which reads as a plausible
+            // $18.00. amzPrice also requires a currency symbol, so this is
+            // guarded twice.
+            price:  "[class*=\"p13n-sc-price\"], .p13n-sc-price",
+            // ONE element carries both numbers:
+            //   aria-label="4.8 out of 5 stars, 3,762 ratings"
+            // The previous selectors looked for a <span>; the label sits on an
+            // <a>, which is why rating and review both read 0/30 on 2026-09-23.
+            stars:  "[aria-label*=\"out of 5\"]"
         };
         // ---------- end selectors ----------
 
@@ -205,24 +263,31 @@ async function runAmazonExtractionInPage(siteName, ritualKey, catalogEndpoint, r
                 .filter(el => /^[A-Z0-9]{10}$/.test(el.dataset.asin || ""));
 
             for (const el of cards) {
-                const titleEl = el.querySelector(AMZ_SEL.title);
-                const title = (titleEl && (titleEl.getAttribute("title") || titleEl.textContent) || "").trim();
+                // Every clamp line in order. The first is the title; the byline
+                // is chosen from the rest by pickByline, which knows a format
+                // label from a person.
+                const lines = Array.from(el.querySelectorAll(AMZ_SEL.line))
+                    .map(n => (n.textContent || "").trim().replace(/\s+/g, " "))
+                    .filter(Boolean);
+
+                let title = lines[0] || "";
+                if (!title) {
+                    const alt = el.querySelector(AMZ_SEL.titleAlt);
+                    title = (alt && (alt.getAttribute("title") || alt.textContent) || "").trim();
+                }
                 if (!title) continue;
 
                 const rankEl = el.querySelector(AMZ_SEL.rank);
                 const priceEl = el.querySelector(AMZ_SEL.price);
-                const authorEl = el.querySelector(AMZ_SEL.author);
-                const ratingEl = el.querySelector(AMZ_SEL.rating);
-                const reviewEl = el.querySelector(AMZ_SEL.review);
+                const starsEl = el.querySelector(AMZ_SEL.stars);
 
                 out.push({
                     asin: el.dataset.asin,
                     title: title,
+                    lines: lines,
                     rankText: rankEl ? rankEl.textContent : null,
                     priceText: priceEl ? priceEl.textContent : null,
-                    author: authorEl ? authorEl.textContent : null,
-                    ratingLabel: ratingEl ? ratingEl.getAttribute("aria-label") : null,
-                    reviewLabel: reviewEl ? reviewEl.getAttribute("aria-label") : null,
+                    starsLabel: starsEl ? starsEl.getAttribute("aria-label") : null,
                     label: label,
                     listType: listType
                 });

@@ -33,12 +33,25 @@
     // fails.
     const AMZ_SEL = {
         card:   "[data-asin]",
-        title:  ".p13n-sc-truncated, [class*=\"p13n-sc-truncated\"], [class*=\"p13n-sc-css-line-clamp\"], a[title], a.a-link-normal span.a-text-normal",
+        // Title AND byline are both clamp divs, separated only by order,
+        // and the class carries a build hash (_g3dy1, _1Fn1y) that changes
+        // between deploys — so match the stable substring, never the hash.
+        // Measured 2026-09-23: the Player's Handbook card has one such line
+        // (no byline at all); "The Dread from the Drows" has two.
+        line:   "[class*=\"p13n-sc-css-line-clamp\"], .p13n-sc-truncated, [class*=\"p13n-sc-truncated\"]",
+        // Fallback for layouts predating the clamp divs.
+        titleAlt: "a[title], a.a-link-normal span.a-text-normal",
         rank:   ".zg-bdg-text, .zg-badge-text, [class*=\"zg-bdg\"], [class*=\"zg-badge\"]",
-        price:  ".p13n-sc-price, [class*=\"p13n-sc-price\"], .a-color-price",
-        author: "span.a-color-secondary, .a-row .a-color-base.a-size-small",
-        rating: "span[aria-label*=\"out of 5\"]",
-        review: "span[aria-label*=\"rating\"], span[aria-label*=\"review\"]"
+        // Deliberately NOT .a-color-price: on a Kindle card that class
+        // carries "18 pts" (reward points), which reads as a plausible
+        // $18.00. amzPrice also requires a currency symbol, so this is
+        // guarded twice.
+        price:  "[class*=\"p13n-sc-price\"], .p13n-sc-price",
+        // ONE element carries both numbers:
+        //   aria-label="4.8 out of 5 stars, 3,762 ratings"
+        // The previous selectors looked for a <span>; the label sits on an
+        // <a>, which is why rating and review both read 0/30 on 2026-09-23.
+        stars:  "[aria-label*=\"out of 5\"]"
     };
     // ---------- end selectors ----------
 
@@ -61,34 +74,66 @@
         return;
     }
 
-    // Per-field: how many cards yield a value, and what the first few look like.
-    const fields = ["title", "rank", "price", "author", "rating", "review"];
+    // Read each field exactly as the harvester does, including the parts that
+    // are not a plain querySelector: the byline is picked from the clamp lines
+    // by order, and rating and review count are split out of one aria-label.
+    const FORMAT = /^(kindle edition|hardcover|paperback|audible audiobook|audiobook|spiral-bound|board book|mass market paperback|library binding|card book|game|toy|calendar|comic|digital)$/i;
+
+    function readCard(el) {
+        const lines = Array.from(el.querySelectorAll(AMZ_SEL.line))
+            .map(n => (n.textContent || "").trim().replace(/\s+/g, " "))
+            .filter(Boolean);
+
+        let title = lines[0] || "";
+        if (!title) {
+            const alt = el.querySelector(AMZ_SEL.titleAlt);
+            title = (alt && (alt.getAttribute("title") || alt.textContent) || "").trim();
+        }
+
+        let byline = null;
+        for (const t of lines) {
+            if (!t || t === title) continue;
+            if (FORMAT.test(t) || /^\d+\s*formats?\s+available$/i.test(t) ||
+                /^\d+\s*pts\.?$/i.test(t) || /^\$/.test(t) || /^#\d+$/.test(t) ||
+                /out of 5/i.test(t)) continue;
+            byline = t;
+            break;
+        }
+
+        const rankEl = el.querySelector(AMZ_SEL.rank);
+        const priceEl = el.querySelector(AMZ_SEL.price);
+        const starsEl = el.querySelector(AMZ_SEL.stars);
+        const starsLabel = starsEl ? starsEl.getAttribute("aria-label") : null;
+        const priceText = priceEl ? (priceEl.textContent || "").trim() : null;
+
+        const rMatch = starsLabel && starsLabel.match(/([\d.]+)\s*out of\s*5/i);
+        const nMatch = starsLabel && starsLabel.match(/([\d,]+)\s*(?:ratings?|reviews?)/i);
+
+        return {
+            title: title || null,
+            byline: byline,
+            rank: rankEl ? (rankEl.textContent || "").trim() : null,
+            // A price must look like money — "18 pts" is reward points.
+            price: priceText && /[$£€¥]/.test(priceText) ? priceText : null,
+            rating: rMatch ? rMatch[1] : null,
+            reviews: nMatch ? nMatch[1] : null
+        };
+    }
+
+    const fields = ["title", "byline", "rank", "price", "rating", "reviews"];
     const rows = [];
     const samples = {};
+    const read = cards.map(readCard);
 
     for (const f of fields) {
-        let hits = 0;
-        const seen = [];
-        for (const el of cards) {
-            const node = el.querySelector(AMZ_SEL[f]);
-            if (!node) continue;
-            // Read the same way the harvester reads it.
-            let val;
-            if (f === "title")       val = node.getAttribute("title") || node.textContent;
-            else if (f === "rating" || f === "review") val = node.getAttribute("aria-label");
-            else                     val = node.textContent;
-            val = (val || "").trim().replace(/\s+/g, " ");
-            if (!val) continue;
-            hits++;
-            if (seen.length < 3) seen.push(val.slice(0, 70));
-        }
-        samples[f] = seen;
+        const vals = read.map(r => r[f]).filter(v => v !== null && v !== "");
+        samples[f] = vals.slice(0, 3).map(v => String(v).slice(0, 70));
         rows.push({
             field: f,
-            matched: hits + "/" + cards.length,
-            pct: Math.round((hits / cards.length) * 100) + "%",
-            verdict: hits === 0 ? "BROKEN"
-                   : hits < cards.length * 0.5 ? "PARTIAL"
+            matched: vals.length + "/" + cards.length,
+            pct: Math.round((vals.length / cards.length) * 100) + "%",
+            verdict: vals.length === 0 ? "BROKEN"
+                   : vals.length < cards.length * 0.5 ? "PARTIAL"
                    : "ok"
         });
     }
@@ -113,8 +158,8 @@
         console.log("badge on the page, Inspect, and report the element's class list.");
     } else if (rankRow.verdict === "PARTIAL") {
         console.log("%cRank badge found on only " + rankRow.pct + " of cards.", "color:#e90;font-weight:bold");
-        console.log("Expected on Best Sellers lists. New Releases and Most Wished For pages");
-        console.log("legitimately have no rank badges, so PARTIAL is normal on those two.");
+        console.log("Measured 2026-09-23: BOTH Best Sellers and New Releases carried rank");
+        console.log("badges at 100%, so PARTIAL here is a real regression, not a page type.");
     } else {
         console.log("%cRank badge healthy (" + rankRow.pct + ").", "color:#2a2;font-weight:bold");
     }
