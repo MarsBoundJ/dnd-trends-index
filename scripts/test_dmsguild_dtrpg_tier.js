@@ -280,5 +280,47 @@ check('the tier breakdown is carried back to the popup',
 check('the refusal happens before any fetch to the ingest endpoint',
   EXT.indexOf('Refused to transmit') < EXT.indexOf('await fetch(endpoint'), true);
 
+// ── The price regex must be anchored, in every copy ─────────────────────────
+// The identity check above covers the TIER block only, which ends at the
+// "UNIFIED HARVEST" marker. The price logic lives after it and was therefore
+// unpinned — all four copies carried the same unanchored regex, and nothing
+// would have caught one copy being fixed while three stayed broken.
+//
+// Measured on dmsguild.com/metal.php 2026-09-23: unanchored, the fallback took
+// the first number in the card text, and the card text starts with the TITLE.
+// 420 of 1,090 products (38.5%) were priced from a digit in their own title.
+
+console.log('\n══ The price fallback is anchored to a currency symbol in every copy ══');
+var ANCHORED = 'match(/\\$\\s*([\\d,]+\\.?\\d*)/)';
+var UNANCHORED = 'match(/\\$?([\\d.]+)/)';
+TARGETS.forEach(function (target) {
+  check('anchored: ' + target.name, target.source.indexOf(ANCHORED) !== -1, true);
+  check('unanchored gone: ' + target.name, target.source.indexOf(UNANCHORED) !== -1, false);
+});
+
+// The same page proved parseFloat(".") is reachable: "Monster Loot Vol. 3 –
+// Mordenkainen's Tome of Foes" matched "." and became $0.00 — a free product.
+console.log('\n══ What the anchored pattern does to the measured failures ══');
+var RE = /\$\s*([\d,]+\.?\d*)/;
+check('a bare "Vol. 3" no longer matches at all', RE.test('Monster Loot Vol. 3'), false);
+check('"Monster Loot Vol. 3 $4.95" yields 4.95, not 3',
+  'Monster Loot Vol. 3 $4.95'.match(RE)[1], '4.95');
+check('"(5e) ... $14.99" yields 14.99, not 5',
+  "Minsc and Boo's Journal of Villainy (5e) $14.99".match(RE)[1], '14.99');
+check('"80 Maps ... $8.99" yields 8.99, not 80',
+  'Tessa Presents 80 Maps $8.99'.match(RE)[1], '8.99');
+check('"EB-01 ... $4.99" yields 4.99, not 01',
+  'EB-01 The Night Land $4.99'.match(RE)[1], '4.99');
+check('thousands separators survive', '$1,299.00'.match(RE)[1], '1,299.00');
+// DriveThruRPG, same day: a year in the title became the price.
+check('"Update 2022 ... $30.00" yields 30.00, not 2022',
+  'Traveller Core Rulebook Update 2022 $30.00'.match(RE)[1], '30.00');
+check('"Volume 4 ... $10.00" yields 10.00, not 4',
+  'Interface RED Volume 4 $10.00'.match(RE)[1], '10.00');
+check('"Second Edition (2E) ... $19.99" yields 19.99, not 2',
+  'Knave: Second Edition (2E) $19.99'.match(RE)[1], '19.99');
+check('a card with no currency symbol yields nothing rather than a title digit',
+  RE.test('Blood Hunter Class for D&D 5e (2020)'), false);
+
 console.log('\n' + pass + ' passed, ' + fail + ' failed\n');
 process.exit(fail ? 1 : 0);
