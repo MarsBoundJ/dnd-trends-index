@@ -19,6 +19,15 @@
 //
 //   1. PRICE FALLBACK. .productSpecialPrice/.cy-prc matched only 60 of 1,090
 //      products on 2026-09-23, so 90% of prices come from the text fallback.
+//      WHY it misses is now known: the price is a bare text node directly
+//      inside the card container (<th class="smallText">), not a classed
+//      element. Those two classes are SALE-price classes. There is no regular-
+//      price selector to find, so the text path is the primary path for ~90% of
+//      products permanently, which is what makes anchoring it the fix rather
+//      than a stopgap.
+//      DriveThruRPG measured the same day: 128 of 354 parsed products poisoned
+//      (36.2%), including "$2022" for "Traveller Core Rulebook Update 2022",
+//      a $30.00 book. The anchored pattern recovers 125 of the 128.
 //      That fallback was unanchored — optional dollar sign, first number wins —
 //      and the card text starts with the title, so 420 of 1,090 products were priced
 //      from a digit in their own name ($5 for "…(5e)", $80 for "80 Maps…").

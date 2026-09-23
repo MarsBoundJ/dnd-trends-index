@@ -312,6 +312,13 @@ check('"80 Maps ... $8.99" yields 8.99, not 80',
 check('"EB-01 ... $4.99" yields 4.99, not 01',
   'EB-01 The Night Land $4.99'.match(RE)[1], '4.99');
 check('thousands separators survive', '$1,299.00'.match(RE)[1], '1,299.00');
+// DriveThruRPG, same day: a year in the title became the price.
+check('"Update 2022 ... $30.00" yields 30.00, not 2022',
+  'Traveller Core Rulebook Update 2022 $30.00'.match(RE)[1], '30.00');
+check('"Volume 4 ... $10.00" yields 10.00, not 4',
+  'Interface RED Volume 4 $10.00'.match(RE)[1], '10.00');
+check('"Second Edition (2E) ... $19.99" yields 19.99, not 2',
+  'Knave: Second Edition (2E) $19.99'.match(RE)[1], '19.99');
 check('a card with no currency symbol yields nothing rather than a title digit',
   RE.test('Blood Hunter Class for D&D 5e (2020)'), false);
 
