@@ -327,7 +327,12 @@ def _get_known_terms(client: bigquery.Client) -> set[str]:
 # Seeds table helpers
 # ---------------------------------------------------------------------------
 
-SEEDS_PER_RUN = int(os.environ.get("SEEDS_PER_RUN", "40"))
+# Was 40. Cut way down as part of the 2026-08-31 rate-limit fix: 40 seeds
+# x 2 calls each was 80 requests against Google's widget-data endpoint in
+# one run — plenty to get an IP flagged early and have the rest come back
+# empty. A smaller batch means the full seed set takes longer to rotate
+# through, but each run has a much better shot at actually landing data.
+SEEDS_PER_RUN = int(os.environ.get("SEEDS_PER_RUN", "10"))
 
 
 def _fetch_active_seeds(bq: bigquery.Client) -> list[str]:
@@ -356,6 +361,11 @@ def _fetch_active_seeds(bq: bigquery.Client) -> list[str]:
 
 
 ZERO_YIELD_STRIKE_LIMIT = int(os.environ.get("ZERO_YIELD_STRIKE_LIMIT", "3"))
+
+# Abort a run after this many consecutive barren seeds instead of grinding
+# through the rest for nothing — mirrors the circuit breaker already used
+# by google_trends_scraper. See _process_seeds().
+CIRCUIT_BREAKER_LIMIT = int(os.environ.get("CIRCUIT_BREAKER_LIMIT", "5"))
 
 
 def _update_seed_last_used(bq: bigquery.Client, seeds: list[str]) -> None:
@@ -445,26 +455,64 @@ def _update_seed_zero_counts(bq: bigquery.Client, yielded: list[str], barren: li
 # Core orchestration
 # ---------------------------------------------------------------------------
 
-def _process_seeds(pytrends: TrendReq, seeds: list[str], bq: bigquery.Client, run_id: str) -> dict:
+def _process_seeds(proxy_url: str, seeds: list[str], bq: bigquery.Client, run_id: str) -> dict:
     """
     Iterate over seed keywords in batches of 1 (pytrends related_* only
     supports a single keyword reliably for related results), fetch data,
     and collect all rows.
 
-    Returns summary stats dict.
+    A fresh TrendReq/proxy session is built per seed (was: one session
+    reused for the whole run) — reusing a single session meant every call
+    in the run rode the same underlying keep-alive connection, defeating
+    the whole point of a *rotating* residential proxy. Google was flagging
+    that one IP within the first request or two and silently serving empty
+    results for the rest of the run (no errors, so emerging_terms went
+    stale for months — 2026-04-12 to 2026-08-31 — before this was
+    root-caused via Cloud Logging).
+
+    Also trips a circuit breaker after CIRCUIT_BREAKER_LIMIT consecutive
+    barren seeds — mirrors the pattern already used successfully by
+    google_trends_scraper, instead of grinding through the full seed list
+    once it's clearly not working.
+
+    Returns summary stats dict. "attempted_seeds" (only the ones actually
+    fetched, not ones skipped by an early circuit-breaker trip) is what the
+    caller should pass to _update_seed_last_used — a seed the breaker
+    skipped never got a real shot and shouldn't be pushed to the back of
+    the rotation.
     """
     all_raw_rows: list[dict] = []
     yielded_seeds: list[str] = []
     barren_seeds: list[str] = []
+    attempted_seeds: list[str] = []
+    consecutive_barren = 0
+    circuit_breaker_tripped = False
 
     # Process one seed at a time to avoid Google throttling on bulk payloads
     for seed in seeds:
+        if consecutive_barren >= CIRCUIT_BREAKER_LIMIT:
+            circuit_breaker_tripped = True
+            log.warning(
+                "Circuit breaker tripped after %d consecutive barren seeds — "
+                "aborting run early instead of grinding through the rest "
+                "(%d of %d seeds remaining, not attempted).",
+                consecutive_barren, len(seeds) - len(attempted_seeds), len(seeds),
+            )
+            break
+
         log.info("Fetching related data for seed: '%s'", seed)
+        attempted_seeds.append(seed)
+
+        # Fresh session per seed — see docstring above.
+        pytrends = _build_pytrends_session(proxy_url)
+
         try:
             queries_data, topics_data = _safe_fetch(pytrends, [seed])
         except Exception as exc:
             log.error("Skipping seed '%s' after %d retries: %s", seed, RETRIES, exc)
             barren_seeds.append(seed)
+            consecutive_barren += 1
+            time.sleep(random.uniform(8, 15))
             continue
 
         # --- related_queries ---
@@ -481,11 +529,15 @@ def _process_seeds(pytrends: TrendReq, seeds: list[str], bq: bigquery.Client, ru
         all_raw_rows.extend(seed_rows)
         if seed_rows:
             yielded_seeds.append(seed)
+            consecutive_barren = 0
         else:
             barren_seeds.append(seed)
+            consecutive_barren += 1
 
-        # Polite delay between seeds
-        time.sleep(random.uniform(3, 6))
+        # Polite delay between seeds — widened from 3-6s. A fresh session
+        # already gives us a new exit IP, but Google's soft-blocking looks
+        # at request cadence too, not just source IP.
+        time.sleep(random.uniform(8, 15))
 
     # Write all raw rows to BQ
     _insert_rows(bq, RESULTS_TABLE, all_raw_rows)
@@ -527,9 +579,12 @@ def _process_seeds(pytrends: TrendReq, seeds: list[str], bq: bigquery.Client, ru
     _insert_rows(bq, EMERGING_TABLE, emerging_rows)
 
     return {
-        "seeds_processed": len(seeds),
-        "raw_rows":        len(all_raw_rows),
-        "emerging_flagged": len(emerging_rows),
+        "seeds_processed":         len(attempted_seeds),
+        "seeds_skipped_by_breaker": len(seeds) - len(attempted_seeds),
+        "circuit_breaker_tripped": circuit_breaker_tripped,
+        "raw_rows":                len(all_raw_rows),
+        "emerging_flagged":        len(emerging_rows),
+        "attempted_seeds":         attempted_seeds,
     }
 
 
@@ -577,14 +632,18 @@ def discover_related_queries(request):
             "message": "No data written."
         }), 200, {"Content-Type": "application/json"}
 
-    # Build proxy-authenticated pytrends session
+    # Proxy URL only — the pytrends/TrendReq session itself is now built
+    # fresh per seed inside _process_seeds (see its docstring), not once
+    # here, so a single flagged connection can't sour the whole run.
     proxy_url = _build_proxy_url()
-    pytrends  = _build_pytrends_session(proxy_url)
 
     try:
         _ensure_tables(bq)
-        stats = _process_seeds(pytrends, seeds, bq, run_id)
-        _update_seed_last_used(bq, seeds)
+        stats = _process_seeds(proxy_url, seeds, bq, run_id)
+        # Only mark seeds the run actually attempted as "used" — ones the
+        # circuit breaker skipped never got a real shot and should stay at
+        # the front of the queue for next time.
+        _update_seed_last_used(bq, stats["attempted_seeds"])
     except Exception as exc:
         log.exception("Fatal error in run %s", run_id)
         return json.dumps({"status": "error", "run_id": run_id, "error": str(exc)}), 500, {

@@ -5,8 +5,10 @@ TTRPG fulfillment — primarily China / East Asia → North America (West and Ea
 coasts). Feeds The Quartermaster's articles on shipping disruption and fulfillment
 margin pressure. See project_step_9_council.md in user memory for context.
 
-Schedule: Saturday 22:00 CST (Sun 03:00 UTC). FBX publishes Fridays in Israel
-time, so Sat night gives the value a full day to stabilize. Cron: `0 3 * * 0`.
+Schedule: Sunday 04:00 UTC (`0 4 * * 0`, fixed UTC — not `America/Chicago`,
+which drifted this job's actual fire time into the Shabbat blackout window
+in summer CDT; see context_docs/SCHEDULING.md). FBX publishes Fridays in
+Israel time, so this gives the value more than a full day to stabilize.
 
 BigQuery sink: gold_data.freight_index_daily. Create table via
 setup_freight_index_daily.py before first run.
@@ -35,7 +37,13 @@ DATASET_ID = "gold_data"
 TABLE_ID = "freight_index_daily"
 TABLE_REF = f"{PROJECT_ID}.{DATASET_ID}.{TABLE_ID}"
 
-FBX_URL = "https://fbx.freightos.com/"
+# fbx.freightos.com was retired at some point after this was first written —
+# confirmed 2026-08-31 (Phil checked in a browser) the FBX page now lives
+# under the main marketing site. The lane-code ticker (FBX03 etc.) is still
+# present there, so the parsing approach is likely still salvageable — see
+# parse_freightos_values()'s docstring for the open question on whether the
+# ticker JSON is still embedded server-side or now purely client-rendered.
+FBX_URL = "https://www.freightos.com/enterprise/terminal/freightos-baltic-index-global-container-pricing-index/"
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -83,6 +91,20 @@ def parse_freightos_values(html: str) -> list[dict]:
     We extract that JSON array via regex and filter to the lanes in LANE_CODES.
     Returns a list of dicts: {lane_code, lane_name, index_value, wow_delta_pct}.
     Missing lanes are skipped (logged), not raised.
+
+    CONFIRMED 2026-08-31: fbx.freightos.com was retired; the ticker moved to
+    FBX_URL's new location but kept the same frProductIntroTickerData
+    variable name and JSON shape, still embedded server-side (inside a
+    <script type="text/rocketlazyloadscript"> tag — a WP Rocket deferred-
+    execution trick that only affects when a real browser *runs* the
+    script, not whether a plain HTTP fetch can read its literal text
+    content). Verified this regex against a real snippet of the new page —
+    all 3 target lanes (FBX, FBX01, FBX03) parse correctly. No further
+    parsing changes needed, just the FBX_URL update above.
+
+    The new page also tracks several lanes beyond the 3 in LANE_CODES
+    (FBX02/04/11-14/21/22/24/26) — left untouched since which of those are
+    worth adding is a product decision, not a scrape-fixing one.
     """
     rows: list[dict] = []
 
@@ -210,6 +232,23 @@ def freight_index_harvester(request):
     HTML length so Cloud Scheduler retry logic and alerts kick in.
     """
     try:
+        today = datetime.date.today().isoformat()
+        client = bigquery.Client(project=PROJECT_ID)
+
+        # Dedup guard — a manual re-trigger (or a Cloud Scheduler retry) on
+        # the same day used to double-insert every lane, since insert_rows()
+        # has no such check of its own. Mirrors the date-scoped guard used
+        # by the other harvesters (e.g. bgg_harvester).
+        dedup_check = client.query(
+            f"SELECT COUNT(*) as cnt FROM `{TABLE_REF}` WHERE date = @date",
+            job_config=bigquery.QueryJobConfig(
+                query_parameters=[bigquery.ScalarQueryParameter("date", "DATE", today)]
+            ),
+        ).result()
+        if next(iter(dedup_check)).cnt > 0:
+            logger.info(f"Data already exists for {today} — skipping run.")
+            return json.dumps({"status": "skipped", "reason": "already ran today", "date": today}), 200
+
         logger.info("Fetching Freightos FBX page...")
         html = fetch_freightos_html()
         logger.info(f"  Got {len(html)} bytes")
@@ -224,12 +263,11 @@ def freight_index_harvester(request):
                 "html_bytes": len(html),
             }), 500
 
-        client = bigquery.Client(project=PROJECT_ID)
         inserted = insert_rows(client, rows, html)
 
         return json.dumps({
             "status": "Success",
-            "date": datetime.date.today().isoformat(),
+            "date": today,
             "rows_inserted": inserted,
             "lanes": rows,
         }), 200
