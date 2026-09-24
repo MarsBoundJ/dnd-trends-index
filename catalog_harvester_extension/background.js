@@ -538,9 +538,19 @@ async function runExtractionInPage(siteName, ritualKey, endpoint, chunkSize) {
         }
 
         let successCount = 0;
+        let skipped = false;
         for (let i = 0; i < products.length; i += chunkSize) {
             const chunk = products.slice(i, i + chunkSize);
-            const res = await fetch(endpoint, {
+            // Only chunk 0 asks the bouncer whether this source already has
+            // rows for today. Every later chunk would find the rows THIS run
+            // just inserted and be told to skip, truncating the capture to its
+            // first 1,000 products. See the guard in bouncer/main.py.
+            //
+            // A query parameter rather than a header, so no new entry is needed
+            // in Access-Control-Allow-Headers and the bouncer and extension can
+            // be deployed in either order. An older bouncer ignores it.
+            const sep = endpoint.indexOf("?") === -1 ? "?" : "&";
+            const res = await fetch(endpoint + sep + "chunk=" + (i / chunkSize), {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "X-Ritual-Key": ritualKey },
                 body: JSON.stringify(chunk)
@@ -549,7 +559,15 @@ async function runExtractionInPage(siteName, ritualKey, endpoint, chunkSize) {
                 const errText = await res.text();
                 return { site: siteName, success: false, error: `HTTP ${res.status}: ${errText}`, partial: successCount };
             }
-            successCount += chunk.length;
+            // A 200 is not an insert. The bouncer answers a duplicate run with
+            // {"skipped": true} and a 200, and this loop used to add the chunk
+            // length regardless -- reporting a full capture for rows that were
+            // never stored. On 2026-09-24 a double-clicked Run Now inserted
+            // DMs Guild and DriveThruRPG twice precisely because nothing here
+            // could tell the difference.
+            const data = await res.json().catch(() => ({}));
+            if (data.skipped) { skipped = true; break; }
+            successCount += data.inserted || chunk.length;
         }
 
         // The product id is in every URL we just harvested. Keeping it turns the
@@ -559,8 +577,8 @@ async function runExtractionInPage(siteName, ritualKey, endpoint, chunkSize) {
             .map(p => (String(p.product_url).match(/\/product\/(\d+)/) || [])[1])
             .filter(Boolean);
 
-        return { site: siteName, success: true, count: successCount, tierSummary,
-                 shelves: shelfNames, productIds };
+        return { site: siteName, success: true, count: skipped ? 0 : successCount,
+                 skipped: skipped, tierSummary, shelves: shelfNames, productIds };
     } catch (e) {
         return { site: siteName, success: false, error: e.message };
     }
