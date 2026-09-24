@@ -1406,6 +1406,60 @@ def bouncer_api(request):
         rows = request.get_json()
         if not rows:
             return (json.dumps({"error": "No data"}), 400, headers)
+
+        # Duplicate guard. This route is the odd one out: the other three ingest
+        # endpoints receive a run in ONE request, so "does today already have
+        # rows?" is a safe question to ask on arrival. This one is CHUNKED --
+        # the extension posts 1,000 rows per request, the bookmarklets 500 --
+        # and asking per request would make chunk 2 find the rows chunk 1 just
+        # inserted and skip. The capture would be truncated to its first chunk
+        # while the client reported success. That is the failure the Kickstarter
+        # route's header comment warns about, and it lands harder here because
+        # the catalog client's loop did not inspect `skipped` at all.
+        #
+        # So only the FIRST chunk of a run asks, and it asks per SOURCE. DMs
+        # Guild, DriveThruRPG and Amazon all post to this endpoint, so a
+        # whole-table date check would let whichever ran first block the other
+        # two for the rest of the day.
+        #
+        # A client that sends no ?chunk= is left UNGUARDED rather than treated
+        # as chunk 0. The three bookmarklet copies chunk without it, and
+        # defaulting a missing value to "0" would silently truncate them --
+        # trading a duplicate, which is recoverable, for a short capture
+        # reported as success, which is not.
+        #
+        # It is a QUERY PARAMETER and not a header on purpose. A new request
+        # header would have to be added to Access-Control-Allow-Headers, and
+        # until the bouncer carrying that change was deployed, every catalog
+        # POST from an updated client would die in the browser's preflight --
+        # making the two deploys order-dependent, with all three storefronts
+        # broken if they went out backwards. The router reads request.path
+        # (line ~225, misleadingly named full_path), which excludes the query
+        # string, so ?chunk= cannot affect route matching either.
+        chunk_index = request.args.get('chunk')
+        if chunk_index == '0':
+            source = str(rows[0].get('source') or '')
+            collected = str(rows[0].get('collected_date') or '')
+            if source and collected:
+                # collected_date is compared as a string so this works whether
+                # the column is DATE or STRING; CAST of a DATE yields the same
+                # YYYY-MM-DD the harvester sends.
+                check = list(client.query(
+                    "SELECT COUNT(*) AS n"
+                    " FROM `dnd-trends-index.dnd_trends_raw.catalog_supply`"
+                    " WHERE source = @source"
+                    " AND CAST(collected_date AS STRING) = @collected",
+                    job_config=bigquery.QueryJobConfig(query_parameters=[
+                        bigquery.ScalarQueryParameter('source', 'STRING', source),
+                        bigquery.ScalarQueryParameter('collected', 'STRING', collected),
+                    ])
+                ).result())
+                if check and check[0].n > 0:
+                    return (json.dumps({
+                        "skipped": True,
+                        "reason": f"{source} catalog already ingested for {collected}"
+                    }), 200, headers)
+
         # Enrich rows with Gemini (is_ttrpg, publisher, category, setting, system_tag, etc.)
         model = get_gemini_model()
         if model:

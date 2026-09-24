@@ -387,7 +387,16 @@ async function runAmazonExtractionInPage(siteName, ritualKey, catalogEndpoint, r
             let ok = 0, skipped = false;
             for (let i = 0; i < rows.length; i += chunkSize) {
                 const chunk = rows.slice(i, i + chunkSize);
-                const res = await fetch(endpoint, {
+                // Only chunk 0 asks the bouncer to check for a duplicate run;
+                // a later chunk would find the rows this run just inserted.
+                // Amazon needs this as much as the OneBookShelf sites do: it
+                // posts to the same un-guarded ingest-catalog endpoint, and on
+                // 2026-09-24 a double-clicked run left 707 Amazon rows where
+                // one capture is ~350. The ranks endpoint ignores the
+                // parameter -- it has its own whole-request date guard, which
+                // is safe there because that route is not chunk-sensitive.
+                const sep = endpoint.indexOf("?") === -1 ? "?" : "&";
+                const res = await fetch(endpoint + sep + "chunk=" + (i / chunkSize), {
                     method: "POST",
                     headers: { "Content-Type": "application/json", "X-Ritual-Key": ritualKey },
                     body: JSON.stringify(chunk)
