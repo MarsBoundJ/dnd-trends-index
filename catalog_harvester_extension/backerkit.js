@@ -45,11 +45,38 @@
 // id containing "5e" would have classified the project as 5e Compatible. The id
 // no longer reaches the classifier; only the title does.
 
-const BK_LANDING = "https://www.backerkit.com/c/collections/role-playing-games?sort_by=trending";
+const BK_BASE = "https://www.backerkit.com/c/collections/";
+
+// Decorative, and measured to be so. On 2026-09-24 all ten sort_by values
+// tried -- trending, newest, ending_soon, most_funded, most_backed,
+// recently_launched, popular, end_date, launch_date, funded -- returned the
+// SAME ten projects. Kept because it is the URL the site itself uses, and
+// because a sort that starts working costs nothing to already be sending.
+const BK_SORT = "?sort_by=trending";
+
+// The only axis that widens coverage. Pagination does not exist here: page,
+// offset and per_page are all silently ignored, as is sort_by. Different
+// COLLECTIONS return genuinely different projects, so this is how the stream
+// grows. Measured the same day, against a running union of ids:
+//
+//     role-playing-games   10 projects, 10 new
+//     tabletop-games       10 projects, 10 new
+//     card-games            8 projects,  8 new
+//     comics               10 projects, 10 new   (off-domain, excluded)
+//     board-games / games / miniatures            404
+//
+// 28 projects instead of 10. comics is left out deliberately: this is a D&D
+// trends index and those rows would be noise, not coverage. Adding it back is
+// one string. Three of six guessed slugs 404, so the list is empirical --
+// a slug that stops existing must not take the run down with it.
+// See scripts/probe_backerkit_pagination.js.
+const BK_COLLECTIONS = ["role-playing-games", "tabletop-games", "card-games"];
+
+const BK_LANDING = BK_BASE + BK_COLLECTIONS[0] + BK_SORT;
 const BK_ENDPOINT =
     ENDPOINT.replace("system/library/ingest-catalog", "system/backerkit/ingest-projects");
 
-async function runBackerkitExtractionInPage(siteName, ritualKey, endpoint, sourceUrl) {
+async function runBackerkitExtractionInPage(siteName, ritualKey, endpoint, base, sort, collections) {
     try {
         if (!location.hostname.endsWith("backerkit.com")) {
             return { site: siteName, success: false, error: "Not on backerkit.com (url=" + location.href + ")" };
@@ -154,32 +181,85 @@ async function runBackerkitExtractionInPage(siteName, ritualKey, endpoint, sourc
             return [];
         }
 
-        // ---------- end BackerKit normalisation ----------
-
-        const res = await fetch(sourceUrl, {
-            method: "GET",
-            credentials: "include",
-            headers: {
-                "X-Inertia": "true",
-                "X-Requested-With": "XMLHttpRequest",
-                "Accept": "application/json"
+        // Collections overlap, so the union has to be deduped by project id --
+        // and the per-collection tally is kept so a slug that silently stops
+        // returning anything is visible as "0/0" instead of just shrinking the
+        // total. A collection that errors is recorded, never dropped.
+        function bkDedupeProjects(batches) {
+            const seen = new Set();
+            const projects = [];
+            const perCollection = [];
+            for (const b of (batches || [])) {
+                const got = (b && b.projects) || [];
+                let added = 0;
+                for (const p of got) {
+                    const id = String((p && p.id) || "").trim();
+                    if (!id || seen.has(id)) continue;
+                    seen.add(id);
+                    projects.push(p);
+                    added++;
+                }
+                perCollection.push({
+                    collection: b && b.collection,
+                    returned: got.length,
+                    added: added,
+                    error: (b && b.error) || null
+                });
             }
-        });
-        if (!res.ok) {
-            return {
-                site: siteName, success: false,
-                error: "Inertia fetch HTTP " + res.status + " — signed in to BackerKit?"
-            };
+            return { projects: projects, perCollection: perCollection };
         }
 
-        const data = await res.json();
-        const projects = bkExtractProjects(data);
+        function bkCoverage(perCollection) {
+            return (perCollection || []).map(function (c) {
+                return c.error ? (c.collection + " FAILED(" + c.error + ")")
+                               : (c.collection + " " + c.added + "/" + c.returned);
+            }).join(", ");
+        }
+
+        // ---------- end BackerKit normalisation ----------
+
+        // One request per collection. A 404 on one slug is expected over time
+        // -- three of six guessed slugs already 404 -- so a failure is recorded
+        // against that collection and the run continues with the rest.
+        const batches = [];
+        let lastKeys = null;
+        for (const collection of collections) {
+            try {
+                const res = await fetch(base + collection + sort, {
+                    method: "GET",
+                    credentials: "include",
+                    headers: {
+                        "X-Inertia": "true",
+                        "X-Requested-With": "XMLHttpRequest",
+                        "Accept": "application/json"
+                    }
+                });
+                if (!res.ok) {
+                    batches.push({ collection: collection, projects: [], error: "HTTP " + res.status });
+                    continue;
+                }
+                const data = await res.json();
+                lastKeys = Object.keys(data || {}).slice(0, 8).join(",");
+                batches.push({ collection: collection, projects: bkExtractProjects(data) });
+            } catch (e) {
+                batches.push({ collection: collection, projects: [], error: e.message });
+            }
+            await new Promise(r => setTimeout(r, 400));
+        }
+
+        const merged = bkDedupeProjects(batches);
+        const projects = merged.projects;
+        const coverage = bkCoverage(merged.perCollection);
+
         if (!projects.length) {
+            const allFailed = merged.perCollection.every(c => c.error);
             return {
                 site: siteName, success: false,
-                error: "No projects in the Inertia response (top-level keys: " +
-                       Object.keys(data || {}).slice(0, 8).join(",") +
-                       ") — the response shape may have changed"
+                error: allFailed
+                    ? ("Every collection failed (" + coverage + ") — signed in to BackerKit?")
+                    : ("No projects across " + collections.length + " collections (" + coverage +
+                       "; last top-level keys: " + (lastKeys || "none") +
+                       ") — the response shape may have changed")
             };
         }
 
@@ -208,8 +288,9 @@ async function runBackerkitExtractionInPage(siteName, ritualKey, endpoint, sourc
             skipped: !!out.skipped,
             projectsSeen: projects.length,
             defaultedFields: bkSummarise(built),
-            tierSummary: bkSummarise(built),
-            shelves: ["role-playing-games (trending)"]
+            tierSummary: bkSummarise(built) + " | " + coverage,
+            coverage: coverage,
+            shelves: merged.perCollection.map(c => c.collection)
         };
     } catch (e) {
         return { site: siteName, success: false, error: e.message };

@@ -361,7 +361,7 @@ function injectViaScripting(tabId, site, ritualKey, finish) {
         kickstarter: () => ({ func: runKickstarterExtractionInPage,
             args: [site.name, ritualKey, KS_ENDPOINT, KS_CATEGORY_ID, KS_PER_PAGE, KS_MAX_PAGES] }),
         backerkit: () => ({ func: runBackerkitExtractionInPage,
-            args: [site.name, ritualKey, BK_ENDPOINT, BK_LANDING] }),
+            args: [site.name, ritualKey, BK_ENDPOINT, BK_BASE, BK_SORT, BK_COLLECTIONS] }),
         catalog: () => ({ func: runExtractionInPage,
             args: [site.name, ritualKey, ENDPOINT, CHUNK_SIZE] })
     };

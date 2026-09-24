@@ -49,7 +49,7 @@ const bk = slice(BK_SRC,
     '// ---------- BackerKit normalisation',
     '// ---------- end BackerKit normalisation ----------',
     ['bkAmount', 'bkInt', 'bkDaysRemaining', 'bkClassify', 'bkBuildRow', 'bkSummarise',
-     'bkExtractProjects'],
+     'bkExtractProjects', 'bkDedupeProjects', 'bkCoverage'],
     'backerkit.js');
 
 let pass = 0, fail = 0;
@@ -244,6 +244,98 @@ check('a failed ingest throws rather than counting as sent',
     /throw new Error\("ingest HTTP/.test(KS_SRC) && /throw new Error\("ingest HTTP/.test(BK_SRC), true);
 check('endpoints are derived from ENDPOINT, not retyped',
     /ENDPOINT\.replace\(/.test(KS_SRC) && /ENDPOINT\.replace\(/.test(BK_SRC), true);
+
+// ════════════════ BACKERKIT COLLECTION COVERAGE ════════════════
+//
+// BackerKit cannot be paginated. Measured 2026-09-24: page, offset and
+// per_page are silently ignored, and so is every one of ten sort_by values --
+// all return the same ten projects. Collections are the only axis that adds
+// anything, so the union across collections IS the capture, and deduping it
+// correctly is what decides how much data the stream carries.
+console.log('\nthe collection union is deduped by project id:');
+{
+    const batches = [
+        { collection: 'role-playing-games', projects: [{ id: 'a' }, { id: 'b' }] },
+        { collection: 'tabletop-games',     projects: [{ id: 'b' }, { id: 'c' }] }
+    ];
+    const m = bk.bkDedupeProjects(batches);
+    check('a project in two collections is kept once', m.projects.map(p => p.id), ['a', 'b', 'c']);
+    check('the first collection is credited with its two', m.perCollection[0].added, 2);
+    check('the second is credited only with what it ADDED', m.perCollection[1].added, 1);
+    check('...while still reporting what it returned', m.perCollection[1].returned, 2);
+}
+
+console.log('\na failing collection does not take the run down:');
+{
+    const m = bk.bkDedupeProjects([
+        { collection: 'role-playing-games', projects: [{ id: 'a' }] },
+        { collection: 'board-games', projects: [], error: 'HTTP 404' },
+        { collection: 'card-games', projects: [{ id: 'z' }] }
+    ]);
+    check('projects from the healthy collections survive', m.projects.map(p => p.id), ['a', 'z']);
+    check('the failure is recorded, not dropped', m.perCollection[1].error, 'HTTP 404');
+    check('and it is visible in the coverage line',
+        /board-games FAILED\(HTTP 404\)/.test(bk.bkCoverage(m.perCollection)), true);
+}
+
+console.log('\na slug that quietly goes empty is distinguishable from one that errors:');
+{
+    // This is the failure this reporting exists for. A collection that starts
+    // returning [] with a 200 shrinks the capture silently; "0/0" in the
+    // coverage line is the only thing that shows it.
+    const m = bk.bkDedupeProjects([
+        { collection: 'role-playing-games', projects: [{ id: 'a' }] },
+        { collection: 'tabletop-games', projects: [] }
+    ]);
+    check('an empty-but-OK collection reads 0/0',
+        bk.bkCoverage(m.perCollection), 'role-playing-games 1/1, tabletop-games 0/0');
+}
+
+console.log('\nprojects with no usable id are not counted as coverage:');
+{
+    const m = bk.bkDedupeProjects([
+        { collection: 'role-playing-games', projects: [{ id: '' }, { id: null }, {}, { id: 'real' }] }
+    ]);
+    check('only the real one is kept', m.projects.map(p => p.id), ['real']);
+    check('added counts what was kept, not what arrived', m.perCollection[0].added, 1);
+    check('returned still reports what arrived', m.perCollection[0].returned, 4);
+}
+
+console.log('\nthe id is a slug, and that is load-bearing:');
+{
+    // Measured: id is "the-one-ring-rpg-bestiary-gondor-campaign-updated-rules",
+    // not a number. Deduping must be string-based, and the classifier must
+    // never see it -- a slug is prose.
+    const m = bk.bkDedupeProjects([
+        { collection: 'c1', projects: [{ id: 'the-one-ring-rpg-bestiary' }] },
+        { collection: 'c2', projects: [{ id: 'the-one-ring-rpg-bestiary' }] }
+    ]);
+    check('a slug id dedupes across collections', m.projects.length, 1);
+    check('bkClassify takes the title only, never the id',
+        /function bkClassify\(title\)/.test(BK_SRC), true);
+}
+
+console.log('\nthe source pins the measured facts:');
+check('three collections are harvested, comics deliberately excluded',
+    /BK_COLLECTIONS = \["role-playing-games", "tabletop-games", "card-games"\]/.test(BK_SRC), true);
+check('a non-OK collection is recorded and the loop continues',
+    /batches\.push\(\{ collection: collection, projects: \[\], error: "HTTP " \+ res\.status \}\);[\s\S]{0,40}continue;/.test(BK_SRC), true);
+check('it still posts ONE request, so the date guard cannot truncate it',
+    (BK_SRC.match(/method: "POST"/g) || []).length, 1);
+// Asserted against the comment text with its "// " prefixes stripped, because
+// the sentence wraps. The first draft of this check used a single-line regex,
+// which could not match however the source was worded -- a test that can only
+// ever fail is as useless as one that can only ever pass.
+const BK_PROSE = BK_SRC.replace(/^\s*\/\/ ?/gm, '').replace(/\s+/g, ' ');
+check('the measurement that killed pagination is recorded in the source',
+    /page, offset and per_page are all silently ignored, as is sort_by/.test(BK_PROSE), true);
+check('...along with the collection counts it was replaced by',
+    /role-playing-games 10 projects, 10 new/.test(BK_PROSE) &&
+    /card-games 8 projects, 8 new/.test(BK_PROSE), true);
+check('...and why comics is not in the list',
+    /comics is left out deliberately/.test(BK_PROSE), true);
+check('coverage reaches the popup through tierSummary',
+    /tierSummary: bkSummarise\(built\) \+ " \| " \+ coverage/.test(BK_SRC), true);
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);
