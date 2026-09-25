@@ -55,7 +55,7 @@ const SITES = [
     // browser — and BackerKit additionally 403s any GCP IP, which is why its
     // Cloud Function died and why this is the only place it can run at all.
     { name: "Kickstarter",  url: KS_LANDING,                               ready: "kickstarter.com", extractor: "kickstarter" },
-    { name: "BackerKit",    url: BK_LANDING,                               ready: "backerkit.com",   extractor: "backerkit"   }
+    { name: "BackerKit",    url: BK_LANDING,                               ready: "/c/categories/",  extractor: "backerkit"   }
 ];
 
 // ---------- Harvest lease ----------
@@ -361,7 +361,8 @@ function injectViaScripting(tabId, site, ritualKey, finish) {
         kickstarter: () => ({ func: runKickstarterExtractionInPage,
             args: [site.name, ritualKey, KS_ENDPOINT, KS_CATEGORY_ID, KS_PER_PAGE, KS_MAX_PAGES] }),
         backerkit: () => ({ func: runBackerkitExtractionInPage,
-            args: [site.name, ritualKey, BK_ENDPOINT, BK_BASE, BK_SORT, BK_COLLECTIONS] }),
+            args: [site.name, ritualKey, BK_ENDPOINT, BK_CATEGORY,
+                   BK_MAX_SCROLLS, BK_SCROLL_WAIT_MS] }),
         catalog: () => ({ func: runExtractionInPage,
             args: [site.name, ritualKey, ENDPOINT, CHUNK_SIZE] })
     };

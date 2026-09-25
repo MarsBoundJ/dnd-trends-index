@@ -123,6 +123,17 @@ for field, helper in [('funding_usd', '_float_or_none'),
 check("funding_currency is captured with its unit",
       "'funding_currency': _text_or_none(r.get('funding_currency'), 16)" in R, True)
 
+# The dict is EXPLICIT. A field the harvester sends faithfully is dropped
+# without a word if it is not listed here -- the same silent-discard family as
+# ignore_unknown_values against a missing column. Every field the V3 card
+# harvester emits has to appear.
+for field, helper in [('blurb', '_text_or_none'),
+                      ('category', '_text_or_none'),
+                      ('status', '_text_or_none'),
+                      ('trending_rank', '_int_or_none')]:
+    check("%s is forwarded, not dropped" % field,
+          ("'%s': %s(r.get('%s')" % (field, helper, field)) in R, True)
+
 print('\nand the coercions that caused this are gone:')
 for gone in ["or 0.0)", "or 0)"]:
     check('no %r left in the route' % gone, gone in R, False)

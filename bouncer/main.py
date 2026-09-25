@@ -1667,6 +1667,19 @@ def bouncer_api(request):
                 'funding_amount': _float_or_none(r.get('funding_amount')),
                 'funding_currency': _text_or_none(r.get('funding_currency'), 16),
                 'goal_amount': _float_or_none(r.get('goal_amount')),
+                # The listing card carries these, so genre classification needs
+                # no per-project detail pass. blurb in particular is what makes
+                # system_tag worth anything: "Ink Ribbon - A Survival Horror
+                # Tabletop RPG" names no system, while its summary does.
+                # status records that a project ENDED, which days_remaining
+                # cannot: the card gives no end date, so we know it finished
+                # but not when, and NULL days with status 'ended' says exactly
+                # that. This dict is explicit, so a field absent from it is
+                # dropped silently however faithfully the harvester sends it.
+                'blurb': _text_or_none(r.get('blurb'), 2000),
+                'category': _text_or_none(r.get('category'), 200),
+                'trending_rank': _int_or_none(r.get('trending_rank')),
+                'status': _text_or_none(r.get('status'), 32),
                 'system_tag': str(r.get('system_tag', 'RPG (Other)'))[:100],
                 'scraped_at': now_ts,
                 'source_url': str(r.get('source_url', ''))[:1000],
