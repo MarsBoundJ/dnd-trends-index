@@ -48,8 +48,8 @@ const ks = slice(KS_SRC,
 const bk = slice(BK_SRC,
     '// ---------- BackerKit normalisation',
     '// ---------- end BackerKit normalisation ----------',
-    ['bkAmount', 'bkInt', 'bkDaysRemaining', 'bkClassify', 'bkBuildRow', 'bkSummarise',
-     'bkExtractProjects'],
+    ['bkIsUsd', 'bkNum', 'bkMoney', 'bkBackers', 'bkTiming', 'bkRank',
+     'bkIdsFromUrl', 'bkPrettySlug', 'bkClassify', 'bkBuildRow', 'bkSummarise'],
     'backerkit.js');
 
 let pass = 0, fail = 0;
@@ -148,75 +148,174 @@ check('a clean run says so', ks.ksSummarise([ks.ksBuildRow(ksNode())]), 'no defa
 check('it is a string the popup can render', typeof ks.ksSummarise([noState]), 'string');
 
 // ════════════════════════ BACKERKIT ════════════════════════
+//
+// V3. The first two designs read the wrong page. /c/collections/<slug> is a
+// curated 10-item shelf that cannot be paged OR sorted — page, offset,
+// per_page and ten sort_by values were all silently ignored, each returning
+// the same ten projects with HTTP 200. /c/categories/<slug>/projects is the
+// real listing: 700 projects behind infinite scroll, server-rendered HTML,
+// no JSON representation at all (406 to Accept: application/json).
+//
+// So these test a DOM card, not an Inertia payload.
 
-function bkProject(over) {
-    return Object.assign({
-        id: 'proj_8842',
-        title: 'Tales of the Valiant: Monster Vault',
-        creator_name: 'Kobold Press',
-        raised_amount: '$412,880',
-        backers: '6,214',
-        ended_at: 'April 30, 2099 at 10:00 AM PDT',
-        formatted_permalink: 'https://www.backerkit.com/c/projects/kobold-press/x'
-    }, over || {});
+const card = (over) => Object.assign({
+    url: "https://www.backerkit.com/c/projects/free-league-publishing/the-one-ring-rpg-bestiary",
+    title: "The One Ring RPG: Bestiary",
+    blurb: "An epic campaign expansion, also for 5E",
+    creator: "Free League Publishing",
+    rankText: "#1 Most funded",
+    category: "Role-Playing Games",
+    text: "20 days left The One Ring RPG: Bestiary $2,108,581 of $50,000 goal 8,807 backers"
+}, over || {});
+
+console.log('\n\nBackerKit — the money layout that covers 93% of cards:');
+{
+    const m = bk.bkMoney("$2,108,581 of $50,000 goal 8,807 backers");
+    check('the raised amount', m.raised, 2108581);
+    check('the goal', m.goal, 50000);
+    check('the currency', m.currency, "$");
+    check('backers read separately', bk.bkBackers("8,807 backers"), 8807);
 }
 
-const NOW = Date.parse('2026-09-23T12:00:00Z');
+console.log('\nBackerKit — and the 7% that say "funds raised" and have no goal:');
+{
+    const m = bk.bkMoney("ENNIES EMPORIUM 2026 Exalted Funeral $79,627 funds raised 623 backers");
+    check('the raised amount still reads', m.raised, 79627);
+    check('the goal abstains rather than guessing 0', m.goal, null);
+    check('the currency still reads', m.currency, "$");
+}
 
-console.log('\n\nBackerKit — money and backers:');
-check('"$412,880" parses', bk.bkAmount('$412,880'), 412880);
-check('absent is null, NOT 0.0', bk.bkAmount(undefined), null);
-check('unparseable is null, NOT 0.0', bk.bkAmount('TBD'), null);
-check('"6,214" backers parses', bk.bkInt('6,214'), 6214);
-check('absent backers is null, NOT 0', bk.bkInt(null), null);
-check('a genuine zero survives as zero', bk.bkAmount('0'), 0);
+console.log('\nBackerKit — currency is not decoration:');
+{
+    // Measured across 700 projects: $ 67%, then EUR, GBP, C$, A$, NZ$, CHF, S$,
+    // exactly one currency per card in 696 of 700. The old bkAmount stripped
+    // every non-digit including the marker, so A$228,597 went into a column
+    // named funding_usd as 228,587 US dollars.
+    const aud = bk.bkMoney("A$228,597 of A$10,000 goal 786 backers");
+    check('an A$ amount parses', aud.raised, 228597);
+    check('...and is tagged AUD, not assumed USD', aud.currency, "A$");
+    check('A$ is not treated as USD', bk.bkIsUsd("A$"), false);
+    check('the longer prefix wins over the bare $', bk.bkMoney("NZ$1,000 funds raised").currency, "NZ$");
+    check('C$ likewise', bk.bkMoney("C$5,250 funds raised").currency, "C$");
+    check('€ parses', bk.bkMoney("€20,659 funds raised").currency, "€");
+    check('£ parses', bk.bkMoney("£10,056 funds raised").currency, "£");
+    check('only $ and US$ are USD', [bk.bkIsUsd("$"), bk.bkIsUsd("US$"), bk.bkIsUsd("€")],
+        [true, true, false]);
 
-const bkNoMoney = bk.bkBuildRow(bkProject({ raised_amount: null, backers: null }), NOW);
-check('missing money is recorded as defaulted',
-    bkNoMoney.defaulted.indexOf('funding_usd') !== -1 &&
-    bkNoMoney.defaulted.indexOf('backers_count') !== -1, true);
-check('...while the wire value stays 0 (the bouncer re-zeroes nulls anyway)',
-    [bkNoMoney.row.funding_usd, bkNoMoney.row.backers_count], [0, 0]);
+    // Every marker, one by one. This is the invariant that actually protects
+    // the parse: a marker that is a strict prefix of another WOULD break, and
+    // only exercising all of them would show it. Reordering the list does not
+    // break anything -- alternation is leftmost-by-position, not by
+    // alternative order -- so no test can or should catch that.
+    [["$", 100], ["US$", 100], ["€", 100], ["£", 100], ["¥", 100],
+     ["C$", 100], ["CA$", 100], ["A$", 100], ["NZ$", 100], ["S$", 100],
+     ["HK$", 100], ["R$", 100], ["CHF", 100], ["SEK", 100], ["NOK", 100],
+     ["DKK", 100], ["PLN", 100]].forEach(([marker]) => {
+        const m = bk.bkMoney(marker + "1,234 of " + marker + "500 goal");
+        check('  ' + marker + ' round-trips', [m.currency, m.raised, m.goal],
+            [marker, 1234, 500]);
+    });
+}
 
-console.log('\nBackerKit — days_remaining meant three different things:');
-check('a future date gives a positive count',
-    bk.bkDaysRemaining('April 30, 2099 at 10:00 AM PDT', NOW) > 0, true);
-check('an unparseable date is null, not 0', bk.bkDaysRemaining('sometime soon', NOW), null);
-check('an absent date is null, not 0', bk.bkDaysRemaining('', NOW), null);
-// The bookmarklet clamped with Math.max(0, …), so a campaign that ended months
-// ago and one ending today both reported 0.
-check('an ENDED campaign gives a negative count internally',
-    bk.bkDaysRemaining('January 1, 2020 at 10:00 AM PDT', NOW) < 0, true);
-const ended = bk.bkBuildRow(bkProject({ ended_at: 'January 1, 2020 at 10:00 AM PDT' }), NOW);
-check('...which is flagged rather than silently clamped',
-    ended.defaulted.indexOf('ended_clamped') !== -1, true);
-check('...though the wire value is still clamped to 0', ended.row.days_remaining, 0);
-const unparseable = bk.bkBuildRow(bkProject({ ended_at: 'soon' }), NOW);
-check('an unparseable date is flagged separately',
-    unparseable.defaulted.indexOf('days_remaining') !== -1, true);
+console.log('\nBackerKit — a non-USD row leaves funding_usd NULL:');
+{
+    const b = bk.bkBuildRow(card({ text: "8 days left X A$228,597 of A$10,000 goal 786 backers" }));
+    check('funding_usd is null, not the AUD number', b.row.funding_usd, null);
+    check('the amount is kept verbatim', b.row.funding_amount, 228597);
+    check('with its unit beside it', b.row.funding_currency, "A$");
+    check('and the run counts it', b.defaulted.indexOf("non_usd_A$") !== -1, true);
+}
+{
+    const b = bk.bkBuildRow(card());
+    check('a USD row DOES fill funding_usd', b.row.funding_usd, 2108581);
+    check('...and funding_amount too', b.row.funding_amount, 2108581);
+    check('...and is not counted as non-USD',
+        b.defaulted.filter(d => d.indexOf("non_usd") === 0).length, 0);
+}
 
-console.log('\nBackerKit — the classifier no longer reads the project id:');
-check('a 5e title classifies', bk.bkClassify('Tales of the Valiant: Monster Vault'), '5e Compatible');
-check('an OSR title classifies', bk.bkClassify('Old School Essentials Reprint'), 'OSR');
-check('anything else is RPG (Other)', bk.bkClassify('Lancer: Field Guide'), 'RPG (Other)');
-// The bookmarklet passed `title + ' ' + project_id` to the matcher, so an id
-// containing "5e" would have classified the project.
-check('an id containing "5e" cannot classify the row',
-    bk.bkBuildRow(bkProject({ id: 'abc5e999', title: 'Lancer: Field Guide' }), NOW).row.system_tag,
-    'RPG (Other)');
+console.log('\nBackerKit — "Ended" is not "ends today":');
+{
+    // The old code returned 0 for ended, unparseable and months-ago alike.
+    // The card states no end DATE, so we know it finished, not when.
+    check('a live project reports its days', bk.bkTiming("20 days left").days, 20);
+    check('...and its status', bk.bkTiming("20 days left").status, "live");
+    check('an ended project abstains on days', bk.bkTiming("Ended").days, null);
+    check('...but records that it ended', bk.bkTiming("Ended").status, "ended");
+    check('hours-left still counts as live', bk.bkTiming("6 hours left").status, "live");
+    check('silence gives neither', bk.bkTiming("").status, null);
+}
 
-console.log('\nBackerKit — required fields:');
-check('no id means no row', bk.bkBuildRow(bkProject({ id: '' }), NOW), null);
-check('no title means no row', bk.bkBuildRow(bkProject({ title: '  ' }), NOW), null);
-check('a valid row survives', bk.bkBuildRow(bkProject(), NOW).row.project_id, 'proj_8842');
+console.log('\nBackerKit — ids come from the url, which is a slug:');
+{
+    const ids = bk.bkIdsFromUrl("https://www.backerkit.com/c/projects/free-league-publishing/the-one-ring-rpg-bestiary");
+    check('the project id is the last segment', ids.projectId, "the-one-ring-rpg-bestiary");
+    check('the creator slug is the one before', ids.creatorSlug, "free-league-publishing");
+    check('a malformed url abstains', bk.bkIdsFromUrl("https://www.backerkit.com/c/").projectId, null);
+    check('a slug prettifies as a fallback name',
+        bk.bkPrettySlug("free-league-publishing"), "Free League Publishing");
+}
 
-console.log('\nBackerKit — the Inertia response shape:');
-check('top-level key is read',
-    bk.bkExtractProjects({ 'crowdfunding/projects': [1, 2] }).length, 2);
-check('nested under props is also read',
-    bk.bkExtractProjects({ props: { 'crowdfunding/projects': [1] } }).length, 1);
-check('an unknown shape yields an empty list, not a throw', bk.bkExtractProjects({ foo: 1 }), []);
-check('null yields an empty list', bk.bkExtractProjects(null), []);
+console.log('\nBackerKit — the classifier now reads the blurb, not just the title:');
+{
+    // "Ink Ribbon - A Survival Horror Tabletop RPG" says nothing about system.
+    // Its summary does. The project id is still never passed: it is a slug.
+    check('a title alone can miss it',
+        bk.bkClassify("Ink Ribbon - A Survival Horror Tabletop RPG", ""), "RPG (Other)");
+    check('the blurb catches it',
+        bk.bkClassify("Ink Ribbon - A Survival Horror Tabletop RPG",
+                      "A setting for D&D 5e and Starfinder"), "5e Compatible");
+    check('OSR is detected from the blurb too',
+        bk.bkClassify("The Overlords of Steel", "a mega-adventure for Old-School Essentials"), "OSR");
+    check('and neither still means neither',
+        bk.bkClassify("A Board Game", "with cards and tokens"), "RPG (Other)");
+    check('the source signature takes both arguments',
+        /function bkClassify\(title, blurb\)/.test(BK_SRC), true);
+}
+
+console.log('\nBackerKit — the summary is captured, so genre needs no detail pass:');
+{
+    const b = bk.bkBuildRow(card());
+    check('the blurb is stored', b.row.blurb, "An epic campaign expansion, also for 5E");
+    check('the category is stored', b.row.category, "Role-Playing Games");
+    check('the rank is a number, not its label', b.row.trending_rank, 1);
+    check('a rank label change does not break it',
+        bk.bkRank("#7 Trending this week"), 7);
+    check('no rank abstains', bk.bkRank("Role-Playing Games"), null);
+    const noBlurb = bk.bkBuildRow(card({ blurb: "" }));
+    check('a missing blurb is null and counted', noBlurb.row.blurb, null);
+    check('...in defaultedFields', noBlurb.defaulted.indexOf("blurb") !== -1, true);
+}
+
+console.log('\nBackerKit — required fields are never sent short:');
+{
+    // project_id and title are REQUIRED in BigQuery. A row missing either is
+    // dropped SILENTLY by skip_invalid_rows, so it must not be built at all.
+    check('no title -> no row', bk.bkBuildRow(card({ title: "" })), null);
+    check('no usable url -> no row',
+        bk.bkBuildRow(card({ url: "https://www.backerkit.com/c/" })), null);
+    check('a creator falls back to the slug rather than blocking the row',
+        bk.bkBuildRow(card({ creator: "" })).row.creator, "Free League Publishing");
+    check('...and that fallback is counted',
+        bk.bkBuildRow(card({ creator: "" })).defaulted.indexOf("creator_from_slug") !== -1, true);
+}
+
+console.log('\nBackerKit — unmeasured values are null, never zero:');
+{
+    const b = bk.bkBuildRow(card({ text: "Ended The One Ring RPG: Bestiary" }));
+    check('no money read -> null, not 0', b.row.funding_amount, null);
+    check('no backers read -> null, not 0', b.row.backers_count, null);
+    check('ended with no date -> null days', b.row.days_remaining, null);
+    check('but the ended status IS recorded', b.row.status, "ended");
+    check('and all of it is counted',
+        ["funding_amount", "backers_count", "days_remaining"]
+            .every(f => b.defaulted.indexOf(f) !== -1), true);
+}
+
+console.log('\nBackerKit — the defaulted summary:');
+check('counts repeat across rows',
+    bk.bkSummarise([{ defaulted: ["blurb"] }, { defaulted: ["blurb", "goal_amount"] }]),
+    'blurb 2, goal_amount 1');
+check('a clean run says so', bk.bkSummarise([{ defaulted: [] }]), 'no defaulted fields');
 
 // ════════════════════════ SOURCE GUARDS ════════════════════════
 
@@ -227,10 +326,16 @@ check('Kickstarter refuses to run off kickstarter.com',
     /hostname\.endsWith\("kickstarter\.com"\)/.test(KS_SRC), true);
 check('BackerKit refuses to run off backerkit.com',
     /hostname\.endsWith\("backerkit\.com"\)/.test(BK_SRC), true);
-check('BackerKit sends the Inertia header, without which it gets HTML',
-    /"X-Inertia": "true"/.test(BK_SRC), true);
-check('both send credentials so the session cookie rides along',
-    /credentials: "include"/.test(KS_SRC) && /credentials: "include"/.test(BK_SRC), true);
+// BackerKit no longer FETCHES BackerKit at all. V1 and V2 called the Inertia
+// endpoint with X-Inertia and credentials; V3 reads the DOM of a real signed-in
+// tab, because the categories listing has no JSON representation (406 to
+// Accept: application/json). Its only fetch is the POST to the bouncer, so
+// asserting an Inertia header here would pin a mechanism that is gone.
+check('Kickstarter still sends credentials, so its session rides along',
+    /credentials: "include"/.test(KS_SRC), true);
+check('BackerKit makes no request to backerkit.com at all',
+    /fetch\(\s*["'`]https:\/\/www\.backerkit\.com/.test(BK_SRC) ||
+    /X-Inertia/.test(BK_SRC.replace(/\/\/[^\n]*/g, '')), false);
 // Checking for the string "about:blank" would match the comments that explain
 // why the relay was removed. The mechanism is what matters: no popup is opened,
 // and nothing is assembled as HTML to be written into one.
@@ -244,6 +349,52 @@ check('a failed ingest throws rather than counting as sent',
     /throw new Error\("ingest HTTP/.test(KS_SRC) && /throw new Error\("ingest HTTP/.test(BK_SRC), true);
 check('endpoints are derived from ENDPOINT, not retyped',
     /ENDPOINT\.replace\(/.test(KS_SRC) && /ENDPOINT\.replace\(/.test(BK_SRC), true);
+
+// ════════════════ THE PAGE THIS READS ════════════════
+//
+// The measurements that chose it, recorded where the next reader will look.
+const BK_PROSE = BK_SRC.replace(/^\s*\/\/ ?/gm, '').replace(/\s+/g, ' ');
+
+console.log('\nthe source records why the collections endpoint was abandoned:');
+check('it names both urls',
+    /\/c\/collections\/<slug>/.test(BK_PROSE) && /\/c\/categories\/<slug>\/projects/.test(BK_PROSE), true);
+check('and that page/offset/per_page/sort_by were all ignored',
+    /SILENTLY\s*IGNORED/.test(BK_PROSE), true);
+check('and that counting results would have looked like success',
+    /would have read as fourteen successes/.test(BK_PROSE), true);
+check('the harvester targets the categories listing',
+    /c\/categories\/" \+ BK_CATEGORY \+ "\/projects/.test(BK_SRC), true);
+
+console.log('\nit does not hard-code the 700 it happened to measure:');
+// 700 is exactly 25 x 28, which is the shape of a server-side cap rather than
+// a natural end. The loop stops on a plateau so a raised cap is picked up free.
+check('the scroll loop stops on a plateau', /if \(now === previous\) break;/.test(BK_SRC), true);
+check('no literal 700 anywhere in the logic', /\b700\b/.test(BK_SRC.replace(/\/\/[^\n]*/g, '')), false);
+check('the cap suspicion is written down', /25 x 28/.test(BK_PROSE), true);
+
+console.log('\nit finds cards by structure, not by Tailwind build artifacts:');
+check('cards are found by walking up from a project link',
+    /distinctProjects\(el\) === 1/.test(BK_SRC), true);
+check('...counting DISTINCT urls, not links',
+    /new Set\(Array\.from\(el\.querySelectorAll\(PROJECT_LINK\)\)\.map\(urlOf\)\)\.size/.test(BK_SRC), true);
+// Stripped of comments first. The header EXPLAINS why these classes are
+// avoided, quoting one, so testing the raw source matched the explanation and
+// reported the opposite of the truth -- the same shape as the earlier check
+// that matched the _enrich_batch definition instead of its call site.
+const BK_CODE = BK_SRC.replace(/^\s*\/\/[^\n]*$/gm, '');
+check('no arbitrary-value class is used as a selector in the CODE',
+    /shadow-\[|line-clamp-1|font-walsheim/.test(BK_CODE), false);
+check('...though the header still explains why, for the next reader',
+    /shadow-\[/.test(BK_PROSE), true);
+check('the reason that mattered is recorded',
+    /~3 links per card/.test(BK_PROSE), true);
+
+console.log('\nclipped text is read from the title attribute:');
+check('fullText prefers the attribute', /getAttribute\("title"\)/.test(BK_SRC), true);
+check('and the reason is recorded', /CSS line-clamps/.test(BK_PROSE), true);
+
+console.log('\nstill ONE request, so the date guard cannot truncate it:');
+check('exactly one POST', (BK_SRC.match(/method: "POST"/g) || []).length, 1);
 
 console.log(`\n${pass} passed, ${fail} failed\n`);
 process.exit(fail ? 1 : 0);

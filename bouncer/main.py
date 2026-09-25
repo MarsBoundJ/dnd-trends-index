@@ -85,6 +85,40 @@ class ArcaneEncoder(json.JSONEncoder):
         if isinstance(obj, (datetime.date, datetime.datetime)): return obj.isoformat()
         return super(ArcaneEncoder, self).default(obj)
 
+# Abstention helpers. safe_int below coerces to a default, which is right for
+# a display value and wrong for a measurement: it cannot distinguish "we read
+# zero" from "we could not read it". These return None instead, for NULLABLE
+# columns where that difference is the whole point.
+def _float_or_none(val):
+    if val is None or val == '':
+        return None
+    try:
+        f = float(val)
+    except (TypeError, ValueError):
+        return None
+    # NaN and the infinities are not valid FLOAT64 values to stream, and NaN
+    # compares unequal to itself, which is the cheapest way to catch it.
+    if f != f or f in (float('inf'), float('-inf')):
+        return None
+    return f
+
+
+def _int_or_none(val):
+    if val is None or val == '':
+        return None
+    try:
+        return int(val)
+    except (TypeError, ValueError):
+        return None
+
+
+def _text_or_none(val, limit):
+    if val is None:
+        return None
+    t = str(val).strip()
+    return t[:limit] if t else None
+
+
 def safe_int(val, default=0):
     try:
         if isinstance(val, Decimal): return int(val)
@@ -1609,10 +1643,43 @@ def bouncer_api(request):
             cleaned.append({
                 'project_id': pid,
                 'title': title,
-                'creator': str(r.get('creator', ''))[:500],
-                'funding_usd': float(r.get('funding_usd') or 0.0),
-                'backers_count': int(r.get('backers_count') or 0),
-                'days_remaining': int(r.get('days_remaining') or 0),
+                'creator': _text_or_none(r.get('creator'), 500),
+                # NULL, not 0.0. Verified 2026-09-25 against
+                # INFORMATION_SCHEMA: funding_usd, backers_count and
+                # days_remaining are all NULLABLE on this table, so a null
+                # cannot trigger the silent row drop that skip_invalid_rows
+                # performs on a REQUIRED column. The `or 0.0` this replaces
+                # was the only thing manufacturing false zeros -- a project
+                # whose funding we could not read became one that raised
+                # nothing, and no downstream check could tell them apart.
+                'funding_usd': _float_or_none(r.get('funding_usd')),
+                'backers_count': _int_or_none(r.get('backers_count')),
+                'days_remaining': _int_or_none(r.get('days_remaining')),
+                # BackerKit displays amounts in the project's OWN currency --
+                # measured across 700 projects: $ 67%, then EUR, GBP, C$, A$,
+                # NZ$, CHF, S$. The harvester used to strip the marker and
+                # write the bare number to a column named funding_usd, so
+                # A$228,597 was stored as 228,597 US dollars. funding_usd is
+                # now populated ONLY when the currency really is USD; every
+                # amount is kept verbatim here with its unit beside it.
+                # Conversion belongs in a view over an FX table, never at
+                # ingest -- convert on the way in and the original is gone.
+                'funding_amount': _float_or_none(r.get('funding_amount')),
+                'funding_currency': _text_or_none(r.get('funding_currency'), 16),
+                'goal_amount': _float_or_none(r.get('goal_amount')),
+                # The listing card carries these, so genre classification needs
+                # no per-project detail pass. blurb in particular is what makes
+                # system_tag worth anything: "Ink Ribbon - A Survival Horror
+                # Tabletop RPG" names no system, while its summary does.
+                # status records that a project ENDED, which days_remaining
+                # cannot: the card gives no end date, so we know it finished
+                # but not when, and NULL days with status 'ended' says exactly
+                # that. This dict is explicit, so a field absent from it is
+                # dropped silently however faithfully the harvester sends it.
+                'blurb': _text_or_none(r.get('blurb'), 2000),
+                'category': _text_or_none(r.get('category'), 200),
+                'trending_rank': _int_or_none(r.get('trending_rank')),
+                'status': _text_or_none(r.get('status'), 32),
                 'system_tag': str(r.get('system_tag', 'RPG (Other)'))[:100],
                 'scraped_at': now_ts,
                 'source_url': str(r.get('source_url', ''))[:1000],

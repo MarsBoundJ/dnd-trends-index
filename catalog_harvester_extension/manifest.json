@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Arcane Incursion - Catalog Harvester",
-    "version": "1.6",
+    "version": "1.8",
     "description": "Weekly harvest: DMs Guild, DriveThruRPG, Amazon, Kickstarter & BackerKit.",
     "permissions": [
         "alarms",
